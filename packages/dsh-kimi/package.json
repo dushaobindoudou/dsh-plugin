@@ -1,0 +1,21 @@
+{
+  "name": "dsh-kimi",
+  "version": "0.0.1",
+  "description": "Kimi provider bridge for the DeepSeek Harness - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "kimi",
+    "moonshot"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-kimi"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-kimi#readme"
+}

@@ -1,0 +1,253 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .: {}
+
+  packages/dsh-agents: {}
+
+  packages/dsh-alert: {}
+
+  packages/dsh-api: {}
+
+  packages/dsh-archive: {}
+
+  packages/dsh-bedrock: {}
+
+  packages/dsh-canvas: {}
+
+  packages/dsh-claude: {}
+
+  packages/dsh-clean: {}
+
+  packages/dsh-cloud: {}
+
+  packages/dsh-cohere: {}
+
+  packages/dsh-completions: {}
+
+  packages/dsh-db: {}
+
+  packages/dsh-debug: {}
+
+  packages/dsh-diff: {}
+
+  packages/dsh-doubao: {}
+
+  packages/dsh-edit: {}
+
+  packages/dsh-embeddings: {}
+
+  packages/dsh-export: {}
+
+  packages/dsh-files: {}
+
+  packages/dsh-finder: {}
+
+  packages/dsh-fireworks: {}
+
+  packages/dsh-forge: {}
+
+  packages/dsh-gemini: {}
+
+  packages/dsh-git: {}
+
+  packages/dsh-glm: {}
+
+  packages/dsh-gpt: {}
+
+  packages/dsh-groq: {}
+
+  packages/dsh-health: {}
+
+  packages/dsh-hub: {}
+
+  packages/dsh-i18n: {}
+
+  packages/dsh-keymap: {}
+
+  packages/dsh-kimi: {}
+
+  packages/dsh-link: {}
+
+  packages/dsh-lint: {}
+
+  packages/dsh-llama: {}
+
+  packages/dsh-lmstudio: {}
+
+  packages/dsh-logs: {}
+
+  packages/dsh-metrics: {}
+
+  packages/dsh-minimax: {}
+
+  packages/dsh-mistral: {}
+
+  packages/dsh-notes: {}
+
+  packages/dsh-ollama: {}
+
+  packages/dsh-openai: {}
+
+  packages/dsh-openrouter: {}
+
+  packages/dsh-panel: {}
+
+  packages/dsh-permission: {}
+
+  packages/dsh-persona: {}
+
+  packages/dsh-planner: {}
+
+  packages/dsh-policy: {}
+
+  packages/dsh-profiles: {}
+
+  packages/dsh-proxy: {}
+
+  packages/dsh-qwen: {}
+
+  packages/dsh-rag: {}
+
+  packages/dsh-refactor: {}
+
+  packages/dsh-reset: {}
+
+  packages/dsh-router: {}
+
+  packages/dsh-search: {}
+
+  packages/dsh-secrets: {}
+
+  packages/dsh-selfrepair:
+    dependencies:
+      '@deepseek-ai/cordis':
+        specifier: ^4.0.1
+        version: 4.0.1
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
+    devDependencies:
+      '@deepseek-ai/dsh-typert-protocol':
+        specifier: 0.1.0-rc.6
+        version: 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.7(@deepseek-ai/cordis@4.0.1))
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+
+  packages/dsh-serve: {}
+
+  packages/dsh-siliconflow: {}
+
+  packages/dsh-skill: {}
+
+  packages/dsh-snippets: {}
+
+  packages/dsh-sound: {}
+
+  packages/dsh-studio: {}
+
+  packages/dsh-suite: {}
+
+  packages/dsh-test: {}
+
+  packages/dsh-together: {}
+
+  packages/dsh-update: {}
+
+  packages/dsh-vllm: {}
+
+  packages/dsh-vscode: {}
+
+  packages/dsh-widget: {}
+
+  packages/dsh-workflow:
+    dependencies:
+      '@deepseek-ai/dsh-typert-protocol':
+        specifier: 0.1.0-rc.6
+        version: 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.7(@deepseek-ai/cordis@4.0.1))
+
+  packages/dsh-workspace: {}
+
+  packages/dsh-zen: {}
+
+  packages/dsh-zhipu: {}
+
+packages:
+
+  '@deepseek-ai/cordis@4.0.1':
+    resolution: {integrity: sha512-YBdskTU2Po1kru3GgcUWUbkTsPMA9LkSQDAY8rBkFJeajdgcQad3QPJZE26JyK99Xb6HaASvoXg2DSUTeN/0Nw==}
+    hasBin: true
+    peerDependencies:
+      '@deepseek-ai/cordis-plugin-include': ^1.0.6
+      '@deepseek-ai/cordis-plugin-loader': ^1.0.2
+    peerDependenciesMeta:
+      '@deepseek-ai/cordis-plugin-include':
+        optional: true
+      '@deepseek-ai/cordis-plugin-loader':
+        optional: true
+
+  '@deepseek-ai/cosmokit@1.8.2':
+    resolution: {integrity: sha512-muBOKtSrUKU5m/xpq8ZXWL6hQ/jgd4PhU2PqH97bcxIiLEJfNwZOGQEx4t/aS/GgxRAR+ra9pMHPMtTHU4sqqA==}
+
+  '@deepseek-ai/dsh-invariants@0.1.0-rc.7':
+    resolution: {integrity: sha512-PnO1F4aZGUmqZPyuPJpBUfQ4DZmjCGCNGr0yuN2iURTP/e6h0kGnTNTYgR2NqMvAtpP66WNiHhvH2LMqumk1+A==}
+    peerDependencies:
+      '@deepseek-ai/cordis': ^4.0.1
+
+  '@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6':
+    resolution: {integrity: sha512-weWzN8r01YCkoDCAM7BsKw2YhRrD4zL8N2SAZu9hovYtXSq8xHXsP4Zh8RLYIlYcuotjyff/6hic+0TJPd14YA==}
+    peerDependencies:
+      '@deepseek-ai/cordis': ^4.0.1
+      '@deepseek-ai/dsh-invariants': ^0.1.0-rc.6
+
+  '@deepseek-ai/schemastery@3.18.1':
+    resolution: {integrity: sha512-Qn0FCSwCQnpnj6SB31I6i2sIKgKWnkbJM8O0EU91Gv2UsYVvtZTl6IA0sCwk2e2MZf5S8w5hpq9QkeVvK9qwxg==}
+
+  '@standard-schema/spec@1.1.0':
+    resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
+
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  yaml@2.9.0:
+    resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
+    engines: {node: '>= 14.6'}
+    hasBin: true
+
+snapshots:
+
+  '@deepseek-ai/cordis@4.0.1':
+    dependencies:
+      '@deepseek-ai/cosmokit': 1.8.2
+      '@standard-schema/spec': 1.1.0
+
+  '@deepseek-ai/cosmokit@1.8.2': {}
+
+  '@deepseek-ai/dsh-invariants@0.1.0-rc.7(@deepseek-ai/cordis@4.0.1)':
+    dependencies:
+      '@deepseek-ai/cordis': 4.0.1
+      '@deepseek-ai/schemastery': 3.18.1
+
+  '@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.7(@deepseek-ai/cordis@4.0.1))':
+    dependencies:
+      '@deepseek-ai/cordis': 4.0.1
+      '@deepseek-ai/dsh-invariants': 0.1.0-rc.7(@deepseek-ai/cordis@4.0.1)
+
+  '@deepseek-ai/schemastery@3.18.1':
+    dependencies:
+      '@deepseek-ai/cosmokit': 1.8.2
+      '@standard-schema/spec': 1.1.0
+
+  '@standard-schema/spec@1.1.0': {}
+
+  typescript@5.9.3: {}
+
+  yaml@2.9.0: {}

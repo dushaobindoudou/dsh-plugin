@@ -1,0 +1,47 @@
+{
+  "name": "dsh-workflow",
+  "version": "0.1.0",
+  "description": "Workflow Studio for the DeepSeek Harness (dsh) - browse workflow sessions per project, manage workflow definitions, start sessions in workflow mode, and visualize run details.",
+  "type": "module",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "workflow",
+    "workflow-studio",
+    "cordis-plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-workflow"
+  },
+  "bugs": "https://github.com/dushaobindoudou/dsh-plugin/issues",
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-workflow#readme",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/**/*.js",
+    "README.md"
+  ],
+  "scripts": {
+    "smoke": "node smoke.mjs",
+    "smoke:client": "node smoke-client.cjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-typert-protocol": "0.1.0-rc.6"
+  },
+  "dsh": {
+    "client": {
+      "platform": "web"
+    }
+  }
+}

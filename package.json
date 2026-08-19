@@ -1,0 +1,19 @@
+{
+  "name": "dsh-plugin-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The dsh-* plugin suite for the DeepSeek Harness - one repo, many npm packages.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "sync:placeholders": "node scripts/sync-placeholders.mjs",
+    "check": "node scripts/check-packages.mjs",
+    "test": "pnpm -r --if-present test",
+    "publish:dry": "pnpm -r publish --dry-run --access public",
+    "publish:all": "pnpm -r publish --access public"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "dsh-gpt",
+  "version": "0.0.1",
+  "description": "The GPT-family spelled form of the OpenAI bridge - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "openai",
+    "gpt"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-gpt"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-gpt#readme"
+}

@@ -1,0 +1,92 @@
+{
+  "name": "dsh-selfrepair",
+  "version": "0.2.0",
+  "description": "Diagnose and repair a DeepSeek Harness (dsh) installation — duplicated profile modules, unusable model configuration, broken settings — from the settings page, a slash command, or a standalone CLI that works even when dsh cannot start.",
+  "type": "module",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-selfrepair"
+  },
+  "bugs": "https://github.com/dushaobindoudou/dsh-plugin/issues",
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-selfrepair#readme",
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "diagnostics",
+    "doctor",
+    "self-repair",
+    "cordis-plugin"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./doctor": {
+      "types": "./lib/doctor.d.ts",
+      "default": "./lib/doctor.js"
+    },
+    "./checks": {
+      "types": "./lib/checks/index.d.ts",
+      "default": "./lib/checks/index.js"
+    },
+    "./paths": {
+      "types": "./lib/paths.d.ts",
+      "default": "./lib/paths.js"
+    },
+    "./remote": {
+      "types": "./lib/remote.d.ts",
+      "default": "./lib/remote.js"
+    },
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/**/*.js",
+    "lib/**/*.d.ts",
+    "bin/*.js",
+    "cordis.patch.yml"
+  ],
+  "bin": {
+    "dsh-selfrepair": "bin/selfrepair.js"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "yaml": "^2.9.0"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-typert-protocol": "0.1.0-rc.6"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-typert-protocol": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@deepseek-ai/dsh-typert-protocol": "0.1.0-rc.6",
+    "typescript": "^5.6.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
+    }
+  }
+}
