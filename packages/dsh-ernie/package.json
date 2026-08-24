@@ -1,0 +1,22 @@
+{
+  "name": "dsh-ernie",
+  "version": "0.0.1",
+  "description": "Baidu ERNIE provider bridge for the DeepSeek Harness - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "ernie",
+    "baidu",
+    "qianfan"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-ernie"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-ernie#readme"
+}

@@ -18,6 +18,7 @@ export const NICHE_ORDER = [
   'model bridges',
   'developer tools',
   'agent capabilities',
+  'protocols',
   'ui',
   'data',
   'ops',
@@ -117,6 +118,30 @@ export const CATALOG = {
     headline: 'The company-spelled form of the GLM provider bridge',
     body: 'Compatibility name: the Zhipu GLM bridge ships as dsh-glm; this form keeps the company spelling installable.',
     extra: ['zhipu', 'glm'],
+  },
+  'dsh-xai': {
+    niche: 'model bridges',
+    headline: 'xAI Grok provider bridge for the DeepSeek Harness',
+    body: 'Grok models as dsh providers through the LLM adapter seam - agent-mode tool loops streamed turn by turn, DeepSearch runs surfaced as cited session evidence. Company-spelled form; the grok-spelled community package exists separately.',
+    extra: ['xai', 'grok'],
+  },
+  'dsh-moonshot': {
+    niche: 'model bridges',
+    headline: 'The company-spelled form of the Kimi provider bridge',
+    body: 'Compatibility name: the Kimi bridge ships as dsh-kimi; this form keeps the Moonshot AI company spelling installable.',
+    extra: ['moonshot', 'kimi'],
+  },
+  'dsh-hunyuan': {
+    niche: 'model bridges',
+    headline: 'Tencent Hunyuan provider bridge for the DeepSeek Harness',
+    body: 'Hunyuan models as dsh providers through the LLM adapter seam, with the hybrid thinking modes surfaced as per-model options.',
+    extra: ['hunyuan', 'tencent'],
+  },
+  'dsh-ernie': {
+    niche: 'model bridges',
+    headline: 'Baidu ERNIE provider bridge for the DeepSeek Harness',
+    body: 'ERNIE models via the Qianfan API as dsh providers - the Baidu arm of the provider bridge family.',
+    extra: ['ernie', 'baidu', 'qianfan'],
   },
   'dsh-vllm': {
     niche: 'model bridges',
@@ -251,6 +276,18 @@ export const CATALOG = {
     headline: 'Cross-session full-text search for the DeepSeek Harness',
     body: 'Ripgrep over sessions, memory, and the workspace in one query; results jump straight to the conversation node that produced them.',
     extra: ['search'],
+  },
+  'dsh-bot': {
+    niche: 'agent capabilities',
+    headline: 'Bot framework for the DeepSeek Harness',
+    body: 'Run dsh sessions headlessly on schedules, webhooks, and queues - the same agent loop without the GUI; run manifests, cron syntax, and exit-code contracts for CI. Chat-platform channels (telegram, discord, slack) ship as their own community packages.',
+    extra: ['bot', 'automation', 'headless'],
+  },
+  'dsh-deepsearch': {
+    niche: 'agent capabilities',
+    headline: 'Agentic web research for dsh sessions',
+    body: 'The DeepSearch pattern as a harness surface - multi-hop web research with citations, run as a session mode rather than one tool call; every claim links to its source.',
+    extra: ['deepsearch', 'research', 'web-search'],
   },
   // ---- ui ----------------------------------------------------------------
   'dsh-panel': {
@@ -462,6 +499,18 @@ export const CATALOG = {
     body: 'Open the current workspace or session in VS Code, and drive dsh agents from the editor over the ACP stack.',
     extra: ['vscode'],
   },
+  'dsh-zed': {
+    niche: 'harness surfaces',
+    headline: 'Zed bridge for the DeepSeek Harness',
+    body: 'Drive dsh agents from Zed over the Agent Client Protocol - the editor-native counterpart to the VS Code bridge.',
+    extra: ['zed', 'acp'],
+  },
+  'dsh-cursor': {
+    niche: 'harness surfaces',
+    headline: 'Cursor bridge for the DeepSeek Harness',
+    body: 'Open dsh sessions and diffs in Cursor, and hand agent context to the editor - the third editor dock after VS Code and Zed.',
+    extra: ['cursor'],
+  },
   'dsh-i18n': {
     niche: 'harness surfaces',
     headline: 'Locale packs for the dsh web GUI',
@@ -479,6 +528,13 @@ export const CATALOG = {
     headline: 'Shell completions for the dsh launcher',
     body: 'bash / zsh / fish completion recipes for the dsh CLI and plugin binaries like dsh-selfrepair.',
     extra: [],
+  },
+  // ---- protocols ----------------------------------------------------------
+  'dsh-lsp': {
+    niche: 'protocols',
+    headline: 'Language Server Protocol bridge for the DeepSeek Harness',
+    body: 'Diagnostics, hover, and go-to-definition from any language server, delivered to dsh agents and the web GUI - LSP as the editing interop seam, alongside MCP and A2A.',
+    extra: ['lsp', 'language-server', 'protocol'],
   },
 }
 

@@ -1,0 +1,22 @@
+{
+  "name": "dsh-lsp",
+  "version": "0.0.1",
+  "description": "Language Server Protocol bridge for the DeepSeek Harness - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "lsp",
+    "language-server",
+    "protocol"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-lsp"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-lsp#readme"
+}

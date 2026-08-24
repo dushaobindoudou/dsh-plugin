@@ -1,0 +1,21 @@
+{
+  "name": "dsh-hunyuan",
+  "version": "0.0.1",
+  "description": "Tencent Hunyuan provider bridge for the DeepSeek Harness - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "hunyuan",
+    "tencent"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-hunyuan"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-hunyuan#readme"
+}

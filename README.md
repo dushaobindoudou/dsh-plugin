@@ -22,7 +22,7 @@ Names publish as 0.0.1 placeholders; each row's README states the planned first
 release. A name graduates out of this table the moment real code lands.
 
 <!-- placeholder-table:start -->
-### Model bridges (23)
+### Model bridges (27)
 
 | Name | Planned first release |
 | --- | --- |
@@ -41,6 +41,10 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-fireworks`](packages/dsh-fireworks) | Fireworks AI provider bridge for the DeepSeek Harness |
 | [`dsh-siliconflow`](packages/dsh-siliconflow) | SiliconFlow provider bridge for the DeepSeek Harness |
 | [`dsh-zhipu`](packages/dsh-zhipu) | The company-spelled form of the GLM provider bridge |
+| [`dsh-xai`](packages/dsh-xai) | xAI Grok provider bridge for the DeepSeek Harness |
+| [`dsh-moonshot`](packages/dsh-moonshot) | The company-spelled form of the Kimi provider bridge |
+| [`dsh-hunyuan`](packages/dsh-hunyuan) | Tencent Hunyuan provider bridge for the DeepSeek Harness |
+| [`dsh-ernie`](packages/dsh-ernie) | Baidu ERNIE provider bridge for the DeepSeek Harness |
 | [`dsh-vllm`](packages/dsh-vllm) | vLLM provider bridge for the DeepSeek Harness |
 | [`dsh-llama`](packages/dsh-llama) | Llama provider bridge for the DeepSeek Harness |
 | [`dsh-cohere`](packages/dsh-cohere) | Cohere provider bridge for the DeepSeek Harness |
@@ -63,7 +67,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-api`](packages/dsh-api) | REST client panel for the dsh web GUI |
 | [`dsh-git`](packages/dsh-git) | Git panel for the dsh web GUI |
 
-### Agent capabilities (6)
+### Agent capabilities (8)
 
 | Name | Planned first release |
 | --- | --- |
@@ -73,6 +77,14 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-embeddings`](packages/dsh-embeddings) | Embeddings service panel for the DeepSeek Harness |
 | [`dsh-router`](packages/dsh-router) | Model router for the DeepSeek Harness |
 | [`dsh-search`](packages/dsh-search) | Cross-session full-text search for the DeepSeek Harness |
+| [`dsh-bot`](packages/dsh-bot) | Bot framework for the DeepSeek Harness |
+| [`dsh-deepsearch`](packages/dsh-deepsearch) | Agentic web research for dsh sessions |
+
+### Protocols (1)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-lsp`](packages/dsh-lsp) | Language Server Protocol bridge for the DeepSeek Harness |
 
 ### Ui (6)
 
@@ -129,7 +141,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-skill`](packages/dsh-skill) | Skill manager for the DeepSeek Harness |
 | [`dsh-update`](packages/dsh-update) | Update manager for the DeepSeek Harness |
 
-### Harness surfaces (7)
+### Harness surfaces (9)
 
 | Name | Planned first release |
 | --- | --- |
@@ -137,6 +149,8 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-notes`](packages/dsh-notes) | Durable notes the agent can see |
 | [`dsh-snippets`](packages/dsh-snippets) | Prompt snippet library for the DeepSeek Harness |
 | [`dsh-vscode`](packages/dsh-vscode) | VS Code bridge for the DeepSeek Harness |
+| [`dsh-zed`](packages/dsh-zed) | Zed bridge for the DeepSeek Harness |
+| [`dsh-cursor`](packages/dsh-cursor) | Cursor bridge for the DeepSeek Harness |
 | [`dsh-i18n`](packages/dsh-i18n) | Locale packs for the dsh web GUI |
 | [`dsh-keymap`](packages/dsh-keymap) | Keyboard shortcut manager for the dsh web GUI |
 | [`dsh-completions`](packages/dsh-completions) | Shell completions for the dsh launcher |
