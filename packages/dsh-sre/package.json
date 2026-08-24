@@ -1,7 +1,7 @@
 {
   "name": "dsh-sre",
   "version": "0.0.1",
-  "description": "SRE toolkit for dsh - name reserved; first release in development.",
+  "description": "Site reliability engineer role preset - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,7 +10,9 @@
     "deepseek-harness",
     "cordis-plugin",
     "sre",
-    "incident"
+    "reliability",
+    "incident",
+    "persona"
   ],
   "repository": {
     "type": "git",

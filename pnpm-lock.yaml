@@ -22,6 +22,12 @@ importers:
 
   packages/dsh-alert: {}
 
+  packages/dsh-algorithm: {}
+
+  packages/dsh-analyst: {}
+
+  packages/dsh-android: {}
+
   packages/dsh-anime: {}
 
   packages/dsh-ansible: {}
@@ -31,6 +37,8 @@ importers:
   packages/dsh-api: {}
 
   packages/dsh-arbitrum: {}
+
+  packages/dsh-architect: {}
 
   packages/dsh-archive: {}
 
@@ -43,6 +51,8 @@ importers:
   packages/dsh-azure: {}
 
   packages/dsh-baby: {}
+
+  packages/dsh-backend: {}
 
   packages/dsh-banking: {}
 
@@ -126,6 +136,8 @@ importers:
 
   packages/dsh-db: {}
 
+  packages/dsh-dba: {}
+
   packages/dsh-debug: {}
 
   packages/dsh-deepsearch: {}
@@ -137,6 +149,10 @@ importers:
   packages/dsh-deno: {}
 
   packages/dsh-deploy: {}
+
+  packages/dsh-designer: {}
+
+  packages/dsh-dev: {}
 
   packages/dsh-devops: {}
 
@@ -162,7 +178,13 @@ importers:
 
   packages/dsh-edu: {}
 
+  packages/dsh-embedded: {}
+
   packages/dsh-embeddings: {}
+
+  packages/dsh-engineer: {}
+
+  packages/dsh-engineering-manager: {}
 
   packages/dsh-english: {}
 
@@ -212,6 +234,10 @@ importers:
 
   packages/dsh-freeroute: {}
 
+  packages/dsh-frontend: {}
+
+  packages/dsh-fullstack: {}
+
   packages/dsh-fun: {}
 
   packages/dsh-fund: {}
@@ -250,6 +276,8 @@ importers:
 
   packages/dsh-hiring: {}
 
+  packages/dsh-hiring-manager: {}
+
   packages/dsh-hl: {}
 
   packages/dsh-holiday: {}
@@ -279,6 +307,8 @@ importers:
   packages/dsh-infra: {}
 
   packages/dsh-invoice: {}
+
+  packages/dsh-ios: {}
 
   packages/dsh-iot: {}
 
@@ -440,6 +470,8 @@ importers:
 
   packages/dsh-product: {}
 
+  packages/dsh-product-manager: {}
+
   packages/dsh-profiles: {}
 
   packages/dsh-prompts: {}
@@ -480,6 +512,8 @@ importers:
 
   packages/dsh-rent: {}
 
+  packages/dsh-researcher: {}
+
   packages/dsh-reset: {}
 
   packages/dsh-resume: {}
@@ -499,6 +533,8 @@ importers:
   packages/dsh-search: {}
 
   packages/dsh-secrets: {}
+
+  packages/dsh-security: {}
 
   packages/dsh-selfrepair:
     dependencies:
@@ -585,6 +621,8 @@ importers:
   packages/dsh-terraform: {}
 
   packages/dsh-test: {}
+
+  packages/dsh-tester: {}
 
   packages/dsh-ticker: {}
 

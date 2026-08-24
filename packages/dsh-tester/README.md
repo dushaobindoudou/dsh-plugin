@@ -1,13 +1,13 @@
-# dsh-devops
+# dsh-tester
 
-[![npm](https://img.shields.io/npm/v/dsh-devops.svg)](https://www.npmjs.com/package/dsh-devops)
+[![npm](https://img.shields.io/npm/v/dsh-tester.svg)](https://www.npmjs.com/package/dsh-tester)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**DevOps role preset** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**QA tester role preset** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-Pipelines, containers, and environments as first-class citizens - a persona that reads CI logs like prose and treats infrastructure as code. Registered externally; promoted into the curated core.
+The quality persona - test matrices, edge cases, and regression instincts applied to every proposal; the adversarial reader every crew needs. (The qa-spelled name ships as a community package.)
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

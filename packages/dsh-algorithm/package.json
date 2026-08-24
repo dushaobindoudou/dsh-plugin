@@ -1,7 +1,7 @@
 {
-  "name": "dsh-devops",
+  "name": "dsh-algorithm",
   "version": "0.0.1",
-  "description": "DevOps role preset - name reserved; first release in development.",
+  "description": "Algorithm engineer role preset - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,15 +9,13 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "devops",
-    "ci",
-    "infra",
+    "algorithm",
     "persona"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
-    "directory": "packages/dsh-devops"
+    "directory": "packages/dsh-algorithm"
   },
-  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-devops#readme"
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-algorithm#readme"
 }

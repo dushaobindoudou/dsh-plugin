@@ -1,13 +1,13 @@
-# dsh-devops
+# dsh-architect
 
-[![npm](https://img.shields.io/npm/v/dsh-devops.svg)](https://www.npmjs.com/package/dsh-devops)
+[![npm](https://img.shields.io/npm/v/dsh-architect.svg)](https://www.npmjs.com/package/dsh-architect)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**DevOps role preset** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**Software architect role preset** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-Pipelines, containers, and environments as first-class citizens - a persona that reads CI logs like prose and treats infrastructure as code. Registered externally; promoted into the curated core.
+System-level judgment - boundaries, seams, and tradeoff memos before code; the architect seat crews consult before the first commit.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from
