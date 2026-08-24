@@ -1,22 +1,48 @@
 {
   "name": "dsh-bot",
-  "version": "0.0.1",
-  "description": "Bot framework for the DeepSeek Harness - name reserved; first release in development.",
+  "version": "0.1.0",
+  "description": "Bot framework for the DeepSeek Harness (dsh) - run headless dsh agents on cron schedules, webhooks, and queues, with run logs, retries, and CI-friendly exit codes.",
+  "type": "module",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
-    "dsh",
     "dsh-plugin",
     "deepseek-harness",
-    "cordis-plugin",
     "bot",
     "automation",
-    "headless"
+    "headless",
+    "cron",
+    "webhook",
+    "scheduler"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "url": "git+https://github.com/dushaobindoudou/dsh-plugin.git",
     "directory": "packages/dsh-bot"
   },
-  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-bot#readme"
+  "bugs": "https://github.com/dushaobindoudou/dsh-plugin/issues",
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-bot#readme",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./cron": "./lib/cron.js",
+    "./manifest": "./lib/manifest.js",
+    "./runner": "./lib/runner.js",
+    "./serve": "./lib/serve.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "dsh-bot": "bin/dsh-bot.js"
+  },
+  "files": [
+    "bin/*.js",
+    "lib/*.js",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
 }

@@ -292,12 +292,6 @@ const CORE = {
     body: 'Ripgrep over sessions, memory, and the workspace in one query; results jump straight to the conversation node that produced them.',
     extra: ['search'],
   },
-  'dsh-bot': {
-    niche: 'agent capabilities',
-    headline: 'Bot framework for the DeepSeek Harness',
-    body: 'Run dsh sessions headlessly on schedules, webhooks, and queues - the same agent loop without the GUI; run manifests, cron syntax, and exit-code contracts for CI. Chat-platform channels (telegram, discord, slack) ship as their own community packages.',
-    extra: ['bot', 'automation', 'headless'],
-  },
   'dsh-deepsearch': {
     niche: 'agent capabilities',
     headline: 'Agentic web research for dsh sessions',
@@ -600,6 +594,6 @@ const CORE = {
 export const CATALOG = { ...CORE, ...EXTERNAL }
 
 // Packages with real shipped code - excluded from placeholder generation.
-export const REAL_PACKAGES = ['dsh-selfrepair', 'dsh-workflow']
+export const REAL_PACKAGES = ['dsh-selfrepair', 'dsh-workflow', 'dsh-bot']
 
 export const PLACEHOLDER_VERSION = '0.0.1'

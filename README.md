@@ -15,6 +15,7 @@ for names, niches, and descriptions is [`scripts/catalog.mjs`](scripts/catalog.m
 | --- | --- | --- |
 | [`dsh-selfrepair`](packages/dsh-selfrepair) | 0.2.0 | Diagnose and repair a dsh installation - settings page panel, `/doctor` slash command, and a standalone CLI that works even when dsh cannot start. |
 | [`dsh-workflow`](packages/dsh-workflow) | 0.1.0 | Workflow Studio - browse workflow sessions per project, manage definitions, launch workflow-mode sessions, visualize runs. |
+| [`dsh-bot`](packages/dsh-bot) | 0.1.0 | Bot framework - run headless dsh agents on cron schedules and webhooks, with retries, run logs, and CI-friendly exit codes. |
 
 ## Reserved names by niche
 
@@ -69,7 +70,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-api`](packages/dsh-api) | REST client panel for the dsh web GUI |
 | [`dsh-git`](packages/dsh-git) | Git panel for the dsh web GUI |
 
-### Agent capabilities (13)
+### Agent capabilities (12)
 
 | Name | Planned first release |
 | --- | --- |
@@ -79,7 +80,6 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-embeddings`](packages/dsh-embeddings) | Embeddings service panel for the DeepSeek Harness |
 | [`dsh-router`](packages/dsh-router) | Model router for the DeepSeek Harness |
 | [`dsh-search`](packages/dsh-search) | Cross-session full-text search for the DeepSeek Harness |
-| [`dsh-bot`](packages/dsh-bot) | Bot framework for the DeepSeek Harness |
 | [`dsh-deepsearch`](packages/dsh-deepsearch) | Agentic web research for dsh sessions |
 | [`dsh-bots`](packages/dsh-bots) | The plural form of the dsh bot framework |
 | [`dsh-agent`](packages/dsh-agent) | Agent pattern library for dsh |
