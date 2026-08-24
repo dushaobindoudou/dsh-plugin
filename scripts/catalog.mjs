@@ -191,6 +191,18 @@ export const CATALOG = {
     body: 'Routes dsh model calls through a local proxy - request logging, header rewriting, fallback chains, and multi-key rotation - without touching settings.yaml.',
     extra: ['proxy', 'gateway'],
   },
+  'dsh-models': {
+    niche: 'model bridges',
+    headline: 'Model registry panel for the DeepSeek Harness',
+    body: 'Every registered model in one table - context windows, pricing, thinking modes, and which provider serves it; pin defaults per profile.',
+    extra: ['models', 'registry'],
+  },
+  'dsh-providers': {
+    niche: 'model bridges',
+    headline: 'Provider registry for the DeepSeek Harness',
+    body: 'The other half of the model table - credential status, rate limits, latency, and fallback order for every LLM adapter, live.',
+    extra: ['providers', 'llm', 'registry'],
+  },
   // ---- developer tools --------------------------------------------------
   'dsh-edit': {
     niche: 'developer tools',
@@ -288,6 +300,36 @@ export const CATALOG = {
     headline: 'Agentic web research for dsh sessions',
     body: 'The DeepSearch pattern as a harness surface - multi-hop web research with citations, run as a session mode rather than one tool call; every claim links to its source.',
     extra: ['deepsearch', 'research', 'web-search'],
+  },
+  'dsh-bots': {
+    niche: 'agent capabilities',
+    headline: 'The plural form of the dsh bot framework',
+    body: 'Compatibility name: the bot framework ships as dsh-bot; this form keeps the plural spelling installable.',
+    extra: ['bot', 'bots'],
+  },
+  'dsh-agent': {
+    niche: 'agent capabilities',
+    headline: 'Agent pattern library for dsh',
+    body: 'Ready-made agent patterns - researcher, reviewer, runner - as preset rows you can fork; the singular companion to the agent registry (dsh-agents).',
+    extra: ['agent', 'patterns'],
+  },
+  'dsh-workflows': {
+    niche: 'agent capabilities',
+    headline: 'The plural form of Workflow Studio',
+    body: 'Compatibility name: Workflow Studio ships as dsh-workflow; this form keeps the plural spelling installable.',
+    extra: ['workflow', 'workflows'],
+  },
+  'dsh-channels': {
+    niche: 'agent capabilities',
+    headline: 'Chat-channel framework for dsh bots',
+    body: 'The shared substrate the community platform bridges plug into - telegram, discord, slack, and feishu adapters all speak one channel contract, with approvals gated per platform.',
+    extra: ['channels', 'chat', 'bridge'],
+  },
+  'dsh-tasks': {
+    niche: 'agent capabilities',
+    headline: 'Durable task tracking for dsh sessions',
+    body: 'Checklist state that survives compaction and session switches, linked from planner trees and surfaced in the GUI.',
+    extra: ['tasks', 'todo', 'checklist'],
   },
   // ---- ui ----------------------------------------------------------------
   'dsh-panel': {
@@ -394,6 +436,12 @@ export const CATALOG = {
     body: 'Auth, TLS, and shareable URLs for the web GUI on a LAN - one flag, safe defaults.',
     extra: [],
   },
+  'dsh-jobs': {
+    niche: 'ops',
+    headline: 'Background jobs for dsh bots',
+    body: 'The execution half of the bot framework - queued and recurring runs with logs, retries, and a dead-letter view.',
+    extra: ['jobs', 'queue', 'cron'],
+  },
   // ---- security ----------------------------------------------------------
   'dsh-secrets': {
     niche: 'security',
@@ -492,6 +540,12 @@ export const CATALOG = {
     headline: 'Prompt snippet library for the DeepSeek Harness',
     body: 'Reusable prompt fragments insertable into any session, stored as plain files so they stay versionable and shareable.',
     extra: [],
+  },
+  'dsh-prompts': {
+    niche: 'harness surfaces',
+    headline: 'Prompt library for the DeepSeek Harness',
+    body: 'Versioned prompt templates attachable to any session or bot run - the fuller sibling of the snippet library.',
+    extra: ['prompts', 'templates'],
   },
   'dsh-vscode': {
     niche: 'harness surfaces',

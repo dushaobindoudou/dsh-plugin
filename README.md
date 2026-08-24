@@ -22,7 +22,7 @@ Names publish as 0.0.1 placeholders; each row's README states the planned first
 release. A name graduates out of this table the moment real code lands.
 
 <!-- placeholder-table:start -->
-### Model bridges (27)
+### Model bridges (29)
 
 | Name | Planned first release |
 | --- | --- |
@@ -53,6 +53,8 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-openrouter`](packages/dsh-openrouter) | OpenRouter provider bridge for the DeepSeek Harness |
 | [`dsh-lmstudio`](packages/dsh-lmstudio) | LM Studio provider bridge for the DeepSeek Harness |
 | [`dsh-proxy`](packages/dsh-proxy) | LLM gateway plugin for the DeepSeek Harness |
+| [`dsh-models`](packages/dsh-models) | Model registry panel for the DeepSeek Harness |
+| [`dsh-providers`](packages/dsh-providers) | Provider registry for the DeepSeek Harness |
 
 ### Developer tools (8)
 
@@ -67,7 +69,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-api`](packages/dsh-api) | REST client panel for the dsh web GUI |
 | [`dsh-git`](packages/dsh-git) | Git panel for the dsh web GUI |
 
-### Agent capabilities (8)
+### Agent capabilities (13)
 
 | Name | Planned first release |
 | --- | --- |
@@ -79,6 +81,11 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-search`](packages/dsh-search) | Cross-session full-text search for the DeepSeek Harness |
 | [`dsh-bot`](packages/dsh-bot) | Bot framework for the DeepSeek Harness |
 | [`dsh-deepsearch`](packages/dsh-deepsearch) | Agentic web research for dsh sessions |
+| [`dsh-bots`](packages/dsh-bots) | The plural form of the dsh bot framework |
+| [`dsh-agent`](packages/dsh-agent) | Agent pattern library for dsh |
+| [`dsh-workflows`](packages/dsh-workflows) | The plural form of Workflow Studio |
+| [`dsh-channels`](packages/dsh-channels) | Chat-channel framework for dsh bots |
+| [`dsh-tasks`](packages/dsh-tasks) | Durable task tracking for dsh sessions |
 
 ### Protocols (1)
 
@@ -106,7 +113,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-cloud`](packages/dsh-cloud) | Cloud sync for dsh homes |
 | [`dsh-link`](packages/dsh-link) | Share links for dsh sessions |
 
-### Ops (7)
+### Ops (8)
 
 | Name | Planned first release |
 | --- | --- |
@@ -117,6 +124,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-clean`](packages/dsh-clean) | Safe-clean the dsh home |
 | [`dsh-reset`](packages/dsh-reset) | Reset dsh profiles to a known state |
 | [`dsh-serve`](packages/dsh-serve) | Serve-mode extras for the dsh web GUI |
+| [`dsh-jobs`](packages/dsh-jobs) | Background jobs for dsh bots |
 
 ### Security (3)
 
@@ -141,13 +149,14 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-skill`](packages/dsh-skill) | Skill manager for the DeepSeek Harness |
 | [`dsh-update`](packages/dsh-update) | Update manager for the DeepSeek Harness |
 
-### Harness surfaces (9)
+### Harness surfaces (10)
 
 | Name | Planned first release |
 | --- | --- |
 | [`dsh-finder`](packages/dsh-finder) | File & command palette for the dsh web GUI |
 | [`dsh-notes`](packages/dsh-notes) | Durable notes the agent can see |
 | [`dsh-snippets`](packages/dsh-snippets) | Prompt snippet library for the DeepSeek Harness |
+| [`dsh-prompts`](packages/dsh-prompts) | Prompt library for the DeepSeek Harness |
 | [`dsh-vscode`](packages/dsh-vscode) | VS Code bridge for the DeepSeek Harness |
 | [`dsh-zed`](packages/dsh-zed) | Zed bridge for the DeepSeek Harness |
 | [`dsh-cursor`](packages/dsh-cursor) | Cursor bridge for the DeepSeek Harness |
