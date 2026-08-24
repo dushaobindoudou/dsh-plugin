@@ -1,0 +1,23 @@
+{
+  "name": "dsh-multiagent",
+  "version": "0.0.1",
+  "description": "The multi-agent panel for the dsh web GUI - watch every agent, approve in one place. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "multi-agent",
+    "panel",
+    "dashboard",
+    "agents"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-multiagent"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-multiagent#readme"
+}

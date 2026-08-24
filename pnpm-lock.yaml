@@ -8,37 +8,119 @@ importers:
 
   .: {}
 
+  packages/dsh-accounting: {}
+
+  packages/dsh-acp-server: {}
+
   packages/dsh-agent: {}
+
+  packages/dsh-agentpay: {}
 
   packages/dsh-agents: {}
 
+  packages/dsh-airtable: {}
+
   packages/dsh-alert: {}
+
+  packages/dsh-anime: {}
+
+  packages/dsh-ansible: {}
+
+  packages/dsh-ap2: {}
 
   packages/dsh-api: {}
 
+  packages/dsh-arbitrum: {}
+
   packages/dsh-archive: {}
 
+  packages/dsh-asana: {}
+
+  packages/dsh-audio: {}
+
+  packages/dsh-aws: {}
+
+  packages/dsh-azure: {}
+
+  packages/dsh-baby: {}
+
+  packages/dsh-banking: {}
+
+  packages/dsh-base: {}
+
+  packages/dsh-beauty: {}
+
   packages/dsh-bedrock: {}
+
+  packages/dsh-bio: {}
+
+  packages/dsh-bitcoin: {}
+
+  packages/dsh-blog: {}
+
+  packages/dsh-bolt: {}
+
+  packages/dsh-book: {}
 
   packages/dsh-bot: {}
 
   packages/dsh-bots: {}
 
+  packages/dsh-brand: {}
+
+  packages/dsh-bun: {}
+
+  packages/dsh-calc: {}
+
+  packages/dsh-calculator: {}
+
   packages/dsh-canvas: {}
 
+  packages/dsh-car: {}
+
   packages/dsh-channels: {}
+
+  packages/dsh-chem: {}
 
   packages/dsh-claude: {}
 
   packages/dsh-clean: {}
 
+  packages/dsh-clickhouse: {}
+
   packages/dsh-cloud: {}
 
   packages/dsh-cohere: {}
 
+  packages/dsh-comic: {}
+
   packages/dsh-completions: {}
 
+  packages/dsh-compliance: {}
+
+  packages/dsh-config: {}
+
+  packages/dsh-confluence: {}
+
+  packages/dsh-contract: {}
+
+  packages/dsh-convert: {}
+
+  packages/dsh-cook: {}
+
+  packages/dsh-cpp: {}
+
+  packages/dsh-critic: {}
+
+  packages/dsh-crm: {}
+
+  packages/dsh-crypto: {}
+
+  packages/dsh-csharp: {}
+
   packages/dsh-cursor: {}
+
+  packages/dsh-data: {}
 
   packages/dsh-db: {}
 
@@ -46,53 +128,197 @@ importers:
 
   packages/dsh-deepsearch: {}
 
+  packages/dsh-defi: {}
+
+  packages/dsh-deno: {}
+
+  packages/dsh-deploy: {}
+
+  packages/dsh-devops: {}
+
+  packages/dsh-dex: {}
+
+  packages/dsh-dict: {}
+
+  packages/dsh-dictionary: {}
+
   packages/dsh-diff: {}
+
+  packages/dsh-discord: {}
+
+  packages/dsh-docs: {}
 
   packages/dsh-doubao: {}
 
+  packages/dsh-drive: {}
+
+  packages/dsh-ecommerce: {}
+
   packages/dsh-edit: {}
+
+  packages/dsh-edu: {}
 
   packages/dsh-embeddings: {}
 
+  packages/dsh-english: {}
+
   packages/dsh-ernie: {}
+
+  packages/dsh-erp: {}
+
+  packages/dsh-escrow: {}
+
+  packages/dsh-esports: {}
+
+  packages/dsh-etf: {}
+
+  packages/dsh-eth: {}
 
   packages/dsh-export: {}
 
+  packages/dsh-fashion: {}
+
+  packages/dsh-fees: {}
+
+  packages/dsh-festival: {}
+
+  packages/dsh-figma: {}
+
   packages/dsh-files: {}
+
+  packages/dsh-finance: {}
 
   packages/dsh-finder: {}
 
+  packages/dsh-fintech: {}
+
   packages/dsh-fireworks: {}
+
+  packages/dsh-fit: {}
+
+  packages/dsh-fitness: {}
+
+  packages/dsh-font: {}
+
+  packages/dsh-food: {}
+
+  packages/dsh-forex: {}
 
   packages/dsh-forge: {}
 
+  packages/dsh-freeroute: {}
+
+  packages/dsh-fun: {}
+
+  packages/dsh-fund: {}
+
+  packages/dsh-futures: {}
+
+  packages/dsh-game: {}
+
+  packages/dsh-garden: {}
+
+  packages/dsh-gcp: {}
+
   packages/dsh-gemini: {}
+
+  packages/dsh-gift: {}
 
   packages/dsh-git: {}
 
+  packages/dsh-gitlab: {}
+
   packages/dsh-glm: {}
+
+  packages/dsh-go: {}
 
   packages/dsh-gpt: {}
 
   packages/dsh-groq: {}
 
+  packages/dsh-habit: {}
+
   packages/dsh-health: {}
+
+  packages/dsh-helm: {}
+
+  packages/dsh-hl: {}
+
+  packages/dsh-holiday: {}
+
+  packages/dsh-home: {}
+
+  packages/dsh-horoscope: {}
+
+  packages/dsh-house: {}
+
+  packages/dsh-hr: {}
 
   packages/dsh-hub: {}
 
   packages/dsh-hunyuan: {}
 
+  packages/dsh-hype: {}
+
+  packages/dsh-hyperevm: {}
+
+  packages/dsh-hyperliquid: {}
+
   packages/dsh-i18n: {}
 
+  packages/dsh-icon: {}
+
+  packages/dsh-infra: {}
+
+  packages/dsh-invoice: {}
+
+  packages/dsh-iot: {}
+
+  packages/dsh-irc: {}
+
+  packages/dsh-java: {}
+
+  packages/dsh-jira: {}
+
   packages/dsh-jobs: {}
+
+  packages/dsh-joke: {}
+
+  packages/dsh-journal: {}
+
+  packages/dsh-jupyter: {}
+
+  packages/dsh-k8s: {}
+
+  packages/dsh-karaoke: {}
 
   packages/dsh-keymap: {}
 
   packages/dsh-kimi: {}
 
+  packages/dsh-kotlin: {}
+
+  packages/dsh-language: {}
+
+  packages/dsh-latex: {}
+
+  packages/dsh-law: {}
+
+  packages/dsh-ledger: {}
+
+  packages/dsh-legal: {}
+
+  packages/dsh-lightning: {}
+
+  packages/dsh-line: {}
+
+  packages/dsh-linear: {}
+
   packages/dsh-link: {}
 
   packages/dsh-lint: {}
+
+  packages/dsh-linux: {}
 
   packages/dsh-llama: {}
 
@@ -100,35 +326,107 @@ importers:
 
   packages/dsh-logs: {}
 
+  packages/dsh-lottery: {}
+
   packages/dsh-lsp: {}
 
+  packages/dsh-macos: {}
+
+  packages/dsh-marketing: {}
+
+  packages/dsh-math: {}
+
+  packages/dsh-matrix: {}
+
+  packages/dsh-medical: {}
+
+  packages/dsh-meditate: {}
+
   packages/dsh-metrics: {}
+
+  packages/dsh-micropay: {}
 
   packages/dsh-minimax: {}
 
   packages/dsh-mistral: {}
 
+  packages/dsh-ml: {}
+
   packages/dsh-models: {}
+
+  packages/dsh-mongo: {}
+
+  packages/dsh-mood: {}
 
   packages/dsh-moonshot: {}
 
+  packages/dsh-movie: {}
+
+  packages/dsh-multiagent: {}
+
+  packages/dsh-music: {}
+
+  packages/dsh-mysql: {}
+
+  packages/dsh-news: {}
+
+  packages/dsh-next: {}
+
+  packages/dsh-nginx: {}
+
+  packages/dsh-notebook: {}
+
   packages/dsh-notes: {}
 
+  packages/dsh-nuxt: {}
+
+  packages/dsh-ocr: {}
+
   packages/dsh-ollama: {}
+
+  packages/dsh-onchain: {}
 
   packages/dsh-openai: {}
 
   packages/dsh-openrouter: {}
 
+  packages/dsh-options: {}
+
   packages/dsh-panel: {}
+
+  packages/dsh-paper: {}
+
+  packages/dsh-pay: {}
+
+  packages/dsh-payment: {}
+
+  packages/dsh-payments: {}
 
   packages/dsh-permission: {}
 
   packages/dsh-persona: {}
 
+  packages/dsh-photo: {}
+
+  packages/dsh-php: {}
+
+  packages/dsh-physics: {}
+
   packages/dsh-planner: {}
 
+  packages/dsh-play: {}
+
+  packages/dsh-podcast: {}
+
   packages/dsh-policy: {}
+
+  packages/dsh-portfolio: {}
+
+  packages/dsh-postgres: {}
+
+  packages/dsh-prisma: {}
+
+  packages/dsh-product: {}
 
   packages/dsh-profiles: {}
 
@@ -138,15 +436,51 @@ importers:
 
   packages/dsh-proxy: {}
 
+  packages/dsh-puzzle: {}
+
+  packages/dsh-python: {}
+
+  packages/dsh-pyusd: {}
+
+  packages/dsh-quiz: {}
+
   packages/dsh-qwen: {}
+
+  packages/dsh-radio: {}
 
   packages/dsh-rag: {}
 
+  packages/dsh-react: {}
+
+  packages/dsh-read: {}
+
+  packages/dsh-recruit: {}
+
+  packages/dsh-redis: {}
+
   packages/dsh-refactor: {}
+
+  packages/dsh-refine: {}
+
+  packages/dsh-reflect: {}
+
+  packages/dsh-rent: {}
 
   packages/dsh-reset: {}
 
+  packages/dsh-resume: {}
+
+  packages/dsh-risk: {}
+
   packages/dsh-router: {}
+
+  packages/dsh-ruby: {}
+
+  packages/dsh-rust: {}
+
+  packages/dsh-sales: {}
+
+  packages/dsh-screenshot: {}
 
   packages/dsh-search: {}
 
@@ -168,33 +502,131 @@ importers:
         specifier: ^5.6.0
         version: 5.9.3
 
+  packages/dsh-seo: {}
+
   packages/dsh-serve: {}
+
+  packages/dsh-settings: {}
+
+  packages/dsh-shop: {}
 
   packages/dsh-siliconflow: {}
 
   packages/dsh-skill: {}
 
+  packages/dsh-sleep: {}
+
   packages/dsh-snippets: {}
+
+  packages/dsh-solana: {}
+
+  packages/dsh-solidity: {}
 
   packages/dsh-sound: {}
 
+  packages/dsh-sports: {}
+
+  packages/dsh-sqlite: {}
+
+  packages/dsh-sre: {}
+
+  packages/dsh-stable: {}
+
+  packages/dsh-stablecoin: {}
+
+  packages/dsh-stats: {}
+
+  packages/dsh-stock: {}
+
+  packages/dsh-streaming: {}
+
   packages/dsh-studio: {}
+
+  packages/dsh-subagent: {}
+
+  packages/dsh-subtitle: {}
 
   packages/dsh-suite: {}
 
+  packages/dsh-supabase: {}
+
+  packages/dsh-support: {}
+
+  packages/dsh-svelte: {}
+
+  packages/dsh-swarm: {}
+
+  packages/dsh-swift: {}
+
+  packages/dsh-tarot: {}
+
+  packages/dsh-task: {}
+
   packages/dsh-tasks: {}
+
+  packages/dsh-tax: {}
+
+  packages/dsh-terraform: {}
 
   packages/dsh-test: {}
 
+  packages/dsh-ticker: {}
+
+  packages/dsh-time: {}
+
+  packages/dsh-tipping: {}
+
   packages/dsh-together: {}
+
+  packages/dsh-trading: {}
+
+  packages/dsh-transit: {}
+
+  packages/dsh-travel: {}
+
+  packages/dsh-trello: {}
+
+  packages/dsh-trip: {}
+
+  packages/dsh-tutor: {}
+
+  packages/dsh-tv: {}
+
+  packages/dsh-twitter: {}
+
+  packages/dsh-typescript: {}
+
+  packages/dsh-units: {}
 
   packages/dsh-update: {}
 
+  packages/dsh-usdc: {}
+
+  packages/dsh-usdt: {}
+
+  packages/dsh-ux: {}
+
+  packages/dsh-video: {}
+
   packages/dsh-vllm: {}
+
+  packages/dsh-vocab: {}
 
   packages/dsh-vscode: {}
 
+  packages/dsh-vue: {}
+
+  packages/dsh-water: {}
+
+  packages/dsh-web3: {}
+
+  packages/dsh-weibo: {}
+
+  packages/dsh-whatsapp: {}
+
   packages/dsh-widget: {}
+
+  packages/dsh-word: {}
 
   packages/dsh-workflow:
     dependencies:
@@ -206,13 +638,23 @@ importers:
 
   packages/dsh-workspace: {}
 
+  packages/dsh-writing: {}
+
+  packages/dsh-x402: {}
+
   packages/dsh-xai: {}
+
+  packages/dsh-yuque: {}
 
   packages/dsh-zed: {}
 
   packages/dsh-zen: {}
 
+  packages/dsh-zhihu: {}
+
   packages/dsh-zhipu: {}
+
+  packages/dsh-zig: {}
 
 packages:
 

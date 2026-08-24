@@ -1,0 +1,23 @@
+{
+  "name": "dsh-hype",
+  "version": "0.0.1",
+  "description": "HYPE gas and fee accounting for dsh - the unit that powers Hyperliquid actions. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "hype",
+    "gas",
+    "hyperliquid",
+    "fees"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-hype"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-hype#readme"
+}

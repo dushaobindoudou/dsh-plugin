@@ -1,0 +1,22 @@
+{
+  "name": "dsh-hl",
+  "version": "0.0.1",
+  "description": "The short form of the Hyperliquid toolkit - what regulars actually type. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "hyperliquid",
+    "hl",
+    "perps"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-hl"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-hl#readme"
+}

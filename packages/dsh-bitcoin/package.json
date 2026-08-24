@@ -1,0 +1,24 @@
+{
+  "name": "dsh-bitcoin",
+  "version": "0.0.1",
+  "description": "Offline Bitcoin tooling for dsh agents - decode, verify, explain, without a website in sight. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "bitcoin",
+    "btc",
+    "base58check",
+    "bech32",
+    "psbt"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-bitcoin"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-bitcoin#readme"
+}

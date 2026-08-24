@@ -6,6 +6,8 @@
 // extra     -> extra npm keywords beyond the standard dsh set
 // niche     -> grouping used by the root README and the check script
 
+import { EXTERNAL } from './catalog-external.mjs'
+
 export const REPO = {
   owner: 'dushaobindoudou',
   repo: 'dsh-plugin',
@@ -25,9 +27,10 @@ export const NICHE_ORDER = [
   'security',
   'meta / product',
   'harness surfaces',
+  'external waves',
 ]
 
-export const CATALOG = {
+const CORE = {
   // ---- model bridges ----------------------------------------------------
   'dsh-claude': {
     niche: 'model bridges',
@@ -591,6 +594,10 @@ export const CATALOG = {
     extra: ['lsp', 'language-server', 'protocol'],
   },
 }
+
+// External waves live in catalog-external.mjs (generated); merge them in so
+// this file stays the hand-curated core and the union remains the catalog.
+export const CATALOG = { ...CORE, ...EXTERNAL }
 
 // Packages with real shipped code - excluded from placeholder generation.
 export const REAL_PACKAGES = ['dsh-selfrepair', 'dsh-workflow']

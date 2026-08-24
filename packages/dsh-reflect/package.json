@@ -1,0 +1,23 @@
+{
+  "name": "dsh-reflect",
+  "version": "0.0.1",
+  "description": "The reflection loop for dsh - retrospectives that feed forward, and survive compaction. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "reflection",
+    "retrospective",
+    "agents",
+    "memory"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-reflect"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-reflect#readme"
+}

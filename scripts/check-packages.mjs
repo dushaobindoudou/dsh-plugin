@@ -49,8 +49,11 @@ for (const name of dirs) {
     fail(name, 'repository.directory missing or wrong')
   }
 
-  if (isPlaceholder && pkg.version !== PLACEHOLDER_VERSION) {
-    fail(name, `placeholder version is ${pkg.version}, expected ${PLACEHOLDER_VERSION}`)
+  if (isPlaceholder) {
+    const expectedVersion = CATALOG[name]?.version ?? PLACEHOLDER_VERSION
+    if (pkg.version !== expectedVersion) {
+      fail(name, `placeholder version is ${pkg.version}, expected ${expectedVersion}`)
+    }
   }
   if (!isPlaceholder) {
     const hasCode = Boolean(pkg.main || pkg.exports || pkg.bin)

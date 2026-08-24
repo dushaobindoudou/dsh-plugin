@@ -1,0 +1,23 @@
+{
+  "name": "dsh-base",
+  "version": "0.0.1",
+  "description": "Base chain tools for dsh - the chain agent payments default to. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "base",
+    "l2",
+    "usdc",
+    "x402"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-base"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-base#readme"
+}

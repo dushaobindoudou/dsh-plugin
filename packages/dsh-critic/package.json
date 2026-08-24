@@ -1,0 +1,23 @@
+{
+  "name": "dsh-critic",
+  "version": "0.0.1",
+  "description": "The critic pattern for dsh - a second pass judges every finished turn against the spec. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "critic",
+    "review",
+    "quality-gate",
+    "agent"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-critic"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-critic#readme"
+}

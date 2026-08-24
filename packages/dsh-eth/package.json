@@ -1,0 +1,25 @@
+{
+  "name": "dsh-eth",
+  "version": "0.0.1",
+  "description": "Offline Ethereum tooling the agent can trust - decode without a node, verify without a website. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "ethereum",
+    "eth",
+    "evm",
+    "web3",
+    "abi",
+    "decoder"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-eth"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-eth#readme"
+}

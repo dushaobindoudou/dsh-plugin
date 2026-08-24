@@ -1,0 +1,23 @@
+{
+  "name": "dsh-escrow",
+  "version": "0.0.1",
+  "description": "Escrow primitives for agent commerce - money moves when the work does. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "escrow",
+    "agent-commerce",
+    "trust",
+    "payments"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-escrow"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-escrow#readme"
+}

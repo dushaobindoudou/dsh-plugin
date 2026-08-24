@@ -1,0 +1,23 @@
+{
+  "name": "dsh-usdc",
+  "version": "0.0.1",
+  "description": "USDC tools for dsh - the default agent settlement asset, handled precisely. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "usdc",
+    "circle",
+    "eip-3009",
+    "stablecoin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-usdc"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-usdc#readme"
+}

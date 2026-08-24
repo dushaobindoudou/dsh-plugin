@@ -1,0 +1,24 @@
+{
+  "name": "dsh-x402",
+  "version": "0.0.1",
+  "description": "x402 payments for dsh - agents pay for APIs over HTTP 402, natively. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "x402",
+    "http-402",
+    "eip-3009",
+    "usdc",
+    "agentic-payments"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-x402"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-x402#readme"
+}

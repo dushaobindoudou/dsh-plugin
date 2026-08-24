@@ -13,10 +13,13 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const PACKAGES = join(ROOT, 'packages')
 
 function pkgJson(name, entry) {
+  const real = entry.version !== undefined && entry.version !== PLACEHOLDER_VERSION
   return {
     name,
-    version: PLACEHOLDER_VERSION,
-    description: `${entry.headline} - name reserved; first release in development.`,
+    version: entry.version ?? PLACEHOLDER_VERSION,
+    description: real
+      ? entry.headline
+      : `${entry.headline} - name reserved; first release in development.`,
     license: 'MIT',
     author: REPO.owner,
     keywords: ['dsh', 'dsh-plugin', 'deepseek-harness', 'cordis-plugin', ...entry.extra],
@@ -30,6 +33,10 @@ function pkgJson(name, entry) {
 }
 
 function readme(name, entry) {
+  const real = entry.version !== undefined && entry.version !== PLACEHOLDER_VERSION
+  const status = real
+    ? 'Releases exist on npm; the code is maintained outside this monorepo.\nThis directory only tracks the name and points at the published package.'
+    : 'This package name is reserved; the first release is in development.'
   return `# ${name}
 
 [![npm](https://img.shields.io/npm/v/${name}.svg)](https://www.npmjs.com/package/${name})
@@ -37,7 +44,7 @@ function readme(name, entry) {
 
 **${entry.headline}** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (\`dsh\`).
 
-This package name is reserved; the first release is in development.
+${status}
 
 ${entry.body}
 
@@ -70,6 +77,7 @@ const START = '<!-- placeholder-table:start -->'
 const END = '<!-- placeholder-table:end -->'
 const readmeSrc = await readFile(readmePath, 'utf8')
 const table = NICHE_ORDER.map((niche) => {
+  if (niche === 'external waves') return ''
   const entries = Object.entries(CATALOG).filter(([n, e]) => e.niche === niche && !REAL_PACKAGES.includes(n))
   if (entries.length === 0) return ''
   return [
@@ -83,9 +91,24 @@ const table = NICHE_ORDER.map((niche) => {
 })
   .filter(Boolean)
   .join('\n')
+
+const externalNames = Object.keys(CATALOG).filter(
+  (n) => CATALOG[n].niche === 'external waves' && !REAL_PACKAGES.includes(n),
+)
+const details =
+  externalNames.length === 0
+    ? ''
+    : [
+        '<details>',
+        `<summary>External waves (${externalNames.length} names, reconciled from the npm registry)</summary>`,
+        '',
+        externalNames.map((n) => `\`${n}\``).join(', '),
+        '',
+        '</details>',
+      ].join('\n')
 const next = readmeSrc.replace(
   new RegExp(`${START}[\\s\\S]*?${END}`),
-  `${START}\n${table.trimEnd()}\n${END}`,
+  `${START}\n${table.trimEnd()}\n${details}\n${END}`,
 )
 if (next !== readmeSrc) {
   await writeFile(readmePath, next)

@@ -1,0 +1,24 @@
+{
+  "name": "dsh-lightning",
+  "version": "0.0.1",
+  "description": "Lightning for dsh - the original micropayment network, offline-decoded. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "lightning",
+    "bolt11",
+    "bolt12",
+    "lnurl",
+    "bitcoin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-lightning"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-lightning#readme"
+}

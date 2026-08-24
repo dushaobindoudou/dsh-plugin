@@ -1,0 +1,23 @@
+{
+  "name": "dsh-agentpay",
+  "version": "0.0.1",
+  "description": "Get paid, not just pay - put a metered price on your dsh agent's skills. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "monetization",
+    "agent-commerce",
+    "paid-api",
+    "x402"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-agentpay"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-agentpay#readme"
+}

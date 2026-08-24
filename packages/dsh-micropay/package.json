@@ -1,0 +1,23 @@
+{
+  "name": "dsh-micropay",
+  "version": "0.0.1",
+  "description": "Micropayment policy layer for dsh - every agent payment budgeted, signed, and receipted. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "micropayments",
+    "payments",
+    "budgets",
+    "agent-commerce"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-micropay"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-micropay#readme"
+}

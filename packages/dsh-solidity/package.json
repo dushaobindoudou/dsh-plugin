@@ -1,0 +1,24 @@
+{
+  "name": "dsh-solidity",
+  "version": "0.0.1",
+  "description": "Smart contract development for dsh - decode first, then reason, then write. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "solidity",
+    "smart-contracts",
+    "foundry",
+    "hardhat",
+    "evm"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-solidity"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-solidity#readme"
+}

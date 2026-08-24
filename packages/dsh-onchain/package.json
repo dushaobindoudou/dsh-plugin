@@ -1,0 +1,24 @@
+{
+  "name": "dsh-onchain",
+  "version": "0.0.1",
+  "description": "On-chain reads for dsh agents - every number carries its transaction hash. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "onchain",
+    "rpc",
+    "evm",
+    "web3",
+    "eth-call"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-onchain"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-onchain#readme"
+}

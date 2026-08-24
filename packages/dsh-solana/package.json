@@ -1,0 +1,23 @@
+{
+  "name": "dsh-solana",
+  "version": "0.0.1",
+  "description": "Solana tools for dsh - fast blocks, SPL tokens, payments at machine speed. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "solana",
+    "spl",
+    "usdc",
+    "payments"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-solana"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-solana#readme"
+}

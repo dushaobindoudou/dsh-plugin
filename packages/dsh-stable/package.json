@@ -1,0 +1,22 @@
+{
+  "name": "dsh-stable",
+  "version": "0.0.1",
+  "description": "The short form of the stablecoin settlement layer - what the terminal types. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "stablecoin",
+    "stable",
+    "usdc"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-stable"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-stable#readme"
+}
