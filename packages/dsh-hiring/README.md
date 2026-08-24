@@ -1,13 +1,13 @@
-# dsh-swarm
+# dsh-hiring
 
-[![npm](https://img.shields.io/npm/v/dsh-swarm.svg)](https://www.npmjs.com/package/dsh-swarm)
+[![npm](https://img.shields.io/npm/v/dsh-hiring.svg)](https://www.npmjs.com/package/dsh-hiring)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**Multi-agent swarm orchestration for dsh** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**Hiring workflow for engineering teams** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-One declarative swarm - auditable routing, hard budget caps, and a shared run ledger; members run as dsh-bot manifests. Registered externally; promoted into the curated core as the flagship multi-agent name.
+From JD to offer - screening rubrics, interview kits, and scorecards the agent drafts and the human approves; every candidate decision traceable to evidence. Pairs with dsh-recruit and dsh-hr.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

@@ -108,6 +108,8 @@ importers:
 
   packages/dsh-cook: {}
 
+  packages/dsh-council: {}
+
   packages/dsh-cpp: {}
 
   packages/dsh-critic: {}
@@ -129,6 +131,8 @@ importers:
   packages/dsh-deepsearch: {}
 
   packages/dsh-defi: {}
+
+  packages/dsh-delegate: {}
 
   packages/dsh-deno: {}
 
@@ -238,9 +242,13 @@ importers:
 
   packages/dsh-habit: {}
 
+  packages/dsh-headhunt: {}
+
   packages/dsh-health: {}
 
   packages/dsh-helm: {}
+
+  packages/dsh-hiring: {}
 
   packages/dsh-hl: {}
 
@@ -278,7 +286,11 @@ importers:
 
   packages/dsh-java: {}
 
+  packages/dsh-jd: {}
+
   packages/dsh-jira: {}
+
+  packages/dsh-job: {}
 
   packages/dsh-jobs: {}
 
@@ -442,6 +454,8 @@ importers:
 
   packages/dsh-pyusd: {}
 
+  packages/dsh-queue: {}
+
   packages/dsh-quiz: {}
 
   packages/dsh-qwen: {}
@@ -557,6 +571,8 @@ importers:
   packages/dsh-swarm: {}
 
   packages/dsh-swift: {}
+
+  packages/dsh-talent: {}
 
   packages/dsh-tarot: {}
 

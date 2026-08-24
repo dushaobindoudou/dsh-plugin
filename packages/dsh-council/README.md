@@ -1,13 +1,13 @@
-# dsh-swarm
+# dsh-council
 
-[![npm](https://img.shields.io/npm/v/dsh-swarm.svg)](https://www.npmjs.com/package/dsh-swarm)
+[![npm](https://img.shields.io/npm/v/dsh-council.svg)](https://www.npmjs.com/package/dsh-council)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**Multi-agent swarm orchestration for dsh** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**Council-of-agents deliberation for dsh** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-One declarative swarm - auditable routing, hard budget caps, and a shared run ledger; members run as dsh-bot manifests. Registered externally; promoted into the curated core as the flagship multi-agent name.
+N agents answer independently, critique, and converge - debate as a harness surface for high-stakes calls; verdicts ship with recorded dissent.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

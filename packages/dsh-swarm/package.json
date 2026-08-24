@@ -1,7 +1,7 @@
 {
   "name": "dsh-swarm",
   "version": "0.0.1",
-  "description": "Multi-agent orchestration for dsh - one declarative swarm, auditable routing, hard budget caps. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "description": "Multi-agent swarm orchestration for dsh - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,10 +9,9 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "multi-agent",
-    "orchestration",
     "swarm",
-    "agents"
+    "multi-agent",
+    "orchestration"
   ],
   "repository": {
     "type": "git",

@@ -20,11 +20,13 @@ export const NICHE_ORDER = [
   'model bridges',
   'developer tools',
   'agent capabilities',
+  'multi-agent',
   'protocols',
   'ui',
   'data',
   'ops',
   'security',
+  'work & hiring',
   'meta / product',
   'harness surfaces',
   'external waves',
@@ -298,6 +300,31 @@ const CORE = {
     body: 'The DeepSearch pattern as a harness surface - multi-hop web research with citations, run as a session mode rather than one tool call; every claim links to its source.',
     extra: ['deepsearch', 'research', 'web-search'],
   },
+  // ---- multi-agent -------------------------------------------------------
+  'dsh-swarm': {
+    niche: 'multi-agent',
+    headline: 'Multi-agent swarm orchestration for dsh',
+    body: 'One declarative swarm - auditable routing, hard budget caps, and a shared run ledger; members run as dsh-bot manifests. Registered externally; promoted into the curated core as the flagship multi-agent name.',
+    extra: ['swarm', 'multi-agent', 'orchestration'],
+  },
+  'dsh-delegate': {
+    niche: 'multi-agent',
+    headline: 'Delegation tool for dsh agents',
+    body: 'A model-facing tool that lets one agent spawn, supervise, and collect from sub-agents - spawn depth and token budgets capped by policy; the primitive under crews and swarms.',
+    extra: ['delegate', 'subagent', 'spawn'],
+  },
+  'dsh-queue': {
+    niche: 'multi-agent',
+    headline: 'Durable task queues for dsh bots',
+    body: 'Named queues with priorities, visibility timeouts, and dead-letter handling - the persistent backbone dsh-jobs dispatches over; local files first, no broker required.',
+    extra: ['queue', 'jobs', 'tasks'],
+  },
+  'dsh-council': {
+    niche: 'multi-agent',
+    headline: 'Council-of-agents deliberation for dsh',
+    body: 'N agents answer independently, critique, and converge - debate as a harness surface for high-stakes calls; verdicts ship with recorded dissent.',
+    extra: ['council', 'debate', 'consensus'],
+  },
   'dsh-bots': {
     niche: 'agent capabilities',
     headline: 'The plural form of the dsh bot framework',
@@ -458,6 +485,37 @@ const CORE = {
     body: 'Grant a session read-only, write-scope, or network access explicitly - scopes shown live in the header.',
     extra: ['permissions'],
   },
+  // ---- work & hiring -----------------------------------------------------
+  'dsh-hiring': {
+    niche: 'work & hiring',
+    headline: 'Hiring workflow for engineering teams',
+    body: 'From JD to offer - screening rubrics, interview kits, and scorecards the agent drafts and the human approves; every candidate decision traceable to evidence. Pairs with dsh-recruit and dsh-hr.',
+    extra: ['hiring', 'recruiting', 'ats'],
+  },
+  'dsh-job': {
+    niche: 'work & hiring',
+    headline: 'The singular form of the background-jobs runner',
+    body: 'Compatibility name: background jobs ship as dsh-jobs; this form keeps the singular spelling installable.',
+    extra: ['job', 'jobs'],
+  },
+  'dsh-talent': {
+    niche: 'work & hiring',
+    headline: 'Talent pool manager',
+    body: 'A local, private candidate database - search by skill graph, track outreach and status, export anytime; an ATS you own, no SaaS lock-in.',
+    extra: ['talent', 'ats', 'candidates'],
+  },
+  'dsh-jd': {
+    niche: 'work & hiring',
+    headline: 'Job description library',
+    body: 'Versioned JD templates with skill and level ladders - draft, diff, and reuse across openings; the recruiter counterpart to dsh-snippets.',
+    extra: ['jd', 'job-description'],
+  },
+  'dsh-headhunt': {
+    niche: 'work & hiring',
+    headline: 'Headhunter workbench',
+    body: 'Outreach sequences, candidate pipelining, and engagement notes for agency recruiters - batch research on companies and roles, agent-drafted messages with human review.',
+    extra: ['headhunt', 'recruiter', 'outreach'],
+  },
   // ---- meta / product ----------------------------------------------------
   'dsh-studio': {
     niche: 'meta / product',
@@ -591,7 +649,9 @@ const CORE = {
 
 // External waves live in catalog-external.mjs (generated); merge them in so
 // this file stays the hand-curated core and the union remains the catalog.
-export const CATALOG = { ...CORE, ...EXTERNAL }
+// Core wins on collision so promoted entries (e.g. dsh-swarm) are not
+// shadowed by the generated external record.
+export const CATALOG = { ...EXTERNAL, ...CORE }
 
 // Packages with real shipped code - excluded from placeholder generation.
 export const REAL_PACKAGES = ['dsh-selfrepair', 'dsh-workflow', 'dsh-bot']

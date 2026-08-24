@@ -1,13 +1,13 @@
-# dsh-swarm
+# dsh-job
 
-[![npm](https://img.shields.io/npm/v/dsh-swarm.svg)](https://www.npmjs.com/package/dsh-swarm)
+[![npm](https://img.shields.io/npm/v/dsh-job.svg)](https://www.npmjs.com/package/dsh-job)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**Multi-agent swarm orchestration for dsh** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**The singular form of the background-jobs runner** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-One declarative swarm - auditable routing, hard budget caps, and a shared run ledger; members run as dsh-bot manifests. Registered externally; promoted into the curated core as the flagship multi-agent name.
+Compatibility name: background jobs ship as dsh-jobs; this form keeps the singular spelling installable.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from
