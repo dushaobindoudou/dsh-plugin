@@ -22,6 +22,7 @@ export const NICHE_ORDER = [
   'agent capabilities',
   'multi-agent',
   'role presets',
+  'interaction',
   'protocols',
   'ui',
   'data',
@@ -485,6 +486,127 @@ const CORE = {
     headline: 'Durable task tracking for dsh sessions',
     body: 'Checklist state that survives compaction and session switches, linked from planner trees and surfaced in the GUI.',
     extra: ['tasks', 'todo', 'checklist'],
+  },
+  // ---- interaction -------------------------------------------------------
+  // The attention/voice/input layer - patterns the best agents proved:
+  // interruptible voice (ChatGPT), mid-run steering (Claude Code),
+  // @-mentions (Cursor), ambient presence (Devin). The interaction layer
+  // is the second-most-colonized niche after multi-agent; nine names
+  // (speak, notify, status, hud, theme, feedback, replay, pulse, history)
+  // already ship as third-party community packages.
+  'dsh-tts': {
+    niche: 'interaction',
+    headline: 'Spoken status and voice alerts for dsh sessions',
+    body: 'The voice-alert layer - results summaries, approval-ready prompts, and bot outcomes spoken aloud (macOS say / Windows SAPI / Piper); pluggable voices, off by default.',
+    extra: ['tts', 'speech', 'voice', 'alerts'],
+  },
+  'dsh-stt': {
+    niche: 'interaction',
+    headline: 'Speech-to-text input for dsh sessions',
+    body: "Dictate prompts to any session - push-to-talk and hands-free modes, locally processed by default (whisper.cpp); typed input's faster sibling.",
+    extra: ['stt', 'dictation', 'whisper', 'voice'],
+  },
+  'dsh-speech': {
+    niche: 'interaction',
+    headline: 'Bidirectional voice mode with barge-in',
+    body: 'The agent speaks and listens with interruptible back-and-forth - speak to redirect mid-answer; the ChatGPT-voice pattern for a harness, composed from dsh-tts and dsh-stt.',
+    extra: ['voice', 'speech', 'conversation'],
+  },
+  'dsh-wake': {
+    niche: 'interaction',
+    headline: 'Wake-word activation for the voice loop',
+    body: "A local 'hey dsh' spotter that opens the voice loop from anywhere - no cloud round-trip, no always-on recording that leaves the machine.",
+    extra: ['wake-word', 'voice', 'hands-free'],
+  },
+  'dsh-audio': {
+    niche: 'interaction',
+    headline: 'Audio I/O substrate for the harness',
+    body: 'The shared layer dsh-tts and dsh-stt build on - device selection, voice-activity detection, and output routing in one service. Registered externally; promoted into the curated core.',
+    extra: ['audio', 'io'],
+  },
+  'dsh-toast': {
+    niche: 'interaction',
+    headline: 'Toast notifications for the dsh web GUI',
+    body: 'Transient, stackable, clickable in-app notices - run finished, approval ready, budget hit. (The notify-spelled desktop bridge ships as a community package.)',
+    extra: ['toast', 'notification'],
+  },
+  'dsh-bell': {
+    niche: 'interaction',
+    headline: 'Terminal bell and title management',
+    body: 'The minimal attention primitive - bell on approval-ready and completion, plus live terminal-title state (model, elapsed, waiting-on) for every session tab.',
+    extra: ['bell', 'terminal'],
+  },
+  'dsh-dnd': {
+    niche: 'interaction',
+    headline: 'Focus-aware notification routing',
+    body: 'Do-not-disturb that actually routes - silence during focus sessions, batch digests after, escalate only what matters; the policy layer over dsh-alert and dsh-toast.',
+    extra: ['dnd', 'focus', 'mute'],
+  },
+  'dsh-nudge': {
+    niche: 'interaction',
+    headline: 'Proactive agent check-ins',
+    body: 'The agent nudges you when it needs a decision, when a run has waited too long, or when work finished while you were away - a cadence you configure, not a firehose.',
+    extra: ['nudge', 'reminder'],
+  },
+  'dsh-presence': {
+    niche: 'interaction',
+    headline: 'Teammate presence for agents',
+    body: 'Working / thinking / waiting-on-you states exposed like a chat contact list, so parallel sessions read at a glance. (The status-spelled line ships as a community package.)',
+    extra: ['presence', 'status'],
+  },
+  'dsh-progress': {
+    niche: 'interaction',
+    headline: 'Progress affordances for long work',
+    body: 'Plan trees rendered as trackable progress with ETAs - in the GUI as bars, in the terminal as one-line summaries that stay honest.',
+    extra: ['progress', 'eta'],
+  },
+  'dsh-ambient': {
+    niche: 'interaction',
+    headline: 'Ambient status display',
+    body: 'A desk-clock mode for a spare screen or tablet - live session presence, budgets, and the current action, glanceable from across the room.',
+    extra: ['ambient', 'dashboard'],
+  },
+  'dsh-next': {
+    niche: 'interaction',
+    headline: 'Next-step suggestions after each answer',
+    body: 'Continue, commit, test, or delegate - one-click follow-ups that keep momentum; the Copilot-pattern affordance. Registered externally; promoted into the curated core.',
+    extra: ['next', 'suggestions'],
+  },
+  'dsh-attach': {
+    niche: 'interaction',
+    headline: 'Attachments for prompts',
+    body: 'Drag-and-drop files, screenshots, and images into any session; paste-as-file; everything lands in the workspace, not in chat limbo.',
+    extra: ['attach', 'upload', 'paste'],
+  },
+  'dsh-mention': {
+    niche: 'interaction',
+    headline: '@-mentions in prompts',
+    body: '@file, @dir, @agent, and @bot references resolved at prompt time into exact context - the reference grammar Cursor made essential.',
+    extra: ['mention', 'reference'],
+  },
+  'dsh-steer': {
+    niche: 'interaction',
+    headline: 'Mid-run steering',
+    body: 'Queue messages and redirects while the agent works - they land at the next checkpoint instead of being lost or interrupting; the Claude Code pattern.',
+    extra: ['steer', 'queue'],
+  },
+  'dsh-autocomplete': {
+    niche: 'interaction',
+    headline: 'Prompt autocomplete',
+    body: 'History- and workspace-aware completion for the prompt box; distinct from shell completions (dsh-completions).',
+    extra: ['autocomplete'],
+  },
+  'dsh-tour': {
+    niche: 'interaction',
+    headline: 'Interactive product tours',
+    body: 'First-run walkthroughs for panels and features, step-annotated in the live GUI - the onboarding layer mature products ship. (Community theme packs ship separately.)',
+    extra: ['tour', 'onboarding'],
+  },
+  'dsh-mirror': {
+    niche: 'interaction',
+    headline: 'Mirror a session to a second surface',
+    body: 'A read-only live view for another screen, browser, or projector - present what the agent is doing without leaning over shoulders.',
+    extra: ['mirror', 'screen'],
   },
   // ---- ui ----------------------------------------------------------------
   'dsh-panel': {

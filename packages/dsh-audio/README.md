@@ -3,11 +3,11 @@
 [![npm](https://img.shields.io/npm/v/dsh-audio.svg)](https://www.npmjs.com/package/dsh-audio)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**Audio toolkit for dsh** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**Audio I/O substrate for the harness** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-Audio toolkit for dsh. (Recorded from the npm registry at import time.)
+The shared layer dsh-tts and dsh-stt build on - device selection, voice-activity detection, and output routing in one service. Registered externally; promoted into the curated core.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

@@ -1,0 +1,23 @@
+{
+  "name": "dsh-tts",
+  "version": "0.0.1",
+  "description": "Spoken status and voice alerts for dsh sessions - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "tts",
+    "speech",
+    "voice",
+    "alerts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-tts"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-tts#readme"
+}

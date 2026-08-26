@@ -24,6 +24,8 @@ importers:
 
   packages/dsh-algorithm: {}
 
+  packages/dsh-ambient: {}
+
   packages/dsh-analyst: {}
 
   packages/dsh-android: {}
@@ -44,7 +46,11 @@ importers:
 
   packages/dsh-asana: {}
 
+  packages/dsh-attach: {}
+
   packages/dsh-audio: {}
+
+  packages/dsh-autocomplete: {}
 
   packages/dsh-aws: {}
 
@@ -61,6 +67,8 @@ importers:
   packages/dsh-beauty: {}
 
   packages/dsh-bedrock: {}
+
+  packages/dsh-bell: {}
 
   packages/dsh-bio: {}
 
@@ -165,6 +173,8 @@ importers:
   packages/dsh-diff: {}
 
   packages/dsh-discord: {}
+
+  packages/dsh-dnd: {}
 
   packages/dsh-docs: {}
 
@@ -384,11 +394,15 @@ importers:
 
   packages/dsh-meditate: {}
 
+  packages/dsh-mention: {}
+
   packages/dsh-metrics: {}
 
   packages/dsh-micropay: {}
 
   packages/dsh-minimax: {}
+
+  packages/dsh-mirror: {}
 
   packages/dsh-mistral: {}
 
@@ -419,6 +433,8 @@ importers:
   packages/dsh-notebook: {}
 
   packages/dsh-notes: {}
+
+  packages/dsh-nudge: {}
 
   packages/dsh-nuxt: {}
 
@@ -466,6 +482,8 @@ importers:
 
   packages/dsh-postgres: {}
 
+  packages/dsh-presence: {}
+
   packages/dsh-prisma: {}
 
   packages/dsh-product: {}
@@ -473,6 +491,8 @@ importers:
   packages/dsh-product-manager: {}
 
   packages/dsh-profiles: {}
+
+  packages/dsh-progress: {}
 
   packages/dsh-prompts: {}
 
@@ -574,6 +594,8 @@ importers:
 
   packages/dsh-sound: {}
 
+  packages/dsh-speech: {}
+
   packages/dsh-sports: {}
 
   packages/dsh-sqlite: {}
@@ -586,9 +608,13 @@ importers:
 
   packages/dsh-stats: {}
 
+  packages/dsh-steer: {}
+
   packages/dsh-stock: {}
 
   packages/dsh-streaming: {}
+
+  packages/dsh-stt: {}
 
   packages/dsh-studio: {}
 
@@ -630,7 +656,11 @@ importers:
 
   packages/dsh-tipping: {}
 
+  packages/dsh-toast: {}
+
   packages/dsh-together: {}
+
+  packages/dsh-tour: {}
 
   packages/dsh-trading: {}
 
@@ -641,6 +671,8 @@ importers:
   packages/dsh-trello: {}
 
   packages/dsh-trip: {}
+
+  packages/dsh-tts: {}
 
   packages/dsh-tutor: {}
 
@@ -669,6 +701,8 @@ importers:
   packages/dsh-vscode: {}
 
   packages/dsh-vue: {}
+
+  packages/dsh-wake: {}
 
   packages/dsh-water: {}
 

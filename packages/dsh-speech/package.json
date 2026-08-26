@@ -1,0 +1,22 @@
+{
+  "name": "dsh-speech",
+  "version": "0.0.1",
+  "description": "Bidirectional voice mode with barge-in - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "voice",
+    "speech",
+    "conversation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-speech"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-speech#readme"
+}

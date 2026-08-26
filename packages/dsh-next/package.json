@@ -1,7 +1,7 @@
 {
   "name": "dsh-next",
   "version": "0.0.1",
-  "description": "Next.js toolkit for dsh - name reserved; first release in development.",
+  "description": "Next-step suggestions after each answer - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,7 +9,8 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "nextjs"
+    "next",
+    "suggestions"
   ],
   "repository": {
     "type": "git",
