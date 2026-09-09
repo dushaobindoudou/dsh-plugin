@@ -23,10 +23,11 @@ Names publish as 0.0.1 placeholders; each row's README states the planned first
 release. A name graduates out of this table the moment real code lands.
 
 <!-- placeholder-table:start -->
-### Model bridges (40)
+### Model bridges (41)
 
 | Name | Planned first release |
 | --- | --- |
+| [`dsh-google`](packages/dsh-google) | Google services umbrella bridge |
 | [`dsh-deepseek`](packages/dsh-deepseek) | DeepSeek model bridge |
 | [`dsh-mixtral`](packages/dsh-mixtral) | Mixtral model bridge |
 | [`dsh-anthropic`](packages/dsh-anthropic) | Anthropic API bridge |
@@ -68,10 +69,16 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-models`](packages/dsh-models) | Model registry panel for the DeepSeek Harness |
 | [`dsh-providers`](packages/dsh-providers) | Provider registry for the DeepSeek Harness |
 
-### Developer tools (16)
+### Developer tools (22)
 
 | Name | Planned first release |
 | --- | --- |
+| [`dsh-gitlab`](packages/dsh-gitlab) | GitLab bridge for dsh agents |
+| [`dsh-vercel`](packages/dsh-vercel) | Vercel bridge for dsh agents |
+| [`dsh-cloudflare`](packages/dsh-cloudflare) | Cloudflare bridge for dsh agents |
+| [`dsh-netlify`](packages/dsh-netlify) | Netlify bridge for dsh agents |
+| [`dsh-zapier`](packages/dsh-zapier) | Zapier bridge for dsh agents |
+| [`dsh-n8n`](packages/dsh-n8n) | n8n bridge for dsh agents |
 | [`dsh-neovim`](packages/dsh-neovim) | Neovim bridge |
 | [`dsh-emacs`](packages/dsh-emacs) | Emacs bridge |
 | [`dsh-jetbrains`](packages/dsh-jetbrains) | JetBrains IDE bridge |
@@ -89,14 +96,10 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-api`](packages/dsh-api) | REST client panel for the dsh web GUI |
 | [`dsh-git`](packages/dsh-git) | Git panel for the dsh web GUI |
 
-### Agent capabilities (15)
+### Agent capabilities (10)
 
 | Name | Planned first release |
 | --- | --- |
-| [`dsh-qq`](packages/dsh-qq) | QQ channel bridge for dsh bots |
-| [`dsh-douyin`](packages/dsh-douyin) | Douyin bridge for dsh bots |
-| [`dsh-xiaohongshu`](packages/dsh-xiaohongshu) | Xiaohongshu bridge for dsh bots |
-| [`dsh-bilibili`](packages/dsh-bilibili) | Bilibili bridge for dsh bots |
 | [`dsh-agents`](packages/dsh-agents) | Agent registry panel for the dsh web GUI |
 | [`dsh-planner`](packages/dsh-planner) | Plan mode for dsh sessions |
 | [`dsh-rag`](packages/dsh-rag) | Retrieval-augmented answers over workspace docs |
@@ -106,8 +109,49 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-deepsearch`](packages/dsh-deepsearch) | Agentic web research for dsh sessions |
 | [`dsh-agent`](packages/dsh-agent) | Agent pattern library for dsh |
 | [`dsh-workflows`](packages/dsh-workflows) | The plural form of Workflow Studio |
-| [`dsh-channels`](packages/dsh-channels) | Chat-channel framework for dsh bots |
 | [`dsh-tasks`](packages/dsh-tasks) | Durable task tracking for dsh sessions |
+
+### Channels (37)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-line`](packages/dsh-line) | LINE channel bridge for dsh bots |
+| [`dsh-twitter`](packages/dsh-twitter) | X (Twitter) channel bridge for dsh bots |
+| [`dsh-whatsapp`](packages/dsh-whatsapp) | WhatsApp channel bridge for dsh bots |
+| [`dsh-qq`](packages/dsh-qq) | QQ channel bridge for dsh bots |
+| [`dsh-douyin`](packages/dsh-douyin) | Douyin bridge for dsh bots |
+| [`dsh-xiaohongshu`](packages/dsh-xiaohongshu) | Xiaohongshu bridge for dsh bots |
+| [`dsh-bilibili`](packages/dsh-bilibili) | Bilibili bridge for dsh bots |
+| [`dsh-tiktok`](packages/dsh-tiktok) | TikTok channel bridge for dsh bots |
+| [`dsh-instagram`](packages/dsh-instagram) | Instagram channel bridge for dsh bots |
+| [`dsh-facebook`](packages/dsh-facebook) | Facebook channel bridge for dsh bots |
+| [`dsh-youtube`](packages/dsh-youtube) | YouTube channel bridge for dsh bots |
+| [`dsh-reddit`](packages/dsh-reddit) | Reddit channel bridge for dsh bots |
+| [`dsh-linkedin`](packages/dsh-linkedin) | LinkedIn channel bridge for dsh bots |
+| [`dsh-threads`](packages/dsh-threads) | Threads channel bridge for dsh bots |
+| [`dsh-pinterest`](packages/dsh-pinterest) | Pinterest channel bridge for dsh bots |
+| [`dsh-snapchat`](packages/dsh-snapchat) | Snapchat channel bridge for dsh bots |
+| [`dsh-twitch`](packages/dsh-twitch) | Twitch bridge for dsh agents |
+| [`dsh-medium`](packages/dsh-medium) | Medium channel bridge for dsh bots |
+| [`dsh-substack`](packages/dsh-substack) | Substack channel bridge for dsh bots |
+| [`dsh-bluesky`](packages/dsh-bluesky) | Bluesky channel bridge for dsh bots |
+| [`dsh-mastodon`](packages/dsh-mastodon) | Mastodon channel bridge for dsh bots |
+| [`dsh-messenger`](packages/dsh-messenger) | Messenger channel bridge for dsh bots |
+| [`dsh-kakao`](packages/dsh-kakao) | KakaoTalk channel bridge for dsh bots |
+| [`dsh-mailchimp`](packages/dsh-mailchimp) | Mailchimp bridge for dsh bots |
+| [`dsh-newsletter`](packages/dsh-newsletter) | Newsletter toolkit for dsh bots |
+| [`dsh-amazon`](packages/dsh-amazon) | Amazon bridge for dsh agents |
+| [`dsh-shopify`](packages/dsh-shopify) | Shopify bridge for dsh agents |
+| [`dsh-ebay`](packages/dsh-ebay) | eBay bridge for dsh agents |
+| [`dsh-etsy`](packages/dsh-etsy) | Etsy bridge for dsh agents |
+| [`dsh-stripe`](packages/dsh-stripe) | Stripe bridge for dsh agents |
+| [`dsh-paypal`](packages/dsh-paypal) | PayPal bridge for dsh agents |
+| [`dsh-shopee`](packages/dsh-shopee) | Shopee bridge for dsh agents |
+| [`dsh-intercom`](packages/dsh-intercom) | Intercom bridge for dsh agents |
+| [`dsh-hubspot`](packages/dsh-hubspot) | HubSpot bridge for dsh agents |
+| [`dsh-zendesk`](packages/dsh-zendesk) | Zendesk bridge for dsh agents |
+| [`dsh-salesforce`](packages/dsh-salesforce) | Salesforce bridge for dsh agents |
+| [`dsh-channels`](packages/dsh-channels) | Chat-channel framework for dsh bots |
 
 ### Multi-agent (6)
 
@@ -248,10 +292,11 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-jd`](packages/dsh-jd) | Job description library |
 | [`dsh-headhunt`](packages/dsh-headhunt) | Headhunter workbench |
 
-### Meta / product (11)
+### Meta / product (12)
 
 | Name | Planned first release |
 | --- | --- |
+| [`dsh-global`](packages/dsh-global) | The go-global toolkit for dsh |
 | [`dsh-registry`](packages/dsh-registry) | Local plugin registry |
 | [`dsh-hub`](packages/dsh-hub) | Local plugin hub for dsh installs |
 | [`dsh-studio`](packages/dsh-studio) | Studio shell for the DeepSeek Harness |
@@ -264,7 +309,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-skill`](packages/dsh-skill) | Skill manager for the DeepSeek Harness |
 | [`dsh-update`](packages/dsh-update) | Update manager for the DeepSeek Harness |
 
-### Harness surfaces (14)
+### Harness surfaces (15)
 
 | Name | Planned first release |
 | --- | --- |
@@ -280,12 +325,13 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-zed`](packages/dsh-zed) | Zed bridge for the DeepSeek Harness |
 | [`dsh-cursor`](packages/dsh-cursor) | Cursor bridge for the DeepSeek Harness |
 | [`dsh-i18n`](packages/dsh-i18n) | Locale packs for the dsh web GUI |
+| [`dsh-l10n`](packages/dsh-l10n) | Localization toolkit for dsh |
 | [`dsh-keymap`](packages/dsh-keymap) | Keyboard shortcut manager for the dsh web GUI |
 | [`dsh-completions`](packages/dsh-completions) | Shell completions for the dsh launcher |
 <details>
-<summary>External waves (218 names, reconciled from the npm registry)</summary>
+<summary>External waves (214 names, reconciled from the npm registry)</summary>
 
-`dsh-accounting`, `dsh-acp-server`, `dsh-agentpay`, `dsh-airtable`, `dsh-anime`, `dsh-ansible`, `dsh-ap2`, `dsh-arbitrum`, `dsh-asana`, `dsh-aws`, `dsh-azure`, `dsh-baby`, `dsh-banking`, `dsh-base`, `dsh-beauty`, `dsh-bio`, `dsh-bitcoin`, `dsh-blog`, `dsh-bolt`, `dsh-book`, `dsh-bots`, `dsh-brand`, `dsh-bun`, `dsh-calc`, `dsh-calculator`, `dsh-car`, `dsh-chem`, `dsh-clickhouse`, `dsh-comic`, `dsh-compliance`, `dsh-config`, `dsh-confluence`, `dsh-contract`, `dsh-convert`, `dsh-cook`, `dsh-cpp`, `dsh-critic`, `dsh-crm`, `dsh-crypto`, `dsh-csharp`, `dsh-data`, `dsh-defi`, `dsh-deno`, `dsh-deploy`, `dsh-dex`, `dsh-dict`, `dsh-dictionary`, `dsh-discord`, `dsh-docs`, `dsh-drive`, `dsh-ecommerce`, `dsh-edu`, `dsh-english`, `dsh-erp`, `dsh-escrow`, `dsh-esports`, `dsh-etf`, `dsh-eth`, `dsh-fashion`, `dsh-fees`, `dsh-festival`, `dsh-figma`, `dsh-finance`, `dsh-fintech`, `dsh-fit`, `dsh-fitness`, `dsh-font`, `dsh-food`, `dsh-forex`, `dsh-freeroute`, `dsh-fun`, `dsh-fund`, `dsh-futures`, `dsh-game`, `dsh-garden`, `dsh-gcp`, `dsh-gift`, `dsh-gitlab`, `dsh-go`, `dsh-habit`, `dsh-helm`, `dsh-hl`, `dsh-holiday`, `dsh-home`, `dsh-horoscope`, `dsh-house`, `dsh-hr`, `dsh-hype`, `dsh-hyperevm`, `dsh-hyperliquid`, `dsh-icon`, `dsh-infra`, `dsh-invoice`, `dsh-iot`, `dsh-irc`, `dsh-java`, `dsh-jira`, `dsh-joke`, `dsh-journal`, `dsh-jupyter`, `dsh-k8s`, `dsh-karaoke`, `dsh-kotlin`, `dsh-language`, `dsh-latex`, `dsh-law`, `dsh-ledger`, `dsh-legal`, `dsh-lightning`, `dsh-line`, `dsh-linear`, `dsh-linux`, `dsh-lottery`, `dsh-macos`, `dsh-marketing`, `dsh-math`, `dsh-matrix`, `dsh-medical`, `dsh-meditate`, `dsh-micropay`, `dsh-ml`, `dsh-mongo`, `dsh-mood`, `dsh-movie`, `dsh-multiagent`, `dsh-music`, `dsh-mysql`, `dsh-news`, `dsh-nginx`, `dsh-notebook`, `dsh-nuxt`, `dsh-ocr`, `dsh-onchain`, `dsh-options`, `dsh-paper`, `dsh-pay`, `dsh-payment`, `dsh-payments`, `dsh-photo`, `dsh-php`, `dsh-physics`, `dsh-play`, `dsh-podcast`, `dsh-portfolio`, `dsh-postgres`, `dsh-prisma`, `dsh-product`, `dsh-puzzle`, `dsh-python`, `dsh-pyusd`, `dsh-quiz`, `dsh-radio`, `dsh-react`, `dsh-read`, `dsh-recruit`, `dsh-redis`, `dsh-refine`, `dsh-reflect`, `dsh-rent`, `dsh-resume`, `dsh-risk`, `dsh-ruby`, `dsh-rust`, `dsh-sales`, `dsh-screenshot`, `dsh-seo`, `dsh-settings`, `dsh-shop`, `dsh-sleep`, `dsh-solana`, `dsh-solidity`, `dsh-sports`, `dsh-sqlite`, `dsh-stable`, `dsh-stablecoin`, `dsh-stats`, `dsh-stock`, `dsh-streaming`, `dsh-subagent`, `dsh-subtitle`, `dsh-supabase`, `dsh-support`, `dsh-svelte`, `dsh-swift`, `dsh-tarot`, `dsh-task`, `dsh-tax`, `dsh-terraform`, `dsh-ticker`, `dsh-time`, `dsh-tipping`, `dsh-trading`, `dsh-transit`, `dsh-travel`, `dsh-trello`, `dsh-trip`, `dsh-tutor`, `dsh-tv`, `dsh-twitter`, `dsh-typescript`, `dsh-units`, `dsh-usdc`, `dsh-usdt`, `dsh-ux`, `dsh-video`, `dsh-vocab`, `dsh-vue`, `dsh-water`, `dsh-web3`, `dsh-web3-core`, `dsh-weibo`, `dsh-whatsapp`, `dsh-word`, `dsh-writing`, `dsh-x402`, `dsh-yuque`, `dsh-zhihu`, `dsh-zig`
+`dsh-accounting`, `dsh-acp-server`, `dsh-agentpay`, `dsh-airtable`, `dsh-anime`, `dsh-ansible`, `dsh-ap2`, `dsh-arbitrum`, `dsh-asana`, `dsh-aws`, `dsh-azure`, `dsh-baby`, `dsh-banking`, `dsh-base`, `dsh-beauty`, `dsh-bio`, `dsh-bitcoin`, `dsh-blog`, `dsh-bolt`, `dsh-book`, `dsh-bots`, `dsh-brand`, `dsh-bun`, `dsh-calc`, `dsh-calculator`, `dsh-car`, `dsh-chem`, `dsh-clickhouse`, `dsh-comic`, `dsh-compliance`, `dsh-config`, `dsh-confluence`, `dsh-contract`, `dsh-convert`, `dsh-cook`, `dsh-cpp`, `dsh-critic`, `dsh-crm`, `dsh-crypto`, `dsh-csharp`, `dsh-data`, `dsh-defi`, `dsh-deno`, `dsh-deploy`, `dsh-dex`, `dsh-dict`, `dsh-dictionary`, `dsh-discord`, `dsh-docs`, `dsh-drive`, `dsh-ecommerce`, `dsh-edu`, `dsh-english`, `dsh-erp`, `dsh-escrow`, `dsh-esports`, `dsh-etf`, `dsh-eth`, `dsh-fashion`, `dsh-fees`, `dsh-festival`, `dsh-figma`, `dsh-finance`, `dsh-fintech`, `dsh-fit`, `dsh-fitness`, `dsh-font`, `dsh-food`, `dsh-forex`, `dsh-freeroute`, `dsh-fun`, `dsh-fund`, `dsh-futures`, `dsh-game`, `dsh-garden`, `dsh-gcp`, `dsh-gift`, `dsh-go`, `dsh-habit`, `dsh-helm`, `dsh-hl`, `dsh-holiday`, `dsh-home`, `dsh-horoscope`, `dsh-house`, `dsh-hr`, `dsh-hype`, `dsh-hyperevm`, `dsh-hyperliquid`, `dsh-icon`, `dsh-infra`, `dsh-invoice`, `dsh-iot`, `dsh-irc`, `dsh-java`, `dsh-jira`, `dsh-joke`, `dsh-journal`, `dsh-jupyter`, `dsh-k8s`, `dsh-karaoke`, `dsh-kotlin`, `dsh-language`, `dsh-latex`, `dsh-law`, `dsh-ledger`, `dsh-legal`, `dsh-lightning`, `dsh-linear`, `dsh-linux`, `dsh-lottery`, `dsh-macos`, `dsh-marketing`, `dsh-math`, `dsh-matrix`, `dsh-medical`, `dsh-meditate`, `dsh-micropay`, `dsh-ml`, `dsh-mongo`, `dsh-mood`, `dsh-movie`, `dsh-multiagent`, `dsh-music`, `dsh-mysql`, `dsh-news`, `dsh-nginx`, `dsh-notebook`, `dsh-nuxt`, `dsh-ocr`, `dsh-onchain`, `dsh-options`, `dsh-paper`, `dsh-pay`, `dsh-payment`, `dsh-payments`, `dsh-photo`, `dsh-php`, `dsh-physics`, `dsh-play`, `dsh-podcast`, `dsh-portfolio`, `dsh-postgres`, `dsh-prisma`, `dsh-product`, `dsh-puzzle`, `dsh-python`, `dsh-pyusd`, `dsh-quiz`, `dsh-radio`, `dsh-react`, `dsh-read`, `dsh-recruit`, `dsh-redis`, `dsh-refine`, `dsh-reflect`, `dsh-rent`, `dsh-resume`, `dsh-risk`, `dsh-ruby`, `dsh-rust`, `dsh-sales`, `dsh-screenshot`, `dsh-seo`, `dsh-settings`, `dsh-shop`, `dsh-sleep`, `dsh-solana`, `dsh-solidity`, `dsh-sports`, `dsh-sqlite`, `dsh-stable`, `dsh-stablecoin`, `dsh-stats`, `dsh-stock`, `dsh-streaming`, `dsh-subagent`, `dsh-subtitle`, `dsh-supabase`, `dsh-support`, `dsh-svelte`, `dsh-swift`, `dsh-tarot`, `dsh-task`, `dsh-tax`, `dsh-terraform`, `dsh-ticker`, `dsh-time`, `dsh-tipping`, `dsh-trading`, `dsh-transit`, `dsh-travel`, `dsh-trello`, `dsh-trip`, `dsh-tutor`, `dsh-tv`, `dsh-typescript`, `dsh-units`, `dsh-usdc`, `dsh-usdt`, `dsh-ux`, `dsh-video`, `dsh-vocab`, `dsh-vue`, `dsh-water`, `dsh-web3`, `dsh-web3-core`, `dsh-weibo`, `dsh-word`, `dsh-writing`, `dsh-x402`, `dsh-yuque`, `dsh-zhihu`, `dsh-zig`
 
 </details>
 <!-- placeholder-table:end -->

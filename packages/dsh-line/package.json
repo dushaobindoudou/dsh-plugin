@@ -1,7 +1,7 @@
 {
   "name": "dsh-line",
   "version": "0.0.1",
-  "description": "LINE bridge for dsh - name reserved; first release in development.",
+  "description": "LINE channel bridge for dsh bots - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,7 +10,7 @@
     "deepseek-harness",
     "cordis-plugin",
     "line",
-    "messaging"
+    "channel"
   ],
   "repository": {
     "type": "git",

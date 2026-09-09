@@ -20,6 +20,7 @@ export const NICHE_ORDER = [
   'model bridges',
   'developer tools',
   'agent capabilities',
+  'channels',
   'multi-agent',
   'role presets',
   'interaction',
@@ -37,6 +38,12 @@ export const NICHE_ORDER = [
 
 export const CORE = {
   // ---- model bridges ----------------------------------------------------
+  'dsh-google': {
+    niche: 'model bridges',
+    headline: 'Google services umbrella bridge',
+    body: 'The company-form seat above dsh-gemini and dsh-vertex - Search Console, Ads, and Workspace surfaces exposed as dsh providers for go-global work.',
+    extra: ['google', 'bridge'],
+  },
   'dsh-deepseek': {
     niche: 'model bridges',
     headline: 'DeepSeek model bridge',
@@ -344,6 +351,42 @@ export const CORE = {
     extra: ['providers', 'llm', 'registry'],
   },
   // ---- developer tools --------------------------------------------------
+  'dsh-vercel': {
+    niche: 'developer tools',
+    headline: 'Vercel bridge for dsh agents',
+    body: 'Deploy previews as first-class artifacts - the agent proposes, the preview builds, you approve the promotion to production.',
+    extra: ['vercel', 'deploy'],
+  },
+  'dsh-cloudflare': {
+    niche: 'developer tools',
+    headline: 'Cloudflare bridge for dsh agents',
+    body: 'Workers, DNS, and WAF as agent surfaces - draft changes, see the diff, approve; the audit log stays on the Cloudflare side.',
+    extra: ['cloudflare', 'edge'],
+  },
+  'dsh-netlify': {
+    niche: 'developer tools',
+    headline: 'Netlify bridge for dsh agents',
+    body: 'Deploy hooks and form submissions routed into sessions - build failures triaged by the agent with the log tail attached.',
+    extra: ['netlify', 'deploy'],
+  },
+  'dsh-zapier': {
+    niche: 'developer tools',
+    headline: 'Zapier bridge for dsh agents',
+    body: 'Five thousand apps, one seam - the agent drafts zaps and fires webhooks; dsh becomes a step in every automation you already run.',
+    extra: ['zapier', 'automation'],
+  },
+  'dsh-n8n': {
+    niche: 'developer tools',
+    headline: 'n8n bridge for dsh agents',
+    body: 'Self-hosted automation glue - trigger dsh runs from n8n workflows and call n8n webhooks from bots; the two-way bridge for private stacks.',
+    extra: ['n8n', 'automation'],
+  },
+  'dsh-gitlab': {
+    niche: 'developer tools',
+    headline: 'GitLab bridge for dsh agents',
+    body: 'Issues, MRs, and pipelines as agent surfaces - draft MR descriptions, triage failing pipelines, and link sessions to issues; the self-hosted GitHub. Registered externally; promoted into the curated core.',
+    extra: ['gitlab'],
+  },
   'dsh-neovim': {
     niche: 'developer tools',
     headline: 'Neovim bridge',
@@ -442,25 +485,25 @@ export const CORE = {
   },
   // ---- agent capabilities -----------------------------------------------
   'dsh-qq': {
-    niche: 'agent capabilities',
+    niche: 'channels',
     headline: 'QQ channel bridge for dsh bots',
     body: 'Bots in QQ groups and channels - outbound digests and inbound commands over the QQ bot API; the Chinese-messaging lane beside dsh-x.',
     extra: ['qq', 'channel'],
   },
   'dsh-douyin': {
-    niche: 'agent capabilities',
+    niche: 'channels',
     headline: 'Douyin bridge for dsh bots',
     body: 'Publish run outputs as Douyin drafts - text-to-video summaries composed from runs.jsonl, approved before posting.',
     extra: ['douyin', 'channel'],
   },
   'dsh-xiaohongshu': {
-    niche: 'agent capabilities',
+    niche: 'channels',
     headline: 'Xiaohongshu bridge for dsh bots',
     body: 'Post agent-written notes and digests to Xiaohongshu - marketing content drafted from run summaries, human-approved.',
     extra: ['xiaohongshu', 'channel'],
   },
   'dsh-bilibili': {
-    niche: 'agent capabilities',
+    niche: 'channels',
     headline: 'Bilibili bridge for dsh bots',
     body: 'Turn session replays and digests into Bilibili draft videos - title, cover, and script drafted by the agent.',
     extra: ['bilibili', 'channel'],
@@ -508,6 +551,199 @@ export const CORE = {
     extra: ['deepsearch', 'research', 'web-search'],
   },
   // ---- multi-agent -------------------------------------------------------
+  // ---- channels -------------------------------------------------------
+  'dsh-tiktok': {
+    niche: 'channels',
+    headline: 'TikTok channel bridge for dsh bots',
+    body: 'Publish run outputs as TikTok drafts - scripts, captions, and hashtags composed from runs.jsonl, approved before posting; the short-video outbound lane.',
+    extra: ['tiktok', 'channel'],
+  },
+  'dsh-instagram': {
+    niche: 'channels',
+    headline: 'Instagram channel bridge for dsh bots',
+    body: 'Post carousels and digests to Instagram - content drafted from run summaries, alt text included, human-approved before publish.',
+    extra: ['instagram', 'channel'],
+  },
+  'dsh-facebook': {
+    niche: 'channels',
+    headline: 'Facebook channel bridge for dsh bots',
+    body: 'Pages and groups as bot outlets - scheduled posts, comment triage, and Messenger handoff via the page webhook.',
+    extra: ['facebook', 'channel'],
+  },
+  'dsh-youtube': {
+    niche: 'channels',
+    headline: 'YouTube channel bridge for dsh bots',
+    body: 'Turn session replays into YouTube drafts - title, description, chapters, and thumbnail drafted by the agent, uploaded after approval.',
+    extra: ['youtube', 'channel'],
+  },
+  'dsh-reddit': {
+    niche: 'channels',
+    headline: 'Reddit channel bridge for dsh bots',
+    body: 'Read subreddits, answer as the bot, and crosspost digests - rate-limit aware, subreddit rules respected, every post human-approved.',
+    extra: ['reddit', 'channel'],
+  },
+  'dsh-linkedin': {
+    niche: 'channels',
+    headline: 'LinkedIn channel bridge for dsh bots',
+    body: 'Professional-network presence on autopilot drafts - posts and articles composed from run summaries, B2B tone enforced, scheduled after review.',
+    extra: ['linkedin', 'channel'],
+  },
+  'dsh-threads': {
+    niche: 'channels',
+    headline: 'Threads channel bridge for dsh bots',
+    body: 'Short-form posts to Threads - digest threads composed from runs.jsonl, cross-posted with dsh-instagram in one approval.',
+    extra: ['threads', 'channel'],
+  },
+  'dsh-pinterest': {
+    niche: 'channels',
+    headline: 'Pinterest channel bridge for dsh bots',
+    body: 'Pins and boards as a visual archive - run outputs pinned with generated covers, boards per project and per week.',
+    extra: ['pinterest', 'channel'],
+  },
+  'dsh-snapchat': {
+    niche: 'channels',
+    headline: 'Snapchat channel bridge for dsh bots',
+    body: 'Spotlight digests and streak updates - short visual summaries composed from run summaries, sent after approval.',
+    extra: ['snapchat', 'channel'],
+  },
+  'dsh-twitch': {
+    niche: 'channels',
+    headline: 'Twitch bridge for dsh agents',
+    body: 'Chat moderation and stream assistance - the agent watches chat, answers routine questions, and flags escalation while you stream.',
+    extra: ['twitch', 'channel'],
+  },
+  'dsh-medium': {
+    niche: 'channels',
+    headline: 'Medium channel bridge for dsh bots',
+    body: 'Long-form drafts from session deep-dives - the agent structures the essay, you edit and publish; versioned drafts per post.',
+    extra: ['medium', 'channel'],
+  },
+  'dsh-substack': {
+    niche: 'channels',
+    headline: 'Substack channel bridge for dsh bots',
+    body: 'Newsletters from run digests - drafts composed weekly from runs.jsonl, subject lines A/B ready, sent after human review.',
+    extra: ['substack', 'newsletter'],
+  },
+  'dsh-bluesky': {
+    niche: 'channels',
+    headline: 'Bluesky channel bridge for dsh bots',
+    body: 'AT Protocol posts from the bot - digests and replies, handle-based identity, every post human-approved before it ships.',
+    extra: ['bluesky', 'atproto'],
+  },
+  'dsh-mastodon': {
+    niche: 'channels',
+    headline: 'Mastodon channel bridge for dsh bots',
+    body: 'Fediverse presence for bots - instance-aware posting, content warnings set, replies triaged per instance rules.',
+    extra: ['mastodon', 'fediverse'],
+  },
+  'dsh-messenger': {
+    niche: 'channels',
+    headline: 'Messenger channel bridge for dsh bots',
+    body: 'The Meta page inbox as a bot surface - customer FAQs answered by the agent, handoff to humans on low confidence.',
+    extra: ['messenger', 'channel'],
+  },
+  'dsh-kakao': {
+    niche: 'channels',
+    headline: 'KakaoTalk channel bridge for dsh bots',
+    body: 'Korea-facing bot lane - KakaoTalk channel messages in and out, templates for alerts, digests delivered where Korean users live.',
+    extra: ['kakao', 'channel'],
+  },
+  'dsh-mailchimp': {
+    niche: 'channels',
+    headline: 'Mailchimp bridge for dsh bots',
+    body: 'Campaign drafts from run digests - segments chosen by the agent, subject lines ranked, nothing sends without approval.',
+    extra: ['mailchimp', 'email'],
+  },
+  'dsh-newsletter': {
+    niche: 'channels',
+    headline: 'Newsletter toolkit for dsh bots',
+    body: 'The format itself as a channel - issue templates, digests from runs.jsonl, subscribe and unsubscribe handling, deliverability checks before send.',
+    extra: ['newsletter', 'email'],
+  },
+  'dsh-whatsapp': {
+    niche: 'channels',
+    headline: 'WhatsApp channel bridge for dsh bots',
+    body: 'The world-default messaging lane - bot digests and customer conversations over the Cloud API, template messages for alerts, human handoff on low confidence. Registered externally; promoted into the curated core.',
+    extra: ['whatsapp', 'channel'],
+  },
+  'dsh-line': {
+    niche: 'channels',
+    headline: 'LINE channel bridge for dsh bots',
+    body: 'The Japan-and-Southeast-Asia lane - LINE official-account messages in and out, rich menus as command surfaces, digests delivered where LINE users live. Registered externally; promoted into the curated core.',
+    extra: ['line', 'channel'],
+  },
+  'dsh-twitter': {
+    niche: 'channels',
+    headline: 'X (Twitter) channel bridge for dsh bots',
+    body: 'Post run summaries and digests to X - threads composed from runs.jsonl, drafts approved before sending; the outbound lane for bot output. Registered externally; promoted into the curated core.',
+    extra: ['twitter', 'x', 'channel'],
+  },
+  'dsh-amazon': {
+    niche: 'channels',
+    headline: 'Amazon bridge for dsh agents',
+    body: 'Listing research and ops - SP-API reads for pricing and reviews, listing drafts and A+ content proposed by the agent, approved before submission.',
+    extra: ['amazon', 'ecommerce'],
+  },
+  'dsh-shopify': {
+    niche: 'channels',
+    headline: 'Shopify bridge for dsh agents',
+    body: 'Store ops as agent work - product drafts, inventory reads, and order triage over the Admin API, every mutation through the approval seam.',
+    extra: ['shopify', 'ecommerce'],
+  },
+  'dsh-ebay': {
+    niche: 'channels',
+    headline: 'eBay bridge for dsh agents',
+    body: 'Listing and resale research - price comps from live listings, draft titles and specifics proposed, revisions approved before they go live.',
+    extra: ['ebay', 'ecommerce'],
+  },
+  'dsh-etsy': {
+    niche: 'channels',
+    headline: 'Etsy bridge for dsh agents',
+    body: 'Handmade-market ops - listing drafts, tag research, and shop stats digests, composed by the agent for seller review.',
+    extra: ['etsy', 'ecommerce'],
+  },
+  'dsh-stripe': {
+    niche: 'channels',
+    headline: 'Stripe bridge for dsh agents',
+    body: 'Payments as agent surface - invoices drafted, subscriptions inspected, revenue digests weekly; every write goes through the approval seam.',
+    extra: ['stripe', 'payments'],
+  },
+  'dsh-paypal': {
+    niche: 'channels',
+    headline: 'PayPal bridge for dsh agents',
+    body: 'The consumer-payment lane - transaction reads, refund drafts with reason codes, and monthly statements summarized by the agent.',
+    extra: ['paypal', 'payments'],
+  },
+  'dsh-shopee': {
+    niche: 'channels',
+    headline: 'Shopee bridge for dsh agents',
+    body: 'Southeast-Asia storefront ops - listing reads, price-change drafts, and campaign calendars, agent-composed for seller approval.',
+    extra: ['shopee', 'ecommerce'],
+  },
+  'dsh-intercom': {
+    niche: 'channels',
+    headline: 'Intercom bridge for dsh agents',
+    body: 'Support inbox as bot lane - conversations triaged, routine replies drafted in your voice, handoff notes for humans on hard tickets.',
+    extra: ['intercom', 'support'],
+  },
+  'dsh-hubspot': {
+    niche: 'channels',
+    headline: 'HubSpot bridge for dsh agents',
+    body: 'The CRM as agent surface - contact research, deal-stage digests, and drafted follow-ups, every write approved before it lands.',
+    extra: ['hubspot', 'crm'],
+  },
+  'dsh-zendesk': {
+    niche: 'channels',
+    headline: 'Zendesk bridge for dsh agents',
+    body: 'Ticket queue as bot lane - macros suggested, routine tickets resolved by draft, escalation with full context attached.',
+    extra: ['zendesk', 'support'],
+  },
+  'dsh-salesforce': {
+    niche: 'channels',
+    headline: 'Salesforce bridge for dsh agents',
+    body: 'Enterprise CRM ops - SOQL reads for account research, opportunity digests, and drafted touchpoints; writes gated by policy.',
+    extra: ['salesforce', 'crm'],
+  },
   'dsh-ensemble': {
     niche: 'multi-agent',
     headline: 'Model ensembles for dsh',
@@ -687,7 +923,7 @@ export const CORE = {
     extra: ['workflow', 'workflows'],
   },
   'dsh-channels': {
-    niche: 'agent capabilities',
+    niche: 'channels',
     headline: 'Chat-channel framework for dsh bots',
     body: 'The shared substrate the community platform bridges plug into - telegram, discord, slack, and feishu adapters all speak one channel contract, with approvals gated per platform.',
     extra: ['channels', 'chat', 'bridge'],
@@ -1059,6 +1295,12 @@ export const CORE = {
     extra: ['headhunt', 'recruiter', 'outreach'],
   },
   // ---- meta / product ----------------------------------------------------
+  'dsh-global': {
+    niche: 'meta / product',
+    headline: 'The go-global toolkit for dsh',
+    body: 'One install that presets every overseas lane - platform bridges, localization, and payment surfaces wired for the go-global playbook; the umbrella over the channel wall.',
+    extra: ['global', 'channels'],
+  },
   'dsh-registry': {
     niche: 'meta / product',
     headline: 'Local plugin registry',
@@ -1225,6 +1467,12 @@ export const CORE = {
     headline: 'Locale packs for the dsh web GUI',
     body: 'Community translations for the DeepSeek Harness web UI - zh, en, ja, and more - as drop-in packs with per-profile selection.',
     extra: ['i18n', 'locale'],
+  },
+  'dsh-l10n': {
+    niche: 'harness surfaces',
+    headline: 'Localization toolkit for dsh',
+    body: 'The translation-and-adaptation lane - locale extraction, glossary consistency, and market-specific rewrites; the abbreviation the i18n world already speaks.',
+    extra: ['l10n', 'localization'],
   },
   'dsh-keymap': {
     niche: 'harness surfaces',

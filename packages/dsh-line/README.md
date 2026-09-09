@@ -3,11 +3,11 @@
 [![npm](https://img.shields.io/npm/v/dsh-line.svg)](https://www.npmjs.com/package/dsh-line)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**LINE bridge for dsh** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**LINE channel bridge for dsh bots** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-LINE bridge for dsh. (Recorded from the npm registry at import time.)
+The Japan-and-Southeast-Asia lane - LINE official-account messages in and out, rich menus as command surfaces, digests delivered where LINE users live. Registered externally; promoted into the curated core.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

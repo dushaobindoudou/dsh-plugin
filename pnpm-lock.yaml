@@ -24,6 +24,8 @@ importers:
 
   packages/dsh-algorithm: {}
 
+  packages/dsh-amazon: {}
+
   packages/dsh-ambient: {}
 
   packages/dsh-analyst: {}
@@ -82,6 +84,8 @@ importers:
 
   packages/dsh-blog: {}
 
+  packages/dsh-bluesky: {}
+
   packages/dsh-bolt: {}
 
   packages/dsh-book: {}
@@ -117,6 +121,8 @@ importers:
   packages/dsh-clickhouse: {}
 
   packages/dsh-cloud: {}
+
+  packages/dsh-cloudflare: {}
 
   packages/dsh-cohere: {}
 
@@ -202,6 +208,8 @@ importers:
 
   packages/dsh-drive: {}
 
+  packages/dsh-ebay: {}
+
   packages/dsh-ecommerce: {}
 
   packages/dsh-edit: {}
@@ -236,7 +244,11 @@ importers:
 
   packages/dsh-eth: {}
 
+  packages/dsh-etsy: {}
+
   packages/dsh-export: {}
+
+  packages/dsh-facebook: {}
 
   packages/dsh-fashion: {}
 
@@ -298,7 +310,11 @@ importers:
 
   packages/dsh-glm: {}
 
+  packages/dsh-global: {}
+
   packages/dsh-go: {}
+
+  packages/dsh-google: {}
 
   packages/dsh-gpt: {}
 
@@ -336,6 +352,8 @@ importers:
 
   packages/dsh-hub: {}
 
+  packages/dsh-hubspot: {}
+
   packages/dsh-huggingface: {}
 
   packages/dsh-hunyuan: {}
@@ -353,6 +371,10 @@ importers:
   packages/dsh-index: {}
 
   packages/dsh-infra: {}
+
+  packages/dsh-instagram: {}
+
+  packages/dsh-intercom: {}
 
   packages/dsh-invoice: {}
 
@@ -386,6 +408,8 @@ importers:
 
   packages/dsh-k8s: {}
 
+  packages/dsh-kakao: {}
+
   packages/dsh-karaoke: {}
 
   packages/dsh-keymap: {}
@@ -393,6 +417,8 @@ importers:
   packages/dsh-kimi: {}
 
   packages/dsh-kotlin: {}
+
+  packages/dsh-l10n: {}
 
   packages/dsh-language: {}
 
@@ -411,6 +437,8 @@ importers:
   packages/dsh-linear: {}
 
   packages/dsh-link: {}
+
+  packages/dsh-linkedin: {}
 
   packages/dsh-lint: {}
 
@@ -432,7 +460,11 @@ importers:
 
   packages/dsh-macro: {}
 
+  packages/dsh-mailchimp: {}
+
   packages/dsh-marketing: {}
+
+  packages/dsh-mastodon: {}
 
   packages/dsh-math: {}
 
@@ -442,7 +474,11 @@ importers:
 
   packages/dsh-meditate: {}
 
+  packages/dsh-medium: {}
+
   packages/dsh-mention: {}
+
+  packages/dsh-messenger: {}
 
   packages/dsh-metrics: {}
 
@@ -474,9 +510,15 @@ importers:
 
   packages/dsh-mysql: {}
 
+  packages/dsh-n8n: {}
+
   packages/dsh-neovim: {}
 
+  packages/dsh-netlify: {}
+
   packages/dsh-news: {}
+
+  packages/dsh-newsletter: {}
 
   packages/dsh-next: {}
 
@@ -512,6 +554,8 @@ importers:
 
   packages/dsh-payments: {}
 
+  packages/dsh-paypal: {}
+
   packages/dsh-permission: {}
 
   packages/dsh-perplexity: {}
@@ -523,6 +567,8 @@ importers:
   packages/dsh-php: {}
 
   packages/dsh-physics: {}
+
+  packages/dsh-pinterest: {}
 
   packages/dsh-planner: {}
 
@@ -580,6 +626,8 @@ importers:
 
   packages/dsh-recruit: {}
 
+  packages/dsh-reddit: {}
+
   packages/dsh-redis: {}
 
   packages/dsh-refactor: {}
@@ -615,6 +663,8 @@ importers:
   packages/dsh-rust: {}
 
   packages/dsh-sales: {}
+
+  packages/dsh-salesforce: {}
 
   packages/dsh-sandbox: {}
 
@@ -652,11 +702,17 @@ importers:
 
   packages/dsh-shop: {}
 
+  packages/dsh-shopee: {}
+
+  packages/dsh-shopify: {}
+
   packages/dsh-siliconflow: {}
 
   packages/dsh-skill: {}
 
   packages/dsh-sleep: {}
+
+  packages/dsh-snapchat: {}
 
   packages/dsh-snippets: {}
 
@@ -692,11 +748,15 @@ importers:
 
   packages/dsh-streaming: {}
 
+  packages/dsh-stripe: {}
+
   packages/dsh-stt: {}
 
   packages/dsh-studio: {}
 
   packages/dsh-subagent: {}
+
+  packages/dsh-substack: {}
 
   packages/dsh-subtitle: {}
 
@@ -728,7 +788,11 @@ importers:
 
   packages/dsh-tester: {}
 
+  packages/dsh-threads: {}
+
   packages/dsh-ticker: {}
+
+  packages/dsh-tiktok: {}
 
   packages/dsh-time: {}
 
@@ -758,6 +822,8 @@ importers:
 
   packages/dsh-tv: {}
 
+  packages/dsh-twitch: {}
+
   packages/dsh-twitter: {}
 
   packages/dsh-typescript: {}
@@ -773,6 +839,8 @@ importers:
   packages/dsh-ux: {}
 
   packages/dsh-vector: {}
+
+  packages/dsh-vercel: {}
 
   packages/dsh-vertex: {}
 
@@ -826,11 +894,17 @@ importers:
 
   packages/dsh-yi: {}
 
+  packages/dsh-youtube: {}
+
   packages/dsh-yuque: {}
+
+  packages/dsh-zapier: {}
 
   packages/dsh-zed: {}
 
   packages/dsh-zen: {}
+
+  packages/dsh-zendesk: {}
 
   packages/dsh-zhihu: {}
 

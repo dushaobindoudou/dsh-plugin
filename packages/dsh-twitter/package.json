@@ -1,7 +1,7 @@
 {
   "name": "dsh-twitter",
   "version": "0.0.1",
-  "description": "Twitter/X content toolkit for dsh - name reserved; first release in development.",
+  "description": "X (Twitter) channel bridge for dsh bots - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,7 +9,9 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "twitter"
+    "twitter",
+    "x",
+    "channel"
   ],
   "repository": {
     "type": "git",
