@@ -12,6 +12,8 @@ importers:
 
   packages/dsh-acp-server: {}
 
+  packages/dsh-adyen: {}
+
   packages/dsh-agent: {}
 
   packages/dsh-agentpay: {}
@@ -19,6 +21,8 @@ importers:
   packages/dsh-agents: {}
 
   packages/dsh-airtable: {}
+
+  packages/dsh-alchemy: {}
 
   packages/dsh-alert: {}
 
@@ -42,6 +46,8 @@ importers:
 
   packages/dsh-api: {}
 
+  packages/dsh-aptos: {}
+
   packages/dsh-arbitrum: {}
 
   packages/dsh-architect: {}
@@ -55,6 +61,8 @@ importers:
   packages/dsh-audio: {}
 
   packages/dsh-autocomplete: {}
+
+  packages/dsh-avalanche: {}
 
   packages/dsh-aws: {}
 
@@ -86,6 +94,8 @@ importers:
 
   packages/dsh-bluesky: {}
 
+  packages/dsh-bnb: {}
+
   packages/dsh-bolt: {}
 
   packages/dsh-book: {}
@@ -108,11 +118,19 @@ importers:
 
   packages/dsh-car: {}
 
+  packages/dsh-cardano: {}
+
   packages/dsh-cast: {}
+
+  packages/dsh-cex: {}
+
+  packages/dsh-chainlink: {}
 
   packages/dsh-channels: {}
 
   packages/dsh-chem: {}
+
+  packages/dsh-circle: {}
 
   packages/dsh-claude: {}
 
@@ -125,6 +143,8 @@ importers:
   packages/dsh-cloudflare: {}
 
   packages/dsh-cohere: {}
+
+  packages/dsh-coingecko: {}
 
   packages/dsh-comic: {}
 
@@ -162,6 +182,8 @@ importers:
 
   packages/dsh-daemon: {}
 
+  packages/dsh-dai: {}
+
   packages/dsh-data: {}
 
   packages/dsh-db: {}
@@ -175,6 +197,8 @@ importers:
   packages/dsh-deepseek: {}
 
   packages/dsh-defi: {}
+
+  packages/dsh-defillama: {}
 
   packages/dsh-delegate: {}
 
@@ -202,11 +226,17 @@ importers:
 
   packages/dsh-docs: {}
 
+  packages/dsh-doge: {}
+
+  packages/dsh-dogecoin: {}
+
   packages/dsh-doubao: {}
 
   packages/dsh-douyin: {}
 
   packages/dsh-drive: {}
+
+  packages/dsh-dune: {}
 
   packages/dsh-ebay: {}
 
@@ -243,6 +273,8 @@ importers:
   packages/dsh-etf: {}
 
   packages/dsh-eth: {}
+
+  packages/dsh-etherscan: {}
 
   packages/dsh-etsy: {}
 
@@ -281,6 +313,8 @@ importers:
   packages/dsh-forge: {}
 
   packages/dsh-fork: {}
+
+  packages/dsh-foundry: {}
 
   packages/dsh-freeroute: {}
 
@@ -321,6 +355,8 @@ importers:
   packages/dsh-groq: {}
 
   packages/dsh-habit: {}
+
+  packages/dsh-hardhat: {}
 
   packages/dsh-headhunt: {}
 
@@ -372,6 +408,8 @@ importers:
 
   packages/dsh-infra: {}
 
+  packages/dsh-infura: {}
+
   packages/dsh-instagram: {}
 
   packages/dsh-intercom: {}
@@ -416,6 +454,8 @@ importers:
 
   packages/dsh-kimi: {}
 
+  packages/dsh-klarna: {}
+
   packages/dsh-kotlin: {}
 
   packages/dsh-l10n: {}
@@ -446,6 +486,8 @@ importers:
 
   packages/dsh-listen: {}
 
+  packages/dsh-litecoin: {}
+
   packages/dsh-llama: {}
 
   packages/dsh-lmstudio: {}
@@ -464,6 +506,8 @@ importers:
 
   packages/dsh-marketing: {}
 
+  packages/dsh-mastercard: {}
+
   packages/dsh-mastodon: {}
 
   packages/dsh-math: {}
@@ -479,6 +523,8 @@ importers:
   packages/dsh-mention: {}
 
   packages/dsh-messenger: {}
+
+  packages/dsh-metamask: {}
 
   packages/dsh-metrics: {}
 
@@ -496,6 +542,8 @@ importers:
 
   packages/dsh-models: {}
 
+  packages/dsh-monero: {}
+
   packages/dsh-mongo: {}
 
   packages/dsh-mood: {}
@@ -511,6 +559,8 @@ importers:
   packages/dsh-mysql: {}
 
   packages/dsh-n8n: {}
+
+  packages/dsh-near: {}
 
   packages/dsh-neovim: {}
 
@@ -542,6 +592,8 @@ importers:
 
   packages/dsh-openrouter: {}
 
+  packages/dsh-optimism: {}
+
   packages/dsh-options: {}
 
   packages/dsh-panel: {}
@@ -554,6 +606,8 @@ importers:
 
   packages/dsh-payments: {}
 
+  packages/dsh-payoneer: {}
+
   packages/dsh-paypal: {}
 
   packages/dsh-permission: {}
@@ -561,6 +615,8 @@ importers:
   packages/dsh-perplexity: {}
 
   packages/dsh-persona: {}
+
+  packages/dsh-phantom: {}
 
   packages/dsh-photo: {}
 
@@ -579,6 +635,10 @@ importers:
   packages/dsh-podcast: {}
 
   packages/dsh-policy: {}
+
+  packages/dsh-polkadot: {}
+
+  packages/dsh-polygon: {}
 
   packages/dsh-portfolio: {}
 
@@ -620,6 +680,8 @@ importers:
 
   packages/dsh-rag: {}
 
+  packages/dsh-razorpay: {}
+
   packages/dsh-react: {}
 
   packages/dsh-read: {}
@@ -647,6 +709,10 @@ importers:
   packages/dsh-resume: {}
 
   packages/dsh-retrieval: {}
+
+  packages/dsh-revolut: {}
+
+  packages/dsh-ripple: {}
 
   packages/dsh-risk: {}
 
@@ -716,6 +782,8 @@ importers:
 
   packages/dsh-snippets: {}
 
+  packages/dsh-sol: {}
+
   packages/dsh-solana: {}
 
   packages/dsh-solidity: {}
@@ -732,11 +800,15 @@ importers:
 
   packages/dsh-sqlite: {}
 
+  packages/dsh-square: {}
+
   packages/dsh-sre: {}
 
   packages/dsh-stable: {}
 
   packages/dsh-stablecoin: {}
+
+  packages/dsh-starknet: {}
 
   packages/dsh-stats: {}
 
@@ -759,6 +831,8 @@ importers:
   packages/dsh-substack: {}
 
   packages/dsh-subtitle: {}
+
+  packages/dsh-sui: {}
 
   packages/dsh-suite: {}
 
@@ -788,6 +862,8 @@ importers:
 
   packages/dsh-tester: {}
 
+  packages/dsh-tether: {}
+
   packages/dsh-threads: {}
 
   packages/dsh-ticker: {}
@@ -804,6 +880,8 @@ importers:
 
   packages/dsh-together: {}
 
+  packages/dsh-ton: {}
+
   packages/dsh-tour: {}
 
   packages/dsh-trading: {}
@@ -814,7 +892,11 @@ importers:
 
   packages/dsh-trello: {}
 
+  packages/dsh-trezor: {}
+
   packages/dsh-trip: {}
+
+  packages/dsh-tron: {}
 
   packages/dsh-tts: {}
 
@@ -827,6 +909,8 @@ importers:
   packages/dsh-twitter: {}
 
   packages/dsh-typescript: {}
+
+  packages/dsh-uniswap: {}
 
   packages/dsh-units: {}
 
@@ -846,6 +930,10 @@ importers:
 
   packages/dsh-video: {}
 
+  packages/dsh-viem: {}
+
+  packages/dsh-visa: {}
+
   packages/dsh-vllm: {}
 
   packages/dsh-vocab: {}
@@ -853,6 +941,8 @@ importers:
   packages/dsh-vscode: {}
 
   packages/dsh-vue: {}
+
+  packages/dsh-wagmi: {}
 
   packages/dsh-wake: {}
 
@@ -871,6 +961,8 @@ importers:
   packages/dsh-widget: {}
 
   packages/dsh-windsurf: {}
+
+  packages/dsh-wise: {}
 
   packages/dsh-word: {}
 
@@ -892,6 +984,8 @@ importers:
 
   packages/dsh-xiaohongshu: {}
 
+  packages/dsh-xrp: {}
+
   packages/dsh-yi: {}
 
   packages/dsh-youtube: {}
@@ -911,6 +1005,8 @@ importers:
   packages/dsh-zhipu: {}
 
   packages/dsh-zig: {}
+
+  packages/dsh-zksync: {}
 
 packages:
 

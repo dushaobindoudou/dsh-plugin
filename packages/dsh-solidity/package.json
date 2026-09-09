@@ -1,7 +1,7 @@
 {
   "name": "dsh-solidity",
   "version": "0.0.1",
-  "description": "Smart contract development for dsh - decode first, then reason, then write. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "description": "Solidity toolkit for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,9 +10,6 @@
     "deepseek-harness",
     "cordis-plugin",
     "solidity",
-    "smart-contracts",
-    "foundry",
-    "hardhat",
     "evm"
   ],
   "repository": {

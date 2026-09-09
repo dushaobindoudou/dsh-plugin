@@ -1,7 +1,7 @@
 {
   "name": "dsh-dex",
   "version": "0.0.1",
-  "description": "DEX math for dsh - price impact you compute before you sign, not after you regret. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "description": "DEX toolkit for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,10 +10,7 @@
     "deepseek-harness",
     "cordis-plugin",
     "dex",
-    "amm",
-    "defi",
-    "uniswap",
-    "liquidity"
+    "swaps"
   ],
   "repository": {
     "type": "git",

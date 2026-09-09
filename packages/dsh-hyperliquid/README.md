@@ -3,11 +3,11 @@
 [![npm](https://img.shields.io/npm/v/dsh-hyperliquid.svg)](https://www.npmjs.com/package/dsh-hyperliquid)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**Hyperliquid toolkit for dsh - positions, spot tokens, builder codes, with everything cited. Name reserved; spec below; first release in development.** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**Hyperliquid bridge for dsh agents** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-Hyperliquid toolkit for dsh - positions, spot tokens, builder codes, with everything cited. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)
+The perp DEX lane - positions, funding, and order drafts over the Hyperliquid API; on-chain by default. Registered externally; promoted into the curated core.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

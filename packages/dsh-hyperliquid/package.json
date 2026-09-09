@@ -1,7 +1,7 @@
 {
   "name": "dsh-hyperliquid",
   "version": "0.0.1",
-  "description": "Hyperliquid toolkit for dsh - positions, spot tokens, builder codes, with everything cited. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "description": "Hyperliquid bridge for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,10 +10,7 @@
     "deepseek-harness",
     "cordis-plugin",
     "hyperliquid",
-    "perps",
-    "hip-1",
-    "hip-2",
-    "builder-codes"
+    "perps"
   ],
   "repository": {
     "type": "git",

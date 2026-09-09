@@ -1,7 +1,7 @@
 {
   "name": "dsh-usdt",
   "version": "0.0.1",
-  "description": "USDT tools for dsh - deepest-liquidity stablecoin, handled with its quirks in mind. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "description": "USDT toolkit for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -11,8 +11,7 @@
     "cordis-plugin",
     "usdt",
     "tether",
-    "stablecoin",
-    "trc20"
+    "stablecoin"
   ],
   "repository": {
     "type": "git",

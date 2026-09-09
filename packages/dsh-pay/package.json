@@ -1,7 +1,7 @@
 {
   "name": "dsh-pay",
   "version": "0.0.1",
-  "description": "The shortest pay command in dsh - one verb, any rail, full receipt. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "description": "The generic payment seat for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,8 +10,7 @@
     "deepseek-harness",
     "cordis-plugin",
     "pay",
-    "payments",
-    "micropayments"
+    "payments"
   ],
   "repository": {
     "type": "git",

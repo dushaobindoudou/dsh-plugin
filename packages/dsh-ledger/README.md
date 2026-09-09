@@ -3,11 +3,11 @@
 [![npm](https://img.shields.io/npm/v/dsh-ledger.svg)](https://www.npmjs.com/package/dsh-ledger)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**Plain-text accounting tools for dsh** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**Ledger-facing bridge for dsh agents** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-Plain-text accounting tools for dsh. (Recorded from the npm registry at import time.)
+Hardware signing lane - transaction drafts routed to the device, results read back and decoded. Registered externally; promoted into the curated core.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

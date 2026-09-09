@@ -1,7 +1,7 @@
 {
   "name": "dsh-stablecoin",
   "version": "0.0.1",
-  "description": "Stablecoin settlement for dsh - one currency of account across every rail. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "description": "Stablecoin rail toolkit for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,8 +10,6 @@
     "deepseek-harness",
     "cordis-plugin",
     "stablecoin",
-    "usdc",
-    "usdt",
     "settlement"
   ],
   "repository": {

@@ -3,11 +3,11 @@
 [![npm](https://img.shields.io/npm/v/dsh-solidity.svg)](https://www.npmjs.com/package/dsh-solidity)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**Smart contract development for dsh - decode first, then reason, then write. Name reserved; spec below; first release in development.** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**Solidity toolkit for dsh agents** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-Smart contract development for dsh - decode first, then reason, then write. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)
+The contract language as a first-class surface - static checks, ABI decoding, and upgrade-safety reviews in session. Registered externally; promoted into the curated core.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

@@ -1,7 +1,7 @@
 {
   "name": "dsh-arbitrum",
   "version": "0.0.1",
-  "description": "Arbitrum tools for dsh - the L2 where deep DeFi liquidity settles. Name reserved; spec below; first release in development. - name reserved; first release in development.",
+  "description": "Arbitrum bridge for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,9 +10,7 @@
     "deepseek-harness",
     "cordis-plugin",
     "arbitrum",
-    "l2",
-    "usdc",
-    "defi"
+    "l2"
   ],
   "repository": {
     "type": "git",
