@@ -23,6 +23,7 @@ export const NICHE_ORDER = [
   'multi-agent',
   'role presets',
   'interaction',
+  'evaluation',
   'protocols',
   'ui',
   'data',
@@ -34,8 +35,86 @@ export const NICHE_ORDER = [
   'external waves',
 ]
 
-const CORE = {
+export const CORE = {
   // ---- model bridges ----------------------------------------------------
+  'dsh-ollama': {
+    niche: 'model bridges',
+    headline: 'Ollama model bridge',
+    body: 'Local models as dsh providers - the Ollama catalog exposed through the LLM adapter seam, zero egress by default. Registered externally; promoted into the curated core.',
+    extra: ['ollama', 'local', 'llama'],
+  },
+  'dsh-openrouter': {
+    niche: 'model bridges',
+    headline: 'OpenRouter model bridge',
+    body: 'Every OpenRouter model as a dsh provider - one key, hundreds of models, routing decisions and pricing surfaced per turn. Registered externally; promoted into the curated core.',
+    extra: ['openrouter', 'routing', 'bridge'],
+  },
+  'dsh-mistral': {
+    niche: 'model bridges',
+    headline: 'Mistral model bridge',
+    body: 'Mistral endpoints as dsh providers - open-weight European models with per-turn pricing. Registered externally; promoted into the curated core.',
+    extra: ['mistral', 'bridge'],
+  },
+  'dsh-cohere': {
+    niche: 'model bridges',
+    headline: 'Cohere model bridge',
+    body: 'Cohere endpoints as dsh providers - Command R and rerank surfaces exposed for retrieval-heavy work. Registered externally; promoted into the curated core.',
+    extra: ['cohere', 'rag'],
+  },
+  'dsh-groq': {
+    niche: 'model bridges',
+    headline: 'Groq model bridge',
+    body: 'Groq LPU speed for open models as dsh providers - tokens/second surfaced in the metrics line. Registered externally; promoted into the curated core.',
+    extra: ['groq', 'fast', 'bridge'],
+  },
+  'dsh-vllm': {
+    niche: 'model bridges',
+    headline: 'vLLM model bridge',
+    body: 'Self-hosted vLLM serving as a dsh provider - your GPUs, your endpoints, batch throughput surfaced. Registered externally; promoted into the curated core.',
+    extra: ['vllm', 'self-hosted', 'gpu'],
+  },
+  'dsh-together': {
+    niche: 'model bridges',
+    headline: 'Together AI model bridge',
+    body: 'Together endpoints as dsh providers - open-model serving with per-turn pricing. Registered externally; promoted into the curated core.',
+    extra: ['together', 'bridge'],
+  },
+  'dsh-lmstudio': {
+    niche: 'model bridges',
+    headline: 'LM Studio model bridge',
+    body: "LM Studio's local server as a dsh provider - desktop-class local models, no egress. Registered externally; promoted into the curated core.",
+    extra: ['lmstudio', 'local'],
+  },
+  'dsh-glm': {
+    niche: 'model bridges',
+    headline: 'GLM model bridge',
+    body: 'Zhipu GLM models as dsh providers - bilingual strength and agentic tool use surfaced per turn. Registered externally; promoted into the curated core.',
+    extra: ['glm', 'zhipu'],
+  },
+  'dsh-doubao': {
+    niche: 'model bridges',
+    headline: 'Doubao model bridge',
+    body: 'ByteDance Doubao models as dsh providers - Volcano endpoints, pricing per turn. Registered externally; promoted into the curated core.',
+    extra: ['doubao', 'bytedance'],
+  },
+  'dsh-minimax': {
+    niche: 'model bridges',
+    headline: 'MiniMax model bridge',
+    body: 'MiniMax models as dsh providers - long-context strength surfaced in the budget line. Registered externally; promoted into the curated core.',
+    extra: ['minimax', 'bridge'],
+  },
+  'dsh-baichuan': {
+    niche: 'model bridges',
+    headline: 'Baichuan model bridge',
+    body: 'Baichuan models as dsh providers through the LLM adapter seam - Chinese-language strength, pricing surfaced per turn.',
+    extra: ['baichuan', 'llm', 'bridge'],
+  },
+  'dsh-perplexity': {
+    niche: 'model bridges',
+    headline: 'Perplexity bridge for sourced answers',
+    body: 'Routes questions through Sonar endpoints - answers arrive with citations, mapped into the harness citation surface; the search-grounded provider.',
+    extra: ['perplexity', 'search', 'citations'],
+  },
   'dsh-claude': {
     niche: 'model bridges',
     headline: 'Anthropic Claude provider bridge for the DeepSeek Harness',
@@ -211,6 +290,18 @@ const CORE = {
     extra: ['providers', 'llm', 'registry'],
   },
   // ---- developer tools --------------------------------------------------
+  'dsh-windsurf': {
+    niche: 'developer tools',
+    headline: 'Windsurf IDE bridge',
+    body: 'Run dsh sessions from the Windsurf editor - selection as context, diffs applied in place; the IDE seam beside dsh-cursor and dsh-zed.',
+    extra: ['windsurf', 'ide', 'editor'],
+  },
+  'dsh-tmux': {
+    niche: 'developer tools',
+    headline: 'tmux surface for dsh',
+    body: 'Panes as sessions - spawn a bot per pane, live status in the status bar, pane titles as presence; terminal-native parallelism for dsh-bot fleets.',
+    extra: ['tmux', 'terminal', 'multiplexer'],
+  },
   'dsh-edit': {
     niche: 'developer tools',
     headline: 'Inline edit panel for the dsh web GUI',
@@ -671,6 +762,30 @@ const CORE = {
     extra: ['sharing'],
   },
   // ---- ops ---------------------------------------------------------------
+  'dsh-headless': {
+    niche: 'ops',
+    headline: 'Headless mode toolkit',
+    body: 'The no-GUI invocation contract - profile setup, prompt capture, and exit-code discipline for headless dsh runs; the layer dsh-bot spawns through.',
+    extra: ['headless', 'cli', 'automation'],
+  },
+  'dsh-daemon': {
+    niche: 'ops',
+    headline: 'Background daemon for dsh bots',
+    body: 'A launchd/systemd-friendly supervisor that keeps scheduled bots alive - starts on boot, restarts on crash, fronts the dsh-bot health socket.',
+    extra: ['daemon', 'service', 'supervisor'],
+  },
+  'dsh-run': {
+    niche: 'ops',
+    headline: 'Programmatic one-shot runner',
+    body: 'Run a dsh session from code or CI - argv in, structured result out; the thin sibling of dsh-bot for non-scheduled work.',
+    extra: ['run', 'runner', 'ci'],
+  },
+  'dsh-sessions': {
+    niche: 'ops',
+    headline: 'Session manager and browser',
+    body: 'List, inspect, and resume past dsh sessions from terminal or GUI - filters by project, date, and outcome; the multi-session ops view.',
+    extra: ['sessions', 'resume', 'history'],
+  },
   'dsh-logs': {
     niche: 'ops',
     headline: 'Structured log viewer for the dsh host',
@@ -770,6 +885,18 @@ const CORE = {
     extra: ['headhunt', 'recruiter', 'outreach'],
   },
   // ---- meta / product ----------------------------------------------------
+  'dsh-registry': {
+    niche: 'meta / product',
+    headline: 'Local plugin registry',
+    body: "An index of everything installed across profiles - plugins, presets, skills, with versions and provenance; the registry behind the hub panel. (Community stores and marketplaces ship separately.)",
+    extra: ['registry', 'plugins', 'index'],
+  },
+  'dsh-hub': {
+    niche: 'meta / product',
+    headline: 'The plugin hub panel',
+    body: "Browse, install, update, and remove harness extensions from the dsh web GUI - one view over every profile's inventory. Registered externally; promoted into the curated core.",
+    extra: ['hub', 'plugins', 'panel'],
+  },
   'dsh-studio': {
     niche: 'meta / product',
     headline: 'Studio shell for the DeepSeek Harness',
@@ -829,6 +956,28 @@ const CORE = {
     headline: 'Update manager for the DeepSeek Harness',
     body: 'Check and apply updates for dsh itself and every installed plugin from the GUI, with rollback from the backups each update leaves behind.',
     extra: [],
+  },
+  // ---- evaluation --------------------------------------------------------
+  // Quality rails for agent output: judged runs, reproducible rubrics,
+  // and edit coverage. (eval, bench, and score-spelled names already ship
+  // as third-party community packages.)
+  'dsh-judge': {
+    niche: 'evaluation',
+    headline: 'LLM-as-judge evaluation',
+    body: 'Score agent output against a rubric with a second model pass - verdicts with per-criterion reasoning, disagreements flagged; pairs with dsh-council.',
+    extra: ['judge', 'evaluation', 'llm-as-judge'],
+  },
+  'dsh-rubric': {
+    niche: 'evaluation',
+    headline: 'Scoring rubrics for agent work',
+    body: 'Declarative rubric files - criteria, weights, pass thresholds - shared by dsh-judge and humans; the contract that makes evaluation reproducible.',
+    extra: ['rubric', 'evaluation', 'scoring'],
+  },
+  'dsh-coverage': {
+    niche: 'evaluation',
+    headline: 'Agent edit coverage map',
+    body: 'Which files, functions, and paths the agent actually touched - a coverage report for agent work, diffable run over run.',
+    extra: ['coverage', 'report', 'diff'],
   },
   // ---- harness surfaces --------------------------------------------------
   'dsh-finder': {

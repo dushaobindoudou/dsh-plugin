@@ -1,14 +1,14 @@
-# dsh-web3
+# dsh-web3-core
 
-[![npm](https://img.shields.io/npm/v/dsh-web3.svg)](https://www.npmjs.com/package/dsh-web3)
+[![npm](https://img.shields.io/npm/v/dsh-web3-core.svg)](https://www.npmjs.com/package/dsh-web3-core)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**DeepSeek Harness (DSH) plugin: agent-safe EVM wallet with encrypted vault, signing policy, model tools, bundled skill, and web UI.** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**Agent-safe EVM wallet core: encrypted key vault, HD accounts, declarative signing policy, chain providers, and EIP-191/EIP-712/EIP-1559 signing.** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 Releases exist on npm; the code is maintained outside this monorepo.
 This directory only tracks the name and points at the published package.
 
-DeepSeek Harness (DSH) plugin: agent-safe EVM wallet with encrypted vault, signing policy, model tools, bundled skill, and web UI.. (Recorded from the npm registry at import time.)
+Agent-safe EVM wallet core: encrypted key vault, HD accounts, declarative signing policy, chain providers, and EIP-191/EIP-712/EIP-1559 signing.. (Recorded from the npm registry at import time.)
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

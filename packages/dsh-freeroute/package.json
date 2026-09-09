@@ -1,7 +1,7 @@
 {
   "name": "dsh-freeroute",
-  "version": "0.1.0",
-  "description": "Free-tier model routing for the DeepSeek Harness (dsh) - discover OpenRouter free models, apply the best free model as agent default, auto-rotate on rate limits; paid config untouched unless asked.",
+  "version": "0.8.5",
+  "description": "Free-tier model aggregation for the DeepSeek Harness (dsh): registers the freeroute provider over a pool of free-quota upstreams (OpenCode Zen / B.AI / OpenRouter / SenseNova built in, plus remote catalogs and custom gateways), transparent failover before",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -11,7 +11,9 @@
     "cordis-plugin",
     "openrouter",
     "free-tier",
-    "llm-routing"
+    "llm-routing",
+    "failover",
+    "openai-compatible"
   ],
   "repository": {
     "type": "git",

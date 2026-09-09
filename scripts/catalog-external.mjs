@@ -14,7 +14,7 @@ export const EXTERNAL = {
     headline: "Agent Client Protocol (ACP) server plugin for the DeepSeek Harness (dsh) — drive dsh agents from Zed and any ACP client",
     body: "Agent Client Protocol (ACP) server plugin for the DeepSeek Harness (dsh) — drive dsh agents from Zed and any ACP client. (Recorded from the npm registry at import time.)",
     extra: ["agent-client-protocol","acp","zed","coding-agent"],
-    version: "0.10.0",
+    version: "0.11.1",
   },
   "dsh-agentpay": {
     niche: "external waves",
@@ -63,13 +63,6 @@ export const EXTERNAL = {
     headline: "Asana bridge for dsh",
     body: "Asana bridge for dsh. (Recorded from the npm registry at import time.)",
     extra: ["asana"],
-    version: "0.0.1",
-  },
-  "dsh-audio": {
-    niche: "external waves",
-    headline: "Audio toolkit for dsh",
-    body: "Audio toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["audio"],
     version: "0.0.1",
   },
   "dsh-aws": {
@@ -310,13 +303,6 @@ export const EXTERNAL = {
     extra: ["deploy","release"],
     version: "0.0.1",
   },
-  "dsh-devops": {
-    niche: "external waves",
-    headline: "DevOps pipeline toolkit for dsh",
-    body: "DevOps pipeline toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["devops","ci"],
-    version: "0.0.1",
-  },
   "dsh-dex": {
     niche: "external waves",
     headline: "DEX math for dsh - price impact you compute before you sign, not after you regret. Name reserved; spec below; first release in development.",
@@ -494,10 +480,10 @@ export const EXTERNAL = {
   },
   "dsh-freeroute": {
     niche: "external waves",
-    headline: "Free-tier model routing for the DeepSeek Harness (dsh) - discover OpenRouter free models, apply the best free model as agent default, auto-rotate on rate limits; paid config untouched unless asked.",
-    body: "Free-tier model routing for the DeepSeek Harness (dsh) - discover OpenRouter free models, apply the best free model as agent default, auto-rotate on rate limits; paid config untouched unless asked.. (Recorded from the npm registry at import time.)",
-    extra: ["openrouter","free-tier","llm-routing"],
-    version: "0.1.0",
+    headline: "Free-tier model aggregation for the DeepSeek Harness (dsh): registers the freeroute provider over a pool of free-quota upstreams (OpenCode Zen / B.AI / OpenRouter / SenseNova built in, plus remote catalogs and custom gateways), transparent failover before",
+    body: "Free-tier model aggregation for the DeepSeek Harness (dsh): registers the freeroute provider over a pool of free-quota upstreams (OpenCode Zen / B.AI / OpenRouter / SenseNova built in, plus remote catalogs and custom gateways), transparent failover before. (Recorded from the npm registry at import time.)",
+    extra: ["openrouter","free-tier","llm-routing","failover","openai-compatible"],
+    version: "0.8.5",
   },
   "dsh-fun": {
     niche: "external waves",
@@ -905,13 +891,6 @@ export const EXTERNAL = {
     extra: ["news"],
     version: "0.0.1",
   },
-  "dsh-next": {
-    niche: "external waves",
-    headline: "Next.js toolkit for dsh",
-    body: "Next.js toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["nextjs"],
-    version: "0.0.1",
-  },
   "dsh-nginx": {
     niche: "external waves",
     headline: "Nginx toolkit for dsh",
@@ -1110,10 +1089,10 @@ export const EXTERNAL = {
   },
   "dsh-refine": {
     niche: "external waves",
-    headline: "DeepSeek Harness (dsh) plugin: /refine command + settings panel for the dsh-continual-harness self-refinement engine — entry browsing, refinement history timeline, one-click rollback, auto-gate audit; engine optional at runtime.",
-    body: "DeepSeek Harness (dsh) plugin: /refine command + settings panel for the dsh-continual-harness self-refinement engine — entry browsing, refinement history timeline, one-click rollback, auto-gate audit; engine optional at runtime.. (Recorded from the npm registry at import time.)",
+    headline: "DeepSeek Harness (dsh) plugin: a shell around the dsh-continual-harness self-refinement engine — mounts the engine itself and owns /refine (status / entry browsing / refinement history / one-click rollback / scoped triggers) plus a settings panel; engine ",
+    body: "DeepSeek Harness (dsh) plugin: a shell around the dsh-continual-harness self-refinement engine — mounts the engine itself and owns /refine (status / entry browsing / refinement history / one-click rollback / scoped triggers) plus a settings panel; engine . (Recorded from the npm registry at import time.)",
     extra: ["deepseek","plugin","cordis","continual-harness","agent-harness","refine"],
-    version: "1.0.3",
+    version: "1.2.0",
   },
   "dsh-reflect": {
     niche: "external waves",
@@ -1227,13 +1206,6 @@ export const EXTERNAL = {
     extra: ["sqlite"],
     version: "0.0.1",
   },
-  "dsh-sre": {
-    niche: "external waves",
-    headline: "SRE toolkit for dsh",
-    body: "SRE toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["sre","incident"],
-    version: "0.0.1",
-  },
   "dsh-stable": {
     niche: "external waves",
     headline: "The short form of the stablecoin settlement layer - what the terminal types. Name reserved; spec below; first release in development.",
@@ -1302,13 +1274,6 @@ export const EXTERNAL = {
     headline: "Svelte toolkit for dsh",
     body: "Svelte toolkit for dsh. (Recorded from the npm registry at import time.)",
     extra: ["svelte"],
-    version: "0.0.1",
-  },
-  "dsh-swarm": {
-    niche: "external waves",
-    headline: "Multi-agent orchestration for dsh - one declarative swarm, auditable routing, hard budget caps. Name reserved; spec below; first release in development.",
-    body: "Multi-agent orchestration for dsh - one declarative swarm, auditable routing, hard budget caps. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
-    extra: ["multi-agent","orchestration","swarm","agents"],
     version: "0.0.1",
   },
   "dsh-swift": {
@@ -1488,10 +1453,17 @@ export const EXTERNAL = {
   },
   "dsh-web3": {
     niche: "external waves",
-    headline: "Web3 toolkit for dsh agents",
-    body: "Web3 toolkit for dsh agents. (Recorded from the npm registry at import time.)",
-    extra: ["web3","blockchain"],
-    version: "0.0.1",
+    headline: "DeepSeek Harness (DSH) plugin: agent-safe EVM wallet with encrypted vault, signing policy, model tools, bundled skill, and web UI.",
+    body: "DeepSeek Harness (DSH) plugin: agent-safe EVM wallet with encrypted vault, signing policy, model tools, bundled skill, and web UI.. (Recorded from the npm registry at import time.)",
+    extra: [],
+    version: "0.6.0",
+  },
+  "dsh-web3-core": {
+    niche: "external waves",
+    headline: "Agent-safe EVM wallet core: encrypted key vault, HD accounts, declarative signing policy, chain providers, and EIP-191/EIP-712/EIP-1559 signing.",
+    body: "Agent-safe EVM wallet core: encrypted key vault, HD accounts, declarative signing policy, chain providers, and EIP-191/EIP-712/EIP-1559 signing.. (Recorded from the npm registry at import time.)",
+    extra: [],
+    version: "0.2.1",
   },
   "dsh-weibo": {
     niche: "external waves",

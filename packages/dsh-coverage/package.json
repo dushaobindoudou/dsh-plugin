@@ -1,0 +1,22 @@
+{
+  "name": "dsh-coverage",
+  "version": "0.0.1",
+  "description": "Agent edit coverage map - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "coverage",
+    "report",
+    "diff"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-coverage"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-coverage#readme"
+}

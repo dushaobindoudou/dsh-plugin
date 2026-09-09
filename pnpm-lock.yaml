@@ -60,6 +60,8 @@ importers:
 
   packages/dsh-backend: {}
 
+  packages/dsh-baichuan: {}
+
   packages/dsh-banking: {}
 
   packages/dsh-base: {}
@@ -128,6 +130,8 @@ importers:
 
   packages/dsh-council: {}
 
+  packages/dsh-coverage: {}
+
   packages/dsh-cpp: {}
 
   packages/dsh-critic: {}
@@ -139,6 +143,8 @@ importers:
   packages/dsh-csharp: {}
 
   packages/dsh-cursor: {}
+
+  packages/dsh-daemon: {}
 
   packages/dsh-data: {}
 
@@ -280,6 +286,8 @@ importers:
 
   packages/dsh-headhunt: {}
 
+  packages/dsh-headless: {}
+
   packages/dsh-health: {}
 
   packages/dsh-helm: {}
@@ -337,6 +345,8 @@ importers:
   packages/dsh-joke: {}
 
   packages/dsh-journal: {}
+
+  packages/dsh-judge: {}
 
   packages/dsh-jupyter: {}
 
@@ -462,6 +472,8 @@ importers:
 
   packages/dsh-permission: {}
 
+  packages/dsh-perplexity: {}
+
   packages/dsh-persona: {}
 
   packages/dsh-photo: {}
@@ -530,6 +542,8 @@ importers:
 
   packages/dsh-reflect: {}
 
+  packages/dsh-registry: {}
+
   packages/dsh-rent: {}
 
   packages/dsh-researcher: {}
@@ -542,7 +556,11 @@ importers:
 
   packages/dsh-router: {}
 
+  packages/dsh-rubric: {}
+
   packages/dsh-ruby: {}
+
+  packages/dsh-run: {}
 
   packages/dsh-rust: {}
 
@@ -575,6 +593,8 @@ importers:
   packages/dsh-seo: {}
 
   packages/dsh-serve: {}
+
+  packages/dsh-sessions: {}
 
   packages/dsh-settings: {}
 
@@ -656,6 +676,8 @@ importers:
 
   packages/dsh-tipping: {}
 
+  packages/dsh-tmux: {}
+
   packages/dsh-toast: {}
 
   packages/dsh-together: {}
@@ -708,11 +730,15 @@ importers:
 
   packages/dsh-web3: {}
 
+  packages/dsh-web3-core: {}
+
   packages/dsh-weibo: {}
 
   packages/dsh-whatsapp: {}
 
   packages/dsh-widget: {}
+
+  packages/dsh-windsurf: {}
 
   packages/dsh-word: {}
 

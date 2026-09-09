@@ -5,10 +5,22 @@
 // Paginates the npm search API for the account's packages, keeps every dsh-*
 // name not already curated in catalog.mjs, and regenerates the generated
 // scripts/catalog-external.mjs. npm publishing state is never touched.
+//
+// Naming rule: the namespace is dsh-xxx - names containing "plugin"
+// (e.g. dsh-plugin-bots) are skipped and stay outside this catalog.
+// Safety: refuses to write when the search returns suspiciously few
+// packages; FORCE=1 overrides.
+// Retention: entries already recorded but missed by this run's search
+// are kept, so unstable search pagination cannot silently drop names.
+// Fix: the curated check matches CORE + REAL_PACKAGES only. The merged
+// CATALOG included this generated file itself, so after the first run
+// every recorded name was misread as "curated" and the file was silently
+// replaced with only newly discovered names (this emptied it once).
 import { writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { CATALOG, REAL_PACKAGES } from './catalog.mjs'
+import { CORE, REAL_PACKAGES } from './catalog.mjs'
+import { EXTERNAL as PREVIOUS } from './catalog-external.mjs'
 
 const MAINTAINER = 'dushaobindoudou'
 const SEARCH = 'https://registry.npmjs.org/-/v1/search'
@@ -44,10 +56,27 @@ for (const o of objects) {
   seen.set(p.name, p)
 }
 
+const MIN_SEEN = Number(process.env.MIN_SEEN ?? 200)
+if (seen.size < MIN_SEEN && process.env.FORCE !== '1') {
+  throw new Error(
+    'search returned only ' +
+      seen.size +
+      ' dsh-* packages (floor ' +
+      MIN_SEEN +
+      '); refusing to overwrite catalog-external.mjs - the registry search is probably flaky. ' +
+      'Re-check the registry, then re-run with FORCE=1 to override.',
+  )
+}
+
 const external = {}
 let curated = 0
+const ruleSkipped = []
 for (const [name, p] of [...seen].sort(([a], [b]) => a.localeCompare(b))) {
-  if (name in CATALOG || REAL_PACKAGES.includes(name)) {
+  if (name.includes('plugin')) {
+    ruleSkipped.push(name)
+    continue
+  }
+  if (name in CORE || REAL_PACKAGES.includes(name)) {
     curated++
     continue
   }
@@ -60,6 +89,19 @@ for (const [name, p] of [...seen].sort(([a], [b]) => a.localeCompare(b))) {
     extra: (p.keywords ?? []).filter((k) => !STANDARD_KEYWORDS.has(k)).slice(0, 6),
     version: p.version ?? '0.0.1',
   }
+}
+
+// Retain previously recorded externals the search missed this run.
+// npm search pagination is unstable - a single pass can silently drop
+// names - so old entries are kept; they refresh the next time the
+// search returns them.
+const retained = []
+for (const [name, entry] of Object.entries(PREVIOUS)) {
+  if (name.includes('plugin')) continue // naming rule applies to retention too
+  if (seen.has(name)) continue // refreshed by this run
+  if (name in CORE || REAL_PACKAGES.includes(name)) continue // promoted meanwhile
+  external[name] = entry
+  retained.push(name)
 }
 
 function emit(obj) {
@@ -87,3 +129,5 @@ await writeFile(join(ROOT, 'scripts', 'catalog-external.mjs'), source)
 const odd = Object.values(external).filter((e) => e.version !== '0.0.1').length
 console.log(`search total=${total} fetched=${objects.length} dsh=${seen.size}`)
 console.log(`external entries written=${Object.keys(external).length} (already curated=${curated}, version!=0.0.1: ${odd})`)
+console.log(`naming rule (no 'plugin' in dsh-xxx) skipped: ${ruleSkipped.join(', ') || 'none'}`)
+console.log(`retained from previous import (search miss): ${retained.length}${retained.length ? ' - ' + retained.join(', ') : ''}`)

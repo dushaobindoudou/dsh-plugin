@@ -1,16 +1,14 @@
 {
   "name": "dsh-web3",
-  "version": "0.0.1",
-  "description": "Web3 toolkit for dsh agents - name reserved; first release in development.",
+  "version": "0.6.0",
+  "description": "DeepSeek Harness (DSH) plugin: agent-safe EVM wallet with encrypted vault, signing policy, model tools, bundled skill, and web UI.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
     "dsh",
     "dsh-plugin",
     "deepseek-harness",
-    "cordis-plugin",
-    "web3",
-    "blockchain"
+    "cordis-plugin"
   ],
   "repository": {
     "type": "git",

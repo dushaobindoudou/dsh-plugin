@@ -1,0 +1,19 @@
+{
+  "name": "dsh-web3-core",
+  "version": "0.2.1",
+  "description": "Agent-safe EVM wallet core: encrypted key vault, HD accounts, declarative signing policy, chain providers, and EIP-191/EIP-712/EIP-1559 signing.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-web3-core"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-web3-core#readme"
+}

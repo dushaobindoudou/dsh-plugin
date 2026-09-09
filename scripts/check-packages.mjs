@@ -13,6 +13,11 @@ const expected = new Set([...Object.keys(CATALOG), ...REAL_PACKAGES])
 const errors = []
 const rows = []
 
+// Naming rule: the namespace is dsh-xxx - "plugin" never appears inside a name.
+for (const name of expected) {
+  if (name.includes('plugin')) fail(name, 'naming rule violation: dsh-xxx must not contain "plugin"')
+}
+
 function fail(name, msg) {
   errors.push(`${name}: ${msg}`)
 }
