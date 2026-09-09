@@ -1,7 +1,7 @@
 {
-  "name": "dsh-yuque",
+  "name": "dsh-hulu",
   "version": "0.0.1",
-  "description": "Yuque bridge for dsh agents - name reserved; first release in development.",
+  "description": "Hulu bridge for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,13 +9,13 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "yuque",
-    "docs"
+    "hulu",
+    "streaming"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
-    "directory": "packages/dsh-yuque"
+    "directory": "packages/dsh-hulu"
   },
-  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-yuque#readme"
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-hulu#readme"
 }

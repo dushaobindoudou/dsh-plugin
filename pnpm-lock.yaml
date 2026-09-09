@@ -8,6 +8,10 @@ importers:
 
   .: {}
 
+  packages/dsh-12306: {}
+
+  packages/dsh-163: {}
+
   packages/dsh-accounting: {}
 
   packages/dsh-acp-server: {}
@@ -20,13 +24,23 @@ importers:
 
   packages/dsh-agents: {}
 
+  packages/dsh-airbnb: {}
+
   packages/dsh-airtable: {}
 
   packages/dsh-alchemy: {}
 
   packages/dsh-alert: {}
 
+  packages/dsh-alexa: {}
+
   packages/dsh-algorithm: {}
+
+  packages/dsh-alipay: {}
+
+  packages/dsh-aliyun: {}
+
+  packages/dsh-amap: {}
 
   packages/dsh-amazon: {}
 
@@ -45,6 +59,8 @@ importers:
   packages/dsh-ap2: {}
 
   packages/dsh-api: {}
+
+  packages/dsh-applepay: {}
 
   packages/dsh-aptos: {}
 
@@ -74,6 +90,8 @@ importers:
 
   packages/dsh-baichuan: {}
 
+  packages/dsh-baidu: {}
+
   packages/dsh-banking: {}
 
   packages/dsh-base: {}
@@ -81,6 +99,8 @@ importers:
   packages/dsh-beauty: {}
 
   packages/dsh-bedrock: {}
+
+  packages/dsh-beike: {}
 
   packages/dsh-bell: {}
 
@@ -96,9 +116,13 @@ importers:
 
   packages/dsh-bnb: {}
 
+  packages/dsh-bole: {}
+
   packages/dsh-bolt: {}
 
   packages/dsh-book: {}
+
+  packages/dsh-booking: {}
 
   packages/dsh-bot: {}
 
@@ -110,6 +134,8 @@ importers:
 
   packages/dsh-bun: {}
 
+  packages/dsh-cainiao: {}
+
   packages/dsh-calc: {}
 
   packages/dsh-calculator: {}
@@ -119,6 +145,8 @@ importers:
   packages/dsh-car: {}
 
   packages/dsh-cardano: {}
+
+  packages/dsh-cashapp: {}
 
   packages/dsh-cast: {}
 
@@ -164,6 +192,8 @@ importers:
 
   packages/dsh-cook: {}
 
+  packages/dsh-costco: {}
+
   packages/dsh-council: {}
 
   packages/dsh-coverage: {}
@@ -177,6 +207,8 @@ importers:
   packages/dsh-crypto: {}
 
   packages/dsh-csharp: {}
+
+  packages/dsh-ctrip: {}
 
   packages/dsh-cursor: {}
 
@@ -218,9 +250,13 @@ importers:
 
   packages/dsh-dictionary: {}
 
+  packages/dsh-didi: {}
+
   packages/dsh-diff: {}
 
   packages/dsh-discord: {}
+
+  packages/dsh-disney: {}
 
   packages/dsh-dnd: {}
 
@@ -230,11 +266,15 @@ importers:
 
   packages/dsh-dogecoin: {}
 
+  packages/dsh-doordash: {}
+
   packages/dsh-doubao: {}
 
   packages/dsh-douyin: {}
 
   packages/dsh-drive: {}
+
+  packages/dsh-dropbox: {}
 
   packages/dsh-dune: {}
 
@@ -245,6 +285,8 @@ importers:
   packages/dsh-edit: {}
 
   packages/dsh-edu: {}
+
+  packages/dsh-eleme: {}
 
   packages/dsh-emacs: {}
 
@@ -278,6 +320,10 @@ importers:
 
   packages/dsh-etsy: {}
 
+  packages/dsh-evernote: {}
+
+  packages/dsh-expedia: {}
+
   packages/dsh-export: {}
 
   packages/dsh-facebook: {}
@@ -303,6 +349,8 @@ importers:
   packages/dsh-fit: {}
 
   packages/dsh-fitness: {}
+
+  packages/dsh-fliggy: {}
 
   packages/dsh-font: {}
 
@@ -330,9 +378,13 @@ importers:
 
   packages/dsh-game: {}
 
+  packages/dsh-gaode: {}
+
   packages/dsh-garden: {}
 
   packages/dsh-gcp: {}
+
+  packages/dsh-gdrive: {}
 
   packages/dsh-gemini: {}
 
@@ -350,9 +402,15 @@ importers:
 
   packages/dsh-google: {}
 
+  packages/dsh-googlepay: {}
+
   packages/dsh-gpt: {}
 
+  packages/dsh-grab: {}
+
   packages/dsh-groq: {}
+
+  packages/dsh-grubhub: {}
 
   packages/dsh-habit: {}
 
@@ -392,6 +450,8 @@ importers:
 
   packages/dsh-huggingface: {}
 
+  packages/dsh-hulu: {}
+
   packages/dsh-hunyuan: {}
 
   packages/dsh-hype: {}
@@ -419,6 +479,8 @@ importers:
   packages/dsh-ios: {}
 
   packages/dsh-iot: {}
+
+  packages/dsh-iqiyi: {}
 
   packages/dsh-irc: {}
 
@@ -450,6 +512,8 @@ importers:
 
   packages/dsh-karaoke: {}
 
+  packages/dsh-keep: {}
+
   packages/dsh-keymap: {}
 
   packages/dsh-kimi: {}
@@ -460,6 +524,8 @@ importers:
 
   packages/dsh-l10n: {}
 
+  packages/dsh-lagou: {}
+
   packages/dsh-language: {}
 
   packages/dsh-latex: {}
@@ -469,6 +535,8 @@ importers:
   packages/dsh-ledger: {}
 
   packages/dsh-legal: {}
+
+  packages/dsh-liepin: {}
 
   packages/dsh-lightning: {}
 
@@ -498,11 +566,15 @@ importers:
 
   packages/dsh-lsp: {}
 
+  packages/dsh-lyft: {}
+
   packages/dsh-macos: {}
 
   packages/dsh-macro: {}
 
   packages/dsh-mailchimp: {}
+
+  packages/dsh-maoyan: {}
 
   packages/dsh-marketing: {}
 
@@ -519,6 +591,8 @@ importers:
   packages/dsh-meditate: {}
 
   packages/dsh-medium: {}
+
+  packages/dsh-meituan: {}
 
   packages/dsh-mention: {}
 
@@ -564,6 +638,10 @@ importers:
 
   packages/dsh-neovim: {}
 
+  packages/dsh-netease: {}
+
+  packages/dsh-netflix: {}
+
   packages/dsh-netlify: {}
 
   packages/dsh-news: {}
@@ -588,6 +666,8 @@ importers:
 
   packages/dsh-onchain: {}
 
+  packages/dsh-onedrive: {}
+
   packages/dsh-openai: {}
 
   packages/dsh-openrouter: {}
@@ -610,6 +690,8 @@ importers:
 
   packages/dsh-paypal: {}
 
+  packages/dsh-peloton: {}
+
   packages/dsh-permission: {}
 
   packages/dsh-perplexity: {}
@@ -623,6 +705,8 @@ importers:
   packages/dsh-php: {}
 
   packages/dsh-physics: {}
+
+  packages/dsh-pinduoduo: {}
 
   packages/dsh-pinterest: {}
 
@@ -670,6 +754,8 @@ importers:
 
   packages/dsh-qq: {}
 
+  packages/dsh-qqmusic: {}
+
   packages/dsh-queue: {}
 
   packages/dsh-quiz: {}
@@ -715,6 +801,8 @@ importers:
   packages/dsh-ripple: {}
 
   packages/dsh-risk: {}
+
+  packages/dsh-robinhood: {}
 
   packages/dsh-router: {}
 
@@ -766,6 +854,8 @@ importers:
 
   packages/dsh-settings: {}
 
+  packages/dsh-shein: {}
+
   packages/dsh-shop: {}
 
   packages/dsh-shopee: {}
@@ -773,6 +863,8 @@ importers:
   packages/dsh-shopify: {}
 
   packages/dsh-siliconflow: {}
+
+  packages/dsh-siri: {}
 
   packages/dsh-skill: {}
 
@@ -794,9 +886,13 @@ importers:
 
   packages/dsh-sound: {}
 
+  packages/dsh-soundcloud: {}
+
   packages/dsh-speech: {}
 
   packages/dsh-sports: {}
+
+  packages/dsh-spotify: {}
 
   packages/dsh-sqlite: {}
 
@@ -817,6 +913,8 @@ importers:
   packages/dsh-step: {}
 
   packages/dsh-stock: {}
+
+  packages/dsh-strava: {}
 
   packages/dsh-streaming: {}
 
@@ -848,6 +946,10 @@ importers:
 
   packages/dsh-talent: {}
 
+  packages/dsh-taobao: {}
+
+  packages/dsh-target: {}
+
   packages/dsh-tarot: {}
 
   packages/dsh-task: {}
@@ -855,6 +957,8 @@ importers:
   packages/dsh-tasks: {}
 
   packages/dsh-tax: {}
+
+  packages/dsh-temu: {}
 
   packages/dsh-terraform: {}
 
@@ -874,15 +978,21 @@ importers:
 
   packages/dsh-tipping: {}
 
+  packages/dsh-tmall: {}
+
   packages/dsh-tmux: {}
 
   packages/dsh-toast: {}
+
+  packages/dsh-todoist: {}
 
   packages/dsh-together: {}
 
   packages/dsh-ton: {}
 
   packages/dsh-tour: {}
+
+  packages/dsh-toutiao: {}
 
   packages/dsh-trading: {}
 
@@ -895,6 +1005,8 @@ importers:
   packages/dsh-trezor: {}
 
   packages/dsh-trip: {}
+
+  packages/dsh-tripadvisor: {}
 
   packages/dsh-tron: {}
 
@@ -910,6 +1022,10 @@ importers:
 
   packages/dsh-typescript: {}
 
+  packages/dsh-uber: {}
+
+  packages/dsh-ubereats: {}
+
   packages/dsh-uniswap: {}
 
   packages/dsh-units: {}
@@ -923,6 +1039,8 @@ importers:
   packages/dsh-ux: {}
 
   packages/dsh-vector: {}
+
+  packages/dsh-venmo: {}
 
   packages/dsh-vercel: {}
 
@@ -946,9 +1064,13 @@ importers:
 
   packages/dsh-wake: {}
 
+  packages/dsh-walmart: {}
+
   packages/dsh-warp: {}
 
   packages/dsh-water: {}
+
+  packages/dsh-waze: {}
 
   packages/dsh-web3: {}
 
@@ -982,11 +1104,17 @@ importers:
 
   packages/dsh-xai: {}
 
+  packages/dsh-xianyu: {}
+
   packages/dsh-xiaohongshu: {}
 
   packages/dsh-xrp: {}
 
+  packages/dsh-yelp: {}
+
   packages/dsh-yi: {}
+
+  packages/dsh-youku: {}
 
   packages/dsh-youtube: {}
 
@@ -995,6 +1123,8 @@ importers:
   packages/dsh-zapier: {}
 
   packages/dsh-zed: {}
+
+  packages/dsh-zelle: {}
 
   packages/dsh-zen: {}
 

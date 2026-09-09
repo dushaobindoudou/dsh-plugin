@@ -1,13 +1,13 @@
-# dsh-yuque
+# dsh-gaode
 
-[![npm](https://img.shields.io/npm/v/dsh-yuque.svg)](https://www.npmjs.com/package/dsh-yuque)
+[![npm](https://img.shields.io/npm/v/dsh-gaode.svg)](https://www.npmjs.com/package/dsh-gaode)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**Yuque bridge for dsh agents** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**The alternate spelling of the Amap bridge** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-The Chinese docs lane - knowledge-base reads and draft syncs, pages cited by URL in every answer. Registered externally; promoted into the curated core.
+Compatibility name: the map bridge ships as dsh-amap; this form keeps the Chinese pinyin spelling installable.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

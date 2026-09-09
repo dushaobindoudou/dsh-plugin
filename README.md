@@ -216,6 +216,77 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-visa`](packages/dsh-visa) | Visa-facing bridge for dsh agents |
 | [`dsh-mastercard`](packages/dsh-mastercard) | Mastercard-facing bridge for dsh agents |
 
+### Daily life (66)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-yuque`](packages/dsh-yuque) | Yuque bridge for dsh agents |
+| [`dsh-meituan`](packages/dsh-meituan) | Meituan bridge for dsh agents |
+| [`dsh-eleme`](packages/dsh-eleme) | Ele.me bridge for dsh agents |
+| [`dsh-didi`](packages/dsh-didi) | DiDi bridge for dsh agents |
+| [`dsh-amap`](packages/dsh-amap) | Amap bridge for dsh agents |
+| [`dsh-gaode`](packages/dsh-gaode) | The alternate spelling of the Amap bridge |
+| [`dsh-baidu`](packages/dsh-baidu) | Baidu bridge for dsh agents |
+| [`dsh-taobao`](packages/dsh-taobao) | Taobao bridge for dsh agents |
+| [`dsh-tmall`](packages/dsh-tmall) | Tmall bridge for dsh agents |
+| [`dsh-pinduoduo`](packages/dsh-pinduoduo) | Pinduoduo bridge for dsh agents |
+| [`dsh-alipay`](packages/dsh-alipay) | Alipay bridge for dsh agents |
+| [`dsh-12306`](packages/dsh-12306) | 12306 bridge for dsh agents |
+| [`dsh-ctrip`](packages/dsh-ctrip) | Ctrip (Trip.com) bridge for dsh agents |
+| [`dsh-fliggy`](packages/dsh-fliggy) | Fliggy bridge for dsh agents |
+| [`dsh-keep`](packages/dsh-keep) | Keep bridge for dsh agents |
+| [`dsh-xianyu`](packages/dsh-xianyu) | Xianyu bridge for dsh agents |
+| [`dsh-cainiao`](packages/dsh-cainiao) | Cainiao bridge for dsh agents |
+| [`dsh-beike`](packages/dsh-beike) | Beike bridge for dsh agents |
+| [`dsh-liepin`](packages/dsh-liepin) | Liepin bridge for dsh agents |
+| [`dsh-bole`](packages/dsh-bole) | Bole lane for dsh agents |
+| [`dsh-lagou`](packages/dsh-lagou) | Lagou bridge for dsh agents |
+| [`dsh-maoyan`](packages/dsh-maoyan) | Maoyan bridge for dsh agents |
+| [`dsh-toutiao`](packages/dsh-toutiao) | Toutiao bridge for dsh agents |
+| [`dsh-netease`](packages/dsh-netease) | Netease lane for dsh agents |
+| [`dsh-qqmusic`](packages/dsh-qqmusic) | QQ Music bridge for dsh agents |
+| [`dsh-163`](packages/dsh-163) | The 163 lane (Netease mail) |
+| [`dsh-aliyun`](packages/dsh-aliyun) | Aliyun bridge for dsh agents |
+| [`dsh-iqiyi`](packages/dsh-iqiyi) | iQiyi bridge for dsh agents |
+| [`dsh-youku`](packages/dsh-youku) | Youku bridge for dsh agents |
+| [`dsh-uber`](packages/dsh-uber) | Uber bridge for dsh agents |
+| [`dsh-lyft`](packages/dsh-lyft) | Lyft bridge for dsh agents |
+| [`dsh-grab`](packages/dsh-grab) | Grab bridge for dsh agents |
+| [`dsh-airbnb`](packages/dsh-airbnb) | Airbnb bridge for dsh agents |
+| [`dsh-booking`](packages/dsh-booking) | Booking.com bridge for dsh agents |
+| [`dsh-expedia`](packages/dsh-expedia) | Expedia bridge for dsh agents |
+| [`dsh-tripadvisor`](packages/dsh-tripadvisor) | TripAdvisor bridge for dsh agents |
+| [`dsh-doordash`](packages/dsh-doordash) | DoorDash bridge for dsh agents |
+| [`dsh-ubereats`](packages/dsh-ubereats) | Uber Eats bridge for dsh agents |
+| [`dsh-grubhub`](packages/dsh-grubhub) | Grubhub bridge for dsh agents |
+| [`dsh-walmart`](packages/dsh-walmart) | Walmart bridge for dsh agents |
+| [`dsh-costco`](packages/dsh-costco) | Costco bridge for dsh agents |
+| [`dsh-target`](packages/dsh-target) | Target bridge for dsh agents |
+| [`dsh-shein`](packages/dsh-shein) | Shein bridge for dsh agents |
+| [`dsh-temu`](packages/dsh-temu) | Temu bridge for dsh agents |
+| [`dsh-netflix`](packages/dsh-netflix) | Netflix bridge for dsh agents |
+| [`dsh-spotify`](packages/dsh-spotify) | Spotify bridge for dsh agents |
+| [`dsh-hulu`](packages/dsh-hulu) | Hulu bridge for dsh agents |
+| [`dsh-disney`](packages/dsh-disney) | Disney+ bridge for dsh agents |
+| [`dsh-soundcloud`](packages/dsh-soundcloud) | SoundCloud bridge for dsh agents |
+| [`dsh-siri`](packages/dsh-siri) | Siri-facing bridge for dsh agents |
+| [`dsh-alexa`](packages/dsh-alexa) | Alexa-facing bridge for dsh agents |
+| [`dsh-strava`](packages/dsh-strava) | Strava bridge for dsh agents |
+| [`dsh-peloton`](packages/dsh-peloton) | Peloton bridge for dsh agents |
+| [`dsh-waze`](packages/dsh-waze) | Waze bridge for dsh agents |
+| [`dsh-yelp`](packages/dsh-yelp) | Yelp bridge for dsh agents |
+| [`dsh-evernote`](packages/dsh-evernote) | Evernote bridge for dsh agents |
+| [`dsh-todoist`](packages/dsh-todoist) | Todoist bridge for dsh agents |
+| [`dsh-dropbox`](packages/dsh-dropbox) | Dropbox bridge for dsh agents |
+| [`dsh-gdrive`](packages/dsh-gdrive) | Google Drive bridge for dsh agents |
+| [`dsh-onedrive`](packages/dsh-onedrive) | OneDrive bridge for dsh agents |
+| [`dsh-venmo`](packages/dsh-venmo) | Venmo bridge for dsh agents |
+| [`dsh-cashapp`](packages/dsh-cashapp) | Cash App bridge for dsh agents |
+| [`dsh-zelle`](packages/dsh-zelle) | Zelle bridge for dsh agents |
+| [`dsh-robinhood`](packages/dsh-robinhood) | Robinhood bridge for dsh agents |
+| [`dsh-applepay`](packages/dsh-applepay) | Apple Pay-facing bridge for dsh agents |
+| [`dsh-googlepay`](packages/dsh-googlepay) | Google Pay-facing bridge for dsh agents |
+
 ### Multi-agent (6)
 
 | Name | Planned first release |
@@ -392,9 +463,9 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-keymap`](packages/dsh-keymap) | Keyboard shortcut manager for the dsh web GUI |
 | [`dsh-completions`](packages/dsh-completions) | Shell completions for the dsh launcher |
 <details>
-<summary>External waves (204 names, reconciled from the npm registry)</summary>
+<summary>External waves (203 names, reconciled from the npm registry)</summary>
 
-`dsh-accounting`, `dsh-acp-server`, `dsh-agentpay`, `dsh-airtable`, `dsh-anime`, `dsh-ansible`, `dsh-ap2`, `dsh-asana`, `dsh-aws`, `dsh-azure`, `dsh-baby`, `dsh-banking`, `dsh-base`, `dsh-beauty`, `dsh-bio`, `dsh-bitcoin`, `dsh-blog`, `dsh-bolt`, `dsh-book`, `dsh-bots`, `dsh-brand`, `dsh-bun`, `dsh-calc`, `dsh-calculator`, `dsh-car`, `dsh-chem`, `dsh-clickhouse`, `dsh-comic`, `dsh-compliance`, `dsh-config`, `dsh-confluence`, `dsh-contract`, `dsh-convert`, `dsh-cook`, `dsh-cpp`, `dsh-critic`, `dsh-crm`, `dsh-crypto`, `dsh-csharp`, `dsh-data`, `dsh-defi`, `dsh-deno`, `dsh-deploy`, `dsh-dict`, `dsh-dictionary`, `dsh-discord`, `dsh-docs`, `dsh-drive`, `dsh-ecommerce`, `dsh-edu`, `dsh-english`, `dsh-erp`, `dsh-escrow`, `dsh-esports`, `dsh-etf`, `dsh-eth`, `dsh-fashion`, `dsh-fees`, `dsh-festival`, `dsh-figma`, `dsh-finance`, `dsh-fintech`, `dsh-fit`, `dsh-fitness`, `dsh-font`, `dsh-food`, `dsh-forex`, `dsh-freeroute`, `dsh-fun`, `dsh-fund`, `dsh-futures`, `dsh-game`, `dsh-garden`, `dsh-gcp`, `dsh-gift`, `dsh-go`, `dsh-habit`, `dsh-helm`, `dsh-hl`, `dsh-holiday`, `dsh-home`, `dsh-horoscope`, `dsh-house`, `dsh-hr`, `dsh-hype`, `dsh-hyperevm`, `dsh-icon`, `dsh-infra`, `dsh-invoice`, `dsh-iot`, `dsh-irc`, `dsh-java`, `dsh-jira`, `dsh-joke`, `dsh-journal`, `dsh-jupyter`, `dsh-k8s`, `dsh-karaoke`, `dsh-kotlin`, `dsh-language`, `dsh-latex`, `dsh-law`, `dsh-legal`, `dsh-linear`, `dsh-linux`, `dsh-lottery`, `dsh-macos`, `dsh-marketing`, `dsh-math`, `dsh-matrix`, `dsh-medical`, `dsh-meditate`, `dsh-micropay`, `dsh-ml`, `dsh-mongo`, `dsh-mood`, `dsh-movie`, `dsh-multiagent`, `dsh-music`, `dsh-mysql`, `dsh-news`, `dsh-nginx`, `dsh-notebook`, `dsh-nuxt`, `dsh-ocr`, `dsh-onchain`, `dsh-options`, `dsh-paper`, `dsh-payment`, `dsh-payments`, `dsh-photo`, `dsh-php`, `dsh-physics`, `dsh-play`, `dsh-podcast`, `dsh-portfolio`, `dsh-postgres`, `dsh-prisma`, `dsh-product`, `dsh-puzzle`, `dsh-python`, `dsh-pyusd`, `dsh-quiz`, `dsh-radio`, `dsh-react`, `dsh-read`, `dsh-recruit`, `dsh-redis`, `dsh-refine`, `dsh-reflect`, `dsh-rent`, `dsh-resume`, `dsh-risk`, `dsh-ruby`, `dsh-rust`, `dsh-sales`, `dsh-screenshot`, `dsh-seo`, `dsh-settings`, `dsh-shop`, `dsh-sleep`, `dsh-sports`, `dsh-sqlite`, `dsh-stable`, `dsh-stats`, `dsh-stock`, `dsh-streaming`, `dsh-subagent`, `dsh-subtitle`, `dsh-supabase`, `dsh-support`, `dsh-svelte`, `dsh-swift`, `dsh-tarot`, `dsh-task`, `dsh-tax`, `dsh-terraform`, `dsh-ticker`, `dsh-time`, `dsh-tipping`, `dsh-trading`, `dsh-transit`, `dsh-travel`, `dsh-trello`, `dsh-trip`, `dsh-tutor`, `dsh-tv`, `dsh-typescript`, `dsh-units`, `dsh-usdc`, `dsh-ux`, `dsh-video`, `dsh-vocab`, `dsh-vue`, `dsh-water`, `dsh-web3`, `dsh-web3-core`, `dsh-weibo`, `dsh-word`, `dsh-writing`, `dsh-x402`, `dsh-yuque`, `dsh-zhihu`, `dsh-zig`
+`dsh-accounting`, `dsh-acp-server`, `dsh-agentpay`, `dsh-airtable`, `dsh-anime`, `dsh-ansible`, `dsh-ap2`, `dsh-asana`, `dsh-aws`, `dsh-azure`, `dsh-baby`, `dsh-banking`, `dsh-base`, `dsh-beauty`, `dsh-bio`, `dsh-bitcoin`, `dsh-blog`, `dsh-bolt`, `dsh-book`, `dsh-bots`, `dsh-brand`, `dsh-bun`, `dsh-calc`, `dsh-calculator`, `dsh-car`, `dsh-chem`, `dsh-clickhouse`, `dsh-comic`, `dsh-compliance`, `dsh-config`, `dsh-confluence`, `dsh-contract`, `dsh-convert`, `dsh-cook`, `dsh-cpp`, `dsh-critic`, `dsh-crm`, `dsh-crypto`, `dsh-csharp`, `dsh-data`, `dsh-defi`, `dsh-deno`, `dsh-deploy`, `dsh-dict`, `dsh-dictionary`, `dsh-discord`, `dsh-docs`, `dsh-drive`, `dsh-ecommerce`, `dsh-edu`, `dsh-english`, `dsh-erp`, `dsh-escrow`, `dsh-esports`, `dsh-etf`, `dsh-eth`, `dsh-fashion`, `dsh-fees`, `dsh-festival`, `dsh-figma`, `dsh-finance`, `dsh-fintech`, `dsh-fit`, `dsh-fitness`, `dsh-font`, `dsh-food`, `dsh-forex`, `dsh-freeroute`, `dsh-fun`, `dsh-fund`, `dsh-futures`, `dsh-game`, `dsh-garden`, `dsh-gcp`, `dsh-gift`, `dsh-go`, `dsh-habit`, `dsh-helm`, `dsh-hl`, `dsh-holiday`, `dsh-home`, `dsh-horoscope`, `dsh-house`, `dsh-hr`, `dsh-hype`, `dsh-hyperevm`, `dsh-icon`, `dsh-infra`, `dsh-invoice`, `dsh-iot`, `dsh-irc`, `dsh-java`, `dsh-jira`, `dsh-joke`, `dsh-journal`, `dsh-jupyter`, `dsh-k8s`, `dsh-karaoke`, `dsh-kotlin`, `dsh-language`, `dsh-latex`, `dsh-law`, `dsh-legal`, `dsh-linear`, `dsh-linux`, `dsh-lottery`, `dsh-macos`, `dsh-marketing`, `dsh-math`, `dsh-matrix`, `dsh-medical`, `dsh-meditate`, `dsh-micropay`, `dsh-ml`, `dsh-mongo`, `dsh-mood`, `dsh-movie`, `dsh-multiagent`, `dsh-music`, `dsh-mysql`, `dsh-news`, `dsh-nginx`, `dsh-notebook`, `dsh-nuxt`, `dsh-ocr`, `dsh-onchain`, `dsh-options`, `dsh-paper`, `dsh-payment`, `dsh-payments`, `dsh-photo`, `dsh-php`, `dsh-physics`, `dsh-play`, `dsh-podcast`, `dsh-portfolio`, `dsh-postgres`, `dsh-prisma`, `dsh-product`, `dsh-puzzle`, `dsh-python`, `dsh-pyusd`, `dsh-quiz`, `dsh-radio`, `dsh-react`, `dsh-read`, `dsh-recruit`, `dsh-redis`, `dsh-refine`, `dsh-reflect`, `dsh-rent`, `dsh-resume`, `dsh-risk`, `dsh-ruby`, `dsh-rust`, `dsh-sales`, `dsh-screenshot`, `dsh-seo`, `dsh-settings`, `dsh-shop`, `dsh-sleep`, `dsh-sports`, `dsh-sqlite`, `dsh-stable`, `dsh-stats`, `dsh-stock`, `dsh-streaming`, `dsh-subagent`, `dsh-subtitle`, `dsh-supabase`, `dsh-support`, `dsh-svelte`, `dsh-swift`, `dsh-tarot`, `dsh-task`, `dsh-tax`, `dsh-terraform`, `dsh-ticker`, `dsh-time`, `dsh-tipping`, `dsh-trading`, `dsh-transit`, `dsh-travel`, `dsh-trello`, `dsh-trip`, `dsh-tutor`, `dsh-tv`, `dsh-typescript`, `dsh-units`, `dsh-usdc`, `dsh-ux`, `dsh-video`, `dsh-vocab`, `dsh-vue`, `dsh-water`, `dsh-web3`, `dsh-web3-core`, `dsh-weibo`, `dsh-word`, `dsh-writing`, `dsh-x402`, `dsh-zhihu`, `dsh-zig`
 
 </details>
 <!-- placeholder-table:end -->
