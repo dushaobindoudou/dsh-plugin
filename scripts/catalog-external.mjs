@@ -142,6 +142,13 @@ export const EXTERNAL = {
     extra: ["books","reading"],
     version: "0.0.1",
   },
+  "dsh-bots": {
+    niche: "external waves",
+    headline: "Multi-bot workbench for DeepSeek Harness: bridges the sdk-bots orchestration gateway (group chats, single bots) into the dsh web shell with official-styled UI.",
+    body: "Multi-bot workbench for DeepSeek Harness: bridges the sdk-bots orchestration gateway (group chats, single bots) into the dsh web shell with official-styled UI.. (Recorded from the npm registry at import time.)",
+    extra: ["bots","cordis","dsh-plugins","group-chat","mcp","multibot"],
+    version: "0.2.47",
+  },
   "dsh-brand": {
     niche: "external waves",
     headline: "Brand toolkit for dsh",

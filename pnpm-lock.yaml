@@ -34,6 +34,8 @@ importers:
 
   packages/dsh-ansible: {}
 
+  packages/dsh-anthropic: {}
+
   packages/dsh-ap2: {}
 
   packages/dsh-api: {}
@@ -72,6 +74,8 @@ importers:
 
   packages/dsh-bell: {}
 
+  packages/dsh-bilibili: {}
+
   packages/dsh-bio: {}
 
   packages/dsh-bitcoin: {}
@@ -88,6 +92,8 @@ importers:
 
   packages/dsh-brand: {}
 
+  packages/dsh-broker: {}
+
   packages/dsh-bun: {}
 
   packages/dsh-calc: {}
@@ -97,6 +103,8 @@ importers:
   packages/dsh-canvas: {}
 
   packages/dsh-car: {}
+
+  packages/dsh-cast: {}
 
   packages/dsh-channels: {}
 
@@ -113,6 +121,8 @@ importers:
   packages/dsh-cohere: {}
 
   packages/dsh-comic: {}
+
+  packages/dsh-commit: {}
 
   packages/dsh-completions: {}
 
@@ -156,6 +166,8 @@ importers:
 
   packages/dsh-deepsearch: {}
 
+  packages/dsh-deepseek: {}
+
   packages/dsh-defi: {}
 
   packages/dsh-delegate: {}
@@ -186,6 +198,8 @@ importers:
 
   packages/dsh-doubao: {}
 
+  packages/dsh-douyin: {}
+
   packages/dsh-drive: {}
 
   packages/dsh-ecommerce: {}
@@ -193,6 +207,10 @@ importers:
   packages/dsh-edit: {}
 
   packages/dsh-edu: {}
+
+  packages/dsh-emacs: {}
+
+  packages/dsh-embed: {}
 
   packages/dsh-embedded: {}
 
@@ -203,6 +221,8 @@ importers:
   packages/dsh-engineering-manager: {}
 
   packages/dsh-english: {}
+
+  packages/dsh-ensemble: {}
 
   packages/dsh-ernie: {}
 
@@ -248,6 +268,8 @@ importers:
 
   packages/dsh-forge: {}
 
+  packages/dsh-fork: {}
+
   packages/dsh-freeroute: {}
 
   packages/dsh-frontend: {}
@@ -290,7 +312,11 @@ importers:
 
   packages/dsh-health: {}
 
+  packages/dsh-helix: {}
+
   packages/dsh-helm: {}
+
+  packages/dsh-hf: {}
 
   packages/dsh-hiring: {}
 
@@ -310,6 +336,8 @@ importers:
 
   packages/dsh-hub: {}
 
+  packages/dsh-huggingface: {}
+
   packages/dsh-hunyuan: {}
 
   packages/dsh-hype: {}
@@ -322,6 +350,8 @@ importers:
 
   packages/dsh-icon: {}
 
+  packages/dsh-index: {}
+
   packages/dsh-infra: {}
 
   packages/dsh-invoice: {}
@@ -332,9 +362,13 @@ importers:
 
   packages/dsh-irc: {}
 
+  packages/dsh-isolate: {}
+
   packages/dsh-java: {}
 
   packages/dsh-jd: {}
+
+  packages/dsh-jetbrains: {}
 
   packages/dsh-jira: {}
 
@@ -382,6 +416,8 @@ importers:
 
   packages/dsh-linux: {}
 
+  packages/dsh-listen: {}
+
   packages/dsh-llama: {}
 
   packages/dsh-lmstudio: {}
@@ -393,6 +429,8 @@ importers:
   packages/dsh-lsp: {}
 
   packages/dsh-macos: {}
+
+  packages/dsh-macro: {}
 
   packages/dsh-marketing: {}
 
@@ -416,6 +454,8 @@ importers:
 
   packages/dsh-mistral: {}
 
+  packages/dsh-mixtral: {}
+
   packages/dsh-ml: {}
 
   packages/dsh-models: {}
@@ -433,6 +473,8 @@ importers:
   packages/dsh-music: {}
 
   packages/dsh-mysql: {}
+
+  packages/dsh-neovim: {}
 
   packages/dsh-news: {}
 
@@ -486,6 +528,8 @@ importers:
 
   packages/dsh-play: {}
 
+  packages/dsh-playbook: {}
+
   packages/dsh-podcast: {}
 
   packages/dsh-policy: {}
@@ -517,6 +561,8 @@ importers:
   packages/dsh-python: {}
 
   packages/dsh-pyusd: {}
+
+  packages/dsh-qq: {}
 
   packages/dsh-queue: {}
 
@@ -552,6 +598,8 @@ importers:
 
   packages/dsh-resume: {}
 
+  packages/dsh-retrieval: {}
+
   packages/dsh-risk: {}
 
   packages/dsh-router: {}
@@ -562,9 +610,13 @@ importers:
 
   packages/dsh-run: {}
 
+  packages/dsh-runbook: {}
+
   packages/dsh-rust: {}
 
   packages/dsh-sales: {}
+
+  packages/dsh-sandbox: {}
 
   packages/dsh-screenshot: {}
 
@@ -612,6 +664,10 @@ importers:
 
   packages/dsh-solidity: {}
 
+  packages/dsh-sonar: {}
+
+  packages/dsh-sop: {}
+
   packages/dsh-sound: {}
 
   packages/dsh-speech: {}
@@ -629,6 +685,8 @@ importers:
   packages/dsh-stats: {}
 
   packages/dsh-steer: {}
+
+  packages/dsh-step: {}
 
   packages/dsh-stock: {}
 
@@ -714,6 +772,10 @@ importers:
 
   packages/dsh-ux: {}
 
+  packages/dsh-vector: {}
+
+  packages/dsh-vertex: {}
+
   packages/dsh-video: {}
 
   packages/dsh-vllm: {}
@@ -725,6 +787,8 @@ importers:
   packages/dsh-vue: {}
 
   packages/dsh-wake: {}
+
+  packages/dsh-warp: {}
 
   packages/dsh-water: {}
 
@@ -757,6 +821,10 @@ importers:
   packages/dsh-x402: {}
 
   packages/dsh-xai: {}
+
+  packages/dsh-xiaohongshu: {}
+
+  packages/dsh-yi: {}
 
   packages/dsh-yuque: {}
 

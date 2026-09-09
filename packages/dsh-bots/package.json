@@ -1,7 +1,7 @@
 {
   "name": "dsh-bots",
-  "version": "0.0.1",
-  "description": "The plural form of the dsh bot framework - name reserved; first release in development.",
+  "version": "0.2.47",
+  "description": "Multi-bot workbench for DeepSeek Harness: bridges the sdk-bots orchestration gateway (group chats, single bots) into the dsh web shell with official-styled UI.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,8 +9,12 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "bot",
-    "bots"
+    "bots",
+    "cordis",
+    "dsh-plugins",
+    "group-chat",
+    "mcp",
+    "multibot"
   ],
   "repository": {
     "type": "git",

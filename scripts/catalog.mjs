@@ -37,6 +37,60 @@ export const NICHE_ORDER = [
 
 export const CORE = {
   // ---- model bridges ----------------------------------------------------
+  'dsh-deepseek': {
+    niche: 'model bridges',
+    headline: 'DeepSeek model bridge',
+    body: 'DeepSeek API models as first-class dsh providers - the native brand seat, kept in-family so no third party can squat between the harness and its own model vendor.',
+    extra: ['deepseek', 'bridge'],
+  },
+  'dsh-mixtral': {
+    niche: 'model bridges',
+    headline: 'Mixtral model bridge',
+    body: 'The Mistral Mixtral mixture-of-experts models as dsh providers - sparse routing surfaced as per-turn token accounting.',
+    extra: ['mixtral', 'moe'],
+  },
+  'dsh-anthropic': {
+    niche: 'model bridges',
+    headline: 'Anthropic API bridge',
+    body: 'The company-form companion to dsh-claude - direct Anthropic API endpoints as dsh providers, for setups that authenticate per organization rather than per model family.',
+    extra: ['anthropic'],
+  },
+  'dsh-huggingface': {
+    niche: 'model bridges',
+    headline: 'Hugging Face model bridge',
+    body: 'Inference Endpoints and the Serverless API as dsh providers - any HF-hosted model one environment variable away.',
+    extra: ['huggingface', 'inference'],
+  },
+  'dsh-hf': {
+    niche: 'model bridges',
+    headline: 'The short form of the Hugging Face bridge',
+    body: 'Compatibility name: the Hugging Face bridge ships as dsh-huggingface; this form keeps the community-standard short spelling installable.',
+    extra: ['hf', 'huggingface'],
+  },
+  'dsh-vertex': {
+    niche: 'model bridges',
+    headline: 'Google Vertex AI bridge',
+    body: 'Vertex AI endpoints as dsh providers - enterprise GCP auth, quota-aware routing surfaced per turn.',
+    extra: ['vertex', 'gcp'],
+  },
+  'dsh-yi': {
+    niche: 'model bridges',
+    headline: 'Yi model bridge',
+    body: '01.AI Yi models as dsh providers - bilingual long-context strength surfaced in the budget line.',
+    extra: ['yi', '01ai'],
+  },
+  'dsh-step': {
+    niche: 'model bridges',
+    headline: 'StepFun model bridge',
+    body: 'StepFun Step models as dsh providers - Chinese-market strength with per-turn pricing.',
+    extra: ['stepfun', 'step'],
+  },
+  'dsh-sonar': {
+    niche: 'model bridges',
+    headline: 'Sonar model bridge',
+    body: 'Perplexity Sonar models as dsh providers - the search-grounded family behind dsh-perplexity, available model-by-model.',
+    extra: ['sonar', 'perplexity'],
+  },
   'dsh-ollama': {
     niche: 'model bridges',
     headline: 'Ollama model bridge',
@@ -290,6 +344,42 @@ export const CORE = {
     extra: ['providers', 'llm', 'registry'],
   },
   // ---- developer tools --------------------------------------------------
+  'dsh-neovim': {
+    niche: 'developer tools',
+    headline: 'Neovim bridge',
+    body: 'Drive dsh sessions from Neovim - buffer as context, diffs applied via inline signs; the modal-editing seam beside dsh-zed and dsh-cursor.',
+    extra: ['neovim', 'vim'],
+  },
+  'dsh-emacs': {
+    niche: 'developer tools',
+    headline: 'Emacs bridge',
+    body: 'Run dsh from Emacs - region as context, org-mode integration for run notes; the old-school seam, M-x dsh.',
+    extra: ['emacs'],
+  },
+  'dsh-jetbrains': {
+    niche: 'developer tools',
+    headline: 'JetBrains IDE bridge',
+    body: 'Run dsh from IntelliJ, PyCharm, WebStorm, and friends - project-aware context, diffs applied in the editor gutter.',
+    extra: ['jetbrains', 'intellij'],
+  },
+  'dsh-helix': {
+    niche: 'developer tools',
+    headline: 'Helix editor bridge',
+    body: 'Drive dsh sessions from Helix - selection as context, inline diffs; the modal-native modern seam.',
+    extra: ['helix'],
+  },
+  'dsh-warp': {
+    niche: 'developer tools',
+    headline: 'Warp terminal bridge',
+    body: 'Run dsh inside Warp blocks - output captured per block, AI-native terminal meets agent-native harness.',
+    extra: ['warp', 'terminal'],
+  },
+  'dsh-commit': {
+    niche: 'developer tools',
+    headline: 'Commit workflow for dsh agents',
+    body: 'Staged diffs in, conventional-commit messages out - the agent drafts from the actual diff, you approve; hooks into the approval seam.',
+    extra: ['commit', 'git'],
+  },
   'dsh-windsurf': {
     niche: 'developer tools',
     headline: 'Windsurf IDE bridge',
@@ -351,6 +441,30 @@ export const CORE = {
     extra: ['git'],
   },
   // ---- agent capabilities -----------------------------------------------
+  'dsh-qq': {
+    niche: 'agent capabilities',
+    headline: 'QQ channel bridge for dsh bots',
+    body: 'Bots in QQ groups and channels - outbound digests and inbound commands over the QQ bot API; the Chinese-messaging lane beside dsh-x.',
+    extra: ['qq', 'channel'],
+  },
+  'dsh-douyin': {
+    niche: 'agent capabilities',
+    headline: 'Douyin bridge for dsh bots',
+    body: 'Publish run outputs as Douyin drafts - text-to-video summaries composed from runs.jsonl, approved before posting.',
+    extra: ['douyin', 'channel'],
+  },
+  'dsh-xiaohongshu': {
+    niche: 'agent capabilities',
+    headline: 'Xiaohongshu bridge for dsh bots',
+    body: 'Post agent-written notes and digests to Xiaohongshu - marketing content drafted from run summaries, human-approved.',
+    extra: ['xiaohongshu', 'channel'],
+  },
+  'dsh-bilibili': {
+    niche: 'agent capabilities',
+    headline: 'Bilibili bridge for dsh bots',
+    body: 'Turn session replays and digests into Bilibili draft videos - title, cover, and script drafted by the agent.',
+    extra: ['bilibili', 'channel'],
+  },
   'dsh-agents': {
     niche: 'agent capabilities',
     headline: 'Agent registry panel for the dsh web GUI',
@@ -394,6 +508,18 @@ export const CORE = {
     extra: ['deepsearch', 'research', 'web-search'],
   },
   // ---- multi-agent -------------------------------------------------------
+  'dsh-ensemble': {
+    niche: 'multi-agent',
+    headline: 'Model ensembles for dsh',
+    body: 'N models answer in parallel, answers merged - cross-vendor consensus for high-stakes calls; disagreement is signal, not noise.',
+    extra: ['ensemble', 'consensus'],
+  },
+  'dsh-broker': {
+    niche: 'multi-agent',
+    headline: 'Task broker for agent fleets',
+    body: 'A matchmaking layer between queued work and idle bots - capability tags, load, and affinity in one routing decision.',
+    extra: ['broker', 'routing'],
+  },
   'dsh-swarm': {
     niche: 'multi-agent',
     headline: 'Multi-agent swarm orchestration for dsh',
@@ -548,12 +674,6 @@ export const CORE = {
     body: 'The EM persona - growth feedback, delegation plans, and delivery-risk reads; the management counterpart to dsh-architect.',
     extra: ['engineering-manager', 'persona'],
   },
-  'dsh-bots': {
-    niche: 'agent capabilities',
-    headline: 'The plural form of the dsh bot framework',
-    body: 'Compatibility name: the bot framework ships as dsh-bot; this form keeps the plural spelling installable.',
-    extra: ['bot', 'bots'],
-  },
   'dsh-agent': {
     niche: 'agent capabilities',
     headline: 'Agent pattern library for dsh',
@@ -579,6 +699,18 @@ export const CORE = {
     extra: ['tasks', 'todo', 'checklist'],
   },
   // ---- interaction -------------------------------------------------------
+  'dsh-listen': {
+    niche: 'interaction',
+    headline: 'Always-listening input loop',
+    body: 'The hands-free mode - voice activity detected, hot phrases routed to the active session, everything else stays local.',
+    extra: ['listen', 'voice'],
+  },
+  'dsh-cast': {
+    niche: 'interaction',
+    headline: 'Cast sessions to nearby screens',
+    body: 'One-click presentation of a live session to a TV, projector, or second browser - read-only, zero-setup casting over the LAN.',
+    extra: ['cast', 'screen'],
+  },
   // The attention/voice/input layer - patterns the best agents proved:
   // interruptible voice (ChatGPT), mid-run steering (Claude Code),
   // @-mentions (Cursor), ambient presence (Devin). The interaction layer
@@ -737,6 +869,30 @@ export const CORE = {
     extra: ['diff'],
   },
   // ---- data --------------------------------------------------------------
+  'dsh-vector': {
+    niche: 'data',
+    headline: 'Vector store bridge for dsh agents',
+    body: 'Embeddings in, nearest neighbors out - one tool surface over local (sqlite-vec) and remote stores, with per-collection budgets.',
+    extra: ['vector', 'embeddings'],
+  },
+  'dsh-embed': {
+    niche: 'data',
+    headline: 'Embedding pipeline for dsh agents',
+    body: 'Chunk, embed, and index workspace files - the ingestion side of retrieval, incremental by mtime, budget-capped per run.',
+    extra: ['embeddings', 'ingestion'],
+  },
+  'dsh-retrieval': {
+    niche: 'data',
+    headline: 'Retrieval surface for dsh agents',
+    body: 'A single retrieve() with reranking and citations - the read side of the RAG loop, wired into the prompt seam so context arrives sourced.',
+    extra: ['retrieval', 'rag'],
+  },
+  'dsh-index': {
+    niche: 'data',
+    headline: 'Workspace index for dsh agents',
+    body: 'A live symbol-and-file index of the workspace - who defines what, updated on save; the lookup layer under retrieval.',
+    extra: ['index', 'symbols'],
+  },
   'dsh-export': {
     niche: 'data',
     headline: 'Export sessions from the DeepSeek Harness',
@@ -762,6 +918,24 @@ export const CORE = {
     extra: ['sharing'],
   },
   // ---- ops ---------------------------------------------------------------
+  'dsh-sandbox': {
+    niche: 'ops',
+    headline: 'Sandboxed execution for agent commands',
+    body: 'Commands that must not touch the host run inside a seatbelt sandbox - filesystem and network policy enforced per invocation.',
+    extra: ['sandbox', 'seatbelt'],
+  },
+  'dsh-isolate': {
+    niche: 'ops',
+    headline: 'Isolation realms for dsh sessions',
+    body: 'Cordis isolate realms exposed as a user feature - a session and its plugins run in a private realm, side effects bounded by contract.',
+    extra: ['isolate', 'realm'],
+  },
+  'dsh-fork': {
+    niche: 'ops',
+    headline: 'Session forking',
+    body: 'Fork a live session - full conversation state copied, both branches continue independently; the try-both-ways primitive.',
+    extra: ['fork', 'branch'],
+  },
   'dsh-headless': {
     niche: 'ops',
     headline: 'Headless mode toolkit',
@@ -980,6 +1154,30 @@ export const CORE = {
     extra: ['coverage', 'report', 'diff'],
   },
   // ---- harness surfaces --------------------------------------------------
+  'dsh-playbook': {
+    niche: 'harness surfaces',
+    headline: 'Playbook library for dsh',
+    body: 'Named multi-step plays - incident response, release day, on-call handoff - one command runs the whole scripted sequence with checkpoints.',
+    extra: ['playbook', 'ops'],
+  },
+  'dsh-runbook': {
+    niche: 'harness surfaces',
+    headline: 'Runbook runner for dsh',
+    body: 'Executable runbooks - markdown checklists whose steps are agent actions; run them step-by-step with approval gates at the risky parts.',
+    extra: ['runbook', 'ops'],
+  },
+  'dsh-sop': {
+    niche: 'harness surfaces',
+    headline: 'Standard operating procedures in the harness',
+    body: 'SOPs as living documents - the agent knows the current procedure, proposes updates after incidents, and never improvises the critical path.',
+    extra: ['sop', 'procedures'],
+  },
+  'dsh-macro': {
+    niche: 'harness surfaces',
+    headline: 'Macro recorder for agent actions',
+    body: 'Record a sequence of agent actions once, replay it as one command with parameters - macros are prompt-level functions.',
+    extra: ['macro', 'replay'],
+  },
   'dsh-finder': {
     niche: 'harness surfaces',
     headline: 'File & command palette for the dsh web GUI',
