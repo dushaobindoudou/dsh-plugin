@@ -1,7 +1,7 @@
 {
   "name": "dsh-tarot",
   "version": "0.0.1",
-  "description": "Tarot companion for dsh - name reserved; first release in development.",
+  "description": "Tarot lane for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,7 +9,8 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "tarot"
+    "tarot",
+    "divination"
   ],
   "repository": {
     "type": "git",

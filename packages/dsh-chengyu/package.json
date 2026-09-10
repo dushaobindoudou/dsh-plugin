@@ -1,0 +1,22 @@
+{
+  "name": "dsh-chengyu",
+  "version": "0.0.1",
+  "description": "Chengyu lane for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "chengyu",
+    "idiom",
+    "word-games"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-chengyu"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-chengyu#readme"
+}

@@ -12,6 +12,8 @@ importers:
 
   packages/dsh-163: {}
 
+  packages/dsh-2048: {}
+
   packages/dsh-accounting: {}
 
   packages/dsh-achievement: {}
@@ -88,11 +90,15 @@ importers:
 
   packages/dsh-avalanche: {}
 
+  packages/dsh-avatar: {}
+
   packages/dsh-aws: {}
 
   packages/dsh-azure: {}
 
   packages/dsh-baby: {}
+
+  packages/dsh-baccarat: {}
 
   packages/dsh-backend: {}
 
@@ -136,6 +142,8 @@ importers:
 
   packages/dsh-bots: {}
 
+  packages/dsh-brain: {}
+
   packages/dsh-brand: {}
 
   packages/dsh-broker: {}
@@ -156,6 +164,8 @@ importers:
 
   packages/dsh-cardano: {}
 
+  packages/dsh-cards: {}
+
   packages/dsh-cashapp: {}
 
   packages/dsh-cast: {}
@@ -166,9 +176,13 @@ importers:
 
   packages/dsh-channels: {}
 
+  packages/dsh-checkers: {}
+
   packages/dsh-checkpoint: {}
 
   packages/dsh-chem: {}
+
+  packages/dsh-chengyu: {}
 
   packages/dsh-chess: {}
 
@@ -226,6 +240,8 @@ importers:
 
   packages/dsh-crm: {}
 
+  packages/dsh-crossword: {}
+
   packages/dsh-crypto: {}
 
   packages/dsh-csharp: {}
@@ -233,6 +249,8 @@ importers:
   packages/dsh-ctrip: {}
 
   packages/dsh-cursor: {}
+
+  packages/dsh-customize: {}
 
   packages/dsh-daemon: {}
 
@@ -270,6 +288,8 @@ importers:
 
   packages/dsh-dex: {}
 
+  packages/dsh-dice: {}
+
   packages/dsh-dict: {}
 
   packages/dsh-dictionary: {}
@@ -279,6 +299,8 @@ importers:
   packages/dsh-diff: {}
 
   packages/dsh-discord: {}
+
+  packages/dsh-discovery: {}
 
   packages/dsh-disney: {}
 
@@ -296,6 +318,8 @@ importers:
 
   packages/dsh-douyin: {}
 
+  packages/dsh-drawguess: {}
+
   packages/dsh-drive: {}
 
   packages/dsh-dropbox: {}
@@ -307,6 +331,8 @@ importers:
   packages/dsh-e2e: {}
 
   packages/dsh-ebay: {}
+
+  packages/dsh-echo: {}
 
   packages/dsh-ecommerce: {}
 
@@ -400,6 +426,8 @@ importers:
 
   packages/dsh-fork: {}
 
+  packages/dsh-fortune: {}
+
   packages/dsh-foundry: {}
 
   packages/dsh-freeroute: {}
@@ -415,6 +443,8 @@ importers:
   packages/dsh-fund: {}
 
   packages/dsh-futures: {}
+
+  packages/dsh-fyp: {}
 
   packages/dsh-game: {}
 
@@ -444,6 +474,8 @@ importers:
 
   packages/dsh-go: {}
 
+  packages/dsh-gomoku: {}
+
   packages/dsh-google: {}
 
   packages/dsh-googlepay: {}
@@ -457,6 +489,8 @@ importers:
   packages/dsh-grubhub: {}
 
   packages/dsh-habit: {}
+
+  packages/dsh-hangman: {}
 
   packages/dsh-hardhat: {}
 
@@ -510,6 +544,8 @@ importers:
 
   packages/dsh-icon: {}
 
+  packages/dsh-idiom: {}
+
   packages/dsh-index: {}
 
   packages/dsh-infra: {}
@@ -541,6 +577,8 @@ importers:
   packages/dsh-jd: {}
 
   packages/dsh-jetbrains: {}
+
+  packages/dsh-jigsaw: {}
 
   packages/dsh-jira: {}
 
@@ -575,6 +613,8 @@ importers:
   packages/dsh-l10n: {}
 
   packages/dsh-lagou: {}
+
+  packages/dsh-landlord: {}
 
   packages/dsh-language: {}
 
@@ -651,6 +691,8 @@ importers:
   packages/dsh-math: {}
 
   packages/dsh-matrix: {}
+
+  packages/dsh-me: {}
 
   packages/dsh-medical: {}
 
@@ -748,6 +790,8 @@ importers:
 
   packages/dsh-options: {}
 
+  packages/dsh-othello: {}
+
   packages/dsh-outcome: {}
 
   packages/dsh-overnight: {}
@@ -775,6 +819,8 @@ importers:
   packages/dsh-persistence: {}
 
   packages/dsh-persona: {}
+
+  packages/dsh-personal: {}
 
   packages/dsh-phantom: {}
 
@@ -808,6 +854,8 @@ importers:
 
   packages/dsh-postmortem: {}
 
+  packages/dsh-preference: {}
+
   packages/dsh-presence: {}
 
   packages/dsh-prisma: {}
@@ -815,6 +863,8 @@ importers:
   packages/dsh-product: {}
 
   packages/dsh-product-manager: {}
+
+  packages/dsh-profile: {}
 
   packages/dsh-profiles: {}
 
@@ -882,9 +932,13 @@ importers:
 
   packages/dsh-retune: {}
 
+  packages/dsh-reversi: {}
+
   packages/dsh-revolut: {}
 
   packages/dsh-reward: {}
+
+  packages/dsh-riddle: {}
 
   packages/dsh-ripple: {}
 
@@ -896,9 +950,15 @@ importers:
 
   packages/dsh-router: {}
 
+  packages/dsh-routine: {}
+
+  packages/dsh-rps: {}
+
   packages/dsh-rubric: {}
 
   packages/dsh-ruby: {}
+
+  packages/dsh-rummy: {}
 
   packages/dsh-run: {}
 
@@ -956,6 +1016,8 @@ importers:
 
   packages/dsh-shein: {}
 
+  packages/dsh-shogi: {}
+
   packages/dsh-shop: {}
 
   packages/dsh-shopee: {}
@@ -970,15 +1032,21 @@ importers:
 
   packages/dsh-sleep: {}
 
+  packages/dsh-snake: {}
+
   packages/dsh-snapchat: {}
 
   packages/dsh-snippets: {}
+
+  packages/dsh-sokoban: {}
 
   packages/dsh-sol: {}
 
   packages/dsh-solana: {}
 
   packages/dsh-solidity: {}
+
+  packages/dsh-solitaire: {}
 
   packages/dsh-sonar: {}
 
@@ -1026,6 +1094,8 @@ importers:
 
   packages/dsh-studio: {}
 
+  packages/dsh-style: {}
+
   packages/dsh-subagent: {}
 
   packages/dsh-substack: {}
@@ -1048,7 +1118,11 @@ importers:
 
   packages/dsh-swift: {}
 
+  packages/dsh-tailor: {}
+
   packages/dsh-talent: {}
+
+  packages/dsh-tangram: {}
 
   packages/dsh-taobao: {}
 
@@ -1059,6 +1133,8 @@ importers:
   packages/dsh-task: {}
 
   packages/dsh-tasks: {}
+
+  packages/dsh-taste: {}
 
   packages/dsh-tax: {}
 
@@ -1072,9 +1148,13 @@ importers:
 
   packages/dsh-tether: {}
 
+  packages/dsh-tetris: {}
+
   packages/dsh-threads: {}
 
   packages/dsh-ticker: {}
+
+  packages/dsh-tictactoe: {}
 
   packages/dsh-tiktok: {}
 
@@ -1126,6 +1206,8 @@ importers:
 
   packages/dsh-tv: {}
 
+  packages/dsh-twin: {}
+
   packages/dsh-twitch: {}
 
   packages/dsh-twitter: {}
@@ -1141,6 +1223,8 @@ importers:
   packages/dsh-uniswap: {}
 
   packages/dsh-units: {}
+
+  packages/dsh-uno: {}
 
   packages/dsh-update: {}
 

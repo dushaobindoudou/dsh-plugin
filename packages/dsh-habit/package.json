@@ -1,7 +1,7 @@
 {
   "name": "dsh-habit",
   "version": "0.0.1",
-  "description": "Habit tracker for dsh - name reserved; first release in development.",
+  "description": "Habit engine for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,7 +9,8 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "habits"
+    "habit",
+    "streaks"
   ],
   "repository": {
     "type": "git",

@@ -1,0 +1,21 @@
+{
+  "name": "dsh-tictactoe",
+  "version": "0.0.1",
+  "description": "Tic-tac-toe lane for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "tictactoe",
+    "board-games"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-tictactoe"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-tictactoe#readme"
+}
