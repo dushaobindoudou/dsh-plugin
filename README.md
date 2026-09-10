@@ -454,6 +454,29 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-me`](packages/dsh-me) | The me seat for dsh agents |
 | [`dsh-brain`](packages/dsh-brain) | The second brain for dsh agents |
 
+### Companion (18)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-mascot`](packages/dsh-mascot) | The mascot seat for dsh |
+| [`dsh-menubar`](packages/dsh-menubar) | The menubar seat for dsh |
+| [`dsh-toy`](packages/dsh-toy) | The toy seat for dsh |
+| [`dsh-sprite`](packages/dsh-sprite) | Sprite lane for dsh mascots |
+| [`dsh-pixel`](packages/dsh-pixel) | Pixel-art lane for dsh |
+| [`dsh-chibi`](packages/dsh-chibi) | Chibi lane for dsh mascots |
+| [`dsh-sidekick`](packages/dsh-sidekick) | Sidekick seat for dsh |
+| [`dsh-pal`](packages/dsh-pal) | Pal lane for dsh |
+| [`dsh-familiar`](packages/dsh-familiar) | Familiar lane for dsh |
+| [`dsh-fairy`](packages/dsh-fairy) | Fairy lane for dsh |
+| [`dsh-dragon`](packages/dsh-dragon) | Dragon lane for dsh |
+| [`dsh-cub`](packages/dsh-cub) | Cub lane for dsh |
+| [`dsh-tame`](packages/dsh-tame) | Taming lane for dsh |
+| [`dsh-hatch`](packages/dsh-hatch) | Hatching lane for dsh |
+| [`dsh-nurture`](packages/dsh-nurture) | Nurture lane for dsh |
+| [`dsh-bond`](packages/dsh-bond) | Bond lane for dsh |
+| [`dsh-gaze`](packages/dsh-gaze) | Gaze lane for dsh |
+| [`dsh-peek`](packages/dsh-peek) | Peek lane for dsh |
+
 ### China ecosystem (35)
 
 | Name | Planned first release |

@@ -1,0 +1,22 @@
+{
+  "name": "dsh-mascot",
+  "version": "0.0.1",
+  "description": "The mascot seat for dsh - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "mascot",
+    "menubar",
+    "desktop-pet"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-mascot"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-mascot#readme"
+}
