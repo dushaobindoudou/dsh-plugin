@@ -14,7 +14,13 @@ importers:
 
   packages/dsh-accounting: {}
 
+  packages/dsh-achievement: {}
+
   packages/dsh-acp-server: {}
+
+  packages/dsh-adapt: {}
+
+  packages/dsh-adventure: {}
 
   packages/dsh-adyen: {}
 
@@ -65,6 +71,8 @@ importers:
   packages/dsh-aptos: {}
 
   packages/dsh-arbitrum: {}
+
+  packages/dsh-arcade: {}
 
   packages/dsh-architect: {}
 
@@ -140,6 +148,8 @@ importers:
 
   packages/dsh-calculator: {}
 
+  packages/dsh-calibrate: {}
+
   packages/dsh-canvas: {}
 
   packages/dsh-car: {}
@@ -156,7 +166,11 @@ importers:
 
   packages/dsh-channels: {}
 
+  packages/dsh-checkpoint: {}
+
   packages/dsh-chem: {}
+
+  packages/dsh-chess: {}
 
   packages/dsh-circle: {}
 
@@ -165,6 +179,8 @@ importers:
   packages/dsh-clean: {}
 
   packages/dsh-clickhouse: {}
+
+  packages/dsh-closer: {}
 
   packages/dsh-cloud: {}
 
@@ -178,6 +194,8 @@ importers:
 
   packages/dsh-commit: {}
 
+  packages/dsh-completion: {}
+
   packages/dsh-completions: {}
 
   packages/dsh-compliance: {}
@@ -186,11 +204,15 @@ importers:
 
   packages/dsh-confluence: {}
 
+  packages/dsh-continuum: {}
+
   packages/dsh-contract: {}
 
   packages/dsh-convert: {}
 
   packages/dsh-cook: {}
+
+  packages/dsh-copilot: {}
 
   packages/dsh-costco: {}
 
@@ -233,6 +255,8 @@ importers:
   packages/dsh-defillama: {}
 
   packages/dsh-delegate: {}
+
+  packages/dsh-deliver: {}
 
   packages/dsh-deno: {}
 
@@ -278,6 +302,10 @@ importers:
 
   packages/dsh-dune: {}
 
+  packages/dsh-durable: {}
+
+  packages/dsh-e2e: {}
+
   packages/dsh-ebay: {}
 
   packages/dsh-ecommerce: {}
@@ -295,6 +323,8 @@ importers:
   packages/dsh-embedded: {}
 
   packages/dsh-embeddings: {}
+
+  packages/dsh-endtoend: {}
 
   packages/dsh-engineer: {}
 
@@ -322,6 +352,10 @@ importers:
 
   packages/dsh-evernote: {}
 
+  packages/dsh-evolve: {}
+
+  packages/dsh-execution: {}
+
   packages/dsh-expedia: {}
 
   packages/dsh-export: {}
@@ -334,9 +368,13 @@ importers:
 
   packages/dsh-festival: {}
 
+  packages/dsh-fiction: {}
+
   packages/dsh-figma: {}
 
   packages/dsh-files: {}
+
+  packages/dsh-finalize: {}
 
   packages/dsh-finance: {}
 
@@ -368,6 +406,8 @@ importers:
 
   packages/dsh-frontend: {}
 
+  packages/dsh-fulfill: {}
+
   packages/dsh-fullstack: {}
 
   packages/dsh-fun: {}
@@ -378,6 +418,8 @@ importers:
 
   packages/dsh-game: {}
 
+  packages/dsh-games: {}
+
   packages/dsh-gaode: {}
 
   packages/dsh-garden: {}
@@ -387,6 +429,8 @@ importers:
   packages/dsh-gdrive: {}
 
   packages/dsh-gemini: {}
+
+  packages/dsh-gif: {}
 
   packages/dsh-gift: {}
 
@@ -438,6 +482,8 @@ importers:
 
   packages/dsh-home: {}
 
+  packages/dsh-horizon: {}
+
   packages/dsh-horoscope: {}
 
   packages/dsh-house: {}
@@ -474,6 +520,8 @@ importers:
 
   packages/dsh-intercom: {}
 
+  packages/dsh-introspect: {}
+
   packages/dsh-invoice: {}
 
   packages/dsh-ios: {}
@@ -485,6 +533,8 @@ importers:
   packages/dsh-irc: {}
 
   packages/dsh-isolate: {}
+
+  packages/dsh-iterate: {}
 
   packages/dsh-java: {}
 
@@ -532,9 +582,13 @@ importers:
 
   packages/dsh-law: {}
 
+  packages/dsh-leaderboard: {}
+
   packages/dsh-ledger: {}
 
   packages/dsh-legal: {}
+
+  packages/dsh-lesson: {}
 
   packages/dsh-liepin: {}
 
@@ -562,19 +616,31 @@ importers:
 
   packages/dsh-logs: {}
 
+  packages/dsh-longrun: {}
+
+  packages/dsh-longtask: {}
+
   packages/dsh-lottery: {}
 
   packages/dsh-lsp: {}
 
   packages/dsh-lyft: {}
 
+  packages/dsh-lyrics: {}
+
   packages/dsh-macos: {}
 
   packages/dsh-macro: {}
 
+  packages/dsh-mahjong: {}
+
   packages/dsh-mailchimp: {}
 
+  packages/dsh-manga: {}
+
   packages/dsh-maoyan: {}
+
+  packages/dsh-marathon: {}
 
   packages/dsh-marketing: {}
 
@@ -597,6 +663,8 @@ importers:
   packages/dsh-mention: {}
 
   packages/dsh-messenger: {}
+
+  packages/dsh-metacognition: {}
 
   packages/dsh-metamask: {}
 
@@ -656,6 +724,8 @@ importers:
 
   packages/dsh-notes: {}
 
+  packages/dsh-npc: {}
+
   packages/dsh-nudge: {}
 
   packages/dsh-nuxt: {}
@@ -668,6 +738,8 @@ importers:
 
   packages/dsh-onedrive: {}
 
+  packages/dsh-oneshot: {}
+
   packages/dsh-openai: {}
 
   packages/dsh-openrouter: {}
@@ -675,6 +747,10 @@ importers:
   packages/dsh-optimism: {}
 
   packages/dsh-options: {}
+
+  packages/dsh-outcome: {}
+
+  packages/dsh-overnight: {}
 
   packages/dsh-panel: {}
 
@@ -695,6 +771,8 @@ importers:
   packages/dsh-permission: {}
 
   packages/dsh-perplexity: {}
+
+  packages/dsh-persistence: {}
 
   packages/dsh-persona: {}
 
@@ -728,6 +806,8 @@ importers:
 
   packages/dsh-postgres: {}
 
+  packages/dsh-postmortem: {}
+
   packages/dsh-presence: {}
 
   packages/dsh-prisma: {}
@@ -755,6 +835,8 @@ importers:
   packages/dsh-qq: {}
 
   packages/dsh-qqmusic: {}
+
+  packages/dsh-quest: {}
 
   packages/dsh-queue: {}
 
@@ -786,6 +868,8 @@ importers:
 
   packages/dsh-registry: {}
 
+  packages/dsh-remix: {}
+
   packages/dsh-rent: {}
 
   packages/dsh-researcher: {}
@@ -796,11 +880,17 @@ importers:
 
   packages/dsh-retrieval: {}
 
+  packages/dsh-retune: {}
+
   packages/dsh-revolut: {}
+
+  packages/dsh-reward: {}
 
   packages/dsh-ripple: {}
 
   packages/dsh-risk: {}
+
+  packages/dsh-roadmap: {}
 
   packages/dsh-robinhood: {}
 
@@ -816,6 +906,8 @@ importers:
 
   packages/dsh-rust: {}
 
+  packages/dsh-saga: {}
+
   packages/dsh-sales: {}
 
   packages/dsh-salesforce: {}
@@ -829,6 +921,12 @@ importers:
   packages/dsh-secrets: {}
 
   packages/dsh-security: {}
+
+  packages/dsh-self-improve: {}
+
+  packages/dsh-selfheal: {}
+
+  packages/dsh-selfmod: {}
 
   packages/dsh-selfrepair:
     dependencies:
@@ -845,6 +943,8 @@ importers:
       typescript:
         specifier: ^5.6.0
         version: 5.9.3
+
+  packages/dsh-selftrain: {}
 
   packages/dsh-seo: {}
 
@@ -912,6 +1012,8 @@ importers:
 
   packages/dsh-step: {}
 
+  packages/dsh-sticker: {}
+
   packages/dsh-stock: {}
 
   packages/dsh-strava: {}
@@ -929,6 +1031,8 @@ importers:
   packages/dsh-substack: {}
 
   packages/dsh-subtitle: {}
+
+  packages/dsh-sudoku: {}
 
   packages/dsh-sui: {}
 
@@ -992,6 +1096,8 @@ importers:
 
   packages/dsh-tour: {}
 
+  packages/dsh-tournament: {}
+
   packages/dsh-toutiao: {}
 
   packages/dsh-trading: {}
@@ -1008,9 +1114,13 @@ importers:
 
   packages/dsh-tripadvisor: {}
 
+  packages/dsh-trivia: {}
+
   packages/dsh-tron: {}
 
   packages/dsh-tts: {}
+
+  packages/dsh-turnkey: {}
 
   packages/dsh-tutor: {}
 
@@ -1025,6 +1135,8 @@ importers:
   packages/dsh-uber: {}
 
   packages/dsh-ubereats: {}
+
+  packages/dsh-unattended: {}
 
   packages/dsh-uniswap: {}
 
@@ -1078,6 +1190,8 @@ importers:
 
   packages/dsh-weibo: {}
 
+  packages/dsh-weiqi: {}
+
   packages/dsh-whatsapp: {}
 
   packages/dsh-widget: {}
@@ -1087,6 +1201,8 @@ importers:
   packages/dsh-wise: {}
 
   packages/dsh-word: {}
+
+  packages/dsh-wordle: {}
 
   packages/dsh-workflow:
     dependencies:
@@ -1103,6 +1219,8 @@ importers:
   packages/dsh-x402: {}
 
   packages/dsh-xai: {}
+
+  packages/dsh-xiangqi: {}
 
   packages/dsh-xianyu: {}
 

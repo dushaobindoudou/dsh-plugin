@@ -1,7 +1,7 @@
 {
   "name": "dsh-karaoke",
   "version": "0.0.1",
-  "description": "Karaoke toolkit for dsh - name reserved; first release in development.",
+  "description": "Karaoke lane for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,7 +10,7 @@
     "deepseek-harness",
     "cordis-plugin",
     "karaoke",
-    "lyrics"
+    "party"
   ],
   "repository": {
     "type": "git",

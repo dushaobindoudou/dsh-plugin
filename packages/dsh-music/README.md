@@ -3,11 +3,11 @@
 [![npm](https://img.shields.io/npm/v/dsh-music.svg)](https://www.npmjs.com/package/dsh-music)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**Music toolkit for dsh** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**Music lane for dsh agents** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-Music toolkit for dsh. (Recorded from the npm registry at import time.)
+Composition and curation - playlist generation, chord progressions, and practice plans; pairs with the player bridges in daily life. Registered externally; promoted into the curated core.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

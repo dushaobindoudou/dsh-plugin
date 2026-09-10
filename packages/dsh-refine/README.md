@@ -3,12 +3,11 @@
 [![npm](https://img.shields.io/npm/v/dsh-refine.svg)](https://www.npmjs.com/package/dsh-refine)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**DeepSeek Harness (dsh) plugin: a shell around the dsh-continual-harness self-refinement engine — mounts the engine itself and owns /refine (status / entry browsing / refinement history / one-click rollback / scoped triggers) plus a settings panel; engine ** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**Refinement loop for dsh agents** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
-Releases exist on npm; the code is maintained outside this monorepo.
-This directory only tracks the name and points at the published package.
+This package name is reserved; the first release is in development.
 
-DeepSeek Harness (dsh) plugin: a shell around the dsh-continual-harness self-refinement engine — mounts the engine itself and owns /refine (status / entry browsing / refinement history / one-click rollback / scoped triggers) plus a settings panel; engine . (Recorded from the npm registry at import time.)
+The polish pass as a product - output graded against a rubric, weaknesses found, a targeted second pass applied. Registered externally; promoted into the curated core.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

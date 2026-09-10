@@ -1,7 +1,7 @@
 {
   "name": "dsh-anime",
   "version": "0.0.1",
-  "description": "Anime toolkit for dsh - name reserved; first release in development.",
+  "description": "Anime lane for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,7 +9,8 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "anime"
+    "anime",
+    "fandom"
   ],
   "repository": {
     "type": "git",

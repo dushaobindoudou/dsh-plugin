@@ -1,7 +1,7 @@
 {
   "name": "dsh-game",
   "version": "0.0.1",
-  "description": "Game development toolkit for dsh - name reserved; first release in development.",
+  "description": "Game toolkit for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,7 +9,8 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "gamedev"
+    "game",
+    "games"
   ],
   "repository": {
     "type": "git",

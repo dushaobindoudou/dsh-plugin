@@ -1,7 +1,7 @@
 {
   "name": "dsh-refine",
-  "version": "1.2.0",
-  "description": "DeepSeek Harness (dsh) plugin: a shell around the dsh-continual-harness self-refinement engine — mounts the engine itself and owns /refine (status / entry browsing / refinement history / one-click rollback / scoped triggers) plus a settings panel; engine ",
+  "version": "0.0.1",
+  "description": "Refinement loop for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,12 +9,8 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "deepseek",
-    "plugin",
-    "cordis",
-    "continual-harness",
-    "agent-harness",
-    "refine"
+    "refine",
+    "polish"
   ],
   "repository": {
     "type": "git",
