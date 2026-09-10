@@ -1,0 +1,21 @@
+{
+  "name": "dsh-jinnang",
+  "version": "0.0.1",
+  "description": "Jinnang (锦囊) - the pouch of stratagems - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "jinnang",
+    "strategy"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-jinnang"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-jinnang#readme"
+}

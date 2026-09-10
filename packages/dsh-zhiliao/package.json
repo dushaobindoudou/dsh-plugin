@@ -1,0 +1,21 @@
+{
+  "name": "dsh-zhiliao",
+  "version": "0.0.1",
+  "description": "Zhiliao (知了) - the cicada that says got-it - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "zhiliao",
+    "cicada"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-zhiliao"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-zhiliao#readme"
+}

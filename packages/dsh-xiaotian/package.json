@@ -1,0 +1,21 @@
+{
+  "name": "dsh-xiaotian",
+  "version": "0.0.1",
+  "description": "Xiaotian (哮天) - the howling celestial hound - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "xiaotian",
+    "hound"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-xiaotian"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-xiaotian#readme"
+}

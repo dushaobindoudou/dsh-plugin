@@ -454,10 +454,29 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-me`](packages/dsh-me) | The me seat for dsh agents |
 | [`dsh-brain`](packages/dsh-brain) | The second brain for dsh agents |
 
-### Companion (18)
+### Companion (37)
 
 | Name | Planned first release |
 | --- | --- |
+| [`dsh-lingxi`](packages/dsh-lingxi) | Lingxi (灵犀) - the companion that gets you |
+| [`dsh-zhiyin`](packages/dsh-zhiyin) | Zhiyin (知音) - the friend who understands your music |
+| [`dsh-shutong`](packages/dsh-shutong) | Shutong (书童) - the study companion |
+| [`dsh-linu`](packages/dsh-linu) | Linu (狸奴) - the scholar cat |
+| [`dsh-baize`](packages/dsh-baize) | Baize (白泽) - the beast that knows all things |
+| [`dsh-xique`](packages/dsh-xique) | Xique (喜鹊) - the good-news bird |
+| [`dsh-zhiliao`](packages/dsh-zhiliao) | Zhiliao (知了) - the cicada that says got-it |
+| [`dsh-jinnang`](packages/dsh-jinnang) | Jinnang (锦囊) - the pouch of stratagems |
+| [`dsh-mengchong`](packages/dsh-mengchong) | Mengchong (萌宠) - the cute-pet lane |
+| [`dsh-lingchong`](packages/dsh-lingchong) | Lingchong (灵宠) - the spirit pet |
+| [`dsh-zhuochong`](packages/dsh-zhuochong) | Zhuochong (桌宠) - the desktop pet, in Chinese |
+| [`dsh-afu`](packages/dsh-afu) | Afu (阿福) - the lucky doll |
+| [`dsh-laifu`](packages/dsh-laifu) | Laifu (来福) - the fortune-bringer |
+| [`dsh-lingji`](packages/dsh-lingji) | Lingji (灵机) - the flash of wit |
+| [`dsh-jingling`](packages/dsh-jingling) | Jingling (精灵) - the spirit lane |
+| [`dsh-qingniao`](packages/dsh-qingniao) | Qingniao (青鸟) - the messenger bird |
+| [`dsh-yutu`](packages/dsh-yutu) | Yutu (玉兔) - the jade rabbit |
+| [`dsh-xiaotian`](packages/dsh-xiaotian) | Xiaotian (哮天) - the howling celestial hound |
+| [`dsh-ling`](packages/dsh-ling) | Ling (灵) - the shortest spirit name |
 | [`dsh-mascot`](packages/dsh-mascot) | The mascot seat for dsh |
 | [`dsh-menubar`](packages/dsh-menubar) | The menubar seat for dsh |
 | [`dsh-toy`](packages/dsh-toy) | The toy seat for dsh |

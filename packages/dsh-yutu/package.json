@@ -1,0 +1,21 @@
+{
+  "name": "dsh-yutu",
+  "version": "0.0.1",
+  "description": "Yutu (玉兔) - the jade rabbit - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "yutu",
+    "moon"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-yutu"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-yutu#readme"
+}

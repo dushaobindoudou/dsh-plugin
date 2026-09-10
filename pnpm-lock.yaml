@@ -30,6 +30,8 @@ importers:
 
   packages/dsh-adyen: {}
 
+  packages/dsh-afu: {}
+
   packages/dsh-agent: {}
 
   packages/dsh-agentpay: {}
@@ -113,6 +115,8 @@ importers:
   packages/dsh-baidu: {}
 
   packages/dsh-baike: {}
+
+  packages/dsh-baize: {}
 
   packages/dsh-banking: {}
 
@@ -726,6 +730,10 @@ importers:
 
   packages/dsh-jijin: {}
 
+  packages/dsh-jingling: {}
+
+  packages/dsh-jinnang: {}
+
   packages/dsh-jiqiren: {}
 
   packages/dsh-jira: {}
@@ -790,6 +798,8 @@ importers:
 
   packages/dsh-lahei: {}
 
+  packages/dsh-laifu: {}
+
   packages/dsh-landlord: {}
 
   packages/dsh-language: {}
@@ -814,11 +824,21 @@ importers:
 
   packages/dsh-linear: {}
 
+  packages/dsh-ling: {}
+
+  packages/dsh-lingchong: {}
+
+  packages/dsh-lingji: {}
+
+  packages/dsh-lingxi: {}
+
   packages/dsh-link: {}
 
   packages/dsh-linkedin: {}
 
   packages/dsh-lint: {}
+
+  packages/dsh-linu: {}
 
   packages/dsh-linux: {}
 
@@ -889,6 +909,8 @@ importers:
   packages/dsh-medium: {}
 
   packages/dsh-meituan: {}
+
+  packages/dsh-mengchong: {}
 
   packages/dsh-mention: {}
 
@@ -1108,6 +1130,8 @@ importers:
 
   packages/dsh-qidian: {}
 
+  packages/dsh-qingniao: {}
+
   packages/dsh-qq: {}
 
   packages/dsh-qqmusic: {}
@@ -1277,6 +1301,8 @@ importers:
   packages/dsh-shopify: {}
 
   packages/dsh-shoukuan: {}
+
+  packages/dsh-shutong: {}
 
   packages/dsh-sidekick: {}
 
@@ -1608,6 +1634,10 @@ importers:
 
   packages/dsh-xiaohongshu: {}
 
+  packages/dsh-xiaotian: {}
+
+  packages/dsh-xique: {}
+
   packages/dsh-xrp: {}
 
   packages/dsh-yelp: {}
@@ -1623,6 +1653,8 @@ importers:
   packages/dsh-yuque: {}
 
   packages/dsh-yusuan: {}
+
+  packages/dsh-yutu: {}
 
   packages/dsh-zapier: {}
 
@@ -1642,7 +1674,11 @@ importers:
 
   packages/dsh-zhijian: {}
 
+  packages/dsh-zhiliao: {}
+
   packages/dsh-zhipu: {}
+
+  packages/dsh-zhiyin: {}
 
   packages/dsh-zhizhao: {}
 
@@ -1651,6 +1687,8 @@ importers:
   packages/dsh-zhuanzhang: {}
 
   packages/dsh-zhuli: {}
+
+  packages/dsh-zhuochong: {}
 
   packages/dsh-zig: {}
 

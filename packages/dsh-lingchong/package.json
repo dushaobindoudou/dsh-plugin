@@ -1,0 +1,21 @@
+{
+  "name": "dsh-lingchong",
+  "version": "0.0.1",
+  "description": "Lingchong (灵宠) - the spirit pet - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "lingchong",
+    "spirit-pet"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-lingchong"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-lingchong#readme"
+}

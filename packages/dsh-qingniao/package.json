@@ -1,0 +1,21 @@
+{
+  "name": "dsh-qingniao",
+  "version": "0.0.1",
+  "description": "Qingniao (青鸟) - the messenger bird - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "qingniao",
+    "messenger"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-qingniao"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-qingniao#readme"
+}
