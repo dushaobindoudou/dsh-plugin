@@ -154,7 +154,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-execution`](packages/dsh-execution) | Execution engine for dsh agents |
 | [`dsh-copilot`](packages/dsh-copilot) | Copilot mode for dsh agents |
 
-### Long-horizon (14)
+### Long-horizon (16)
 
 | Name | Planned first release |
 | --- | --- |
@@ -171,6 +171,8 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-durable`](packages/dsh-durable) | Durable execution for dsh agents |
 | [`dsh-checkpoint`](packages/dsh-checkpoint) | Checkpointing for dsh agents |
 | [`dsh-roadmap`](packages/dsh-roadmap) | Roadmap toolkit for dsh agents |
+| [`dsh-session`](packages/dsh-session) | The unified agent-session layer |
+| [`dsh-tape`](packages/dsh-tape) | Session tape for dsh |
 | [`dsh-sessions`](packages/dsh-sessions) | Session manager and browser |
 
 ### Channels (53)
@@ -454,10 +456,14 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-me`](packages/dsh-me) | The me seat for dsh agents |
 | [`dsh-brain`](packages/dsh-brain) | The second brain for dsh agents |
 
-### Companion (37)
+### Companion (41)
 
 | Name | Planned first release |
 | --- | --- |
+| [`dsh-owl`](packages/dsh-owl) | Owl - the watcher for dsh |
+| [`dsh-radar`](packages/dsh-radar) | Radar - the approval radar for dsh |
+| [`dsh-beacon`](packages/dsh-beacon) | Beacon - the signal lane for dsh |
+| [`dsh-halo`](packages/dsh-halo) | Halo - the companion aura |
 | [`dsh-lingxi`](packages/dsh-lingxi) | Lingxi (灵犀) - the companion that gets you |
 | [`dsh-zhiyin`](packages/dsh-zhiyin) | Zhiyin (知音) - the friend who understands your music |
 | [`dsh-shutong`](packages/dsh-shutong) | Shutong (书童) - the study companion |

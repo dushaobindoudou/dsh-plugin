@@ -2528,6 +2528,42 @@ export const CORE = {
     extra: ['stackoverflow', 'q-and-a'],
   },
   // ---- companion ---------------------------------------------------------
+  'dsh-session': {
+    niche: 'long-horizon',
+    headline: 'The unified agent-session layer',
+    body: 'One event stream from every agent you run - DSH, Claude Code, Codex, Cursor, OpenCode - normalized into a single timeline the companion, the radar, and the ledger all read from. The core IP of the multi-agent era: your sessions, one shape.',
+    extra: ['session', 'multi-agent'],
+  },
+  'dsh-tape': {
+    niche: 'long-horizon',
+    headline: 'Session tape for dsh',
+    body: 'Record and replay any agent session - the raw stream kept byte-exact, scrubbed of secrets, replayable for audit or nostalgia; the VHS of the agent era.',
+    extra: ['tape', 'replay'],
+  },
+  'dsh-owl': {
+    niche: 'companion',
+    headline: 'Owl - the watcher for dsh',
+    body: 'Night-shift vigilance - watches long runs and overnight batches, silent unless something needs you; the calm counterpart to dsh-xiaotian.',
+    extra: ['owl', 'watcher'],
+  },
+  'dsh-radar': {
+    niche: 'companion',
+    headline: 'Radar - the approval radar for dsh',
+    body: 'Nothing waits unseen - pending approvals, blocked questions, and stuck runs swept continuously and surfaced on the companion before you forget.',
+    extra: ['radar', 'alerts'],
+  },
+  'dsh-beacon': {
+    niche: 'companion',
+    headline: 'Beacon - the signal lane for dsh',
+    body: 'One light per state - green done, amber waiting, red broken; the ambient status language for a desktop full of agents.',
+    extra: ['beacon', 'status'],
+  },
+  'dsh-halo': {
+    niche: 'companion',
+    headline: 'Halo - the companion aura',
+    body: 'The ring around the pet that says everything at a glance - color for mood, pulse for activity, flare when you are needed; no window, no text.',
+    extra: ['halo', 'aura'],
+  },
   'dsh-lingxi': {
     niche: 'companion',
     headline: 'Lingxi (灵犀) - the companion that gets you',
