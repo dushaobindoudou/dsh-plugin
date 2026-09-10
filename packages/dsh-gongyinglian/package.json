@@ -1,0 +1,21 @@
+{
+  "name": "dsh-gongyinglian",
+  "version": "0.0.1",
+  "description": "Gongyinglian (供应链) lane for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "gongyinglian",
+    "supply-chain"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-gongyinglian"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-gongyinglian#readme"
+}

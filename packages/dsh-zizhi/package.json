@@ -1,0 +1,21 @@
+{
+  "name": "dsh-zizhi",
+  "version": "0.0.1",
+  "description": "Zizhi (资质) lane for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "zizhi",
+    "qualifications"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-zizhi"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-zizhi#readme"
+}

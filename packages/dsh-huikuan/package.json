@@ -1,0 +1,21 @@
+{
+  "name": "dsh-huikuan",
+  "version": "0.0.1",
+  "description": "Huikuan (回款) lane for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "huikuan",
+    "collections"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-huikuan"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-huikuan#readme"
+}

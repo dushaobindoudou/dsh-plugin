@@ -1,0 +1,21 @@
+{
+  "name": "dsh-gonghai",
+  "version": "0.0.1",
+  "description": "Gonghai (公海) lane for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "gonghai",
+    "crm"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-gonghai"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-gonghai#readme"
+}

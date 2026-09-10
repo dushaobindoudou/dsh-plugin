@@ -3,11 +3,11 @@
 [![npm](https://img.shields.io/npm/v/dsh-crm.svg)](https://www.npmjs.com/package/dsh-crm)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**CRM toolkit for dsh** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**The CRM bridge for dsh agents** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-CRM toolkit for dsh. (Recorded from the npm registry at import time.)
+Customer data as agent context - accounts, pipelines, and touchpoints read; every write drafted and approved. Registered externally; promoted into the curated core.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

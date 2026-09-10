@@ -1,0 +1,21 @@
+{
+  "name": "dsh-kaoqin",
+  "version": "0.0.1",
+  "description": "Kaoqin (考勤) lane for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "kaoqin",
+    "attendance"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-kaoqin"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-kaoqin#readme"
+}

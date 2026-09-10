@@ -492,6 +492,63 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-xianxia`](packages/dsh-xianxia) | Xianxia (仙侠) lane for dsh agents |
 | [`dsh-jianghu`](packages/dsh-jianghu) | Jianghu (江湖) lane for dsh agents |
 
+### China b2b (52)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-crm`](packages/dsh-crm) | The CRM bridge for dsh agents |
+| [`dsh-erp`](packages/dsh-erp) | The ERP bridge for dsh agents |
+| [`dsh-baoshui`](packages/dsh-baoshui) | Baoshui (报关) lane for dsh agents |
+| [`dsh-tuishui`](packages/dsh-tuishui) | Tuishui (退税) lane for dsh agents |
+| [`dsh-nashui`](packages/dsh-nashui) | Nashui (纳税) lane for dsh agents |
+| [`dsh-jizhang`](packages/dsh-jizhang) | Jizhang (记账) lane for dsh agents |
+| [`dsh-kuaiji`](packages/dsh-kuaiji) | Kuaiji (会计) lane for dsh agents |
+| [`dsh-shenji`](packages/dsh-shenji) | Shenji (审计) lane for dsh agents |
+| [`dsh-kaipiao`](packages/dsh-kaipiao) | Kaipiao (开票) lane for dsh agents |
+| [`dsh-yusuan`](packages/dsh-yusuan) | Yusuan (预算) lane for dsh agents |
+| [`dsh-baozhang`](packages/dsh-baozhang) | Baozhang (报销) lane for dsh agents |
+| [`dsh-hesuan`](packages/dsh-hesuan) | Hesuan (核算) lane for dsh agents |
+| [`dsh-gongshang`](packages/dsh-gongshang) | Gongshang (工商) lane for dsh agents |
+| [`dsh-zhizhao`](packages/dsh-zhizhao) | Zhizhao (执照) lane for dsh agents |
+| [`dsh-renzheng`](packages/dsh-renzheng) | Renzheng (认证) lane for dsh agents |
+| [`dsh-zizhi`](packages/dsh-zizhi) | Zizhi (资质) lane for dsh agents |
+| [`dsh-jiuzhang`](packages/dsh-jiuzhang) | Jiuzhang (公章) lane for dsh agents |
+| [`dsh-beian`](packages/dsh-beian) | Beian (备案) lane for dsh agents |
+| [`dsh-chailv`](packages/dsh-chailv) | Chailv (差旅) lane for dsh agents |
+| [`dsh-qianyue`](packages/dsh-qianyue) | Qianyue (签约) lane for dsh agents |
+| [`dsh-ruzhi`](packages/dsh-ruzhi) | Ruzhi (入职) lane for dsh agents |
+| [`dsh-lizhi`](packages/dsh-lizhi) | Lizhi (离职) lane for dsh agents |
+| [`dsh-kaoqin`](packages/dsh-kaoqin) | Kaoqin (考勤) lane for dsh agents |
+| [`dsh-jixiao`](packages/dsh-jixiao) | Jixiao (绩效) lane for dsh agents |
+| [`dsh-gongzi`](packages/dsh-gongzi) | Gongzi (工资) lane for dsh agents |
+| [`dsh-jiangjin`](packages/dsh-jiangjin) | Jiangjin (奖金) lane for dsh agents |
+| [`dsh-hetong`](packages/dsh-hetong) | Hetong (合同) lane for dsh agents |
+| [`dsh-nianjian`](packages/dsh-nianjian) | Nianjian (年检) lane for dsh agents |
+| [`dsh-caigou`](packages/dsh-caigou) | Caigou (采购) lane for dsh agents |
+| [`dsh-gongyinglian`](packages/dsh-gongyinglian) | Gongyinglian (供应链) lane for dsh agents |
+| [`dsh-ruku`](packages/dsh-ruku) | Ruku (入库) lane for dsh agents |
+| [`dsh-chuku`](packages/dsh-chuku) | Chuku (出库) lane for dsh agents |
+| [`dsh-kucun`](packages/dsh-kucun) | Kucun (库存) lane for dsh agents |
+| [`dsh-pandi`](packages/dsh-pandi) | Pandi (盘点) lane for dsh agents |
+| [`dsh-qiankuan`](packages/dsh-qiankuan) | Qiankuan (欠款) lane for dsh agents |
+| [`dsh-shoukuan`](packages/dsh-shoukuan) | Shoukuan (收款) lane for dsh agents |
+| [`dsh-fukuan`](packages/dsh-fukuan) | Fukuan (付款) lane for dsh agents |
+| [`dsh-xiansuo`](packages/dsh-xiansuo) | Xiansuo (线索) lane for dsh agents |
+| [`dsh-shangji`](packages/dsh-shangji) | Shangji (商机) lane for dsh agents |
+| [`dsh-gonghai`](packages/dsh-gonghai) | Gonghai (公海) lane for dsh agents |
+| [`dsh-huikuan`](packages/dsh-huikuan) | Huikuan (回款) lane for dsh agents |
+| [`dsh-dingdan`](packages/dsh-dingdan) | Dingdan (订单) lane for dsh agents |
+| [`dsh-fahuo`](packages/dsh-fahuo) | Fahuo (发货) lane for dsh agents |
+| [`dsh-zhaobiao`](packages/dsh-zhaobiao) | Zhaobiao (招标) lane for dsh agents |
+| [`dsh-toubiao`](packages/dsh-toubiao) | Toubiao (投标) lane for dsh agents |
+| [`dsh-zhongbiao`](packages/dsh-zhongbiao) | Zhongbiao (中标) lane for dsh agents |
+| [`dsh-gongdan`](packages/dsh-gongdan) | Gongdan (工单) lane for dsh agents |
+| [`dsh-zhijian`](packages/dsh-zhijian) | Zhijian (质检) lane for dsh agents |
+| [`dsh-oa`](packages/dsh-oa) | The OA (办公自动化) bridge for dsh agents |
+| [`dsh-mes`](packages/dsh-mes) | The MES bridge for dsh agents |
+| [`dsh-wms`](packages/dsh-wms) | The WMS bridge for dsh agents |
+| [`dsh-scm`](packages/dsh-scm) | The SCM bridge for dsh agents |
+
 ### Multi-agent (6)
 
 | Name | Planned first release |
@@ -667,9 +724,9 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-keymap`](packages/dsh-keymap) | Keyboard shortcut manager for the dsh web GUI |
 | [`dsh-completions`](packages/dsh-completions) | Shell completions for the dsh launcher |
 <details>
-<summary>External waves (186 names, reconciled from the npm registry)</summary>
+<summary>External waves (184 names, reconciled from the npm registry)</summary>
 
-`dsh-accounting`, `dsh-acp-server`, `dsh-agentpay`, `dsh-airtable`, `dsh-ansible`, `dsh-ap2`, `dsh-asana`, `dsh-aws`, `dsh-azure`, `dsh-baby`, `dsh-banking`, `dsh-base`, `dsh-beauty`, `dsh-bio`, `dsh-bitcoin`, `dsh-blog`, `dsh-bolt`, `dsh-book`, `dsh-bots`, `dsh-brand`, `dsh-bun`, `dsh-calc`, `dsh-calculator`, `dsh-car`, `dsh-chem`, `dsh-clickhouse`, `dsh-comic`, `dsh-compliance`, `dsh-config`, `dsh-confluence`, `dsh-contract`, `dsh-convert`, `dsh-cook`, `dsh-cpp`, `dsh-crm`, `dsh-crypto`, `dsh-csharp`, `dsh-data`, `dsh-defi`, `dsh-deno`, `dsh-deploy`, `dsh-dict`, `dsh-dictionary`, `dsh-discord`, `dsh-docs`, `dsh-drive`, `dsh-ecommerce`, `dsh-edu`, `dsh-english`, `dsh-erp`, `dsh-escrow`, `dsh-esports`, `dsh-etf`, `dsh-eth`, `dsh-fashion`, `dsh-fees`, `dsh-festival`, `dsh-figma`, `dsh-finance`, `dsh-fintech`, `dsh-fit`, `dsh-fitness`, `dsh-font`, `dsh-food`, `dsh-forex`, `dsh-freeroute`, `dsh-fun`, `dsh-fund`, `dsh-futures`, `dsh-garden`, `dsh-gcp`, `dsh-go`, `dsh-helm`, `dsh-hl`, `dsh-holiday`, `dsh-home`, `dsh-horoscope`, `dsh-house`, `dsh-hr`, `dsh-hype`, `dsh-hyperevm`, `dsh-icon`, `dsh-infra`, `dsh-invoice`, `dsh-iot`, `dsh-irc`, `dsh-java`, `dsh-jira`, `dsh-joke`, `dsh-jupyter`, `dsh-k8s`, `dsh-kotlin`, `dsh-language`, `dsh-latex`, `dsh-law`, `dsh-legal`, `dsh-linear`, `dsh-linux`, `dsh-macos`, `dsh-marketing`, `dsh-math`, `dsh-matrix`, `dsh-medical`, `dsh-meditate`, `dsh-micropay`, `dsh-ml`, `dsh-mongo`, `dsh-movie`, `dsh-multiagent`, `dsh-mysql`, `dsh-news`, `dsh-nginx`, `dsh-notebook`, `dsh-nuxt`, `dsh-ocr`, `dsh-onchain`, `dsh-options`, `dsh-paper`, `dsh-payment`, `dsh-payments`, `dsh-photo`, `dsh-php`, `dsh-physics`, `dsh-portfolio`, `dsh-postgres`, `dsh-prisma`, `dsh-product`, `dsh-puzzle`, `dsh-python`, `dsh-pyusd`, `dsh-quiz`, `dsh-radio`, `dsh-react`, `dsh-read`, `dsh-recruit`, `dsh-redis`, `dsh-rent`, `dsh-risk`, `dsh-ruby`, `dsh-rust`, `dsh-sales`, `dsh-screenshot`, `dsh-seo`, `dsh-settings`, `dsh-shop`, `dsh-sleep`, `dsh-sports`, `dsh-sqlite`, `dsh-stable`, `dsh-stats`, `dsh-stock`, `dsh-streaming`, `dsh-subagent`, `dsh-subtitle`, `dsh-supabase`, `dsh-support`, `dsh-svelte`, `dsh-swift`, `dsh-task`, `dsh-tax`, `dsh-terraform`, `dsh-ticker`, `dsh-time`, `dsh-tipping`, `dsh-trading`, `dsh-transit`, `dsh-travel`, `dsh-trello`, `dsh-trip`, `dsh-tutor`, `dsh-tv`, `dsh-typescript`, `dsh-units`, `dsh-usdc`, `dsh-ux`, `dsh-vocab`, `dsh-vue`, `dsh-water`, `dsh-web3`, `dsh-web3-core`, `dsh-weibo`, `dsh-word`, `dsh-writing`, `dsh-x402`, `dsh-zhihu`, `dsh-zig`
+`dsh-accounting`, `dsh-acp-server`, `dsh-agentpay`, `dsh-airtable`, `dsh-ansible`, `dsh-ap2`, `dsh-asana`, `dsh-aws`, `dsh-azure`, `dsh-baby`, `dsh-banking`, `dsh-base`, `dsh-beauty`, `dsh-bio`, `dsh-bitcoin`, `dsh-blog`, `dsh-bolt`, `dsh-book`, `dsh-bots`, `dsh-brand`, `dsh-bun`, `dsh-calc`, `dsh-calculator`, `dsh-car`, `dsh-chem`, `dsh-clickhouse`, `dsh-comic`, `dsh-compliance`, `dsh-config`, `dsh-confluence`, `dsh-contract`, `dsh-convert`, `dsh-cook`, `dsh-cpp`, `dsh-crypto`, `dsh-csharp`, `dsh-data`, `dsh-defi`, `dsh-deno`, `dsh-deploy`, `dsh-dict`, `dsh-dictionary`, `dsh-discord`, `dsh-docs`, `dsh-drive`, `dsh-ecommerce`, `dsh-edu`, `dsh-english`, `dsh-escrow`, `dsh-esports`, `dsh-etf`, `dsh-eth`, `dsh-fashion`, `dsh-fees`, `dsh-festival`, `dsh-figma`, `dsh-finance`, `dsh-fintech`, `dsh-fit`, `dsh-fitness`, `dsh-font`, `dsh-food`, `dsh-forex`, `dsh-freeroute`, `dsh-fun`, `dsh-fund`, `dsh-futures`, `dsh-garden`, `dsh-gcp`, `dsh-go`, `dsh-helm`, `dsh-hl`, `dsh-holiday`, `dsh-home`, `dsh-horoscope`, `dsh-house`, `dsh-hr`, `dsh-hype`, `dsh-hyperevm`, `dsh-icon`, `dsh-infra`, `dsh-invoice`, `dsh-iot`, `dsh-irc`, `dsh-java`, `dsh-jira`, `dsh-joke`, `dsh-jupyter`, `dsh-k8s`, `dsh-kotlin`, `dsh-language`, `dsh-latex`, `dsh-law`, `dsh-legal`, `dsh-linear`, `dsh-linux`, `dsh-macos`, `dsh-marketing`, `dsh-math`, `dsh-matrix`, `dsh-medical`, `dsh-meditate`, `dsh-micropay`, `dsh-ml`, `dsh-mongo`, `dsh-movie`, `dsh-multiagent`, `dsh-mysql`, `dsh-news`, `dsh-nginx`, `dsh-notebook`, `dsh-nuxt`, `dsh-ocr`, `dsh-onchain`, `dsh-options`, `dsh-paper`, `dsh-payment`, `dsh-payments`, `dsh-photo`, `dsh-php`, `dsh-physics`, `dsh-portfolio`, `dsh-postgres`, `dsh-prisma`, `dsh-product`, `dsh-puzzle`, `dsh-python`, `dsh-pyusd`, `dsh-quiz`, `dsh-radio`, `dsh-react`, `dsh-read`, `dsh-recruit`, `dsh-redis`, `dsh-rent`, `dsh-risk`, `dsh-ruby`, `dsh-rust`, `dsh-sales`, `dsh-screenshot`, `dsh-seo`, `dsh-settings`, `dsh-shop`, `dsh-sleep`, `dsh-sports`, `dsh-sqlite`, `dsh-stable`, `dsh-stats`, `dsh-stock`, `dsh-streaming`, `dsh-subagent`, `dsh-subtitle`, `dsh-supabase`, `dsh-support`, `dsh-svelte`, `dsh-swift`, `dsh-task`, `dsh-tax`, `dsh-terraform`, `dsh-ticker`, `dsh-time`, `dsh-tipping`, `dsh-trading`, `dsh-transit`, `dsh-travel`, `dsh-trello`, `dsh-trip`, `dsh-tutor`, `dsh-tv`, `dsh-typescript`, `dsh-units`, `dsh-usdc`, `dsh-ux`, `dsh-vocab`, `dsh-vue`, `dsh-water`, `dsh-web3`, `dsh-web3-core`, `dsh-weibo`, `dsh-word`, `dsh-writing`, `dsh-x402`, `dsh-zhihu`, `dsh-zig`
 
 </details>
 <!-- placeholder-table:end -->

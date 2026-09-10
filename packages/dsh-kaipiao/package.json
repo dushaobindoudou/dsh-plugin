@@ -1,0 +1,21 @@
+{
+  "name": "dsh-kaipiao",
+  "version": "0.0.1",
+  "description": "Kaipiao (开票) lane for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "kaipiao",
+    "invoicing"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-kaipiao"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-kaipiao#readme"
+}
