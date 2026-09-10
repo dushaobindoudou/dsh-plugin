@@ -1,7 +1,7 @@
 {
   "name": "dsh-trading",
   "version": "0.0.1",
-  "description": "Trading research panel for dsh - name reserved; first release in development.",
+  "description": "Trading lane for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,7 +10,7 @@
     "deepseek-harness",
     "cordis-plugin",
     "trading",
-    "backtest"
+    "markets"
   ],
   "repository": {
     "type": "git",

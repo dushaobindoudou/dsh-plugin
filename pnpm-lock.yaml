@@ -106,6 +106,8 @@ importers:
 
   packages/dsh-backend: {}
 
+  packages/dsh-backtest: {}
+
   packages/dsh-baichuan: {}
 
   packages/dsh-baidu: {}
@@ -133,6 +135,8 @@ importers:
   packages/dsh-beike: {}
 
   packages/dsh-bell: {}
+
+  packages/dsh-bibtex: {}
 
   packages/dsh-bilibili: {}
 
@@ -210,11 +214,15 @@ importers:
 
   packages/dsh-circle: {}
 
+  packages/dsh-citation: {}
+
   packages/dsh-claude: {}
 
   packages/dsh-clean: {}
 
   packages/dsh-clickhouse: {}
+
+  packages/dsh-clinical: {}
 
   packages/dsh-closer: {}
 
@@ -253,6 +261,10 @@ importers:
   packages/dsh-costco: {}
 
   packages/dsh-council: {}
+
+  packages/dsh-counsel: {}
+
+  packages/dsh-course: {}
 
   packages/dsh-coverage: {}
 
@@ -314,6 +326,8 @@ importers:
 
   packages/dsh-dex: {}
 
+  packages/dsh-diagnose: {}
+
   packages/dsh-dianzan: {}
 
   packages/dsh-dice: {}
@@ -354,7 +368,11 @@ importers:
 
   packages/dsh-drive: {}
 
+  packages/dsh-drone: {}
+
   packages/dsh-dropbox: {}
+
+  packages/dsh-drug: {}
 
   packages/dsh-duilian: {}
 
@@ -386,6 +404,8 @@ importers:
 
   packages/dsh-endtoend: {}
 
+  packages/dsh-engine: {}
+
   packages/dsh-engineer: {}
 
   packages/dsh-engineering-manager: {}
@@ -414,6 +434,8 @@ importers:
 
   packages/dsh-evolve: {}
 
+  packages/dsh-exam: {}
+
   packages/dsh-execution: {}
 
   packages/dsh-expedia: {}
@@ -422,7 +444,11 @@ importers:
 
   packages/dsh-facebook: {}
 
+  packages/dsh-factor: {}
+
   packages/dsh-fahuo: {}
+
+  packages/dsh-falv: {}
 
   packages/dsh-fapiao: {}
 
@@ -435,6 +461,8 @@ importers:
   packages/dsh-fensi: {}
 
   packages/dsh-festival: {}
+
+  packages/dsh-fhir: {}
 
   packages/dsh-fiction: {}
 
@@ -509,6 +537,8 @@ importers:
   packages/dsh-gift: {}
 
   packages/dsh-git: {}
+
+  packages/dsh-gitee: {}
 
   packages/dsh-gitlab: {}
 
@@ -587,6 +617,10 @@ importers:
   packages/dsh-holiday: {}
 
   packages/dsh-home: {}
+
+  packages/dsh-homeassistant: {}
+
+  packages/dsh-homework: {}
 
   packages/dsh-hongbao: {}
 
@@ -668,11 +702,15 @@ importers:
 
   packages/dsh-jianshu: {}
 
+  packages/dsh-jiaoyu: {}
+
   packages/dsh-jieqi: {}
 
   packages/dsh-jigsaw: {}
 
   packages/dsh-jijin: {}
+
+  packages/dsh-jiqiren: {}
 
   packages/dsh-jira: {}
 
@@ -706,15 +744,21 @@ importers:
 
   packages/dsh-kaoqin: {}
 
+  packages/dsh-kaoshi: {}
+
   packages/dsh-karaoke: {}
 
   packages/dsh-keep: {}
+
+  packages/dsh-kernel: {}
 
   packages/dsh-keymap: {}
 
   packages/dsh-kimi: {}
 
   packages/dsh-klarna: {}
+
+  packages/dsh-kline: {}
 
   packages/dsh-kotlin: {}
 
@@ -766,6 +810,8 @@ importers:
 
   packages/dsh-litecoin: {}
 
+  packages/dsh-litigation: {}
+
   packages/dsh-lizhi: {}
 
   packages/dsh-llama: {}
@@ -781,6 +827,8 @@ importers:
   packages/dsh-lottery: {}
 
   packages/dsh-lsp: {}
+
+  packages/dsh-lvshi: {}
 
   packages/dsh-lyft: {}
 
@@ -811,6 +859,8 @@ importers:
   packages/dsh-math: {}
 
   packages/dsh-matrix: {}
+
+  packages/dsh-matter: {}
 
   packages/dsh-me: {}
 
@@ -922,6 +972,8 @@ importers:
 
   packages/dsh-options: {}
 
+  packages/dsh-os: {}
+
   packages/dsh-othello: {}
 
   packages/dsh-outcome: {}
@@ -933,6 +985,8 @@ importers:
   packages/dsh-panel: {}
 
   packages/dsh-paper: {}
+
+  packages/dsh-patient: {}
 
   packages/dsh-pay: {}
 
@@ -957,6 +1011,8 @@ importers:
   packages/dsh-personal: {}
 
   packages/dsh-phantom: {}
+
+  packages/dsh-pharmacy: {}
 
   packages/dsh-photo: {}
 
@@ -1092,6 +1148,10 @@ importers:
 
   packages/dsh-robinhood: {}
 
+  packages/dsh-robot: {}
+
+  packages/dsh-ros: {}
+
   packages/dsh-router: {}
 
   packages/dsh-routine: {}
@@ -1109,6 +1169,8 @@ importers:
   packages/dsh-run: {}
 
   packages/dsh-runbook: {}
+
+  packages/dsh-runtime: {}
 
   packages/dsh-rust: {}
 
@@ -1238,6 +1300,8 @@ importers:
 
   packages/dsh-stablecoin: {}
 
+  packages/dsh-stackoverflow: {}
+
   packages/dsh-starknet: {}
 
   packages/dsh-stats: {}
@@ -1283,6 +1347,8 @@ importers:
   packages/dsh-swarm: {}
 
   packages/dsh-swift: {}
+
+  packages/dsh-symptom: {}
 
   packages/dsh-tailor: {}
 
@@ -1484,6 +1550,8 @@ importers:
 
   packages/dsh-writing: {}
 
+  packages/dsh-wulianwang: {}
+
   packages/dsh-wuxia: {}
 
   packages/dsh-wuxing: {}
@@ -1509,6 +1577,8 @@ importers:
   packages/dsh-yelp: {}
 
   packages/dsh-yi: {}
+
+  packages/dsh-yiliao: {}
 
   packages/dsh-youku: {}
 
@@ -1547,6 +1617,8 @@ importers:
   packages/dsh-zhuli: {}
 
   packages/dsh-zig: {}
+
+  packages/dsh-zigbee: {}
 
   packages/dsh-zizhi: {}
 

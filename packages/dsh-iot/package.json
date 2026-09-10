@@ -1,7 +1,7 @@
 {
   "name": "dsh-iot",
   "version": "0.0.1",
-  "description": "IoT toolkit for dsh - name reserved; first release in development.",
+  "description": "IoT bridge for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,7 +10,7 @@
     "deepseek-harness",
     "cordis-plugin",
     "iot",
-    "smarthome"
+    "devices"
   ],
   "repository": {
     "type": "git",

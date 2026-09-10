@@ -1,7 +1,7 @@
 {
   "name": "dsh-medical",
   "version": "0.0.1",
-  "description": "Medical literature tools for dsh - name reserved; first release in development.",
+  "description": "Medical lane for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,7 +10,7 @@
     "deepseek-harness",
     "cordis-plugin",
     "medical",
-    "pubmed"
+    "healthcare"
   ],
   "repository": {
     "type": "git",

@@ -1,7 +1,7 @@
 {
   "name": "dsh-portfolio",
   "version": "0.0.1",
-  "description": "Portfolio lens for dsh - name reserved; first release in development.",
+  "description": "Portfolio lane for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,7 +9,8 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "portfolio"
+    "portfolio",
+    "investing"
   ],
   "repository": {
     "type": "git",

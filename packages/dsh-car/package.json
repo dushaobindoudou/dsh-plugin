@@ -1,7 +1,7 @@
 {
   "name": "dsh-car",
   "version": "0.0.1",
-  "description": "Car companion for dsh - name reserved; first release in development.",
+  "description": "Connected-car lane for dsh agents - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -10,7 +10,7 @@
     "deepseek-harness",
     "cordis-plugin",
     "car",
-    "auto"
+    "automotive"
   ],
   "repository": {
     "type": "git",
