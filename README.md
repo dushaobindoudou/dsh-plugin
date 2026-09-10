@@ -69,7 +69,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-models`](packages/dsh-models) | Model registry panel for the DeepSeek Harness |
 | [`dsh-providers`](packages/dsh-providers) | Provider registry for the DeepSeek Harness |
 
-### Developer tools (22)
+### Developer tools (24)
 
 | Name | Planned first release |
 | --- | --- |
@@ -95,6 +95,8 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-db`](packages/dsh-db) | Database client tools for dsh agents |
 | [`dsh-api`](packages/dsh-api) | REST client panel for the dsh web GUI |
 | [`dsh-git`](packages/dsh-git) | Git panel for the dsh web GUI |
+| [`dsh-juejin`](packages/dsh-juejin) | Juejin (掘金) bridge for dsh agents |
+| [`dsh-csdn`](packages/dsh-csdn) | CSDN bridge for dsh agents |
 
 ### Agent capabilities (10)
 
@@ -169,7 +171,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-roadmap`](packages/dsh-roadmap) | Roadmap toolkit for dsh agents |
 | [`dsh-sessions`](packages/dsh-sessions) | Session manager and browser |
 
-### Channels (37)
+### Channels (53)
 
 | Name | Planned first release |
 | --- | --- |
@@ -180,6 +182,22 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-douyin`](packages/dsh-douyin) | Douyin bridge for dsh bots |
 | [`dsh-xiaohongshu`](packages/dsh-xiaohongshu) | Xiaohongshu bridge for dsh bots |
 | [`dsh-bilibili`](packages/dsh-bilibili) | Bilibili bridge for dsh bots |
+| [`dsh-kuaishou`](packages/dsh-kuaishou) | Kuaishou (快手) channel bridge for dsh bots |
+| [`dsh-douban`](packages/dsh-douban) | Douban (豆瓣) bridge for dsh agents |
+| [`dsh-huya`](packages/dsh-huya) | Huya (虎牙) bridge for dsh agents |
+| [`dsh-tieba`](packages/dsh-tieba) | Baidu Tieba (贴吧) bridge for dsh agents |
+| [`dsh-baike`](packages/dsh-baike) | Baike (百科) bridge for dsh agents |
+| [`dsh-wenku`](packages/dsh-wenku) | Wenku (文库) bridge for dsh agents |
+| [`dsh-36kr`](packages/dsh-36kr) | 36Kr bridge for dsh agents |
+| [`dsh-hupu`](packages/dsh-hupu) | Hupu (虎扑) bridge for dsh agents |
+| [`dsh-jianshu`](packages/dsh-jianshu) | Jianshu (简书) bridge for dsh agents |
+| [`dsh-gongzhonghao`](packages/dsh-gongzhonghao) | Gongzhonghao (公众号) bridge for dsh bots |
+| [`dsh-xiaochengxu`](packages/dsh-xiaochengxu) | Xiaochengxu (小程序) bridge for dsh agents |
+| [`dsh-shipinhao`](packages/dsh-shipinhao) | Shipinhao (视频号) bridge for dsh bots |
+| [`dsh-acfun`](packages/dsh-acfun) | AcFun (A站) bridge for dsh agents |
+| [`dsh-sspai`](packages/dsh-sspai) | Sspai (少数派) bridge for dsh agents |
+| [`dsh-guokr`](packages/dsh-guokr) | Guokr (果壳) bridge for dsh agents |
+| [`dsh-v2ex`](packages/dsh-v2ex) | V2EX bridge for dsh agents |
 | [`dsh-tiktok`](packages/dsh-tiktok) | TikTok channel bridge for dsh bots |
 | [`dsh-instagram`](packages/dsh-instagram) | Instagram channel bridge for dsh bots |
 | [`dsh-facebook`](packages/dsh-facebook) | Facebook channel bridge for dsh bots |
@@ -345,7 +363,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-applepay`](packages/dsh-applepay) | Apple Pay-facing bridge for dsh agents |
 | [`dsh-googlepay`](packages/dsh-googlepay) | Google Pay-facing bridge for dsh agents |
 
-### Entertainment (58)
+### Entertainment (61)
 
 | Name | Planned first release |
 | --- | --- |
@@ -407,6 +425,9 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-tangram`](packages/dsh-tangram) | Tangram lane for dsh agents |
 | [`dsh-rps`](packages/dsh-rps) | Rock paper scissors for dsh agents |
 | [`dsh-drawguess`](packages/dsh-drawguess) | Draw-and-guess for dsh agents |
+| [`dsh-qidian`](packages/dsh-qidian) | Qidian (起点) lane for dsh agents |
+| [`dsh-manhua`](packages/dsh-manhua) | Manhua (漫画) lane for dsh agents |
+| [`dsh-wangwen`](packages/dsh-wangwen) | Wangwen (网文) toolkit for dsh agents |
 
 ### Personalization (18)
 
@@ -430,6 +451,46 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-echo`](packages/dsh-echo) | Echo lane for dsh agents |
 | [`dsh-me`](packages/dsh-me) | The me seat for dsh agents |
 | [`dsh-brain`](packages/dsh-brain) | The second brain for dsh agents |
+
+### China ecosystem (35)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-hongbao`](packages/dsh-hongbao) | Hongbao (红包) lane for dsh agents |
+| [`dsh-qianbao`](packages/dsh-qianbao) | Qianbao (钱包) lane for dsh agents |
+| [`dsh-zhuanzhang`](packages/dsh-zhuanzhang) | Zhuanzhang (转账) lane for dsh agents |
+| [`dsh-zhifu`](packages/dsh-zhifu) | Zhifu (支付) lane for dsh agents |
+| [`dsh-fapiao`](packages/dsh-fapiao) | Fapiao (发票) lane for dsh agents |
+| [`dsh-shebao`](packages/dsh-shebao) | Shebao (社保) lane for dsh agents |
+| [`dsh-gongjijin`](packages/dsh-gongjijin) | Gongjijin (公积金) lane for dsh agents |
+| [`dsh-hukou`](packages/dsh-hukou) | Hukou (户口) lane for dsh agents |
+| [`dsh-baoxian`](packages/dsh-baoxian) | Baoxian (保险) lane for dsh agents |
+| [`dsh-jijin`](packages/dsh-jijin) | Jijin (基金) lane for dsh agents |
+| [`dsh-gupiao`](packages/dsh-gupiao) | Gupiao (股票) lane for dsh agents |
+| [`dsh-huabei`](packages/dsh-huabei) | Huabei (花呗) lane for dsh agents |
+| [`dsh-dashang`](packages/dsh-dashang) | Dashang (打赏) lane for dsh agents |
+| [`dsh-dianzan`](packages/dsh-dianzan) | Dianzan (点赞) lane for dsh agents |
+| [`dsh-guanzhu`](packages/dsh-guanzhu) | Guanzhu (关注) lane for dsh agents |
+| [`dsh-fensi`](packages/dsh-fensi) | Fensi (粉丝) lane for dsh agents |
+| [`dsh-lahei`](packages/dsh-lahei) | Lahei (拉黑) lane for dsh agents |
+| [`dsh-miaosha`](packages/dsh-miaosha) | Miaosha (秒杀) lane for dsh agents |
+| [`dsh-tuangou`](packages/dsh-tuangou) | Tuangou (团购) lane for dsh agents |
+| [`dsh-kanjia`](packages/dsh-kanjia) | Kanjia (砍价) lane for dsh agents |
+| [`dsh-zhuli`](packages/dsh-zhuli) | Zhuli (助力) lane for dsh agents |
+| [`dsh-baoyou`](packages/dsh-baoyou) | Baoyou (包邮) lane for dsh agents |
+| [`dsh-tuikuan`](packages/dsh-tuikuan) | Tuikuan (退款) lane for dsh agents |
+| [`dsh-shici`](packages/dsh-shici) | Shici (诗词) lane for dsh agents |
+| [`dsh-duilian`](packages/dsh-duilian) | Duilian (对联) lane for dsh agents |
+| [`dsh-shengxiao`](packages/dsh-shengxiao) | Shengxiao (生肖) lane for dsh agents |
+| [`dsh-nongli`](packages/dsh-nongli) | Nongli (农历) lane for dsh agents |
+| [`dsh-jieqi`](packages/dsh-jieqi) | Jieqi (节气) lane for dsh agents |
+| [`dsh-wuxing`](packages/dsh-wuxing) | Wuxing (五行) lane for dsh agents |
+| [`dsh-fengshui`](packages/dsh-fengshui) | Fengshui (风水) lane for dsh agents |
+| [`dsh-guoxue`](packages/dsh-guoxue) | Guoxue (国学) lane for dsh agents |
+| [`dsh-hanfu`](packages/dsh-hanfu) | Hanfu (汉服) lane for dsh agents |
+| [`dsh-wuxia`](packages/dsh-wuxia) | Wuxia (武侠) lane for dsh agents |
+| [`dsh-xianxia`](packages/dsh-xianxia) | Xianxia (仙侠) lane for dsh agents |
+| [`dsh-jianghu`](packages/dsh-jianghu) | Jianghu (江湖) lane for dsh agents |
 
 ### Multi-agent (6)
 
