@@ -456,10 +456,56 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-me`](packages/dsh-me) | The me seat for dsh agents |
 | [`dsh-brain`](packages/dsh-brain) | The second brain for dsh agents |
 
-### Companion (41)
+### Companion (87)
 
 | Name | Planned first release |
 | --- | --- |
+| [`dsh-cat`](packages/dsh-cat) | Cat - the classic companion form |
+| [`dsh-kitty`](packages/dsh-kitty) | Kitty - the affectionate form |
+| [`dsh-kitten`](packages/dsh-kitten) | Kitten - the growth stage |
+| [`dsh-neko`](packages/dsh-neko) | Neko - the desktop-cat canon |
+| [`dsh-miao`](packages/dsh-miao) | Miao - the universal cat sound |
+| [`dsh-dog`](packages/dsh-dog) | Dog - the loyal form |
+| [`dsh-doggy`](packages/dsh-doggy) | Doggy - the playful form |
+| [`dsh-puppy`](packages/dsh-puppy) | Puppy - the young dog stage |
+| [`dsh-husky`](packages/dsh-husky) | Husky - the chatty form |
+| [`dsh-corgi`](packages/dsh-corgi) | Corgi - the short-leg form |
+| [`dsh-shiba`](packages/dsh-shiba) | Shiba - the meme royalty |
+| [`dsh-akita`](packages/dsh-akita) | Akita - the one who waits |
+| [`dsh-fox`](packages/dsh-fox) | Fox - the clever form |
+| [`dsh-panda`](packages/dsh-panda) | Panda - the national treasure form |
+| [`dsh-tiger`](packages/dsh-tiger) | Tiger - the power form |
+| [`dsh-lion`](packages/dsh-lion) | Lion - the guardian form |
+| [`dsh-rabbit`](packages/dsh-rabbit) | Rabbit - the swift gentle form |
+| [`dsh-bunny`](packages/dsh-bunny) | Bunny - the soft form |
+| [`dsh-bear`](packages/dsh-bear) | Bear - the sleepy strong form |
+| [`dsh-hamster`](packages/dsh-hamster) | Hamster - the hoarder form |
+| [`dsh-squirrel`](packages/dsh-squirrel) | Squirrel - the acorn archivist |
+| [`dsh-deer`](packages/dsh-deer) | Deer - the gentle spirit form |
+| [`dsh-wolf`](packages/dsh-wolf) | Wolf - the pack form |
+| [`dsh-raccoon`](packages/dsh-raccoon) | Raccoon - the curious form |
+| [`dsh-penguin`](packages/dsh-penguin) | Penguin - the geek royal |
+| [`dsh-bird`](packages/dsh-bird) | Bird - the sky lane form |
+| [`dsh-eagle`](packages/dsh-eagle) | Eagle - the sharp-eyed form |
+| [`dsh-crane`](packages/dsh-crane) | Crane - the immortal companion |
+| [`dsh-fish`](packages/dsh-fish) | Fish - the quiet form |
+| [`dsh-whale`](packages/dsh-whale) | Whale - the deep form |
+| [`dsh-turtle`](packages/dsh-turtle) | Turtle - the marathon form |
+| [`dsh-frog`](packages/dsh-frog) | Frog - the patient form |
+| [`dsh-duck`](packages/dsh-duck) | Duck - the calm surface form |
+| [`dsh-hedgehog`](packages/dsh-hedgehog) | Hedgehog - the gentle spiked form |
+| [`dsh-monkey`](packages/dsh-monkey) | Monkey - the trickster engineer |
+| [`dsh-mouse`](packages/dsh-mouse) | Mouse - the first zodiac |
+| [`dsh-rat`](packages/dsh-rat) | Rat - the resourceful zodiac |
+| [`dsh-ox`](packages/dsh-ox) | Ox - the endurance zodiac |
+| [`dsh-horse`](packages/dsh-horse) | Horse - the galloping zodiac |
+| [`dsh-sheep`](packages/dsh-sheep) | Sheep - the gentle zodiac |
+| [`dsh-pig`](packages/dsh-pig) | Pig - the contented zodiac |
+| [`dsh-rooster`](packages/dsh-rooster) | Rooster - the dawn reporter |
+| [`dsh-qilin`](packages/dsh-qilin) | Qilin - the auspicious supreme form |
+| [`dsh-pixiu`](packages/dsh-pixiu) | Pixiu - the wealth guardian |
+| [`dsh-koi`](packages/dsh-koi) | Koi - the luck lane |
+| [`dsh-magpie`](packages/dsh-magpie) | Magpie - the English twin of xique |
 | [`dsh-owl`](packages/dsh-owl) | Owl - the watcher for dsh |
 | [`dsh-radar`](packages/dsh-radar) | Radar - the approval radar for dsh |
 | [`dsh-beacon`](packages/dsh-beacon) | Beacon - the signal lane for dsh |
