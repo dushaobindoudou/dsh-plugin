@@ -234,7 +234,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-salesforce`](packages/dsh-salesforce) | Salesforce bridge for dsh agents |
 | [`dsh-channels`](packages/dsh-channels) | Chat-channel framework for dsh bots |
 
-### Web3 & payments (76)
+### Web3 & payments (141)
 
 | Name | Planned first release |
 | --- | --- |
@@ -248,6 +248,71 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-solidity`](packages/dsh-solidity) | Solidity toolkit for dsh agents |
 | [`dsh-stablecoin`](packages/dsh-stablecoin) | Stablecoin rail toolkit for dsh agents |
 | [`dsh-usdt`](packages/dsh-usdt) | USDT toolkit for dsh agents |
+| [`dsh-rwa`](packages/dsh-rwa) | Rwa - real world assets on-chain |
+| [`dsh-xstocks`](packages/dsh-xstocks) | Xstocks - the tokenized ticker tape |
+| [`dsh-ondo`](packages/dsh-ondo) | Ondo - wall street walks on-chain |
+| [`dsh-backed`](packages/dsh-backed) | Backed - every token has an issuer |
+| [`dsh-tokenized`](packages/dsh-tokenized) | Tokenized - the verb of the era |
+| [`dsh-equities`](packages/dsh-equities) | Equities - ownership as a token |
+| [`dsh-treasuries`](packages/dsh-treasuries) | Treasuries - the risk-free curve on-chain |
+| [`dsh-buidl`](packages/dsh-buidl) | Buidl - the fund that BlackRock named |
+| [`dsh-securitytoken`](packages/dsh-securitytoken) | Securitytoken - the regulated token |
+| [`dsh-sto`](packages/dsh-sto) | Sto - the security token offering |
+| [`dsh-fractional`](packages/dsh-fractional) | Fractional - own one thousandth of Apple |
+| [`dsh-shares`](packages/dsh-shares) | Shares - the plural that went on-chain |
+| [`dsh-ipo`](packages/dsh-ipo) | Ipo - the listing goes on-chain |
+| [`dsh-preipo`](packages/dsh-preipo) | Preipo - the private market, tokenized |
+| [`dsh-dividends`](packages/dsh-dividends) | Dividends - the payout as a transfer |
+| [`dsh-buyback`](packages/dsh-buyback) | Buyback - the issuer takes tokens back |
+| [`dsh-shareholder`](packages/dsh-shareholder) | Shareholder - the register lives on-chain |
+| [`dsh-voting`](packages/dsh-voting) | Voting - governance for the listed |
+| [`dsh-corporateaction`](packages/dsh-corporateaction) | Corporateaction - splits on schedule |
+| [`dsh-nav`](packages/dsh-nav) | Nav - the price of the basket |
+| [`dsh-redemption`](packages/dsh-redemption) | Redemption - the way back out |
+| [`dsh-transferagent`](packages/dsh-transferagent) | Transferagent - the registry keeper |
+| [`dsh-t1`](packages/dsh-t1) | T1 - the settlement they still wait for |
+| [`dsh-tplus1`](packages/dsh-tplus1) | Tplus1 - wall street standard, crypto relic |
+| [`dsh-dtc`](packages/dsh-dtc) | Dtc - the vault of wall street |
+| [`dsh-isin`](packages/dsh-isin) | Isin - the international serial |
+| [`dsh-cusip`](packages/dsh-cusip) | Cusip - the American serial |
+| [`dsh-ats`](packages/dsh-ats) | Ats - where tokenized stocks legally trade |
+| [`dsh-afterhours`](packages/dsh-afterhours) | Afterhours - the session that never ends |
+| [`dsh-premarket`](packages/dsh-premarket) | Premarket - before the bell |
+| [`dsh-circuitbreaker`](packages/dsh-circuitbreaker) | Circuitbreaker - the pause button |
+| [`dsh-halt`](packages/dsh-halt) | Halt - the trading stop |
+| [`dsh-shorts`](packages/dsh-shorts) | Shorts - sell what you borrow |
+| [`dsh-liquidity`](packages/dsh-liquidity) | Liquidity - the water in the market |
+| [`dsh-oracle`](packages/dsh-oracle) | Oracle - the truth about off-chain prices |
+| [`dsh-pyth`](packages/dsh-pyth) | Pyth - first-party price feeds |
+| [`dsh-wrapped`](packages/dsh-wrapped) | Wrapped - the same asset, new chain |
+| [`dsh-collateral`](packages/dsh-collateral) | Collateral - the skin in the game |
+| [`dsh-margin`](packages/dsh-margin) | Margin - trade with borrowed conviction |
+| [`dsh-leverage`](packages/dsh-leverage) | Leverage - the multiplier |
+| [`dsh-funding`](packages/dsh-funding) | Funding - the rate that keeps perps honest |
+| [`dsh-yield`](packages/dsh-yield) | Yield - the return stream |
+| [`dsh-apy`](packages/dsh-apy) | Apy - the annualized promise |
+| [`dsh-synthetic`](packages/dsh-synthetic) | Synthetic - exposure without ownership |
+| [`dsh-synth`](packages/dsh-synth) | Synth - the short form |
+| [`dsh-lending`](packages/dsh-lending) | Lending - the money market |
+| [`dsh-borrow`](packages/dsh-borrow) | Borrow - the other side of supply |
+| [`dsh-flashloan`](packages/dsh-flashloan) | Flashloan - borrow and repay in one block |
+| [`dsh-ltv`](packages/dsh-ltv) | Ltv - the loan to value line |
+| [`dsh-basis`](packages/dsh-basis) | Basis - the futures spot gap |
+| [`dsh-carry`](packages/dsh-carry) | Carry - get paid to wait |
+| [`dsh-kyc`](packages/dsh-kyc) | Kyc - know your wallet |
+| [`dsh-aml`](packages/dsh-aml) | Aml - follow the money, lawfully |
+| [`dsh-whitelist`](packages/dsh-whitelist) | Whitelist - the guest list |
+| [`dsh-dydx`](packages/dsh-dydx) | Dydx - the perp exchange veteran |
+| [`dsh-gmx`](packages/dsh-gmx) | Gmx - the perp dex of arbitrum |
+| [`dsh-drift`](packages/dsh-drift) | Drift - solana perps |
+| [`dsh-aevo`](packages/dsh-aevo) | Aevo - options on-chain |
+| [`dsh-lighter`](packages/dsh-lighter) | Lighter - the zero-fee perp book |
+| [`dsh-meigu`](packages/dsh-meigu) | Meigu - US stocks, in Chinese |
+| [`dsh-ganggu`](packages/dsh-ganggu) | Ganggu - Hong Kong stocks, in Chinese |
+| [`dsh-agu`](packages/dsh-agu) | Agu - A-shares, in Chinese |
+| [`dsh-shangshi`](packages/dsh-shangshi) | Shangshi - going public, in Chinese |
+| [`dsh-guquan`](packages/dsh-guquan) | Guquan - equity, in Chinese |
+| [`dsh-gutong`](packages/dsh-gutong) | Gutong - the connect programs |
 | [`dsh-mev`](packages/dsh-mev) | Mev - the invisible tax |
 | [`dsh-slippage`](packages/dsh-slippage) | Slippage - the price drift |
 | [`dsh-staking`](packages/dsh-staking) | Staking - put tokens to work |

@@ -1,0 +1,21 @@
+{
+  "name": "dsh-transferagent",
+  "version": "0.0.1",
+  "description": "Transferagent - the registry keeper - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "transferagent",
+    "registry"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-transferagent"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-transferagent#readme"
+}

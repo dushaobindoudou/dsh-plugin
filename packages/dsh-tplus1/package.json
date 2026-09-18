@@ -1,0 +1,21 @@
+{
+  "name": "dsh-tplus1",
+  "version": "0.0.1",
+  "description": "Tplus1 - wall street standard, crypto relic - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "tplus1",
+    "settlement"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-tplus1"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-tplus1#readme"
+}

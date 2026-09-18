@@ -1,0 +1,21 @@
+{
+  "name": "dsh-oracle",
+  "version": "0.0.1",
+  "description": "Oracle - the truth about off-chain prices - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "oracle",
+    "pricefeed"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-oracle"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-oracle#readme"
+}

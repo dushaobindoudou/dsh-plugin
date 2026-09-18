@@ -1,0 +1,21 @@
+{
+  "name": "dsh-meigu",
+  "version": "0.0.1",
+  "description": "Meigu - US stocks, in Chinese - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "meigu",
+    "us-stocks"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-meigu"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-meigu#readme"
+}
