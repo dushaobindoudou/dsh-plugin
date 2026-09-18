@@ -7,7 +7,7 @@
 
 This package name is reserved; the first release is in development.
 
-Liveness of the web host, model adapters, and credentials at a glance - the always-on display to dsh-selfrepair's repair.
+Liveness of the web host, model adapters, and credentials at a glance - the always-on display to dsh-recovery's repair.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

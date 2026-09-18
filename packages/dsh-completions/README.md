@@ -7,7 +7,7 @@
 
 This package name is reserved; the first release is in development.
 
-bash / zsh / fish completion recipes for the dsh CLI and plugin binaries like dsh-selfrepair.
+bash / zsh / fish completion recipes for the dsh CLI and plugin binaries like dsh-recovery.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

@@ -900,7 +900,7 @@ export const CORE = {
   'dsh-selfheal': {
     niche: 'self-iteration',
     headline: 'Self-healing loop for dsh agents',
-    body: 'The watch-and-repair loop above dsh-selfrepair - error classes detected, patches proposed, tests prove the fix before it applies.',
+    body: 'The watch-and-repair loop above dsh-recovery - error classes detected, patches proposed, tests prove the fix before it applies.',
     extra: ['selfheal', 'repair'],
   },
   'dsh-self-improve': {
@@ -4281,7 +4281,7 @@ export const CORE = {
   'dsh-health': {
     niche: 'ops',
     headline: 'Live health status for dsh installs',
-    body: "Liveness of the web host, model adapters, and credentials at a glance - the always-on display to dsh-selfrepair's repair.",
+    body: "Liveness of the web host, model adapters, and credentials at a glance - the always-on display to dsh-recovery's repair.",
     extra: ['health'],
   },
   'dsh-clean': {
@@ -4541,7 +4541,7 @@ export const CORE = {
   'dsh-completions': {
     niche: 'harness surfaces',
     headline: 'Shell completions for the dsh launcher',
-    body: 'bash / zsh / fish completion recipes for the dsh CLI and plugin binaries like dsh-selfrepair.',
+    body: 'bash / zsh / fish completion recipes for the dsh CLI and plugin binaries like dsh-recovery.',
     extra: [],
   },
   // ---- protocols ----------------------------------------------------------
@@ -4560,6 +4560,6 @@ export const CORE = {
 export const CATALOG = { ...EXTERNAL, ...CORE }
 
 // Packages with real shipped code - excluded from placeholder generation.
-export const REAL_PACKAGES = ['dsh-selfrepair', 'dsh-workflow', 'dsh-bot']
+export const REAL_PACKAGES = ['dsh-recovery', 'dsh-workflow', 'dsh-bot']
 
 export const PLACEHOLDER_VERSION = '0.0.1'
