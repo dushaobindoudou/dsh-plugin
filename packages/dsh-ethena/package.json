@@ -1,0 +1,21 @@
+{
+  "name": "dsh-ethena",
+  "version": "0.0.1",
+  "description": "Ethena - the synthetic dollar factory - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "ethena",
+    "stablecoin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-ethena"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-ethena#readme"
+}

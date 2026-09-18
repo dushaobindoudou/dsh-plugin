@@ -234,7 +234,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-salesforce`](packages/dsh-salesforce) | Salesforce bridge for dsh agents |
 | [`dsh-channels`](packages/dsh-channels) | Chat-channel framework for dsh bots |
 
-### Web3 & payments (141)
+### Web3 & payments (234)
 
 | Name | Planned first release |
 | --- | --- |
@@ -248,6 +248,99 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-solidity`](packages/dsh-solidity) | Solidity toolkit for dsh agents |
 | [`dsh-stablecoin`](packages/dsh-stablecoin) | Stablecoin rail toolkit for dsh agents |
 | [`dsh-usdt`](packages/dsh-usdt) | USDT toolkit for dsh agents |
+| [`dsh-btc`](packages/dsh-btc) | Btc - the ticker that started it all |
+| [`dsh-bch`](packages/dsh-bch) | Bch - the cash fork |
+| [`dsh-etc`](packages/dsh-etc) | Etc - the code is law fork |
+| [`dsh-ltc`](packages/dsh-ltc) | Ltc - the silver to gold |
+| [`dsh-trx`](packages/dsh-trx) | Trx - the tron ticker |
+| [`dsh-dot`](packages/dsh-dot) | Dot - the polkadot ticker |
+| [`dsh-atom`](packages/dsh-atom) | Atom - the cosmos ticker |
+| [`dsh-xlm`](packages/dsh-xlm) | Xlm - the stellar ticker |
+| [`dsh-fil`](packages/dsh-fil) | Fil - the filecoin ticker |
+| [`dsh-hbar`](packages/dsh-hbar) | Hbar - the hedera ticker |
+| [`dsh-algo`](packages/dsh-algo) | Algo - the algorand ticker |
+| [`dsh-eos`](packages/dsh-eos) | Eos - the record raise |
+| [`dsh-neo`](packages/dsh-neo) | Neo - the chinese ethereum |
+| [`dsh-zcash`](packages/dsh-zcash) | Zcash - the shielded pool |
+| [`dsh-iota`](packages/dsh-iota) | Iota - the tangle |
+| [`dsh-bsv`](packages/dsh-bsv) | Bsv - the other schism |
+| [`dsh-kava`](packages/dsh-kava) | Kava - the lending chain |
+| [`dsh-blast`](packages/dsh-blast) | Blast - the yield-bearing L2 |
+| [`dsh-scroll`](packages/dsh-scroll) | Scroll - the zkEVM that shipped |
+| [`dsh-linea`](packages/dsh-linea) | Linea - the consensys rollup |
+| [`dsh-manta`](packages/dsh-manta) | Manta - the privacy L2 |
+| [`dsh-mode`](packages/dsh-mode) | Mode - the op-stack for builders |
+| [`dsh-mantle`](packages/dsh-mantle) | Mantle - the bitdao chain |
+| [`dsh-celestia`](packages/dsh-celestia) | Celestia - the data availability layer |
+| [`dsh-sei`](packages/dsh-sei) | Sei - the orderbook chain |
+| [`dsh-injective`](packages/dsh-injective) | Injective - the finance-specific chain |
+| [`dsh-stacks`](packages/dsh-stacks) | Stacks - the bitcoin smart contract |
+| [`dsh-multiversx`](packages/dsh-multiversx) | Multiversx - elrond grows up |
+| [`dsh-aave`](packages/dsh-aave) | Aave - the ghost that lends |
+| [`dsh-maker`](packages/dsh-maker) | Maker - the original stablecoin engine |
+| [`dsh-lido`](packages/dsh-lido) | Lido - the liquid stake |
+| [`dsh-curve`](packages/dsh-curve) | Curve - the stable swap |
+| [`dsh-compound`](packages/dsh-compound) | Compound - interest rates as code |
+| [`dsh-synthetix`](packages/dsh-synthetix) | Synthetix - the synthetic engine |
+| [`dsh-balancer`](packages/dsh-balancer) | Balancer - the weighted pool |
+| [`dsh-yearn`](packages/dsh-yearn) | Yearn - the yield strategist |
+| [`dsh-pendle`](packages/dsh-pendle) | Pendle - yield, split and traded |
+| [`dsh-convex`](packages/dsh-convex) | Convex - the curve booster |
+| [`dsh-frax`](packages/dsh-frax) | Frax - the fractional reserve stable |
+| [`dsh-rocketpool`](packages/dsh-rocketpool) | Rocketpool - the decentralized staker |
+| [`dsh-1inch`](packages/dsh-1inch) | 1inch - the aggregator |
+| [`dsh-pancakeswap`](packages/dsh-pancakeswap) | Pancakeswap - the bnb dex |
+| [`dsh-sushiswap`](packages/dsh-sushiswap) | Sushiswap - the vampire attack |
+| [`dsh-jupiter`](packages/dsh-jupiter) | Jupiter - the solana router |
+| [`dsh-raydium`](packages/dsh-raydium) | Raydium - the AMM with an orderbook |
+| [`dsh-pepe`](packages/dsh-pepe) | Pepe - the frog that became an asset |
+| [`dsh-shib`](packages/dsh-shib) | Shib - the dogecoin successor |
+| [`dsh-bonk`](packages/dsh-bonk) | Bonk - the solana dog |
+| [`dsh-wif`](packages/dsh-wif) | Wif - the dog in the hat |
+| [`dsh-floki`](packages/dsh-floki) | Floki - the viking dog |
+| [`dsh-bome`](packages/dsh-bome) | Bome - the book of memes |
+| [`dsh-tao`](packages/dsh-tao) | Tao - the bittensor unit |
+| [`dsh-bittensor`](packages/dsh-bittensor) | Bittensor - the neural internet |
+| [`dsh-render`](packages/dsh-render) | Render - the GPU marketplace |
+| [`dsh-fet`](packages/dsh-fet) | Fet - the fetch ticker |
+| [`dsh-fetch`](packages/dsh-fetch) | Fetch - the agent economy |
+| [`dsh-akash`](packages/dsh-akash) | Akash - the supercloud |
+| [`dsh-layerzero`](packages/dsh-layerzero) | Layerzero - the omnichain messaging |
+| [`dsh-wormhole`](packages/dsh-wormhole) | Wormhole - the message bus |
+| [`dsh-axelar`](packages/dsh-axelar) | Axelar - the cross-chain router |
+| [`dsh-stargate`](packages/dsh-stargate) | Stargate - the unified bridge |
+| [`dsh-eigenlayer`](packages/dsh-eigenlayer) | Eigenlayer - restaking, the sequel |
+| [`dsh-etherfi`](packages/dsh-etherfi) | Etherfi - the staking with a bow |
+| [`dsh-jito`](packages/dsh-jito) | Jito - the solana stake |
+| [`dsh-marinade`](packages/dsh-marinade) | Marinade - the solana staking chef |
+| [`dsh-ens`](packages/dsh-ens) | Ens - your name on the chain |
+| [`dsh-ronin`](packages/dsh-ronin) | Ronin - the axie chain |
+| [`dsh-gala`](packages/dsh-gala) | Gala - the games publisher on-chain |
+| [`dsh-immutable`](packages/dsh-immutable) | Immutable - the web3 gaming L2 |
+| [`dsh-vechain`](packages/dsh-vechain) | Vechain - the supply chain chain |
+| [`dsh-conflux`](packages/dsh-conflux) | Conflux - the tree-graph chain |
+| [`dsh-qtum`](packages/dsh-qtum) | Qtum - the bridging experiment |
+| [`dsh-chiliz`](packages/dsh-chiliz) | Chiliz - the fan token chain |
+| [`dsh-worldcoin`](packages/dsh-worldcoin) | Worldcoin - the proof of person |
+| [`dsh-notcoin`](packages/dsh-notcoin) | Notcoin - the tap to earn |
+| [`dsh-sky`](packages/dsh-sky) | Sky - maker grown up |
+| [`dsh-usde`](packages/dsh-usde) | Usde - the delta-neutral stable |
+| [`dsh-ethena`](packages/dsh-ethena) | Ethena - the synthetic dollar factory |
+| [`dsh-kas`](packages/dsh-kas) | Kas - the kaspa ticker |
+| [`dsh-kaspa`](packages/dsh-kaspa) | Kaspa - the blockdag |
+| [`dsh-ocean`](packages/dsh-ocean) | Ocean - the data marketplace |
+| [`dsh-singularitynet`](packages/dsh-singularitynet) | Singularitynet - the AI marketplace |
+| [`dsh-virtual`](packages/dsh-virtual) | Virtual - the agent launchpad |
+| [`dsh-eliza`](packages/dsh-eliza) | Eliza - the agent framework |
+| [`dsh-grt`](packages/dsh-grt) | Grt - the graph ticker |
+| [`dsh-thegraph`](packages/dsh-thegraph) | Thegraph - the blockchain search engine |
+| [`dsh-api3`](packages/dsh-api3) | Api3 - first-party oracles |
+| [`dsh-band`](packages/dsh-band) | Band - the oracle chain |
+| [`dsh-tusd`](packages/dsh-tusd) | Tusd - the true usd |
+| [`dsh-icp`](packages/dsh-icp) | Icp - the internet computer ticker |
+| [`dsh-arb`](packages/dsh-arb) | Arb - the arbitrum ticker |
+| [`dsh-pol`](packages/dsh-pol) | Pol - the polygon ticker |
+| [`dsh-matic`](packages/dsh-matic) | Matic - the original polygon name |
 | [`dsh-rwa`](packages/dsh-rwa) | Rwa - real world assets on-chain |
 | [`dsh-xstocks`](packages/dsh-xstocks) | Xstocks - the tokenized ticker tape |
 | [`dsh-ondo`](packages/dsh-ondo) | Ondo - wall street walks on-chain |

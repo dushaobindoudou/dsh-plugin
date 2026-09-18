@@ -1,0 +1,21 @@
+{
+  "name": "dsh-worldcoin",
+  "version": "0.0.1",
+  "description": "Worldcoin - the proof of person - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "worldcoin",
+    "identity"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-worldcoin"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-worldcoin#readme"
+}

@@ -1,0 +1,21 @@
+{
+  "name": "dsh-immutable",
+  "version": "0.0.1",
+  "description": "Immutable - the web3 gaming L2 - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "immutable",
+    "gaming"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-immutable"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-immutable#readme"
+}
