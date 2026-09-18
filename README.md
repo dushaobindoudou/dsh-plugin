@@ -367,7 +367,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-applepay`](packages/dsh-applepay) | Apple Pay-facing bridge for dsh agents |
 | [`dsh-googlepay`](packages/dsh-googlepay) | Google Pay-facing bridge for dsh agents |
 
-### Entertainment (61)
+### Entertainment (91)
 
 | Name | Planned first release |
 | --- | --- |
@@ -402,6 +402,36 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-achievement`](packages/dsh-achievement) | Achievements for dsh agents |
 | [`dsh-remix`](packages/dsh-remix) | Remix culture for dsh agents |
 | [`dsh-fiction`](packages/dsh-fiction) | Fiction workshop for dsh agents |
+| [`dsh-lianliankan`](packages/dsh-lianliankan) | Lianliankan - connect the pairs |
+| [`dsh-xiaoxiaole`](packages/dsh-xiaoxiaole) | Xiaoxiaole - the match-three |
+| [`dsh-renju`](packages/dsh-renju) | Renju - the gomoku cousin |
+| [`dsh-bingo`](packages/dsh-bingo) | Bingo - the loud success |
+| [`dsh-domino`](packages/dsh-domino) | Domino - the chain reaction |
+| [`dsh-backgammon`](packages/dsh-backgammon) | Backgammon - the oldest race |
+| [`dsh-breakout`](packages/dsh-breakout) | Breakout - break the wall |
+| [`dsh-pong`](packages/dsh-pong) | Pong - the first one |
+| [`dsh-anagram`](packages/dsh-anagram) | Anagram - the letters scramble |
+| [`dsh-boggle`](packages/dsh-boggle) | Boggle - the dice grid |
+| [`dsh-roguelike`](packages/dsh-roguelike) | Roguelike - permadeath and start again |
+| [`dsh-dungeon`](packages/dsh-dungeon) | Dungeon - the deep crawl |
+| [`dsh-gacha`](packages/dsh-gacha) | Gacha - the drop rates |
+| [`dsh-idle`](packages/dsh-idle) | Idle - the game that plays itself |
+| [`dsh-tycoon`](packages/dsh-tycoon) | Tycoon - the empire builder |
+| [`dsh-platformer`](packages/dsh-platformer) | Platformer - jump with precision |
+| [`dsh-speedrun`](packages/dsh-speedrun) | Speedrun - any percent |
+| [`dsh-loot`](packages/dsh-loot) | Loot - the reward table |
+| [`dsh-xp`](packages/dsh-xp) | Xp - the experience bar |
+| [`dsh-levelup`](packages/dsh-levelup) | Levelup - the moment it clicks |
+| [`dsh-skilltree`](packages/dsh-skilltree) | Skilltree - choose your branch |
+| [`dsh-inventory`](packages/dsh-inventory) | Inventory - the backpack |
+| [`dsh-jackpot`](packages/dsh-jackpot) | Jackpot - the rare drop |
+| [`dsh-vegas`](packages/dsh-vegas) | Vegas - the neon lane |
+| [`dsh-slot`](packages/dsh-slot) | Slot - the three reels |
+| [`dsh-casino`](packages/dsh-casino) | Casino - the house |
+| [`dsh-savepoint`](packages/dsh-savepoint) | Savepoint - the save file |
+| [`dsh-respawn`](packages/dsh-respawn) | Respawn - death is not the end |
+| [`dsh-rebirth`](packages/dsh-rebirth) | Rebirth - the new game plus |
+| [`dsh-newgame`](packages/dsh-newgame) | Newgame - the blank save |
 | [`dsh-uno`](packages/dsh-uno) | UNO lane for dsh agents |
 | [`dsh-solitaire`](packages/dsh-solitaire) | Solitaire lane for dsh agents |
 | [`dsh-baccarat`](packages/dsh-baccarat) | Baccarat lane for dsh agents |
@@ -805,10 +835,14 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-cloud`](packages/dsh-cloud) | Cloud sync for dsh homes |
 | [`dsh-link`](packages/dsh-link) | Share links for dsh sessions |
 
-### Ops (14)
+### Ops (18)
 
 | Name | Planned first release |
 | --- | --- |
+| [`dsh-heal`](packages/dsh-heal) | Heal - the four-letter fix |
+| [`dsh-mend`](packages/dsh-mend) | Mend - the careful fix |
+| [`dsh-rescue`](packages/dsh-rescue) | Rescue - the rescue CLI |
+| [`dsh-aid`](packages/dsh-aid) | Aid - the first responder |
 | [`dsh-sandbox`](packages/dsh-sandbox) | Sandboxed execution for agent commands |
 | [`dsh-isolate`](packages/dsh-isolate) | Isolation realms for dsh sessions |
 | [`dsh-fork`](packages/dsh-fork) | Session forking |

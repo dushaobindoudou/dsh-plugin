@@ -1,0 +1,21 @@
+{
+  "name": "dsh-xiaoxiaole",
+  "version": "0.0.1",
+  "description": "Xiaoxiaole - the match-three - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "xiaoxiaole",
+    "match3"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-xiaoxiaole"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-xiaoxiaole#readme"
+}
