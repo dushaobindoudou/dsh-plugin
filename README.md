@@ -234,7 +234,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-salesforce`](packages/dsh-salesforce) | Salesforce bridge for dsh agents |
 | [`dsh-channels`](packages/dsh-channels) | Chat-channel framework for dsh bots |
 
-### Web3 & payments (58)
+### Web3 & payments (76)
 
 | Name | Planned first release |
 | --- | --- |
@@ -248,6 +248,24 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-solidity`](packages/dsh-solidity) | Solidity toolkit for dsh agents |
 | [`dsh-stablecoin`](packages/dsh-stablecoin) | Stablecoin rail toolkit for dsh agents |
 | [`dsh-usdt`](packages/dsh-usdt) | USDT toolkit for dsh agents |
+| [`dsh-mev`](packages/dsh-mev) | Mev - the invisible tax |
+| [`dsh-slippage`](packages/dsh-slippage) | Slippage - the price drift |
+| [`dsh-staking`](packages/dsh-staking) | Staking - put tokens to work |
+| [`dsh-restaking`](packages/dsh-restaking) | Restaking - stake it twice |
+| [`dsh-airdrop`](packages/dsh-airdrop) | Airdrop - tokens from the sky |
+| [`dsh-faucet`](packages/dsh-faucet) | Faucet - the test-token tap |
+| [`dsh-merkle`](packages/dsh-merkle) | Merkle - the hash tree |
+| [`dsh-rollup`](packages/dsh-rollup) | Rollup - batch it, prove it |
+| [`dsh-zkproof`](packages/dsh-zkproof) | Zkproof - prove without showing |
+| [`dsh-mempool`](packages/dsh-mempool) | Mempool - the waiting room |
+| [`dsh-mainnet`](packages/dsh-mainnet) | Mainnet - the real chain |
+| [`dsh-testnet`](packages/dsh-testnet) | Testnet - the rehearsal chain |
+| [`dsh-sidechain`](packages/dsh-sidechain) | Sidechain - the quiet alley |
+| [`dsh-seedphrase`](packages/dsh-seedphrase) | Seedphrase - the twelve words |
+| [`dsh-keccak`](packages/dsh-keccak) | Keccak - the hash behind eth |
+| [`dsh-calldata`](packages/dsh-calldata) | Calldata - the cheapest input |
+| [`dsh-ordinals`](packages/dsh-ordinals) | Ordinals - satoshis with serials |
+| [`dsh-gaslimit`](packages/dsh-gaslimit) | Gaslimit - the ceiling on spend |
 | [`dsh-sol`](packages/dsh-sol) | The short form of the Solana bridge |
 | [`dsh-polygon`](packages/dsh-polygon) | Polygon bridge for dsh agents |
 | [`dsh-optimism`](packages/dsh-optimism) | Optimism bridge for dsh agents |
@@ -757,19 +775,31 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-jiaoyu`](packages/dsh-jiaoyu) | Jiaoyu (教育) lane for dsh agents |
 | [`dsh-kaoshi`](packages/dsh-kaoshi) | Kaoshi (考试) lane for dsh agents |
 
-### Research & quant (7)
+### Research & quant (19)
 
 | Name | Planned first release |
 | --- | --- |
 | [`dsh-portfolio`](packages/dsh-portfolio) | Portfolio lane for dsh agents |
 | [`dsh-trading`](packages/dsh-trading) | Trading lane for dsh agents |
+| [`dsh-hedge`](packages/dsh-hedge) | Hedge - the other side of the trade |
+| [`dsh-arbitrage`](packages/dsh-arbitrage) | Arbitrage - the free lunch hunt |
+| [`dsh-greeks`](packages/dsh-greeks) | Greeks - the sensitivity alphabet |
+| [`dsh-sharpe`](packages/dsh-sharpe) | Sharpe - return per unit of pain |
+| [`dsh-drawdown`](packages/dsh-drawdown) | Drawdown - from peak to pit |
+| [`dsh-twap`](packages/dsh-twap) | Twap - time-weighted patience |
+| [`dsh-vwap`](packages/dsh-vwap) | Vwap - the fair price of the day |
+| [`dsh-iceberg`](packages/dsh-iceberg) | Iceberg - the order below |
+| [`dsh-orderbook`](packages/dsh-orderbook) | Orderbook - the wall of intents |
+| [`dsh-clearing`](packages/dsh-clearing) | Clearing - the promise machine |
+| [`dsh-settlement`](packages/dsh-settlement) | Settlement - finality at last |
+| [`dsh-liquidation`](packages/dsh-liquidation) | Liquidation - the margin call |
 | [`dsh-citation`](packages/dsh-citation) | Citation engine for dsh agents |
 | [`dsh-bibtex`](packages/dsh-bibtex) | BibTeX lane for dsh agents |
 | [`dsh-backtest`](packages/dsh-backtest) | Backtest harness for dsh agents |
 | [`dsh-kline`](packages/dsh-kline) | Kline (K线) lane for dsh agents |
 | [`dsh-factor`](packages/dsh-factor) | Factor lane for dsh agents |
 
-### Embodied (11)
+### Embodied (29)
 
 | Name | Planned first release |
 | --- | --- |
@@ -784,6 +814,24 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-drone`](packages/dsh-drone) | Drone lane for dsh agents |
 | [`dsh-jiqiren`](packages/dsh-jiqiren) | Jiqiren (机器人) lane for dsh agents |
 | [`dsh-wulianwang`](packages/dsh-wulianwang) | Wulianwang (物联网) lane for dsh agents |
+| [`dsh-rtl`](packages/dsh-rtl) | Rtl - register transfer level |
+| [`dsh-verilog`](packages/dsh-verilog) | Verilog - the language of silicon |
+| [`dsh-tapeout`](packages/dsh-tapeout) | Tapeout - the point of no return |
+| [`dsh-netlist`](packages/dsh-netlist) | Netlist - the wiring truth |
+| [`dsh-gdsii`](packages/dsh-gdsii) | Gdsii - the layout format |
+| [`dsh-floorplan`](packages/dsh-floorplan) | Floorplan - rooms before walls |
+| [`dsh-wafer`](packages/dsh-wafer) | Wafer - a disk of futures |
+| [`dsh-eda`](packages/dsh-eda) | Eda - electronic design automation |
+| [`dsh-litho`](packages/dsh-litho) | Litho - printing with light |
+| [`dsh-silicon`](packages/dsh-silicon) | Silicon - the actual sand |
+| [`dsh-canbus`](packages/dsh-canbus) | Canbus - the car nervous system |
+| [`dsh-obd`](packages/dsh-obd) | Obd - the diagnostic port |
+| [`dsh-telematics`](packages/dsh-telematics) | Telematics - the car that phones home |
+| [`dsh-vin`](packages/dsh-vin) | Vin - the vehicle fingerprint |
+| [`dsh-ecu`](packages/dsh-ecu) | Ecu - the little computers everywhere |
+| [`dsh-autosar`](packages/dsh-autosar) | Autosar - the car software standard |
+| [`dsh-doip`](packages/dsh-doip) | Doip - diagnostics over IP |
+| [`dsh-flexray`](packages/dsh-flexray) | Flexray - deterministic by design |
 
 ### Multi-agent (6)
 
@@ -886,10 +934,20 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-cloud`](packages/dsh-cloud) | Cloud sync for dsh homes |
 | [`dsh-link`](packages/dsh-link) | Share links for dsh sessions |
 
-### Ops (18)
+### Ops (28)
 
 | Name | Planned first release |
 | --- | --- |
+| [`dsh-kaizen`](packages/dsh-kaizen) | Kaizen - improve one percent daily |
+| [`dsh-andon`](packages/dsh-andon) | Andon - pull the cord |
+| [`dsh-jit`](packages/dsh-jit) | Jit - just in time |
+| [`dsh-sixsigma`](packages/dsh-sixsigma) | Sixsigma - 3.4 defects per million |
+| [`dsh-bom`](packages/dsh-bom) | Bom - the bill of materials |
+| [`dsh-shopfloor`](packages/dsh-shopfloor) | Shopfloor - where it actually runs |
+| [`dsh-takt`](packages/dsh-takt) | Takt - the heartbeat of the line |
+| [`dsh-pokayoke`](packages/dsh-pokayoke) | Pokayoke - mistake-proof it |
+| [`dsh-oee`](packages/dsh-oee) | Oee - overall equipment effectiveness |
+| [`dsh-muda`](packages/dsh-muda) | Muda - the seven wastes |
 | [`dsh-heal`](packages/dsh-heal) | Heal - the four-letter fix |
 | [`dsh-mend`](packages/dsh-mend) | Mend - the careful fix |
 | [`dsh-rescue`](packages/dsh-rescue) | Rescue - the rescue CLI |
@@ -909,10 +967,18 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-serve`](packages/dsh-serve) | Serve-mode extras for the dsh web GUI |
 | [`dsh-jobs`](packages/dsh-jobs) | Background jobs for dsh bots |
 
-### Security (3)
+### Security (11)
 
 | Name | Planned first release |
 | --- | --- |
+| [`dsh-redteam`](packages/dsh-redteam) | Redteam - attack your own house |
+| [`dsh-blueteam`](packages/dsh-blueteam) | Blueteam - hold the walls |
+| [`dsh-purpleteam`](packages/dsh-purpleteam) | Purpleteam - attack and defend together |
+| [`dsh-killchain`](packages/dsh-killchain) | Killchain - the attacker checklist |
+| [`dsh-honeypot`](packages/dsh-honeypot) | Honeypot - the trap that looks tasty |
+| [`dsh-sinkhole`](packages/dsh-sinkhole) | Sinkhole - where bad traffic dies |
+| [`dsh-tarpit`](packages/dsh-tarpit) | Tarpit - slow the attacker down |
+| [`dsh-opsec`](packages/dsh-opsec) | Opsec - operational security |
 | [`dsh-secrets`](packages/dsh-secrets) | Secrets handling for dsh agents |
 | [`dsh-policy`](packages/dsh-policy) | Approval policy engine for the DeepSeek Harness |
 | [`dsh-permission`](packages/dsh-permission) | Permission scopes for dsh tools |

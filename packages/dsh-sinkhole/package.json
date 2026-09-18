@@ -1,0 +1,21 @@
+{
+  "name": "dsh-sinkhole",
+  "version": "0.0.1",
+  "description": "Sinkhole - where bad traffic dies - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "sinkhole",
+    "containment"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-sinkhole"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-sinkhole#readme"
+}

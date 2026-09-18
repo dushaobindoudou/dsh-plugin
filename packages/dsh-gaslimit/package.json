@@ -1,0 +1,21 @@
+{
+  "name": "dsh-gaslimit",
+  "version": "0.0.1",
+  "description": "Gaslimit - the ceiling on spend - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "gaslimit",
+    "budget"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-gaslimit"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-gaslimit#readme"
+}

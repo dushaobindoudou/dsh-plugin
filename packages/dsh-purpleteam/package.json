@@ -1,0 +1,21 @@
+{
+  "name": "dsh-purpleteam",
+  "version": "0.0.1",
+  "description": "Purpleteam - attack and defend together - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "purpleteam",
+    "feedback"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-purpleteam"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-purpleteam#readme"
+}
