@@ -42,6 +42,8 @@ importers:
 
   packages/dsh-airbnb: {}
 
+  packages/dsh-airdrop: {}
+
   packages/dsh-airtable: {}
 
   packages/dsh-akita: {}
@@ -68,6 +70,8 @@ importers:
 
   packages/dsh-analyst: {}
 
+  packages/dsh-andon: {}
+
   packages/dsh-android: {}
 
   packages/dsh-anime: {}
@@ -84,6 +88,8 @@ importers:
 
   packages/dsh-aptos: {}
 
+  packages/dsh-arbitrage: {}
+
   packages/dsh-arbitrum: {}
 
   packages/dsh-arcade: {}
@@ -99,6 +105,8 @@ importers:
   packages/dsh-audio: {}
 
   packages/dsh-autocomplete: {}
+
+  packages/dsh-autosar: {}
 
   packages/dsh-avalanche: {}
 
@@ -170,6 +178,8 @@ importers:
 
   packages/dsh-bluesky: {}
 
+  packages/dsh-blueteam: {}
+
   packages/dsh-bnb: {}
 
   packages/dsh-boardgame: {}
@@ -179,6 +189,8 @@ importers:
   packages/dsh-bole: {}
 
   packages/dsh-bolt: {}
+
+  packages/dsh-bom: {}
 
   packages/dsh-bond: {}
 
@@ -213,6 +225,10 @@ importers:
   packages/dsh-calculator: {}
 
   packages/dsh-calibrate: {}
+
+  packages/dsh-calldata: {}
+
+  packages/dsh-canbus: {}
 
   packages/dsh-canvas: {}
 
@@ -265,6 +281,8 @@ importers:
   packages/dsh-claude: {}
 
   packages/dsh-clean: {}
+
+  packages/dsh-clearing: {}
 
   packages/dsh-clickhouse: {}
 
@@ -424,6 +442,8 @@ importers:
 
   packages/dsh-doggy: {}
 
+  packages/dsh-doip: {}
+
   packages/dsh-dominion: {}
 
   packages/dsh-domino: {}
@@ -439,6 +459,8 @@ importers:
   packages/dsh-douyin: {}
 
   packages/dsh-dragon: {}
+
+  packages/dsh-drawdown: {}
 
   packages/dsh-drawguess: {}
 
@@ -469,6 +491,10 @@ importers:
   packages/dsh-echo: {}
 
   packages/dsh-ecommerce: {}
+
+  packages/dsh-ecu: {}
+
+  packages/dsh-eda: {}
 
   packages/dsh-edit: {}
 
@@ -542,6 +568,8 @@ importers:
 
   packages/dsh-fashion: {}
 
+  packages/dsh-faucet: {}
+
   packages/dsh-fees: {}
 
   packages/dsh-feihualing: {}
@@ -580,7 +608,11 @@ importers:
 
   packages/dsh-flappy: {}
 
+  packages/dsh-flexray: {}
+
   packages/dsh-fliggy: {}
+
+  packages/dsh-floorplan: {}
 
   packages/dsh-font: {}
 
@@ -628,11 +660,15 @@ importers:
 
   packages/dsh-garden: {}
 
+  packages/dsh-gaslimit: {}
+
   packages/dsh-gaze: {}
 
   packages/dsh-gcp: {}
 
   packages/dsh-gdrive: {}
+
+  packages/dsh-gdsii: {}
 
   packages/dsh-gemini: {}
 
@@ -676,6 +712,8 @@ importers:
 
   packages/dsh-grab: {}
 
+  packages/dsh-greeks: {}
+
   packages/dsh-groq: {}
 
   packages/dsh-grubhub: {}
@@ -716,6 +754,8 @@ importers:
 
   packages/dsh-health: {}
 
+  packages/dsh-hedge: {}
+
   packages/dsh-hedgehog: {}
 
   packages/dsh-helix: {}
@@ -741,6 +781,8 @@ importers:
   packages/dsh-homeassistant: {}
 
   packages/dsh-homework: {}
+
+  packages/dsh-honeypot: {}
 
   packages/dsh-hongbao: {}
 
@@ -785,6 +827,8 @@ importers:
   packages/dsh-hyperliquid: {}
 
   packages/dsh-i18n: {}
+
+  packages/dsh-iceberg: {}
 
   packages/dsh-icon: {}
 
@@ -852,6 +896,8 @@ importers:
 
   packages/dsh-jira: {}
 
+  packages/dsh-jit: {}
+
   packages/dsh-jiuzhang: {}
 
   packages/dsh-jixiao: {}
@@ -876,6 +922,8 @@ importers:
 
   packages/dsh-kaipiao: {}
 
+  packages/dsh-kaizen: {}
+
   packages/dsh-kakao: {}
 
   packages/dsh-kanjia: {}
@@ -886,11 +934,15 @@ importers:
 
   packages/dsh-karaoke: {}
 
+  packages/dsh-keccak: {}
+
   packages/dsh-keep: {}
 
   packages/dsh-kernel: {}
 
   packages/dsh-keymap: {}
+
+  packages/dsh-killchain: {}
 
   packages/dsh-kimi: {}
 
@@ -970,9 +1022,13 @@ importers:
 
   packages/dsh-lion: {}
 
+  packages/dsh-liquidation: {}
+
   packages/dsh-listen: {}
 
   packages/dsh-litecoin: {}
+
+  packages/dsh-litho: {}
 
   packages/dsh-litigation: {}
 
@@ -1014,6 +1070,8 @@ importers:
 
   packages/dsh-mailchimp: {}
 
+  packages/dsh-mainnet: {}
+
   packages/dsh-manga: {}
 
   packages/dsh-manhua: {}
@@ -1046,6 +1104,8 @@ importers:
 
   packages/dsh-meituan: {}
 
+  packages/dsh-mempool: {}
+
   packages/dsh-mend: {}
 
   packages/dsh-mengchong: {}
@@ -1053,6 +1113,8 @@ importers:
   packages/dsh-mention: {}
 
   packages/dsh-menubar: {}
+
+  packages/dsh-merkle: {}
 
   packages/dsh-mes: {}
 
@@ -1063,6 +1125,8 @@ importers:
   packages/dsh-metamask: {}
 
   packages/dsh-metrics: {}
+
+  packages/dsh-mev: {}
 
   packages/dsh-mianzi: {}
 
@@ -1104,6 +1168,8 @@ importers:
 
   packages/dsh-movie: {}
 
+  packages/dsh-muda: {}
+
   packages/dsh-multiagent: {}
 
   packages/dsh-music: {}
@@ -1125,6 +1191,8 @@ importers:
   packages/dsh-netflix: {}
 
   packages/dsh-netlify: {}
+
+  packages/dsh-netlist: {}
 
   packages/dsh-newgame: {}
 
@@ -1156,7 +1224,11 @@ importers:
 
   packages/dsh-oa: {}
 
+  packages/dsh-obd: {}
+
   packages/dsh-ocr: {}
+
+  packages/dsh-oee: {}
 
   packages/dsh-ollama: {}
 
@@ -1170,9 +1242,15 @@ importers:
 
   packages/dsh-openrouter: {}
 
+  packages/dsh-opsec: {}
+
   packages/dsh-optimism: {}
 
   packages/dsh-options: {}
+
+  packages/dsh-orderbook: {}
+
+  packages/dsh-ordinals: {}
 
   packages/dsh-os: {}
 
@@ -1258,6 +1336,8 @@ importers:
 
   packages/dsh-podcast: {}
 
+  packages/dsh-pokayoke: {}
+
   packages/dsh-policy: {}
 
   packages/dsh-polkadot: {}
@@ -1297,6 +1377,8 @@ importers:
   packages/dsh-proxy: {}
 
   packages/dsh-puppy: {}
+
+  packages/dsh-purpleteam: {}
 
   packages/dsh-puzzle: {}
 
@@ -1374,6 +1456,8 @@ importers:
 
   packages/dsh-redis: {}
 
+  packages/dsh-redteam: {}
+
   packages/dsh-refactor: {}
 
   packages/dsh-refine: {}
@@ -1404,6 +1488,8 @@ importers:
 
   packages/dsh-respawn: {}
 
+  packages/dsh-restaking: {}
+
   packages/dsh-resume: {}
 
   packages/dsh-retrieval: {}
@@ -1432,6 +1518,8 @@ importers:
 
   packages/dsh-roguelike: {}
 
+  packages/dsh-rollup: {}
+
   packages/dsh-rooster: {}
 
   packages/dsh-ros: {}
@@ -1441,6 +1529,8 @@ importers:
   packages/dsh-routine: {}
 
   packages/dsh-rps: {}
+
+  packages/dsh-rtl: {}
 
   packages/dsh-rubric: {}
 
@@ -1482,11 +1572,29 @@ importers:
 
   packages/dsh-security: {}
 
+  packages/dsh-seedphrase: {}
+
   packages/dsh-self-improve: {}
 
   packages/dsh-selfheal: {}
 
   packages/dsh-selfmod: {}
+
+  packages/dsh-selfrepair:
+    dependencies:
+      '@deepseek-ai/cordis':
+        specifier: ^4.0.1
+        version: 4.0.1
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
+    devDependencies:
+      '@deepseek-ai/dsh-typert-protocol':
+        specifier: 0.1.2-rc.1
+        version: 0.1.2-rc.1(@deepseek-ai/cordis@4.0.1)
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
 
   packages/dsh-selftrain: {}
 
@@ -1500,7 +1608,11 @@ importers:
 
   packages/dsh-settings: {}
 
+  packages/dsh-settlement: {}
+
   packages/dsh-shangji: {}
+
+  packages/dsh-sharpe: {}
 
   packages/dsh-shebao: {}
 
@@ -1524,25 +1636,37 @@ importers:
 
   packages/dsh-shopee: {}
 
+  packages/dsh-shopfloor: {}
+
   packages/dsh-shopify: {}
 
   packages/dsh-shoukuan: {}
 
   packages/dsh-shutong: {}
 
+  packages/dsh-sidechain: {}
+
   packages/dsh-sidekick: {}
 
   packages/dsh-siliao: {}
 
+  packages/dsh-silicon: {}
+
   packages/dsh-siliconflow: {}
 
+  packages/dsh-sinkhole: {}
+
   packages/dsh-siri: {}
+
+  packages/dsh-sixsigma: {}
 
   packages/dsh-skill: {}
 
   packages/dsh-skilltree: {}
 
   packages/dsh-sleep: {}
+
+  packages/dsh-slippage: {}
 
   packages/dsh-slot: {}
 
@@ -1595,6 +1719,8 @@ importers:
   packages/dsh-stablecoin: {}
 
   packages/dsh-stackoverflow: {}
+
+  packages/dsh-staking: {}
 
   packages/dsh-starknet: {}
 
@@ -1650,6 +1776,8 @@ importers:
 
   packages/dsh-tailor: {}
 
+  packages/dsh-takt: {}
+
   packages/dsh-talent: {}
 
   packages/dsh-tame: {}
@@ -1660,9 +1788,13 @@ importers:
 
   packages/dsh-tape: {}
 
+  packages/dsh-tapeout: {}
+
   packages/dsh-target: {}
 
   packages/dsh-tarot: {}
+
+  packages/dsh-tarpit: {}
 
   packages/dsh-task: {}
 
@@ -1672,6 +1804,8 @@ importers:
 
   packages/dsh-tax: {}
 
+  packages/dsh-telematics: {}
+
   packages/dsh-temu: {}
 
   packages/dsh-terraform: {}
@@ -1679,6 +1813,8 @@ importers:
   packages/dsh-test: {}
 
   packages/dsh-tester: {}
+
+  packages/dsh-testnet: {}
 
   packages/dsh-tether: {}
 
@@ -1758,6 +1894,8 @@ importers:
 
   packages/dsh-tv: {}
 
+  packages/dsh-twap: {}
+
   packages/dsh-twin: {}
 
   packages/dsh-twitch: {}
@@ -1798,11 +1936,15 @@ importers:
 
   packages/dsh-vercel: {}
 
+  packages/dsh-verilog: {}
+
   packages/dsh-vertex: {}
 
   packages/dsh-video: {}
 
   packages/dsh-viem: {}
+
+  packages/dsh-vin: {}
 
   packages/dsh-viral: {}
 
@@ -1815,6 +1957,10 @@ importers:
   packages/dsh-vscode: {}
 
   packages/dsh-vue: {}
+
+  packages/dsh-vwap: {}
+
+  packages/dsh-wafer: {}
 
   packages/dsh-wagmi: {}
 
@@ -1969,6 +2115,8 @@ importers:
   packages/dsh-zigbee: {}
 
   packages/dsh-zizhi: {}
+
+  packages/dsh-zkproof: {}
 
   packages/dsh-zksync: {}
 
