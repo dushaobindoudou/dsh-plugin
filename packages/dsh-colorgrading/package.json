@@ -1,0 +1,21 @@
+{
+  "name": "dsh-colorgrading",
+  "version": "0.0.1",
+  "description": "Colorgrading - the mood dial - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "colorgrading",
+    "color"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-colorgrading"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-colorgrading#readme"
+}

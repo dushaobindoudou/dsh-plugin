@@ -1,0 +1,21 @@
+{
+  "name": "dsh-deepspace",
+  "version": "0.0.1",
+  "description": "Deepspace - beyond the noise floor - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "deepspace",
+    "dsn"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-deepspace"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-deepspace#readme"
+}

@@ -1191,6 +1191,140 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-l10n`](packages/dsh-l10n) | Localization toolkit for dsh |
 | [`dsh-keymap`](packages/dsh-keymap) | Keyboard shortcut manager for the dsh web GUI |
 | [`dsh-completions`](packages/dsh-completions) | Shell completions for the dsh launcher |
+
+### Aerospace (29)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-avionics`](packages/dsh-avionics) | Avionics - the aircraft nervous system |
+| [`dsh-payload`](packages/dsh-payload) | Payload - the reason you launch |
+| [`dsh-orbit`](packages/dsh-orbit) | Orbit - the address in space |
+| [`dsh-deltav`](packages/dsh-deltav) | Deltav - the budget of spaceflight |
+| [`dsh-ephemeris`](packages/dsh-ephemeris) | Ephemeris - where everything will be |
+| [`dsh-kepler`](packages/dsh-kepler) | Kepler - the laws that govern orbits |
+| [`dsh-lagrange`](packages/dsh-lagrange) | Lagrange - the parking lots of space |
+| [`dsh-constellation`](packages/dsh-constellation) | Constellation - thousands of satellites |
+| [`dsh-cubesat`](packages/dsh-cubesat) | Cubesat - space for everyone |
+| [`dsh-groundstation`](packages/dsh-groundstation) | Groundstation - the other half of every link |
+| [`dsh-downlink`](packages/dsh-downlink) | Downlink - the data comes home |
+| [`dsh-deepspace`](packages/dsh-deepspace) | Deepspace - beyond the noise floor |
+| [`dsh-missioncontrol`](packages/dsh-missioncontrol) | Missioncontrol - the room that flies the mission |
+| [`dsh-countdown`](packages/dsh-countdown) | Countdown - T minus everything |
+| [`dsh-apogee`](packages/dsh-apogee) | Apogee - the top of the arc |
+| [`dsh-perigee`](packages/dsh-perigee) | Perigee - the lowest pass |
+| [`dsh-rover`](packages/dsh-rover) | Rover - the wheels on another world |
+| [`dsh-lander`](packages/dsh-lander) | Lander - seven minutes of terror |
+| [`dsh-capsule`](packages/dsh-capsule) | Capsule - the ride home |
+| [`dsh-ion`](packages/dsh-ion) | Ion - the engine that whispers |
+| [`dsh-mach`](packages/dsh-mach) | Mach - the speed of sound as a ruler |
+| [`dsh-adsb`](packages/dsh-adsb) | Adsb - every aircraft, broadcasting |
+| [`dsh-notam`](packages/dsh-notam) | Notam - the pilot bulletin |
+| [`dsh-falcon`](packages/dsh-falcon) | Falcon - the reusable workhorse |
+| [`dsh-starship`](packages/dsh-starship) | Starship - the giant that catches itself |
+| [`dsh-starlink`](packages/dsh-starlink) | Starlink - the internet from above |
+| [`dsh-apollo`](packages/dsh-apollo) | Apollo - the name that means we went |
+| [`dsh-artemis`](packages/dsh-artemis) | Artemis - back to the Moon |
+| [`dsh-voyager`](packages/dsh-voyager) | Voyager - the farthest machines |
+
+### Biotech (28)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-crispr`](packages/dsh-crispr) | Crispr - the search and replace of life |
+| [`dsh-cas9`](packages/dsh-cas9) | Cas9 - the molecular scissors |
+| [`dsh-genome`](packages/dsh-genome) | Genome - the complete instruction set |
+| [`dsh-genomics`](packages/dsh-genomics) | Genomics - biology at scale |
+| [`dsh-sequencing`](packages/dsh-sequencing) | Sequencing - reading the letters |
+| [`dsh-nanopore`](packages/dsh-nanopore) | Nanopore - sequencing through a hole |
+| [`dsh-fastq`](packages/dsh-fastq) | Fastq - the raw text of life |
+| [`dsh-basepair`](packages/dsh-basepair) | Basepair - A with T, G with C |
+| [`dsh-plasmid`](packages/dsh-plasmid) | Plasmid - the delivery vehicle |
+| [`dsh-assay`](packages/dsh-assay) | Assay - the measurement that decides |
+| [`dsh-pcr`](packages/dsh-pcr) | Pcr - a billion copies from one |
+| [`dsh-qpcr`](packages/dsh-qpcr) | Qpcr - quantify while you copy |
+| [`dsh-elisa`](packages/dsh-elisa) | Elisa - antibodies on a plate |
+| [`dsh-mrna`](packages/dsh-mrna) | Mrna - the message as medicine |
+| [`dsh-protein`](packages/dsh-protein) | Protein - the machines that do everything |
+| [`dsh-peptide`](packages/dsh-peptide) | Peptide - the short chain |
+| [`dsh-antibody`](packages/dsh-antibody) | Antibody - the targeted missile |
+| [`dsh-epitope`](packages/dsh-epitope) | Epitope - the binding site |
+| [`dsh-ligand`](packages/dsh-ligand) | Ligand - the key for the lock |
+| [`dsh-folding`](packages/dsh-folding) | Folding - the shape is the function |
+| [`dsh-alphafold`](packages/dsh-alphafold) | Alphafold - structure predicted |
+| [`dsh-biomarker`](packages/dsh-biomarker) | Biomarker - the measurable signal |
+| [`dsh-placebo`](packages/dsh-placebo) | Placebo - the control arm |
+| [`dsh-invivo`](packages/dsh-invivo) | Invivo - in the living |
+| [`dsh-invitro`](packages/dsh-invitro) | Invitro - in the glass |
+| [`dsh-singlecell`](packages/dsh-singlecell) | Singlecell - resolution to one cell |
+| [`dsh-omics`](packages/dsh-omics) | Omics - the suffix of scale |
+| [`dsh-trial`](packages/dsh-trial) | Trial - the randomized truth machine |
+
+### Film & post (29)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-storyboard`](packages/dsh-storyboard) | Storyboard - the movie on paper |
+| [`dsh-vfx`](packages/dsh-vfx) | Vfx - the impossible made frame |
+| [`dsh-mocap`](packages/dsh-mocap) | Mocap - performance into data |
+| [`dsh-rotoscope`](packages/dsh-rotoscope) | Rotoscope - tracing reality |
+| [`dsh-renderfarm`](packages/dsh-renderfarm) | Renderfarm - the thousand-machine darkroom |
+| [`dsh-greenscreen`](packages/dsh-greenscreen) | Greenscreen - the void you replace |
+| [`dsh-chroma`](packages/dsh-chroma) | Chroma - the color that separates |
+| [`dsh-keying`](packages/dsh-keying) | Keying - pulling the matte |
+| [`dsh-matte`](packages/dsh-matte) | Matte - the mask that shapes |
+| [`dsh-compositing`](packages/dsh-compositing) | Compositing - the final stack |
+| [`dsh-matchmove`](packages/dsh-matchmove) | Matchmove - the camera that matches |
+| [`dsh-previz`](packages/dsh-previz) | Previz - the rough before the expensive |
+| [`dsh-lookdev`](packages/dsh-lookdev) | Lookdev - deciding how it appears |
+| [`dsh-rigging`](packages/dsh-rigging) | Rigging - the puppetry inside |
+| [`dsh-keyframe`](packages/dsh-keyframe) | Keyframe - the pose, then the in-between |
+| [`dsh-dopesheet`](packages/dsh-dopesheet) | Dopesheet - the animator spreadsheet |
+| [`dsh-onionskin`](packages/dsh-onionskin) | Onionskin - see the frame before |
+| [`dsh-foley`](packages/dsh-foley) | Foley - footsteps recorded after |
+| [`dsh-adr`](packages/dsh-adr) | Adr - dialogue, again in a booth |
+| [`dsh-colorgrading`](packages/dsh-colorgrading) | Colorgrading - the mood dial |
+| [`dsh-lut`](packages/dsh-lut) | Lut - the color transform table |
+| [`dsh-dailies`](packages/dsh-dailies) | Dailies - yesterday, watched today |
+| [`dsh-conform`](packages/dsh-conform) | Conform - the cut, rebuilt at full res |
+| [`dsh-dcp`](packages/dsh-dcp) | Dcp - the cinema deliverable |
+| [`dsh-roughcut`](packages/dsh-roughcut) | Roughcut - the story, unpolished |
+| [`dsh-slate`](packages/dsh-slate) | Slate - scene one, take one |
+| [`dsh-gaffer`](packages/dsh-gaffer) | Gaffer - the chief of light |
+| [`dsh-dubbing`](packages/dsh-dubbing) | Dubbing - the voice, replaced |
+| [`dsh-loudness`](packages/dsh-loudness) | Loudness - the mixed-to spec |
+
+### Sports data (28)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-sabermetrics`](packages/dsh-sabermetrics) | Sabermetrics - bill james made numbers play |
+| [`dsh-boxscore`](packages/dsh-boxscore) | Boxscore - the game in columns |
+| [`dsh-xg`](packages/dsh-xg) | Xg - expected goals |
+| [`dsh-xa`](packages/dsh-xa) | Xa - expected assists |
+| [`dsh-xga`](packages/dsh-xga) | Xga - expected goals against |
+| [`dsh-plusminus`](packages/dsh-plusminus) | Plusminus - the team while you played |
+| [`dsh-clutch`](packages/dsh-clutch) | Clutch - the last two minutes |
+| [`dsh-possession`](packages/dsh-possession) | Possession - who has the ball |
+| [`dsh-tikitaka`](packages/dsh-tikitaka) | Tikitaka - the passing carousel |
+| [`dsh-pressing`](packages/dsh-pressing) | Pressing - the hunt without the ball |
+| [`dsh-playbyplay`](packages/dsh-playbyplay) | Playbyplay - the game as an event stream |
+| [`dsh-shotchart`](packages/dsh-shotchart) | Shotchart - where the shots live |
+| [`dsh-depthchart`](packages/dsh-depthchart) | Depthchart - the rotation on paper |
+| [`dsh-gamelog`](packages/dsh-gamelog) | Gamelog - one row per game |
+| [`dsh-splits`](packages/dsh-splits) | Splits - home versus road |
+| [`dsh-streak`](packages/dsh-streak) | Streak - the run that ends |
+| [`dsh-winstreak`](packages/dsh-winstreak) | Winstreak - the hot hand |
+| [`dsh-mvp`](packages/dsh-mvp) | Mvp - the most valuable argument |
+| [`dsh-goat`](packages/dsh-goat) | Goat - the greatest of all time |
+| [`dsh-dynasty`](packages/dsh-dynasty) | Dynasty - the team that kept winning |
+| [`dsh-fantasy`](packages/dsh-fantasy) | Fantasy - the game about the stats |
+| [`dsh-freeagent`](packages/dsh-freeagent) | Freeagent - the open market |
+| [`dsh-tanking`](packages/dsh-tanking) | Tanking - losing on purpose, legally |
+| [`dsh-moneyline`](packages/dsh-moneyline) | Moneyline - just pick the winner |
+| [`dsh-parlay`](packages/dsh-parlay) | Parlay - the correlated dream |
+| [`dsh-overunder`](packages/dsh-overunder) | Overunder - the total |
+| [`dsh-wingspan`](packages/dsh-wingspan) | Wingspan - the measurables |
+| [`dsh-scouting`](packages/dsh-scouting) | Scouting - the eye and the model |
 <details>
 <summary>External waves (175 names, reconciled from the npm registry)</summary>
 

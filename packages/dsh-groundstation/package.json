@@ -1,0 +1,21 @@
+{
+  "name": "dsh-groundstation",
+  "version": "0.0.1",
+  "description": "Groundstation - the other half of every link - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "groundstation",
+    "antenna"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-groundstation"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-groundstation#readme"
+}
