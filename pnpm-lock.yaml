@@ -38,9 +38,13 @@ importers:
 
   packages/dsh-agents: {}
 
+  packages/dsh-aid: {}
+
   packages/dsh-airbnb: {}
 
   packages/dsh-airtable: {}
+
+  packages/dsh-akita: {}
 
   packages/dsh-alchemy: {}
 
@@ -59,6 +63,8 @@ importers:
   packages/dsh-amazon: {}
 
   packages/dsh-ambient: {}
+
+  packages/dsh-anagram: {}
 
   packages/dsh-analyst: {}
 
@@ -96,6 +102,8 @@ importers:
 
   packages/dsh-avalanche: {}
 
+  packages/dsh-avalon: {}
+
   packages/dsh-avatar: {}
 
   packages/dsh-aws: {}
@@ -107,6 +115,8 @@ importers:
   packages/dsh-baccarat: {}
 
   packages/dsh-backend: {}
+
+  packages/dsh-backgammon: {}
 
   packages/dsh-backtest: {}
 
@@ -130,6 +140,10 @@ importers:
 
   packages/dsh-base: {}
 
+  packages/dsh-beacon: {}
+
+  packages/dsh-bear: {}
+
   packages/dsh-beauty: {}
 
   packages/dsh-bedrock: {}
@@ -144,7 +158,11 @@ importers:
 
   packages/dsh-bilibili: {}
 
+  packages/dsh-bingo: {}
+
   packages/dsh-bio: {}
+
+  packages/dsh-bird: {}
 
   packages/dsh-bitcoin: {}
 
@@ -153,6 +171,10 @@ importers:
   packages/dsh-bluesky: {}
 
   packages/dsh-bnb: {}
+
+  packages/dsh-boardgame: {}
+
+  packages/dsh-boggle: {}
 
   packages/dsh-bole: {}
 
@@ -172,11 +194,17 @@ importers:
 
   packages/dsh-brand: {}
 
+  packages/dsh-breakout: {}
+
   packages/dsh-broker: {}
 
   packages/dsh-bun: {}
 
+  packages/dsh-bunny: {}
+
   packages/dsh-caigou: {}
+
+  packages/dsh-caimi: {}
 
   packages/dsh-cainiao: {}
 
@@ -190,13 +218,21 @@ importers:
 
   packages/dsh-car: {}
 
+  packages/dsh-carcassonne: {}
+
   packages/dsh-cardano: {}
 
   packages/dsh-cards: {}
 
   packages/dsh-cashapp: {}
 
+  packages/dsh-casino: {}
+
   packages/dsh-cast: {}
+
+  packages/dsh-cat: {}
+
+  packages/dsh-catan: {}
 
   packages/dsh-cex: {}
 
@@ -205,6 +241,8 @@ importers:
   packages/dsh-chainlink: {}
 
   packages/dsh-channels: {}
+
+  packages/dsh-chaohua: {}
 
   packages/dsh-checkers: {}
 
@@ -238,6 +276,10 @@ importers:
 
   packages/dsh-cloudflare: {}
 
+  packages/dsh-clue: {}
+
+  packages/dsh-codenames: {}
+
   packages/dsh-cohere: {}
 
   packages/dsh-coingecko: {}
@@ -256,6 +298,8 @@ importers:
 
   packages/dsh-confluence: {}
 
+  packages/dsh-connections: {}
+
   packages/dsh-continuum: {}
 
   packages/dsh-contract: {}
@@ -265,6 +309,8 @@ importers:
   packages/dsh-cook: {}
 
   packages/dsh-copilot: {}
+
+  packages/dsh-corgi: {}
 
   packages/dsh-costco: {}
 
@@ -277,6 +323,8 @@ importers:
   packages/dsh-coverage: {}
 
   packages/dsh-cpp: {}
+
+  packages/dsh-crane: {}
 
   packages/dsh-critic: {}
 
@@ -316,6 +364,8 @@ importers:
 
   packages/dsh-deepseek: {}
 
+  packages/dsh-deer: {}
+
   packages/dsh-defi: {}
 
   packages/dsh-defillama: {}
@@ -323,6 +373,8 @@ importers:
   packages/dsh-delegate: {}
 
   packages/dsh-deliver: {}
+
+  packages/dsh-dengmi: {}
 
   packages/dsh-deno: {}
 
@@ -358,13 +410,25 @@ importers:
 
   packages/dsh-disney: {}
 
+  packages/dsh-dixit: {}
+
   packages/dsh-dnd: {}
 
   packages/dsh-docs: {}
 
+  packages/dsh-dog: {}
+
   packages/dsh-doge: {}
 
   packages/dsh-dogecoin: {}
+
+  packages/dsh-doggy: {}
+
+  packages/dsh-dominion: {}
+
+  packages/dsh-domino: {}
+
+  packages/dsh-doodle: {}
 
   packages/dsh-doordash: {}
 
@@ -386,13 +450,19 @@ importers:
 
   packages/dsh-drug: {}
 
+  packages/dsh-duck: {}
+
   packages/dsh-duilian: {}
 
   packages/dsh-dune: {}
 
+  packages/dsh-dungeon: {}
+
   packages/dsh-durable: {}
 
   packages/dsh-e2e: {}
+
+  packages/dsh-eagle: {}
 
   packages/dsh-ebay: {}
 
@@ -429,6 +499,8 @@ importers:
   packages/dsh-ernie: {}
 
   packages/dsh-erp: {}
+
+  packages/dsh-ershisi: {}
 
   packages/dsh-escrow: {}
 
@@ -472,9 +544,13 @@ importers:
 
   packages/dsh-fees: {}
 
+  packages/dsh-feihualing: {}
+
   packages/dsh-fengshui: {}
 
   packages/dsh-fensi: {}
+
+  packages/dsh-fenxiang: {}
 
   packages/dsh-festival: {}
 
@@ -496,9 +572,13 @@ importers:
 
   packages/dsh-fireworks: {}
 
+  packages/dsh-fish: {}
+
   packages/dsh-fit: {}
 
   packages/dsh-fitness: {}
+
+  packages/dsh-flappy: {}
 
   packages/dsh-fliggy: {}
 
@@ -516,7 +596,11 @@ importers:
 
   packages/dsh-foundry: {}
 
+  packages/dsh-fox: {}
+
   packages/dsh-freeroute: {}
+
+  packages/dsh-frog: {}
 
   packages/dsh-frontend: {}
 
@@ -533,6 +617,8 @@ importers:
   packages/dsh-futures: {}
 
   packages/dsh-fyp: {}
+
+  packages/dsh-gacha: {}
 
   packages/dsh-game: {}
 
@@ -594,6 +680,8 @@ importers:
 
   packages/dsh-grubhub: {}
 
+  packages/dsh-guanxi: {}
+
   packages/dsh-guanzhu: {}
 
   packages/dsh-guokr: {}
@@ -604,9 +692,17 @@ importers:
 
   packages/dsh-habit: {}
 
+  packages/dsh-halo: {}
+
+  packages/dsh-hamster: {}
+
+  packages/dsh-hanabi: {}
+
   packages/dsh-hanfu: {}
 
   packages/dsh-hangman: {}
+
+  packages/dsh-haoyou: {}
 
   packages/dsh-hardhat: {}
 
@@ -616,7 +712,11 @@ importers:
 
   packages/dsh-headless: {}
 
+  packages/dsh-heal: {}
+
   packages/dsh-health: {}
+
+  packages/dsh-hedgehog: {}
 
   packages/dsh-helix: {}
 
@@ -648,11 +748,15 @@ importers:
 
   packages/dsh-horoscope: {}
 
+  packages/dsh-horse: {}
+
   packages/dsh-house: {}
 
   packages/dsh-hr: {}
 
   packages/dsh-huabei: {}
+
+  packages/dsh-huarongdao: {}
 
   packages/dsh-hub: {}
 
@@ -670,6 +774,8 @@ importers:
 
   packages/dsh-hupu: {}
 
+  packages/dsh-husky: {}
+
   packages/dsh-huya: {}
 
   packages/dsh-hype: {}
@@ -684,6 +790,8 @@ importers:
 
   packages/dsh-idiom: {}
 
+  packages/dsh-idle: {}
+
   packages/dsh-index: {}
 
   packages/dsh-infra: {}
@@ -695,6 +803,8 @@ importers:
   packages/dsh-intercom: {}
 
   packages/dsh-introspect: {}
+
+  packages/dsh-inventory: {}
 
   packages/dsh-invoice: {}
 
@@ -710,9 +820,13 @@ importers:
 
   packages/dsh-iterate: {}
 
+  packages/dsh-jackpot: {}
+
   packages/dsh-java: {}
 
   packages/dsh-jd: {}
+
+  packages/dsh-jenga: {}
 
   packages/dsh-jetbrains: {}
 
@@ -780,9 +894,17 @@ importers:
 
   packages/dsh-kimi: {}
 
+  packages/dsh-kitten: {}
+
+  packages/dsh-kitty: {}
+
   packages/dsh-klarna: {}
 
   packages/dsh-kline: {}
+
+  packages/dsh-klotski: {}
+
+  packages/dsh-koi: {}
 
   packages/dsh-kotlin: {}
 
@@ -816,6 +938,10 @@ importers:
 
   packages/dsh-lesson: {}
 
+  packages/dsh-levelup: {}
+
+  packages/dsh-lianliankan: {}
+
   packages/dsh-liepin: {}
 
   packages/dsh-lightning: {}
@@ -842,6 +968,8 @@ importers:
 
   packages/dsh-linux: {}
 
+  packages/dsh-lion: {}
+
   packages/dsh-listen: {}
 
   packages/dsh-litecoin: {}
@@ -860,9 +988,13 @@ importers:
 
   packages/dsh-longtask: {}
 
+  packages/dsh-loot: {}
+
   packages/dsh-lottery: {}
 
   packages/dsh-lsp: {}
+
+  packages/dsh-ludo: {}
 
   packages/dsh-lvshi: {}
 
@@ -873,6 +1005,10 @@ importers:
   packages/dsh-macos: {}
 
   packages/dsh-macro: {}
+
+  packages/dsh-mafia: {}
+
+  packages/dsh-magpie: {}
 
   packages/dsh-mahjong: {}
 
@@ -910,6 +1046,8 @@ importers:
 
   packages/dsh-meituan: {}
 
+  packages/dsh-mend: {}
+
   packages/dsh-mengchong: {}
 
   packages/dsh-mention: {}
@@ -926,9 +1064,15 @@ importers:
 
   packages/dsh-metrics: {}
 
+  packages/dsh-mianzi: {}
+
+  packages/dsh-miao: {}
+
   packages/dsh-miaosha: {}
 
   packages/dsh-micropay: {}
+
+  packages/dsh-minigame: {}
 
   packages/dsh-minimax: {}
 
@@ -938,6 +1082,8 @@ importers:
 
   packages/dsh-mixtral: {}
 
+  packages/dsh-miyu: {}
+
   packages/dsh-ml: {}
 
   packages/dsh-models: {}
@@ -946,9 +1092,15 @@ importers:
 
   packages/dsh-mongo: {}
 
+  packages/dsh-monkey: {}
+
+  packages/dsh-monopoly: {}
+
   packages/dsh-mood: {}
 
   packages/dsh-moonshot: {}
+
+  packages/dsh-mouse: {}
 
   packages/dsh-movie: {}
 
@@ -964,6 +1116,8 @@ importers:
 
   packages/dsh-near: {}
 
+  packages/dsh-neko: {}
+
   packages/dsh-neovim: {}
 
   packages/dsh-netease: {}
@@ -971,6 +1125,8 @@ importers:
   packages/dsh-netflix: {}
 
   packages/dsh-netlify: {}
+
+  packages/dsh-newgame: {}
 
   packages/dsh-news: {}
 
@@ -983,6 +1139,8 @@ importers:
   packages/dsh-nianjian: {}
 
   packages/dsh-nongli: {}
+
+  packages/dsh-nonogram: {}
 
   packages/dsh-notebook: {}
 
@@ -1024,7 +1182,13 @@ importers:
 
   packages/dsh-overnight: {}
 
+  packages/dsh-owl: {}
+
+  packages/dsh-ox: {}
+
   packages/dsh-pal: {}
+
+  packages/dsh-panda: {}
 
   packages/dsh-pandi: {}
 
@@ -1048,6 +1212,10 @@ importers:
 
   packages/dsh-peloton: {}
 
+  packages/dsh-penguin: {}
+
+  packages/dsh-pengyouquan: {}
+
   packages/dsh-permission: {}
 
   packages/dsh-perplexity: {}
@@ -1068,13 +1236,21 @@ importers:
 
   packages/dsh-physics: {}
 
+  packages/dsh-pig: {}
+
   packages/dsh-pinduoduo: {}
+
+  packages/dsh-pinglun: {}
 
   packages/dsh-pinterest: {}
 
   packages/dsh-pixel: {}
 
+  packages/dsh-pixiu: {}
+
   packages/dsh-planner: {}
+
+  packages/dsh-platformer: {}
 
   packages/dsh-play: {}
 
@@ -1087,6 +1263,10 @@ importers:
   packages/dsh-polkadot: {}
 
   packages/dsh-polygon: {}
+
+  packages/dsh-pong: {}
+
+  packages/dsh-popstar: {}
 
   packages/dsh-portfolio: {}
 
@@ -1116,6 +1296,8 @@ importers:
 
   packages/dsh-proxy: {}
 
+  packages/dsh-puppy: {}
+
   packages/dsh-puzzle: {}
 
   packages/dsh-python: {}
@@ -1130,6 +1312,8 @@ importers:
 
   packages/dsh-qidian: {}
 
+  packages/dsh-qilin: {}
+
   packages/dsh-qingniao: {}
 
   packages/dsh-qq: {}
@@ -1142,17 +1326,47 @@ importers:
 
   packages/dsh-quiz: {}
 
+  packages/dsh-qunliao: {}
+
   packages/dsh-qwen: {}
+
+  packages/dsh-rabbit: {}
+
+  packages/dsh-raccoon: {}
+
+  packages/dsh-radar: {}
 
   packages/dsh-radio: {}
 
   packages/dsh-rag: {}
+
+  packages/dsh-rat: {}
 
   packages/dsh-razorpay: {}
 
   packages/dsh-react: {}
 
   packages/dsh-read: {}
+
+  packages/dsh-rebang: {}
+
+  packages/dsh-rebirth: {}
+
+  packages/dsh-recovery:
+    dependencies:
+      '@deepseek-ai/cordis':
+        specifier: ^4.0.1
+        version: 4.0.1
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
+    devDependencies:
+      '@deepseek-ai/dsh-typert-protocol':
+        specifier: 0.1.2-rc.1
+        version: 0.1.2-rc.1(@deepseek-ai/cordis@4.0.1)
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
 
   packages/dsh-recruit: {}
 
@@ -1170,13 +1384,25 @@ importers:
 
   packages/dsh-remix: {}
 
+  packages/dsh-renju: {}
+
+  packages/dsh-renmai: {}
+
   packages/dsh-rent: {}
 
   packages/dsh-renzheng: {}
 
+  packages/dsh-rescue: {}
+
   packages/dsh-researcher: {}
 
   packages/dsh-reset: {}
+
+  packages/dsh-resistance: {}
+
+  packages/dsh-resou: {}
+
+  packages/dsh-respawn: {}
 
   packages/dsh-resume: {}
 
@@ -1190,6 +1416,8 @@ importers:
 
   packages/dsh-reward: {}
 
+  packages/dsh-richman: {}
+
   packages/dsh-riddle: {}
 
   packages/dsh-ripple: {}
@@ -1201,6 +1429,10 @@ importers:
   packages/dsh-robinhood: {}
 
   packages/dsh-robot: {}
+
+  packages/dsh-roguelike: {}
+
+  packages/dsh-rooster: {}
 
   packages/dsh-ros: {}
 
@@ -1236,7 +1468,11 @@ importers:
 
   packages/dsh-sandbox: {}
 
+  packages/dsh-savepoint: {}
+
   packages/dsh-scm: {}
+
+  packages/dsh-scrabble: {}
 
   packages/dsh-screenshot: {}
 
@@ -1252,27 +1488,13 @@ importers:
 
   packages/dsh-selfmod: {}
 
-  packages/dsh-selfrepair:
-    dependencies:
-      '@deepseek-ai/cordis':
-        specifier: ^4.0.1
-        version: 4.0.1
-      yaml:
-        specifier: ^2.9.0
-        version: 2.9.0
-    devDependencies:
-      '@deepseek-ai/dsh-typert-protocol':
-        specifier: 0.1.0-rc.6
-        version: 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.7(@deepseek-ai/cordis@4.0.1))
-      typescript:
-        specifier: ^5.6.0
-        version: 5.9.3
-
   packages/dsh-selftrain: {}
 
   packages/dsh-seo: {}
 
   packages/dsh-serve: {}
+
+  packages/dsh-session: {}
 
   packages/dsh-sessions: {}
 
@@ -1282,11 +1504,15 @@ importers:
 
   packages/dsh-shebao: {}
 
+  packages/dsh-sheep: {}
+
   packages/dsh-shein: {}
 
   packages/dsh-shengxiao: {}
 
   packages/dsh-shenji: {}
+
+  packages/dsh-shiba: {}
 
   packages/dsh-shici: {}
 
@@ -1306,13 +1532,19 @@ importers:
 
   packages/dsh-sidekick: {}
 
+  packages/dsh-siliao: {}
+
   packages/dsh-siliconflow: {}
 
   packages/dsh-siri: {}
 
   packages/dsh-skill: {}
 
+  packages/dsh-skilltree: {}
+
   packages/dsh-sleep: {}
+
+  packages/dsh-slot: {}
 
   packages/dsh-snake: {}
 
@@ -1340,6 +1572,8 @@ importers:
 
   packages/dsh-speech: {}
 
+  packages/dsh-speedrun: {}
+
   packages/dsh-sports: {}
 
   packages/dsh-spotify: {}
@@ -1349,6 +1583,8 @@ importers:
   packages/dsh-sqlite: {}
 
   packages/dsh-square: {}
+
+  packages/dsh-squirrel: {}
 
   packages/dsh-sre: {}
 
@@ -1371,6 +1607,8 @@ importers:
   packages/dsh-sticker: {}
 
   packages/dsh-stock: {}
+
+  packages/dsh-strands: {}
 
   packages/dsh-strava: {}
 
@@ -1408,6 +1646,8 @@ importers:
 
   packages/dsh-symptom: {}
 
+  packages/dsh-tabletop: {}
+
   packages/dsh-tailor: {}
 
   packages/dsh-talent: {}
@@ -1417,6 +1657,8 @@ importers:
   packages/dsh-tangram: {}
 
   packages/dsh-taobao: {}
+
+  packages/dsh-tape: {}
 
   packages/dsh-target: {}
 
@@ -1444,11 +1686,15 @@ importers:
 
   packages/dsh-threads: {}
 
+  packages/dsh-tiaoyitiao: {}
+
   packages/dsh-ticker: {}
 
   packages/dsh-tictactoe: {}
 
   packages/dsh-tieba: {}
+
+  packages/dsh-tiger: {}
 
   packages/dsh-tiktok: {}
 
@@ -1506,6 +1752,8 @@ importers:
 
   packages/dsh-turnkey: {}
 
+  packages/dsh-turtle: {}
+
   packages/dsh-tutor: {}
 
   packages/dsh-tv: {}
@@ -1515,6 +1763,8 @@ importers:
   packages/dsh-twitch: {}
 
   packages/dsh-twitter: {}
+
+  packages/dsh-tycoon: {}
 
   packages/dsh-typescript: {}
 
@@ -1542,6 +1792,8 @@ importers:
 
   packages/dsh-vector: {}
 
+  packages/dsh-vegas: {}
+
   packages/dsh-venmo: {}
 
   packages/dsh-vercel: {}
@@ -1551,6 +1803,8 @@ importers:
   packages/dsh-video: {}
 
   packages/dsh-viem: {}
+
+  packages/dsh-viral: {}
 
   packages/dsh-visa: {}
 
@@ -1580,11 +1834,17 @@ importers:
 
   packages/dsh-web3-core: {}
 
+  packages/dsh-webgame: {}
+
   packages/dsh-weibo: {}
 
   packages/dsh-weiqi: {}
 
   packages/dsh-wenku: {}
+
+  packages/dsh-werewolf: {}
+
+  packages/dsh-whale: {}
 
   packages/dsh-whatsapp: {}
 
@@ -1595,6 +1855,8 @@ importers:
   packages/dsh-wise: {}
 
   packages/dsh-wms: {}
+
+  packages/dsh-wolf: {}
 
   packages/dsh-word: {}
 
@@ -1636,7 +1898,13 @@ importers:
 
   packages/dsh-xiaotian: {}
 
+  packages/dsh-xiaoxiaole: {}
+
+  packages/dsh-xiehouyu: {}
+
   packages/dsh-xique: {}
+
+  packages/dsh-xp: {}
 
   packages/dsh-xrp: {}
 
@@ -1649,6 +1917,8 @@ importers:
   packages/dsh-youku: {}
 
   packages/dsh-youtube: {}
+
+  packages/dsh-youxiji: {}
 
   packages/dsh-yuque: {}
 
@@ -1684,11 +1954,15 @@ importers:
 
   packages/dsh-zhongbiao: {}
 
+  packages/dsh-zhuanfa: {}
+
   packages/dsh-zhuanzhang: {}
 
   packages/dsh-zhuli: {}
 
   packages/dsh-zhuochong: {}
+
+  packages/dsh-zhuoyou: {}
 
   packages/dsh-zig: {}
 
@@ -1726,6 +2000,11 @@ packages:
       '@deepseek-ai/cordis': ^4.0.1
       '@deepseek-ai/dsh-invariants': ^0.1.0-rc.6
 
+  '@deepseek-ai/dsh-typert-protocol@0.1.2-rc.1':
+    resolution: {integrity: sha512-vBWD0NpriPd96ltbWaAw+iKeWFIEjiAcCWYtmqEcV1Ms+FaV02usjjm7LCmhSQhMZpBSBc7EZUX0spGlpjI1bA==}
+    peerDependencies:
+      '@deepseek-ai/cordis': ^4.0.2
+
   '@deepseek-ai/schemastery@3.18.1':
     resolution: {integrity: sha512-Qn0FCSwCQnpnj6SB31I6i2sIKgKWnkbJM8O0EU91Gv2UsYVvtZTl6IA0sCwk2e2MZf5S8w5hpq9QkeVvK9qwxg==}
 
@@ -1760,6 +2039,10 @@ snapshots:
     dependencies:
       '@deepseek-ai/cordis': 4.0.1
       '@deepseek-ai/dsh-invariants': 0.1.0-rc.7(@deepseek-ai/cordis@4.0.1)
+
+  '@deepseek-ai/dsh-typert-protocol@0.1.2-rc.1(@deepseek-ai/cordis@4.0.1)':
+    dependencies:
+      '@deepseek-ai/cordis': 4.0.1
 
   '@deepseek-ai/schemastery@3.18.1':
     dependencies:
