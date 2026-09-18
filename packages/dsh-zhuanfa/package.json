@@ -1,0 +1,21 @@
+{
+  "name": "dsh-zhuanfa",
+  "version": "0.0.1",
+  "description": "Zhuanfa - the repost - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "zhuanfa",
+    "repost"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-zhuanfa"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-zhuanfa#readme"
+}

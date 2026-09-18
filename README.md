@@ -175,7 +175,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-tape`](packages/dsh-tape) | Session tape for dsh |
 | [`dsh-sessions`](packages/dsh-sessions) | Session manager and browser |
 
-### Channels (53)
+### Channels (54)
 
 | Name | Planned first release |
 | --- | --- |
@@ -202,6 +202,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-sspai`](packages/dsh-sspai) | Sspai (少数派) bridge for dsh agents |
 | [`dsh-guokr`](packages/dsh-guokr) | Guokr (果壳) bridge for dsh agents |
 | [`dsh-v2ex`](packages/dsh-v2ex) | V2EX bridge for dsh agents |
+| [`dsh-viral`](packages/dsh-viral) | Viral - the exponential spread |
 | [`dsh-tiktok`](packages/dsh-tiktok) | TikTok channel bridge for dsh bots |
 | [`dsh-instagram`](packages/dsh-instagram) | Instagram channel bridge for dsh bots |
 | [`dsh-facebook`](packages/dsh-facebook) | Facebook channel bridge for dsh bots |
@@ -367,7 +368,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-applepay`](packages/dsh-applepay) | Apple Pay-facing bridge for dsh agents |
 | [`dsh-googlepay`](packages/dsh-googlepay) | Google Pay-facing bridge for dsh agents |
 
-### Entertainment (91)
+### Entertainment (128)
 
 | Name | Planned first release |
 | --- | --- |
@@ -402,6 +403,43 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-achievement`](packages/dsh-achievement) | Achievements for dsh agents |
 | [`dsh-remix`](packages/dsh-remix) | Remix culture for dsh agents |
 | [`dsh-fiction`](packages/dsh-fiction) | Fiction workshop for dsh agents |
+| [`dsh-monopoly`](packages/dsh-monopoly) | Monopoly - the property empire |
+| [`dsh-richman`](packages/dsh-richman) | Richman - the da fu weng lane |
+| [`dsh-catan`](packages/dsh-catan) | Catan - settle the island |
+| [`dsh-carcassonne`](packages/dsh-carcassonne) | Carcassonne - lay the tiles |
+| [`dsh-clue`](packages/dsh-clue) | Clue - whodunit |
+| [`dsh-werewolf`](packages/dsh-werewolf) | Werewolf - the village that lies |
+| [`dsh-mafia`](packages/dsh-mafia) | Mafia - the original deception |
+| [`dsh-avalon`](packages/dsh-avalon) | Avalon - the round table lies |
+| [`dsh-resistance`](packages/dsh-resistance) | Resistance - the hidden traitor |
+| [`dsh-codenames`](packages/dsh-codenames) | Codenames - one word says it all |
+| [`dsh-scrabble`](packages/dsh-scrabble) | Scrabble - the tile premium |
+| [`dsh-jenga`](packages/dsh-jenga) | Jenga - the steady hand |
+| [`dsh-ludo`](packages/dsh-ludo) | Ludo - the childhood classic |
+| [`dsh-nonogram`](packages/dsh-nonogram) | Nonogram - the picture in numbers |
+| [`dsh-huarongdao`](packages/dsh-huarongdao) | Huarongdao - slide Cao Cao out |
+| [`dsh-klotski`](packages/dsh-klotski) | Klotski - the sliding block |
+| [`dsh-zhuoyou`](packages/dsh-zhuoyou) | Zhuoyou - tabletop, in Chinese |
+| [`dsh-tabletop`](packages/dsh-tabletop) | Tabletop - around the table |
+| [`dsh-boardgame`](packages/dsh-boardgame) | Boardgame - the plain category |
+| [`dsh-dominion`](packages/dsh-dominion) | Dominion - build the deck |
+| [`dsh-hanabi`](packages/dsh-hanabi) | Hanabi - the fireworks you cannot see |
+| [`dsh-dixit`](packages/dsh-dixit) | Dixit - say it in pictures |
+| [`dsh-minigame`](packages/dsh-minigame) | Minigame - the small complete game |
+| [`dsh-flappy`](packages/dsh-flappy) | Flappy - the tap to fly |
+| [`dsh-tiaoyitiao`](packages/dsh-tiaoyitiao) | Tiaoyitiao - the jump that swept China |
+| [`dsh-popstar`](packages/dsh-popstar) | Popstar - the star elimination |
+| [`dsh-ershisi`](packages/dsh-ershisi) | Ershisi - the twenty-four game |
+| [`dsh-feihualing`](packages/dsh-feihualing) | Feihualing - the poetry duel |
+| [`dsh-xiehouyu`](packages/dsh-xiehouyu) | Xiehouyu - the two-part proverb |
+| [`dsh-dengmi`](packages/dsh-dengmi) | Dengmi - the lantern riddle |
+| [`dsh-caimi`](packages/dsh-caimi) | Caimi - guess the riddle |
+| [`dsh-miyu`](packages/dsh-miyu) | Miyu - the riddle, in Chinese |
+| [`dsh-webgame`](packages/dsh-webgame) | Webgame - the browser era |
+| [`dsh-youxiji`](packages/dsh-youxiji) | Youxiji - the game console |
+| [`dsh-connections`](packages/dsh-connections) | Connections - the hidden link |
+| [`dsh-strands`](packages/dsh-strands) | Strands - the letters web |
+| [`dsh-doodle`](packages/dsh-doodle) | Doodle - the draw and guess |
 | [`dsh-lianliankan`](packages/dsh-lianliankan) | Lianliankan - connect the pairs |
 | [`dsh-xiaoxiaole`](packages/dsh-xiaoxiaole) | Xiaoxiaole - the match-three |
 | [`dsh-renju`](packages/dsh-renju) | Renju - the gomoku cousin |
@@ -578,10 +616,23 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-gaze`](packages/dsh-gaze) | Gaze lane for dsh |
 | [`dsh-peek`](packages/dsh-peek) | Peek lane for dsh |
 
-### China ecosystem (35)
+### China ecosystem (48)
 
 | Name | Planned first release |
 | --- | --- |
+| [`dsh-pengyouquan`](packages/dsh-pengyouquan) | Pengyouquan - the moments feed |
+| [`dsh-qunliao`](packages/dsh-qunliao) | Qunliao - the group chat |
+| [`dsh-siliao`](packages/dsh-siliao) | Siliao - the private line |
+| [`dsh-guanxi`](packages/dsh-guanxi) | Guanxi - the connection capital |
+| [`dsh-renmai`](packages/dsh-renmai) | Renmai - the network you grow |
+| [`dsh-mianzi`](packages/dsh-mianzi) | Mianzi - the face you keep |
+| [`dsh-resou`](packages/dsh-resou) | Resou - the trending searches |
+| [`dsh-rebang`](packages/dsh-rebang) | Rebang - the hot list |
+| [`dsh-chaohua`](packages/dsh-chaohua) | Chaohua - the super topic |
+| [`dsh-zhuanfa`](packages/dsh-zhuanfa) | Zhuanfa - the repost |
+| [`dsh-pinglun`](packages/dsh-pinglun) | Pinglun - the comment section |
+| [`dsh-haoyou`](packages/dsh-haoyou) | Haoyou - the friends list |
+| [`dsh-fenxiang`](packages/dsh-fenxiang) | Fenxiang - the share |
 | [`dsh-hongbao`](packages/dsh-hongbao) | Hongbao (红包) lane for dsh agents |
 | [`dsh-qianbao`](packages/dsh-qianbao) | Qianbao (钱包) lane for dsh agents |
 | [`dsh-zhuanzhang`](packages/dsh-zhuanzhang) | Zhuanzhang (转账) lane for dsh agents |

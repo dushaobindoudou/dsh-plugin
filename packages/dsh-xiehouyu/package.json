@@ -1,0 +1,21 @@
+{
+  "name": "dsh-xiehouyu",
+  "version": "0.0.1",
+  "description": "Xiehouyu - the two-part proverb - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "xiehouyu",
+    "proverb"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-xiehouyu"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-xiehouyu#readme"
+}
