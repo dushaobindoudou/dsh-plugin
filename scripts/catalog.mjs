@@ -4866,6 +4866,6 @@ export const CORE = {
 export const CATALOG = { ...EXTERNAL, ...CORE }
 
 // Packages with real shipped code - excluded from placeholder generation.
-export const REAL_PACKAGES = ['dsh-recovery', 'dsh-workflow', 'dsh-bot']
+export const REAL_PACKAGES = ['dsh-recovery', 'dsh-selfrepair', 'dsh-workflow', 'dsh-bot']
 
 export const PLACEHOLDER_VERSION = '0.0.1'
