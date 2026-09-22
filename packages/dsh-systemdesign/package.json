@@ -1,0 +1,22 @@
+{
+  "name": "dsh-systemdesign",
+  "version": "0.0.1",
+  "description": "work & hiring - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "Scale, tradeoffs, whiteboard architecture - the design-interview lane; the round that maps to the job.",
+    "systemdesign",
+    "interview"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-systemdesign"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-systemdesign#readme"
+}

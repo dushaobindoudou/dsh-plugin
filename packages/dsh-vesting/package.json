@@ -1,0 +1,22 @@
+{
+  "name": "dsh-vesting",
+  "version": "0.0.1",
+  "description": "work & hiring - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "Four years, one cliff - the equity lane; the strongest retention tool ever invented.",
+    "vesting",
+    "equity"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-vesting"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-vesting#readme"
+}

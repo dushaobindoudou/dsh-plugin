@@ -1,0 +1,22 @@
+{
+  "name": "dsh-careers",
+  "version": "0.0.1",
+  "description": "work & hiring - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "The plural that means we are hiring - the careers-page lane; the most-read marketing page nobody admits to reading.",
+    "careers",
+    "page"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-careers"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-careers#readme"
+}

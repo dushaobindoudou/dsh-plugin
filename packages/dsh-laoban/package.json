@@ -1,0 +1,22 @@
+{
+  "name": "dsh-laoban",
+  "version": "0.0.1",
+  "description": "work & hiring - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "The boss - owner, manager, and the person to thank at dinner.",
+    "laoban",
+    "pinyin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-laoban"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-laoban#readme"
+}

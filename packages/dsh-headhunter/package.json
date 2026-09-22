@@ -1,0 +1,22 @@
+{
+  "name": "dsh-headhunter",
+  "version": "0.0.1",
+  "description": "work & hiring - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "Executive search, poaching done politely - kin to dsh-headhunt; the six-figure-finders-fee lane.",
+    "headhunter",
+    "search"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-headhunter"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-headhunter#readme"
+}

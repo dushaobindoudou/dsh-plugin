@@ -1141,10 +1141,79 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-policy`](packages/dsh-policy) | Approval policy engine for the DeepSeek Harness |
 | [`dsh-permission`](packages/dsh-permission) | Permission scopes for dsh tools |
 
-### Work & hiring (5)
+### Work & hiring (74)
 
 | Name | Planned first release |
 | --- | --- |
+| [`dsh-hire`](packages/dsh-hire) | work & hiring |
+| [`dsh-career`](packages/dsh-career) | work & hiring |
+| [`dsh-careers`](packages/dsh-careers) | work & hiring |
+| [`dsh-recruiter`](packages/dsh-recruiter) | work & hiring |
+| [`dsh-headhunter`](packages/dsh-headhunter) | work & hiring |
+| [`dsh-staffing`](packages/dsh-staffing) | work & hiring |
+| [`dsh-offer`](packages/dsh-offer) | work & hiring |
+| [`dsh-onboarding`](packages/dsh-onboarding) | work & hiring |
+| [`dsh-offboarding`](packages/dsh-offboarding) | work & hiring |
+| [`dsh-salary`](packages/dsh-salary) | work & hiring |
+| [`dsh-compensation`](packages/dsh-compensation) | work & hiring |
+| [`dsh-vesting`](packages/dsh-vesting) | work & hiring |
+| [`dsh-esop`](packages/dsh-esop) | work & hiring |
+| [`dsh-bonus`](packages/dsh-bonus) | work & hiring |
+| [`dsh-referral`](packages/dsh-referral) | work & hiring |
+| [`dsh-vacancy`](packages/dsh-vacancy) | work & hiring |
+| [`dsh-candidate`](packages/dsh-candidate) | work & hiring |
+| [`dsh-applicant`](packages/dsh-applicant) | work & hiring |
+| [`dsh-coverletter`](packages/dsh-coverletter) | work & hiring |
+| [`dsh-jobboard`](packages/dsh-jobboard) | work & hiring |
+| [`dsh-wanted`](packages/dsh-wanted) | work & hiring |
+| [`dsh-negotiate`](packages/dsh-negotiate) | work & hiring |
+| [`dsh-counteroffer`](packages/dsh-counteroffer) | work & hiring |
+| [`dsh-resignation`](packages/dsh-resignation) | work & hiring |
+| [`dsh-layoffs`](packages/dsh-layoffs) | work & hiring |
+| [`dsh-severance`](packages/dsh-severance) | work & hiring |
+| [`dsh-freelance`](packages/dsh-freelance) | work & hiring |
+| [`dsh-contractor`](packages/dsh-contractor) | work & hiring |
+| [`dsh-moonlighting`](packages/dsh-moonlighting) | work & hiring |
+| [`dsh-sidehustle`](packages/dsh-sidehustle) | work & hiring |
+| [`dsh-digitalnomad`](packages/dsh-digitalnomad) | work & hiring |
+| [`dsh-sourcing`](packages/dsh-sourcing) | work & hiring |
+| [`dsh-screening`](packages/dsh-screening) | work & hiring |
+| [`dsh-shortlist`](packages/dsh-shortlist) | work & hiring |
+| [`dsh-takehome`](packages/dsh-takehome) | work & hiring |
+| [`dsh-systemdesign`](packages/dsh-systemdesign) | work & hiring |
+| [`dsh-ghosting`](packages/dsh-ghosting) | work & hiring |
+| [`dsh-probation`](packages/dsh-probation) | work & hiring |
+| [`dsh-overtime`](packages/dsh-overtime) | work & hiring |
+| [`dsh-glassdoor`](packages/dsh-glassdoor) | work & hiring |
+| [`dsh-indeed`](packages/dsh-indeed) | work & hiring |
+| [`dsh-workday`](packages/dsh-workday) | work & hiring |
+| [`dsh-greenhouse`](packages/dsh-greenhouse) | work & hiring |
+| [`dsh-zhaopin`](packages/dsh-zhaopin) | work & hiring |
+| [`dsh-qiuzhi`](packages/dsh-qiuzhi) | work & hiring |
+| [`dsh-jianli`](packages/dsh-jianli) | work & hiring |
+| [`dsh-mianshi`](packages/dsh-mianshi) | work & hiring |
+| [`dsh-cizhi`](packages/dsh-cizhi) | work & hiring |
+| [`dsh-shezhao`](packages/dsh-shezhao) | work & hiring |
+| [`dsh-xiaozhao`](packages/dsh-xiaozhao) | work & hiring |
+| [`dsh-neitui`](packages/dsh-neitui) | work & hiring |
+| [`dsh-shixi`](packages/dsh-shixi) | work & hiring |
+| [`dsh-jianzhi`](packages/dsh-jianzhi) | work & hiring |
+| [`dsh-quanzhi`](packages/dsh-quanzhi) | work & hiring |
+| [`dsh-rencai`](packages/dsh-rencai) | work & hiring |
+| [`dsh-yuangong`](packages/dsh-yuangong) | work & hiring |
+| [`dsh-laoban`](packages/dsh-laoban) | work & hiring |
+| [`dsh-daiyu`](packages/dsh-daiyu) | work & hiring |
+| [`dsh-jiaban`](packages/dsh-jiaban) | work & hiring |
+| [`dsh-shiyongqi`](packages/dsh-shiyongqi) | work & hiring |
+| [`dsh-nianzhongjiang`](packages/dsh-nianzhongjiang) | work & hiring |
+| [`dsh-bianzhi`](packages/dsh-bianzhi) | work & hiring |
+| [`dsh-dagong`](packages/dsh-dagong) | work & hiring |
+| [`dsh-chaoyou`](packages/dsh-chaoyou) | work & hiring |
+| [`dsh-neijuan`](packages/dsh-neijuan) | work & hiring |
+| [`dsh-tangping`](packages/dsh-tangping) | work & hiring |
+| [`dsh-996`](packages/dsh-996) | work & hiring |
+| [`dsh-renshi`](packages/dsh-renshi) | work & hiring |
+| [`dsh-007`](packages/dsh-007) | work & hiring |
 | [`dsh-hiring`](packages/dsh-hiring) | Hiring workflow for engineering teams |
 | [`dsh-job`](packages/dsh-job) | The singular form of the background-jobs runner |
 | [`dsh-talent`](packages/dsh-talent) | Talent pool manager |

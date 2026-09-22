@@ -1,0 +1,22 @@
+{
+  "name": "dsh-nianzhongjiang",
+  "version": "0.0.1",
+  "description": "work & hiring - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "The year-end bonus - the annual ritual; months of salary as the number that keeps or moves people.",
+    "nianzhongjiang",
+    "pinyin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-nianzhongjiang"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-nianzhongjiang#readme"
+}
