@@ -105,6 +105,12 @@ export function cleanReminder(raw, ignored) {
   if (out.repeatEveryMinutes === undefined && out.inMinutes === undefined && out.dueAt === undefined) {
     out.inMinutes = 1 // default: bring it up on the next sweep
   }
+  // The app requires a first due EVEN for standing reminders (POST /reminders
+  // answers 400 "dueAt or inMinutes is required" otherwise). First fire one
+  // period out — "every 30 minutes" first pops in 30 — then the app re-arms.
+  if (out.repeatEveryMinutes !== undefined && out.inMinutes === undefined && out.dueAt === undefined) {
+    out.inMinutes = out.repeatEveryMinutes
+  }
   return out
 }
 
