@@ -10,6 +10,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import { PetBridge } from './lib/bridge.js'
+import { attentionLevel, cleanAttentionPolicy, stagePriorityFor } from './lib/policy.js'
+import { REMINDER_MARKER, cleanReminder, isManagedReminder, reminderText } from './lib/reminders.js'
 import { DEFAULT_PET_SETTINGS, readPetSettings, validateSettings, writePetSettings } from './lib/settings.js'
 import { TASK_MOODS, TASK_STATES, cleanTaskEvent } from './lib/vocab.js'
 
@@ -36,6 +38,28 @@ check('cleanTaskEvent clamps progress and caps summary', (() => {
 })())
 check('the vocabularies match the pet app contract', TASK_STATES.length === 8 && TASK_STATES.includes('needs_approval') && TASK_MOODS.length === 9)
 
+// ---------- attention policy ----------
+check('needs_approval is an alert by default', attentionLevel('needs_approval') === 'alert')
+check('running never nudges by default', attentionLevel('running') === null)
+check('invented states never nudge', attentionLevel('vibing') === null)
+check('user policy overrides the default table', attentionLevel('completed', { completed: 'report' }) === 'report')
+check('user can silence a default', attentionLevel('failed', { failed: 'silent' }) === null)
+check('unknown policy entries are dropped and reported', (() => {
+  const ignored = []
+  const cleaned = cleanAttentionPolicy({ needs_approval: 'alert', completed: 'louder', fakestate: 'alert' }, ignored)
+  return cleaned.needs_approval === 'alert' && !('completed' in cleaned) && ignored.includes('completed') && ignored.includes('fakestate')
+})())
+check('levels map onto stage priorities', stagePriorityFor('alert') === 'alert' && stagePriorityFor('report') === 'report' && stagePriorityFor('silent') === 'status')
+
+// ---------- reminders ----------
+check('reminder text is deterministic and marker-prefixed', reminderText({ title: '检查部署', detail: 'staging 状态' }) === `${REMINDER_MARKER} 检查部署 — staging 状态`)
+check('reminder text is idempotent across calls', reminderText({ title: 'x' }) === reminderText({ title: 'x', detail: undefined }))
+check('cleanReminder floors repeat at the app floor', cleanReminder({ title: 'x', everyMinutes: 1 }).repeatEveryMinutes === 5)
+check('cleanReminder defaults a one-shot delay', cleanReminder({ title: 'x' }).inMinutes === 1)
+check('cleanReminder refuses an empty title', cleanReminder({ title: '   ' }) === null)
+check('cleanReminder keeps a valid mood, drops an invalid one', cleanReminder({ title: 'x', mood: 'curious' }).mood === 'curious' && cleanReminder({ title: 'x', mood: 'zzz' }).mood === undefined)
+check('managed detection keys on the marker text', isManagedReminder({ text: `${REMINDER_MARKER} hi` }) === true && isManagedReminder({ text: 'hi' }) === false)
+
 // ---------- settings ----------
 const home = mkdtempSync(join(tmpdir(), 'dsh-pets-smoke-'))
 try {
@@ -49,6 +73,12 @@ try {
   const hostile = validateSettings({ port: 'attack', agentId: '../etc', agentName: 42, autoAnnounce: 'yes', tools: { task: 'no', zombie: true }, extra: 1 })
   check('hostile settings fall back field by field', hostile.settings.port === DEFAULT_PET_SETTINGS.port && hostile.settings.agentId === DEFAULT_PET_SETTINGS.agentId && hostile.settings.autoAnnounce === DEFAULT_PET_SETTINGS.autoAnnounce && hostile.settings.tools.task === true)
   check('hostile settings report what was ignored', hostile.ignored.includes('extra') && hostile.ignored.includes('autoAnnounce') && hostile.ignored.includes('agentId'))
+
+  // notify + reminders settings blocks
+  const notify = validateSettings({ notify: { needs_approval: 'alert', completed: 'report', nonsense: 'alert', failed: 'louder' }, reminders: [{ id: 'deploy', title: '检查部署', everyMinutes: 30, mood: 'curious' }, { title: '' }, 'junk'] })
+  check('notify keeps known state/level pairs only', notify.settings.notify.needs_approval === 'alert' && notify.settings.notify.completed === 'report' && !('nonsense' in notify.settings.notify) && !('failed' in notify.settings.notify))
+  check('reminders keep well-formed declarations', notify.settings.reminders.length === 1 && notify.settings.reminders[0].id === 'deploy' && notify.settings.reminders[0].everyMinutes === 30 && notify.settings.reminders[0].mood === 'curious')
+  check('reminder declarations floor everyMinutes', validateSettings({ reminders: [{ id: 'a', title: 'x', everyMinutes: 2 }] }).settings.reminders[0].everyMinutes === 5)
 
   // ---------- bridge against a stub server ----------
   const seen = { headers: null, body: null, path: null, method: null }
@@ -66,6 +96,12 @@ try {
       } else if (req.url === '/task-event' && req.method === 'POST') {
         res.statusCode = req.headers.authorization === 'Bearer tok-123' ? 200 : 401
         res.end('{"ok":true,"recorded":true}')
+      } else if (req.url === '/reminders' && req.method === 'POST') {
+        res.end('{"ok":true,"id":"r1-1"}')
+      } else if (req.url === '/reminders' && req.method === 'GET') {
+        res.end('[]')
+      } else if (req.url?.startsWith('/reminders/') && req.method === 'DELETE') {
+        res.end('{"ok":true,"removed":"x"}')
       } else {
         res.statusCode = 404
         res.end('{"error":"no such route"}')
@@ -85,6 +121,13 @@ try {
 
   const bad = await bridge.taskEvent({ state: 'nonsense' }, 'dsh')
   check('junk events never reach the wire', bad.ok === false && seen.path === '/task-event')
+
+  const reminded = await bridge.remind({ title: '检查部署', detail: 'staging', everyMinutes: 30 })
+  const remindBody = JSON.parse(seen.body)
+  check('remind posts the cleaned wire shape', reminded.ok === true && remindBody.text.startsWith(REMINDER_MARKER) && remindBody.repeatEveryMinutes === 30 && !('title' in remindBody))
+  const junkRemind = await bridge.remind({ title: ' ' })
+  check('junk reminders never reach the wire', junkRemind.ok === false && seen.path === '/reminders')
+  check('reminders() lists and removeReminder() deletes', (await bridge.reminders()).ok === true && (await bridge.removeReminder('r1-1')).ok === true && (await bridge.removeReminder('')).ok === false)
 
   const missing = new PetBridge({ port, tokenPath: join(home, 'no', 'token') })
   const unauth = await missing.request('POST', '/task-event', { state: 'running' })

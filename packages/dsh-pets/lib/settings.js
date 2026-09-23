@@ -10,6 +10,8 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
+import { TASK_MOODS, TASK_STATES } from './vocab.js'
+import { REMINDER_REPEAT_FLOOR_MINUTES } from './reminders.js'
 
 /** The settings every pet plugin reads; dsh-lingxi owns the tools block. */
 export const DEFAULT_PET_SETTINGS = {
@@ -25,6 +27,19 @@ export const DEFAULT_PET_SETTINGS = {
     state: true,
     remember: true,
   },
+  // Which task states are worth interrupting the user for, and how loudly
+  // (silent/status/report/alert — the pet app's stage priorities). Merge of
+  // DEFAULT_ATTENTION_POLICY + the user's edits.
+  notify: {
+    needs_approval: 'alert',
+    needs_input: 'alert',
+    blocked: 'report',
+    failed: 'report',
+  },
+  // Declared standing reminders: "every N minutes, have the cat bring X up".
+  // Managed by the host adapter (it diff-syncs them into the pet app); the
+  // settings page is the only writer.
+  reminders: [],
 }
 
 function cleanText(value, cap) {
@@ -37,6 +52,26 @@ function cleanText(value, cap) {
 function cleanId(value) {
   const id = cleanText(value, 64)
   return id && /^[\w.-]+$/.test(id) ? id : null
+}
+
+/**
+ * Validate one DECLARED reminder (the settings-file shape: stable id + prose),
+ * not the wire shape. The id is the settings-owned handle the host adapter
+ * uses to delete/recreate on the pet app; it must exist and be stable.
+ */
+function cleanDeclaredReminder(entry) {
+  if (entry === null || typeof entry !== 'object' || Array.isArray(entry)) return null
+  const id = cleanId(entry.id)
+  const title = cleanText(entry.title, 60)
+  if (!id || !title) return null
+  const detail = cleanText(entry.detail, 70) ?? ''
+  const every = Number(entry.everyMinutes)
+  const everyMinutes = Number.isFinite(every) && every > 0
+    ? Math.max(REMINDER_REPEAT_FLOOR_MINUTES, Math.round(every))
+    : null
+  const mood = typeof entry.mood === 'string' && TASK_MOODS.includes(entry.mood) ? entry.mood : null
+  const enabled = entry.enabled === undefined ? true : entry.enabled === true
+  return { id, title, detail, everyMinutes, mood, enabled }
 }
 
 /**
@@ -90,6 +125,34 @@ export function validateSettings(raw) {
           }
         } else if (value !== undefined) ignored.push('tools')
         break
+      case 'notify': {
+        // Per-state loudness table. Unknown states/levels drop; the DEFAULT
+        // fill happens in cleanAttentionPolicy's merge, not here.
+        if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+          settings.notify = {}
+          for (const [state, level] of Object.entries(value)) {
+            if (TASK_STATES.includes(state) && ['silent', 'status', 'report', 'alert'].includes(level)) {
+              if (level !== 'silent') settings.notify[state] = level
+            } else if (value !== undefined) {
+              ignored.push(`notify.${state}`)
+            }
+          }
+        } else if (value !== undefined) ignored.push('notify')
+        break
+      }
+      case 'reminders': {
+        // Declared reminders; each entry validated through the same boundary
+        // the pet app applies, so what is stored here is what would be sent.
+        if (Array.isArray(value)) {
+          settings.reminders = []
+          value.forEach((entry, index) => {
+            const cleaned = cleanDeclaredReminder(entry)
+            if (cleaned) settings.reminders.push(cleaned)
+            else ignored.push(`reminders.${index}`)
+          })
+        } else if (value !== undefined) ignored.push('reminders')
+        break
+      }
       default:
         ignored.push(key)
     }

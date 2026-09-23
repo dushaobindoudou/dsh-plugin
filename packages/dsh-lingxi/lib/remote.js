@@ -4,9 +4,13 @@
  * …)`; methods return plain JSON only, business failures are `{ error }`
  * return values (the panel's error-display path), never thrown errors.
  *
- * `status` reads the bridge's OWN provided interfaces (/health, /integration,
- * /agents) — the settings page renders what the pet app says about itself,
- * not a cached copy.
+ * Method surface:
+ *  - status       — the pet app's own /health + /agents answers, plus settings
+ *  - tasks        — what dsh is running right now (the task watch's registry)
+ *  - getSettings / setSettings — the settings item itself
+ *  - reminders    — declared reminders + the pet app's live list + last sync
+ *  - syncReminders — push one sync pass now (the page's "同步到宠物" button)
+ *  - testSay      — one live say, for the page's "does the cat answer" button
  */
 import { PetBridge } from './pet-contract/index.js'
 import { Remote, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
@@ -23,11 +27,8 @@ function markRemoteMethod(prototype, method) {
 }
 
 /**
+ * @param {object} ctx - the Cordis context (or a test double).
  * @param {object} controller - the live plugin state, built in index.js.
- * @param {() => object} controller.getSettings - current validated settings.
- * @param {() => object} controller.getLoadInfo - what the mount read (ignored keys, read error).
- * @param {(patch: object) => object} controller.saveSettings - validate, persist, rebuild, return {settings, ignored}.
- * @param {(text: string) => Promise<object>} controller.testSay - one bridge say, for the page's test button.
  */
 export class LingxiRemote extends TypertRemoteService {
   constructor(ctx, controller) {
@@ -35,11 +36,6 @@ export class LingxiRemote extends TypertRemoteService {
     this.controller = controller
   }
 
-  /**
-   * Everything the settings page needs for one paint: the pet app's own
-   * health/contract (from ITS interfaces), the agent registry, and this
-   * plugin's settings. Never throws — every bridge answer has a shape.
-   */
   async status() {
     const settings = this.controller.getSettings()
     const bridge = new PetBridge({ port: settings.port })
@@ -68,6 +64,38 @@ export class LingxiRemote extends TypertRemoteService {
     }
   }
 
+  /** Requirement 1 made visible: the running-task registry, as dsh sees it. */
+  async tasks() {
+    return {
+      tasks: this.controller.listTasks(),
+      watching: this.controller.isWatching(),
+    }
+  }
+
+  /** Requirement 3 made visible: declarations + the pet app's live list. */
+  async reminders() {
+    const settings = this.controller.getSettings()
+    const bridge = new PetBridge({ port: settings.port })
+    const list = await bridge.reminders()
+    const appEntries = list.ok === true && Array.isArray(list.data)
+      ? list.data
+        .filter((e) => typeof e?.text === 'string')
+        .slice(0, 32)
+        .map((e) => ({ id: String(e.id ?? ''), text: e.text, repeatEveryMinutes: Number(e.repeatEveryMinutes ?? e.repeat_every_minutes ?? 0) }))
+      : []
+    return {
+      declared: this.controller.listDeclaredReminders(),
+      appEntries,
+      lastSync: this.controller.reminderSyncState(),
+      available: list.ok === true || list.unreachable !== true,
+    }
+  }
+
+  /** Push one sync pass from the page. */
+  async syncReminders() {
+    return this.controller.syncRemindersNow()
+  }
+
   async getSettings() {
     return { settings: this.controller.getSettings(), loadInfo: this.controller.getLoadInfo() }
   }
@@ -81,7 +109,6 @@ export class LingxiRemote extends TypertRemoteService {
     return this.controller.saveSettings(patch)
   }
 
-  /** One live `say` through the bridge — the page's "does the cat answer" button. */
   async testSay(request) {
     const text = request !== null && typeof request === 'object' && typeof request.text === 'string'
       ? request.text
@@ -97,6 +124,8 @@ export class LingxiRemote extends TypertRemoteService {
  */
 export function installLingxiRemote(ctx, controller) {
   if (ctx === undefined || ctx === null || ctx.reflect === undefined) return null
-  for (const m of ['status', 'getSettings', 'setSettings', 'testSay']) markRemoteMethod(LingxiRemote.prototype, m)
+  for (const m of ['status', 'tasks', 'getSettings', 'setSettings', 'reminders', 'syncReminders', 'testSay']) {
+    markRemoteMethod(LingxiRemote.prototype, m)
+  }
   return new LingxiRemote(ctx, controller)
 }

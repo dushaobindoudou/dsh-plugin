@@ -38,9 +38,23 @@ auto-announce on mount, and which tools the model sees; saving persists to
 `~/.lingxi/pets-settings.json` and takes effect immediately (the tool set
 rebuilds in place).
 
-**An agent identity of its own** - the plugin registers as `dsh` (badge `DS`)
-in the pet app's registry, so events it reports are attributed separately
-from Claude Code or Codex.
+**An agent identity of its own** - the plugin registers as `dsh` (badge `DS`,
+dsh blue, the DeepSeek whale logo) in the pet app's registry, so events it
+reports are attributed separately from Claude Code or Codex - and every
+notification bubble carries the dsh logo as its source mark.
+
+**Task awareness** - the plugin watches dsh's own lifecycle events
+(`agent/status`, `agent/error`, `subagent/*`, `workflow/*`) plus the
+`approval/request` and `user-questions/request` waterfalls, reconciled
+against the live `agents`/`jobs` registries every minute, so the cat knows
+what dsh is running right now. When a task hits a state that needs the user
+(needs_approval, needs_input, blocked, failed - editable in settings), the
+cat says so on stage at the policy's loudness.
+
+**Standing reminders** - declare "every 30 minutes, have the cat bring up
+the deploy status" in the settings page; the plugin diff-syncs the
+declarations into the pet app, whose clock does the remembering (the pet
+checks once a minute and re-arms standing reminders).
 
 ## How the layers fit
 
@@ -51,11 +65,36 @@ from Claude Code or Codex.
 - `lib/remote.js` - the `lingxi` Remote namespace (`status`, `getSettings`,
   `setSettings`, `testSay`) the settings page calls through the connection
   RPC carrier.
-- `lib/client.js` - the settings section (`settings.section`, id `lingxi`).
-- `lib/pet-contract/` - the task vocabulary, bridge client, and settings
-  store, vendored from [`dsh-pets`](https://www.npmjs.com/package/dsh-pets)
-  (npm-name ownership pending; the monorepo package remains the source of
-  truth and this directory is replaced by a dependency when that settles).
+- `lib/tasks.js` - the task watch: dsh events + reconcile sweep → a running
+  registry and transitions.
+- `lib/notify.js` - the attention notifier: policy level → task event +
+  stage say; dedup per (task, state).
+- `lib/reminders.js` - the reminder sync: declared → standing pet reminders,
+  marker-keyed and idempotent.
+- `lib/dsh-logo.js` - the DeepSeek whale mark for bubble attribution.
+- `lib/client.js` - the settings section (`settings.section`, id `lingxi`):
+  bridge status, tasks now, reminder management, and the settings item.
+- `lib/pet-contract/` - the task vocabulary, bridge client, policy, and
+  reminder contract, vendored from
+  [`dsh-pets`](https://www.npmjs.com/package/dsh-pets) via
+  `node scripts/sync-pet-contract.mjs` (npm-name ownership pending; the
+  monorepo package remains the source of truth and this directory is
+  replaced by a dependency when that settles).
+
+## Layering
+
+```
+pet app (owns the stage, the clock, the badges)   ← zero changes needed
+   ↑ /task-event  /control  /reminders  /agents(logo)
+dsh-lingxi  (dsh adapter: task watch · attention notifier · reminder sync)
+   ↑ policy vocabulary · bridge client · settings store
+dsh-pets    (pet-agnostic contract, reusable by any host adapter)
+```
+
+The attention policy (which states interrupt the user, how loudly) and the
+reminder contract (marker-keyed, idempotent sync) live in **dsh-pets** so a
+second host adapter - claude, codex - reuses them verbatim; only the dsh
+event names and registries are dsh-lingxi's own.
 
 ## Architecture
 

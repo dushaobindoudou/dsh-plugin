@@ -3,10 +3,12 @@
  * Harness builds on.
  *
  * Three things live here, and only things a SECOND pet would also need:
- *  - vocab.js    the task contract (8 states, 9 moods) and its boundary cleaner
- *  - bridge.js   the localhost bridge client (token file, hard timeouts,
- *                unreachable-is-a-value semantics)
- *  - settings.js the shared ~/.lingxi/pets-settings.json store
+ *  - vocab.js     the task contract (8 states, 9 moods) and its boundary cleaner
+ *  - policy.js    the attention policy (which states nudge the user, how loudly)
+ *  - reminders.js the reminder contract (declared → wire shape, marker-keyed sync)
+ *  - bridge.js    the localhost bridge client (token file, hard timeouts,
+ *                 unreachable-is-a-value semantics)
+ *  - settings.js  the shared ~/.lingxi/pets-settings.json store
  *
  * The `apply` export provides a `pets` service so sibling plugins can
  * `ctx.get('pets')` instead of each re-deriving paths — but every export also
@@ -14,6 +16,15 @@
  * topology should not have to mount this package's apply at all.
  */
 import { DEFAULT_BRIDGE_PORT, DEFAULT_TOKEN_PATH, PetBridge } from './bridge.js'
+import { ATTENTION_LEVELS, DEFAULT_ATTENTION_POLICY, attentionLevel, cleanAttentionPolicy, stagePriorityFor } from './policy.js'
+import {
+  REMINDER_MARKER,
+  REMINDER_REPEAT_FLOOR_MINUTES,
+  REMINDER_TEXT_CAP,
+  cleanReminder,
+  isManagedReminder,
+  reminderText,
+} from './reminders.js'
 import {
   DEFAULT_PET_SETTINGS,
   readPetSettings,
@@ -36,6 +47,17 @@ export {
   TASK_MOODS,
   TASK_STATES,
   cleanTaskEvent,
+  ATTENTION_LEVELS,
+  DEFAULT_ATTENTION_POLICY,
+  attentionLevel,
+  cleanAttentionPolicy,
+  stagePriorityFor,
+  REMINDER_MARKER,
+  REMINDER_REPEAT_FLOOR_MINUTES,
+  REMINDER_TEXT_CAP,
+  cleanReminder,
+  isManagedReminder,
+  reminderText,
 }
 
 /**

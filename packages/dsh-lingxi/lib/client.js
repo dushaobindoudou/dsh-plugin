@@ -74,6 +74,32 @@ window.__ModuleLoader__.load({
       loadIgnored: '载入时被忽略的字段：',
       loadFileError: '设置文件问题：',
       reload: '刷新',
+      tasksTitle: 'dsh 正在运行的任务',
+      noTasks: '现在没有在跑的任务',
+      watchOff: '任务监听未启动',
+      stateRunning: '运行中',
+      stateNeedsApproval: '等待授权',
+      stateNeedsInput: '等待回答',
+      stateBlocked: '被挡',
+      stateFailed: '失败',
+      stateCompleted: '完成',
+      stateCancelled: '已取消',
+      remindersTitle: '定时提醒（猫替你记）',
+      noReminders: '还没有声明提醒',
+      remEvery: '每',
+      remEveryUnit: '分钟',
+      remOnce: '一次性',
+      remEnabled: '启用',
+      remPaused: '已停用',
+      remAdd: '添加提醒',
+      remTitleField: '标题',
+      remDetailField: '详情（可选）',
+      remMinutesField: '每几分钟（≥5，留空=一次性）',
+      remDelete: '删除',
+      syncReminders: '同步到宠物',
+      syncing: '同步中…',
+      syncStats: '新发 {posted} · 撤销 {removed} · 保留 {kept}',
+      remHint: '由宠物应用计时并弹出；声明保存在设置里，改动保存后自动同步。',
     };
 
     const en = {
@@ -120,6 +146,32 @@ window.__ModuleLoader__.load({
       loadIgnored: 'Fields ignored on load:',
       loadFileError: 'Settings file problem: ',
       reload: 'Reload',
+      tasksTitle: 'dsh tasks running now',
+      noTasks: 'Nothing is running right now',
+      watchOff: 'Task watch is not started',
+      stateRunning: 'running',
+      stateNeedsApproval: 'needs approval',
+      stateNeedsInput: 'needs your answer',
+      stateBlocked: 'blocked',
+      stateFailed: 'failed',
+      stateCompleted: 'completed',
+      stateCancelled: 'cancelled',
+      remindersTitle: 'Standing reminders (the cat remembers)',
+      noReminders: 'No reminders declared yet',
+      remEvery: 'every',
+      remEveryUnit: 'min',
+      remOnce: 'one-shot',
+      remEnabled: 'enabled',
+      remPaused: 'paused',
+      remAdd: 'Add a reminder',
+      remTitleField: 'Title',
+      remDetailField: 'Detail (optional)',
+      remMinutesField: 'Every N minutes (>=5, empty = one-shot)',
+      remDelete: 'Delete',
+      syncReminders: 'Sync to the pet',
+      syncing: 'Syncing…',
+      syncStats: 'posted {posted} · removed {removed} · kept {kept}',
+      remHint: 'The pet app owns the clock and pops them; declarations live in settings and sync on save.',
     };
 
     const DICTS = { zh, en };
@@ -207,14 +259,24 @@ window.__ModuleLoader__.load({
       const [saveMsg, setSaveMsg] = React.useState(null);
       const [testing, setTesting] = React.useState(false);
       const [testMsg, setTestMsg] = React.useState(null);
+      const [tasks, setTasks] = React.useState(null);
+      const [reminderView, setReminderView] = React.useState(null);
+      const [syncing, setSyncing] = React.useState(false);
+      const [newReminder, setNewReminder] = React.useState({ title: '', detail: '', everyMinutes: '' });
 
       const load = React.useCallback(async () => {
         setLoading(true);
         setLoadError('');
         try {
-          const data = await lingxiCall(t, 'status');
+          const [data, taskView, reminderData] = await Promise.all([
+            lingxiCall(t, 'status'),
+            lingxiCall(t, 'tasks').catch(() => null),
+            lingxiCall(t, 'reminders').catch(() => null),
+          ]);
           setStatus(data);
           setDraft(data.settings);
+          setTasks(taskView);
+          setReminderView(reminderData);
         } catch (error) {
           setLoadError(error instanceof Error ? error.message : String(error));
         } finally {
@@ -323,6 +385,72 @@ window.__ModuleLoader__.load({
             h('label', { key: tool, className: 'lx-check', style: { paddingLeft: '230px' } },
               h('input', { type: 'checkbox', checked: draft.tools[tool] === true, onChange: (e) => patchTool(tool, e.target.checked) }),
               t('tool' + tool.charAt(0).toUpperCase() + tool.slice(1))))),
+
+        // ---- requirement 1, visible: what dsh is running right now ----
+        h('div', { className: 'lx-card' },
+          h('div', { className: 'lx-card-title' }, t('tasksTitle')),
+          tasks === null
+            ? h('div', { className: 'lx-note' }, t('watchOff'))
+            : tasks.tasks.length === 0
+              ? h('div', { className: 'lx-note' }, t('noTasks'))
+              : tasks.tasks.map((task) => h('div', { key: task.taskId, className: 'lx-row' },
+                  h('span', { className: 'lx-chip' + (task.state === 'needs_approval' || task.state === 'needs_input' ? ' lx-chip-ok' : '') },
+                    t('state' + task.state.charAt(0).toUpperCase() + task.state.slice(1))),
+                  h('span', {}, task.title),
+                  h('span', { className: 'lx-msg' }, task.source)))),
+        h('div', { className: 'lx-sub' }),
+
+        // ---- requirement 3, visible: declared reminders + the pet's list ----
+        h('div', { className: 'lx-card' },
+          h('div', { className: 'lx-card-title' }, t('remindersTitle')),
+          (draft.reminders ?? []).length === 0
+            ? h('div', { className: 'lx-note' }, t('noReminders'))
+            : (draft.reminders ?? []).map((entry, index) => h('div', { key: entry.id, className: 'lx-row' },
+                h('input', { type: 'checkbox', checked: entry.enabled !== false, onChange: (e) => {
+                  const next = [...draft.reminders];
+                  next[index] = { ...entry, enabled: e.target.checked };
+                  patch({ reminders: next });
+                } }),
+                h('span', {}, entry.title + (entry.detail ? ' — ' + entry.detail : '')),
+                h('span', { className: 'lx-chip' },
+                  entry.everyMinutes ? t('remEvery') + ' ' + entry.everyMinutes + ' ' + t('remEveryUnit') : t('remOnce')),
+                h('button', { className: 'lx-btn', onClick: () => patch({ reminders: draft.reminders.filter((_, i) => i !== index) }) },
+                  t('remDelete')))),
+          h('div', { className: 'lx-row', style: { marginTop: '8px' } },
+            h('input', { className: 'lx-input', placeholder: t('remTitleField'), value: newReminder.title, onChange: (e) => setNewReminder((p) => ({ ...p, title: e.target.value })) }),
+            h('input', { className: 'lx-input', placeholder: t('remDetailField'), value: newReminder.detail, onChange: (e) => setNewReminder((p) => ({ ...p, detail: e.target.value })) }),
+            h('input', { className: 'lx-input', type: 'number', min: 5, placeholder: t('remMinutesField'), value: newReminder.everyMinutes, onChange: (e) => setNewReminder((p) => ({ ...p, everyMinutes: e.target.value })) }),
+            h('button', {
+              className: 'lx-btn',
+              disabled: !newReminder.title.trim(),
+              onClick: () => {
+                const id = 'rem-' + Date.now().toString(36);
+                const every = Number(newReminder.everyMinutes);
+                const entry = { id, title: newReminder.title.trim(), detail: newReminder.detail.trim(), enabled: true };
+                if (Number.isFinite(every) && every > 0) entry.everyMinutes = every;
+                patch({ reminders: [...(draft.reminders ?? []), entry] });
+                setNewReminder({ title: '', detail: '', everyMinutes: '' });
+              },
+            }, t('remAdd'))),
+          h('div', { className: 'lx-actions' },
+            h('button', { className: 'lx-btn', onClick: async () => {
+              setSyncing(true);
+              try {
+                const result = await lingxiCall(t, 'syncReminders');
+                const fresh = await lingxiCall(t, 'reminders');
+                setReminderView(fresh);
+                setSaveMsg({ kind: 'ok', text: t('syncStats').replace('{posted}', String(result.posted)).replace('{removed}', String(result.removed)).replace('{kept}', String(result.kept)) });
+              } catch (error) {
+                setSaveMsg({ kind: 'error', text: error instanceof Error ? error.message : String(error) });
+              } finally {
+                setSyncing(false);
+              }
+            }, disabled: syncing }, syncing ? t('syncing') : t('syncReminders')),
+            reminderView !== null && reminderView.lastSync && reminderView.lastSync.at
+              ? h('span', { className: 'lx-msg' },
+                  t('syncStats').replace('{posted}', String(reminderView.lastSync.posted ?? 0)).replace('{removed}', String(reminderView.lastSync.removed ?? 0)).replace('{kept}', String(reminderView.lastSync.kept ?? 0)))
+              : null),
+          h('div', { className: 'lx-note' }, t('remHint'))),
 
         // ---- actions ----
         h('div', { className: 'lx-actions' },

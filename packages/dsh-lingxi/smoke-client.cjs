@@ -70,7 +70,7 @@ const connection = {
         return {
           ok: true,
           value: {
-            settings: { port: 47811, agentId: 'dsh', agentName: 'DSH Agent', agentBadge: 'DS', autoAnnounce: true, tools: { task: true, say: true, react: true, state: true, remember: true } },
+            settings: { port: 47811, agentId: 'dsh', agentName: 'DSH Agent', agentBadge: 'DS', autoAnnounce: true, tools: { task: true, say: true, react: true, state: true, remember: true }, notify: { needs_approval: 'alert', needs_input: 'alert', blocked: 'report', failed: 'report' }, reminders: [{ id: 'deploy', title: '检查部署', detail: 'staging', everyMinutes: 30, enabled: true }] },
             loadInfo: { ignored: ['stray'], error: null, existed: true },
             bridge: { running: true, port: 47811, baseUrl: 'http://127.0.0.1:47811', detail: 'lingxi help' },
             agents: [{ id: 'dsh', name: 'DSH Agent', badge: 'DS', color: '#4D6BFE' }],
@@ -78,6 +78,13 @@ const connection = {
           },
         }
       }
+      if (endpoint === 'lingxi/tasks') {
+        return { ok: true, value: { tasks: [{ taskId: 's1', title: '跑测试', kind: 'test', state: 'running', source: 'agent', since: 1 }], watching: true } }
+      }
+      if (endpoint === 'lingxi/reminders') {
+        return { ok: true, value: { declared: [{ id: 'deploy', title: '检查部署', detail: 'staging', everyMinutes: 30, enabled: true, text: '[灵犀] 检查部署 — staging' }], appEntries: [], lastSync: { posted: 1, removed: 0, kept: 0, at: 1 }, available: true } }
+      }
+      if (endpoint === 'lingxi/syncReminders') return { ok: true, value: { posted: 1, removed: 0, kept: 0, available: true } }
       if (endpoint === 'lingxi/setSettings') return { ok: true, value: { settings: payload.args.request, ignored: [] } }
       if (endpoint === 'lingxi/testSay') return { ok: true, value: { ok: true } }
       return { ok: false, error: { message: 'unknown ' + endpoint } }
@@ -138,6 +145,10 @@ const loaded = toText(invoke(element))
 assert(loaded.includes('桥接在线'), 'status hero shows the bridge answer')
 assert(loaded.includes('lingxi_task'), 'settings item lists the tools')
 assert(loaded.includes('保存'), 'the save control exists')
+assert(loaded.includes('dsh 正在运行的任务'), 'tasks section renders')
+assert(loaded.includes('跑测试'), 'a running task renders with its state')
+assert(loaded.includes('定时提醒'), 'reminders section renders')
+assert(loaded.includes('检查部署'), 'a declared reminder renders with its cadence')
 assert(loaded.includes('已注册的 agent') || loaded.includes('DSH Agent'), 'identity section renders from /agents data')
 assert(rpcCalls.some((e) => e.endpoint === 'lingxi/status' && e.channel === '/api'), 'status rides the /api channel')
 

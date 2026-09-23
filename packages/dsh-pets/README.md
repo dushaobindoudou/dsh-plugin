@@ -18,6 +18,13 @@ package holds the three things a SECOND pet would also need, and only those:
 - **`lib/bridge.js`** - `PetBridge`, the HTTP client: token-file auth, hard
   3s timeouts, and unreachable-is-a-value semantics - a pet app that is not
   running is a normal Tuesday, never a thrown error in the agent's way.
+- **`lib/policy.js`** - the attention policy: which task states are worth
+  interrupting the user for (needs_approval → alert, blocked/failed →
+  report by default), user-editable, mapped onto the pet app's stage
+  priorities so a level IS a loudness.
+- **`lib/reminders.js`** - the reminder contract: declared reminders → the
+  pet app's wire shape, marker-keyed so a host can diff-sync its entries,
+  and idempotent under double-cleaning.
 - **`lib/settings.js`** - the shared `~/.lingxi/pets-settings.json` store with
   a closed schema: hostile fields fall back per-field and are reported back,
   so the settings page can say what it ignored instead of eating a user edit.

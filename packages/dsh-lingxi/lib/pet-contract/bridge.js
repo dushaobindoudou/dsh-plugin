@@ -12,6 +12,7 @@ import { readFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { cleanTaskEvent } from './vocab.js'
+import { cleanReminder } from './reminders.js'
 
 /** The lingxi app's default bridge port. */
 export const DEFAULT_BRIDGE_PORT = 47811
@@ -139,8 +140,27 @@ export class PetBridge {
     return this.request('POST', '/memory', entry)
   }
 
-  /** POST /reminders — one timed nudge ({text, inMinutes, mood?}). */
+  /**
+   * POST /reminders — one timed nudge. Accepts the declarative shape
+   * ({title, detail?, everyMinutes?, inMinutes?}) and validates it through
+   * the reminder boundary first; junk entries are refused WITHOUT touching
+   * the wire (the pet app would silently truncate what it half-understands).
+   */
   async remind(entry) {
-    return this.request('POST', '/reminders', entry)
+    const clean = cleanReminder(entry)
+    if (clean === null) return { ok: false, error: 'reminder has nothing the pet can act on' }
+    return this.request('POST', '/reminders', clean)
+  }
+
+  /** GET /reminders — the pet's live reminder list (managed entries carry the marker text). */
+  async reminders() {
+    return this.request('GET', '/reminders')
+  }
+
+  /** DELETE /reminders/:id — cancel one. 404 is a normal answer, not an error. */
+  async removeReminder(id) {
+    const clean = typeof id === 'string' && id ? id : null
+    if (!clean) return { ok: false, error: 'reminder id required' }
+    return this.request('DELETE', `/reminders/${encodeURIComponent(clean)}`)
   }
 }
