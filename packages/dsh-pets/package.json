@@ -1,0 +1,42 @@
+{
+  "name": "dsh-pets",
+  "version": "0.1.0",
+  "description": "Pet contract & bridge client for the DeepSeek Harness (dsh) - the shared layer every desktop-pet plugin builds on: the task vocabulary (8 states, 9 moods), the localhost bridge client (token-authenticated, timeout-bounded, unreachable-is-a-value), and the shared pet settings store.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./vocab": "./lib/vocab.js",
+    "./bridge": "./lib/bridge.js",
+    "./settings": "./lib/settings.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/**/*.js",
+    "README.md"
+  ],
+  "scripts": {
+    "smoke": "node smoke.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "pets",
+    "desktop-pet",
+    "companion",
+    "lingxi"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-pets"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-pets#readme"
+}

@@ -1,21 +1,48 @@
 {
   "name": "dsh-lingxi",
-  "version": "0.0.1",
-  "description": "Lingxi (灵犀) - the companion that gets you - name reserved; first release in development.",
+  "version": "0.1.0",
+  "description": "Lingxi (灵犀) for the DeepSeek Harness (dsh) - the desktop cat that reacts to how the work FEELS: five model tools (task/say/react/state/remember) over the pet bridge, a settings page with live bridge status, and an agent identity of its own.",
   "license": "MIT",
   "author": "dushaobindoudou",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./tools": "./lib/tools.js",
+    "./remote": "./lib/remote.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/**/*.js",
+    "README.md"
+  ],
+  "scripts": {
+    "smoke": "node smoke.mjs",
+    "smoke:client": "node smoke-client.cjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "keywords": [
     "dsh",
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
     "lingxi",
-    "companion"
+    "companion",
+    "desktop-pet"
   ],
+  "peerDependencies": {
+    "@deepseek-ai/dsh-typert-protocol": ">=0.1.0-rc.6 <0.2.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
     "directory": "packages/dsh-lingxi"
   },
-  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-lingxi#readme"
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-lingxi#readme",
+  "devDependencies": {
+    "@deepseek-ai/dsh-typert-protocol": "0.1.0-rc.6"
+  }
 }

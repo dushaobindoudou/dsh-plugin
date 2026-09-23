@@ -16,6 +16,8 @@ for names, niches, and descriptions is [`scripts/catalog.mjs`](scripts/catalog.m
 | [`dsh-selfrepair`](packages/dsh-selfrepair) | 0.2.0 | Diagnose and repair a dsh installation - settings page panel, `/doctor` slash command, and a standalone CLI that works even when dsh cannot start. |
 | [`dsh-workflow`](packages/dsh-workflow) | 0.1.0 | Workflow Studio - browse workflow sessions per project, manage definitions, launch workflow-mode sessions, visualize runs. |
 | [`dsh-bot`](packages/dsh-bot) | 0.1.0 | Bot framework - run headless dsh agents on cron schedules and webhooks, with retries, run logs, and CI-friendly exit codes. |
+| [`dsh-pets`](packages/dsh-pets) | 0.1.0 | Pet contract & bridge client - the shared layer for desktop-pet plugins: task vocabulary, localhost bridge client, shared settings store. |
+| [`dsh-lingxi`](packages/dsh-lingxi) | 0.1.0 | Lingxi (灵犀) - the desktop cat: five model tools (task/say/react/state/remember) over the pet bridge plus a settings page with live bridge status. |
 
 ## Reserved names by niche
 
@@ -700,7 +702,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-me`](packages/dsh-me) | The me seat for dsh agents |
 | [`dsh-brain`](packages/dsh-brain) | The second brain for dsh agents |
 
-### Companion (87)
+### Companion (86)
 
 | Name | Planned first release |
 | --- | --- |
@@ -754,7 +756,6 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-radar`](packages/dsh-radar) | Radar - the approval radar for dsh |
 | [`dsh-beacon`](packages/dsh-beacon) | Beacon - the signal lane for dsh |
 | [`dsh-halo`](packages/dsh-halo) | Halo - the companion aura |
-| [`dsh-lingxi`](packages/dsh-lingxi) | Lingxi (灵犀) - the companion that gets you |
 | [`dsh-zhiyin`](packages/dsh-zhiyin) | Zhiyin (知音) - the friend who understands your music |
 | [`dsh-shutong`](packages/dsh-shutong) | Shutong (书童) - the study companion |
 | [`dsh-linu`](packages/dsh-linu) | Linu (狸奴) - the scholar cat |

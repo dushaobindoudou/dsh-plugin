@@ -3396,12 +3396,6 @@ export const CORE = {
     body: 'The ring around the pet that says everything at a glance - color for mood, pulse for activity, flare when you are needed; no window, no text.',
     extra: ['halo', 'aura'],
   },
-  'dsh-lingxi': {
-    niche: 'companion',
-    headline: 'Lingxi (灵犀) - the companion that gets you',
-    body: 'From the Tang line 心有灵犀一点通 - hearts linked without a word. The mascot doctrine in two characters: it understands you from working beside you, not from watching you. The Chinese face of dsh-mascot.',
-    extra: ['lingxi', 'companion'],
-  },
   'dsh-zhiyin': {
     niche: 'companion',
     headline: 'Zhiyin (知音) - the friend who understands your music',
@@ -7320,6 +7314,6 @@ export const CORE = {
 export const CATALOG = { ...EXTERNAL, ...CORE }
 
 // Packages with real shipped code - excluded from placeholder generation.
-export const REAL_PACKAGES = ['dsh-recovery', 'dsh-selfrepair', 'dsh-workflow', 'dsh-bot']
+export const REAL_PACKAGES = ['dsh-recovery', 'dsh-selfrepair', 'dsh-workflow', 'dsh-bot', 'dsh-pets', 'dsh-lingxi']
 
 export const PLACEHOLDER_VERSION = '0.0.1'
