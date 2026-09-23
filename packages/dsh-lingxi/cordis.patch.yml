@@ -1,0 +1,15 @@
+# The dsh-lingxi bundle patch.
+#
+# This package is a dsh *plugin bundle*: the profile composer reads this file
+# through the `dsh.bundle.patch` manifest field in package.json and applies it
+# as a layer over the profile it is installed into.
+#
+# The layer does exactly one thing - mount the plugin row - so the composer
+# owns everything else (persona, HMR, services) and the cat composes with any
+# web profile. The host half registers the five tools, the task watch, and the
+# lingxi Remote namespace; the client half contributes the 灵犀 settings
+# section.
+
+- insert:
+    - id: plugin-lingxi
+      name: dsh-lingxi
