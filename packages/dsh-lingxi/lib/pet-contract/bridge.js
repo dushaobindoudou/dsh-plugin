@@ -38,12 +38,18 @@ export class PetBridge {
   /**
    * @param {object} [options]
    * @param {number} [options.port]
+   * @param {string} [options.agentId] - sent as `X-Lingxi-Agent` on every
+   *   call. The app attributes calls — and gates PERSISTENT writes (memory,
+   *   reminders, settings fields) on the caller's permission tier — by this
+   *   header, not by the Authorization token: a missing header makes every
+   *   write land as "anonymous", which the default `performer` tier refuses.
    * @param {string} [options.tokenPath] - overrides the default token file.
    * @param {string} [options.token] - explicit token (tests); skips the file.
    * @param {typeof fetch} [options.fetchImpl] - injectable for tests.
    */
   constructor(options = {}) {
     this.port = Number.isInteger(options.port) ? options.port : DEFAULT_BRIDGE_PORT
+    this.agentId = typeof options.agentId === 'string' && options.agentId.trim() ? options.agentId.trim() : null
     this.tokenPath = typeof options.tokenPath === 'string' && options.tokenPath ? options.tokenPath : DEFAULT_TOKEN_PATH
     this.token = typeof options.token === 'string' ? options.token : null
     this.fetchImpl = options.fetchImpl || fetch
@@ -74,6 +80,7 @@ export class PetBridge {
     const headers = { 'Content-Type': 'application/json' }
     const token = this.readToken()
     if (token) headers.Authorization = `Bearer ${token}`
+    if (this.agentId) headers['X-Lingxi-Agent'] = this.agentId
     let response
     try {
       response = await this.fetchImpl(this.baseUrl + path, {

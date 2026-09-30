@@ -7,8 +7,12 @@
   "type": "module",
   "main": "lib/index.js",
   "dsh": {
-    "bundle": { "patch": "./cordis.patch.yml" },
-    "client": { "platform": "web" }
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
+    }
   },
   "exports": {
     ".": "./lib/index.js",
@@ -24,7 +28,8 @@
   ],
   "scripts": {
     "smoke": "node smoke.mjs",
-    "smoke:client": "node smoke-client.cjs"
+    "smoke:client": "node smoke-client.cjs",
+    "test": "node --test test/"
   },
   "engines": {
     "node": ">=20"

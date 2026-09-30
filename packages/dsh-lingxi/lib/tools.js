@@ -27,9 +27,12 @@ const OUTPUT_SCHEMA = { type: 'object', additionalProperties: true }
  * @param {object} options.settings - validated pet settings (agentId, tools…).
  * @param {() => object} [options.getSettings] - re-read at call time so a
  *   settings change is honored without rebuilding the definitions.
+ * @param {object} options.notifier - the attention notifier; lingxi_task
+ *   reports route through it so the model's summary becomes the voice of the
+ *   task and dedups against the task watch's session tracking.
  * @returns {object[]} ToolDefinition[]
  */
-export function buildLingxiTools({ bridge, settings, getSettings }) {
+export function buildLingxiTools({ bridge, settings, getSettings, notifier }) {
   const enabled = () => (getSettings ? getSettings().tools : settings.tools)
   const identity = () => (getSettings ? getSettings() : settings)
   const agent = () => identity().agentId
@@ -40,26 +43,54 @@ export function buildLingxiTools({ bridge, settings, getSettings }) {
     tools.push({
       name: 'lingxi_task',
       description:
-        '把你正在为用户做的任务报给桌宠猫灵犀。state 是流程（开始 running、等授权 needs_approval、' +
-        '被挡 blocked、完成 completed、失败 failed、用户取消 cancelled）；mood 是只有你判断得了的' +
-        '事情心情（写家书是 tender，和 flaky test 搏斗是 frustrated），猫回应的是心情而不是镜像状态。' +
-        '开始和结束各报一次即可，不要刷屏；没有心情可报时不报也是正确的。',
+        '把你正在为用户做的任务报给桌宠猫灵犀——开始（running）和结束（completed/failed）各报一次，' +
+        '长任务过半时补一次 progress。猫会把这两个瞬间念给用户听：开始一条、完成一条，所以 summary ' +
+        '必须是这句话的信息量所在——用真实的「做了什么」（如「修复 typert 副本分裂导致的 404」），' +
+        '不要用会话标题或「完成任务」这类空话，否则用户听到完成也不知道完成了什么。' +
+        '后台子代理（subagent）结束时插件会自动带它的最后一句话提示；但只有你知道它的结果对全局意味着' +
+        '什么——如果这个结果值得用户知道，就用本工具补一条终态报告，把子代理的结论放进 summary 的上下文里' +
+        '（如「素材清单已达标，ear_fur 方向性还差一点」）。state 是流程' +
+        '（running/needs_approval/blocked/needs_input/completed/failed/cancelled）；mood 是只有你' +
+        '判断得了的事情心情（写家书是 tender，和 flaky test 搏斗是 frustrated），猫回应的是心情' +
+        '而不是镜像状态。没有心情可报时不报 mood 也是正确的。',
       parameters: {
         type: 'object',
         properties: {
           state: { type: 'string', enum: TASK_STATES, description: '任务流程状态' },
           kind: { type: 'string', enum: TASK_KINDS, description: '任务种类，默认 other' },
           mood: { type: 'string', enum: TASK_MOODS, description: '这件事的心情——最有价值的字段' },
-          summary: { type: 'string', description: '一句话概述（不超过 140 字）' },
-          taskId: { type: 'string', description: '稳定的任务标识，同一任务用同一个' },
-          progress: { type: 'number', description: '0..1，用于长任务的过半提醒' },
+          summary: {
+            type: 'string',
+            description: '这条任务的一句话真实概述——说清做了什么，开始/完成气泡直接引用它',
+          },
+          taskId: {
+            type: 'string',
+            description: '一般不用传：默认跟随当前会话，与任务观察器共享同一条任务。仅在并行做多个独立任务时用稳定 id 区分',
+          },
+          progress: { type: 'number', description: '0..1，长任务过半时猫会再提醒一次' },
         },
         required: ['state'],
       },
       output: { schema: OUTPUT_SCHEMA, render: renderJson },
       timeoutMs: 8000,
-      async execute(args) {
-        return bridge.taskEvent({ ...args }, agent())
+      async execute(args, exec) {
+        // Route through the notifier, not raw at the bridge: the notifier is
+        // the single mouthpiece, so the model's report dedups against the
+        // task watch's session tracking (same taskId — the session id by
+        // default) and its summary/kind/mood become the voice of every later
+        // transition for this task.
+        const taskId = typeof args.taskId === 'string' && args.taskId.trim()
+          ? args.taskId.trim().slice(0, 128)
+          : String(exec?.agent?.id ?? 'dsh-task').slice(0, 128)
+        notifier.handle({
+          taskId,
+          state: args.state,
+          kind: args.kind,
+          mood: args.mood,
+          summary: args.summary,
+          source: 'tool',
+        })
+        return { ok: true, taskId, state: args.state }
       },
     })
   }

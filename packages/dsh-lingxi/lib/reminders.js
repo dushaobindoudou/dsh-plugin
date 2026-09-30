@@ -34,7 +34,14 @@ export class ReminderSync {
    * do right now", and the next pass (settings save or the re-assert timer)
    * catches up.
    *
-   * @returns {Promise<{posted: number, removed: number, kept: number, available: boolean}>}
+   * Since the app's permission model (2026-09), POST /reminders is a
+   * persistent write gated on the caller's tier: an agent that is not
+   * `trusted` gets 403 with a reason naming the tier and where to change it.
+   * That reason is surfaced (`blocked`) instead of being folded into a
+   * generic failure — "why did my reminders stop appearing" should be
+   * answerable from the settings page.
+   *
+   * @returns {Promise<{posted: number, removed: number, kept: number, available: boolean, blocked: string|null}>}
    */
   async sync() {
     const declarations = this.getSettings().reminders ?? []
@@ -48,7 +55,7 @@ export class ReminderSync {
 
     const list = await this.bridge.reminders()
     if (!list.ok || !Array.isArray(list.data)) {
-      return { posted: 0, removed: 0, kept: 0, available: false }
+      return { posted: 0, removed: 0, kept: 0, available: false, blocked: null }
     }
 
     // The app's live entries that belong to a host sync (marker-prefixed).
@@ -56,6 +63,19 @@ export class ReminderSync {
     let posted = 0
     let removed = 0
     let kept = 0
+    let blocked = null
+
+    // The app refuses a persistent write with 403 { ok:false, rejected:[原因] }
+    // when the caller's tier is below trusted. First reason wins; the page
+    // shows one hint, not a pile.
+    const refusalOf = (result) => {
+      if (result !== undefined && result !== null && result.ok !== true && Array.isArray(result.data?.rejected)) {
+        const reason = result.data.rejected.find((r) => typeof r === 'string' && r.trim())
+        if (reason !== undefined && blocked === null) blocked = reason.trim()
+        return true
+      }
+      return false
+    }
 
     for (const entry of mine) {
       const wanted = expected.get(entry.text)
@@ -69,7 +89,7 @@ export class ReminderSync {
       if (appRepeat !== Number(wanted.repeatEveryMinutes ?? 0)) {
         // Changed cadence: the app has no update, so replace in place.
         await this.bridge.removeReminder(String(entry.id ?? ''))
-        await this.bridge.remind(wanted)
+        refusalOf(await this.bridge.remind(wanted))
         removed += 1
         posted += 1
       } else {
@@ -80,9 +100,10 @@ export class ReminderSync {
 
     for (const wanted of expected.values()) {
       const result = await this.bridge.remind(wanted)
+      if (refusalOf(result)) continue
       if (result.ok) posted += 1
     }
-    return { posted, removed, kept, available: true }
+    return { posted, removed, kept, available: true, blocked }
   }
 
   /** The reminder lines as the settings page should show them. */

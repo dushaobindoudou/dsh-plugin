@@ -29,12 +29,17 @@ export const DEFAULT_PET_SETTINGS = {
   },
   // Which task states are worth interrupting the user for, and how loudly
   // (silent/status/report/alert — the pet app's stage priorities). Merge of
-  // DEFAULT_ATTENTION_POLICY + the user's edits.
+  // DEFAULT_ATTENTION_POLICY + the user's edits. `running` nudges at status
+  // level on purpose: a task that starts unseen is a task whose completion
+  // later surprises — the start line ("开始 · …") is cheap, and the
+  // notifier's per-(task, state) dedup keeps it to one bubble per transition,
+  // not per event.
   notify: {
     needs_approval: 'alert',
     needs_input: 'alert',
     blocked: 'report',
     failed: 'report',
+    running: 'status',
   },
   // Declared standing reminders: "every N minutes, have the cat bring X up".
   // Managed by the host adapter (it diff-syncs them into the pet app); the
