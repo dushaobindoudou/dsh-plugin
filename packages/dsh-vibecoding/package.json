@@ -1,0 +1,21 @@
+{
+  "name": "dsh-vibecoding",
+  "version": "0.0.1",
+  "description": "Vibecoding - the style that became a method - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "vibecoding",
+    "flow"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-vibecoding"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-vibecoding#readme"
+}

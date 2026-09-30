@@ -51,6 +51,7 @@ export const NICHE_ORDER = [
   'biotech',
   'film & post',
   'sports data',
+  'energy',
   'external waves',
 ]
 
@@ -7310,6 +7311,147 @@ export const CORE = {
     headline: 'Scouting - the eye and the model',
     body: 'Grades, reports, comps - the talent lane; the draft is the market where they meet.',
     extra: ['scouting', 'talent'],
+  },
+
+  'dsh-kev': {
+    niche: 'agent capabilities',
+    headline: 'Kev - the jev-like decision family',
+    body: 'Trainable System One models on qwen - typed choices at a fraction of frontier cost; the repo that proved jev was a category, not a product.',
+    extra: ['kev', 'decisions'],
+  },
+  'dsh-systemone': {
+    niche: 'agent capabilities',
+    headline: 'Systemone - the fast path',
+    body: 'Kahneman for machines - reflex decisions that never need a paragraph of reasoning; typed yes-no-choice in one pass.',
+    extra: ['systemone', 'decisions'],
+  },
+  'dsh-alwayson': {
+    niche: 'agent capabilities',
+    headline: 'Alwayson - agents that never clock out',
+    body: 'The posture of the always-on agent - watching, waiting, pinging; kin to dsh-dots, the product that named the posture.',
+    extra: ['alwayson', 'posture'],
+  },
+  'dsh-webagent': {
+    niche: 'agent capabilities',
+    headline: 'Webagent - the browser as an API',
+    body: 'Click, read, fill, submit - the web-automation lane; fastest and cheapest is the whole scoreboard.',
+    extra: ['webagent', 'browser'],
+  },
+  'dsh-compaction': {
+    niche: 'long-horizon',
+    headline: 'Compaction - the memory squeeze',
+    body: 'Long sessions compress their own history - the context-folding lane; summaries that lie are how agents forget.',
+    extra: ['compaction', 'context'],
+  },
+  'dsh-mlx': {
+    niche: 'developer tools',
+    headline: 'Mlx - the apple silicon runtime',
+    body: 'Array math on unified memory - the on-device lane; decisions in milliseconds without a datacenter.',
+    extra: ['mlx', 'runtime'],
+  },
+  'dsh-vibecoding': {
+    niche: 'developer tools',
+    headline: 'Vibecoding - the style that became a method',
+    body: 'Prompt, run, feel, iterate - the flow-first lane; design tools now sketch straight into prompts.',
+    extra: ['vibecoding', 'flow'],
+  },
+  'dsh-astra': {
+    niche: 'model bridges',
+    headline: 'Astra - the tier every lab prices against',
+    body: 'The frontier tier that cheap models compare to - near-Astra intelligence for a fifth of the price is the whole market pitch.',
+    extra: ['astra', 'frontier'],
+  },
+  'dsh-coworker': {
+    niche: 'multi-agent',
+    headline: 'Coworker - the AI with a desk',
+    body: 'Not a tool, a colleague - each one gets a browser, files and a computer; onboarding applies.',
+    extra: ['coworker', 'teammate'],
+  },
+  'dsh-agui': {
+    niche: 'protocols',
+    headline: 'Agui - the agent user interaction protocol',
+    body: 'AG-UI - events from agent to interface; generative UI needs a contract, this is the contract.',
+    extra: ['agui', 'protocol'],
+  },
+  'dsh-governance': {
+    niche: 'security',
+    headline: 'Governance - who let the agent do that',
+    body: 'Policy, approval, audit for autonomous action - the control lane; every action decided before it happens, recorded after.',
+    extra: ['governance', 'policy'],
+  },
+  'dsh-modeldrift': {
+    niche: 'evaluation',
+    headline: 'Modeldrift - the nerf question',
+    body: 'Has the model gotten worse? Trackers exist because nobody tells you - the quality-watch lane; kin to dsh-evals.',
+    extra: ['modeldrift', 'quality'],
+  },
+  'dsh-evals': {
+    niche: 'evaluation',
+    headline: 'Evals - the scoreboard of intelligence',
+    body: 'Benchmarks, graders, regression suites for models - the measurement lane; trust is a test suite.',
+    extra: ['evals', 'measurement'],
+  },
+  'dsh-praxis': {
+    niche: 'research & quant',
+    headline: 'Praxis - research that executes',
+    body: 'Theory into action - the autonomous-research lane; measurable, computer-executable findings or it did not happen.',
+    extra: ['praxis', 'research'],
+  },
+  'dsh-dlss': {
+    niche: 'entertainment',
+    headline: 'Dlss - frames from thin air',
+    body: 'AI upscaling and frame generation - the rendering lane; every GPU generation is now an AI story.',
+    extra: ['dlss', 'rendering'],
+  },
+  'dsh-compositor': {
+    niche: 'film & post',
+    headline: 'Compositor - the tool behind the stack',
+    body: 'The artist seat of compositing - kin to dsh-compositing; node graphs, keys, the final image.',
+    extra: ['compositor', 'tool'],
+  },
+
+  // ---- energy ----------------------------------------------------------
+  'dsh-vpp': {
+    niche: 'energy',
+    headline: 'Vpp - the power plant made of houses',
+    body: 'Virtual power plants - thousands of batteries acting as one; the grid flexes, the owners get paid.',
+    extra: ['vpp', 'virtual'],
+  },
+  'dsh-microgrid': {
+    niche: 'energy',
+    headline: 'Microgrid - the grid that can island',
+    body: 'Solar, storage, load, one controller - the resilience lane; when the big grid fails, the small one shrugs.',
+    extra: ['microgrid', 'resilience'],
+  },
+  'dsh-inverter': {
+    niche: 'energy',
+    headline: 'Inverter - the brain of solar',
+    body: 'DC to AC, every panel, every battery - the power-electronics lane; the software inside the silicon.',
+    extra: ['inverter', 'solar'],
+  },
+  'dsh-curtailment': {
+    niche: 'energy',
+    headline: 'Curtailment - the power we throw away',
+    body: 'Solar midday, wind at night - the oversupply lane; negative prices and spilled electrons.',
+    extra: ['curtailment', 'oversupply'],
+  },
+  'dsh-demandresponse': {
+    niche: 'energy',
+    headline: 'Demandresponse - load that listens',
+    body: 'Pay me to turn it off - the flexibility lane; the cheapest power plant is the one not running.',
+    extra: ['demandresponse', 'flexibility'],
+  },
+  'dsh-grid': {
+    niche: 'energy',
+    headline: 'Grid - the machine that is the power system',
+    body: 'Generation to outlet, balanced every second - the infrastructure lane; batteries and agents are its new edges.',
+    extra: ['grid', 'power'],
+  },
+  'dsh-battery': {
+    niche: 'energy',
+    headline: 'Battery - the molecule that stores time',
+    body: 'Lithium, cycles, degradation - the storage lane; home batteries became power plants this year.',
+    extra: ['battery', 'storage'],
   },
 }
 

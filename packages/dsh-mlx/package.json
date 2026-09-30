@@ -1,0 +1,21 @@
+{
+  "name": "dsh-mlx",
+  "version": "0.0.1",
+  "description": "Mlx - the apple silicon runtime - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "mlx",
+    "runtime"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-mlx"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-mlx#readme"
+}

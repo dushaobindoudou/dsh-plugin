@@ -25,7 +25,7 @@ Names publish as 0.0.1 placeholders; each row's README states the planned first
 release. A name graduates out of this table the moment real code lands.
 
 <!-- placeholder-table:start -->
-### Model bridges (41)
+### Model bridges (42)
 
 | Name | Planned first release |
 | --- | --- |
@@ -70,8 +70,9 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-proxy`](packages/dsh-proxy) | LLM gateway plugin for the DeepSeek Harness |
 | [`dsh-models`](packages/dsh-models) | Model registry panel for the DeepSeek Harness |
 | [`dsh-providers`](packages/dsh-providers) | Provider registry for the DeepSeek Harness |
+| [`dsh-astra`](packages/dsh-astra) | Astra - the tier every lab prices against |
 
-### Developer tools (27)
+### Developer tools (29)
 
 | Name | Planned first release |
 | --- | --- |
@@ -102,8 +103,10 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-csdn`](packages/dsh-csdn) | CSDN bridge for dsh agents |
 | [`dsh-gitee`](packages/dsh-gitee) | Gitee (码云) bridge for dsh agents |
 | [`dsh-stackoverflow`](packages/dsh-stackoverflow) | Stack Overflow bridge for dsh agents |
+| [`dsh-mlx`](packages/dsh-mlx) | Mlx - the apple silicon runtime |
+| [`dsh-vibecoding`](packages/dsh-vibecoding) | Vibecoding - the style that became a method |
 
-### Agent capabilities (10)
+### Agent capabilities (14)
 
 | Name | Planned first release |
 | --- | --- |
@@ -117,6 +120,10 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-agent`](packages/dsh-agent) | Agent pattern library for dsh |
 | [`dsh-workflows`](packages/dsh-workflows) | The plural form of Workflow Studio |
 | [`dsh-tasks`](packages/dsh-tasks) | Durable task tracking for dsh sessions |
+| [`dsh-kev`](packages/dsh-kev) | Kev - the jev-like decision family |
+| [`dsh-systemone`](packages/dsh-systemone) | Systemone - the fast path |
+| [`dsh-alwayson`](packages/dsh-alwayson) | Alwayson - agents that never clock out |
+| [`dsh-webagent`](packages/dsh-webagent) | Webagent - the browser as an API |
 
 ### Self-iteration (17)
 
@@ -157,7 +164,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-execution`](packages/dsh-execution) | Execution engine for dsh agents |
 | [`dsh-copilot`](packages/dsh-copilot) | Copilot mode for dsh agents |
 
-### Long-horizon (16)
+### Long-horizon (17)
 
 | Name | Planned first release |
 | --- | --- |
@@ -177,6 +184,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-session`](packages/dsh-session) | The unified agent-session layer |
 | [`dsh-tape`](packages/dsh-tape) | Session tape for dsh |
 | [`dsh-sessions`](packages/dsh-sessions) | Session manager and browser |
+| [`dsh-compaction`](packages/dsh-compaction) | Compaction - the memory squeeze |
 
 ### Channels (54)
 
@@ -547,7 +555,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-applepay`](packages/dsh-applepay) | Apple Pay-facing bridge for dsh agents |
 | [`dsh-googlepay`](packages/dsh-googlepay) | Google Pay-facing bridge for dsh agents |
 
-### Entertainment (128)
+### Entertainment (129)
 
 | Name | Planned first release |
 | --- | --- |
@@ -679,6 +687,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-qidian`](packages/dsh-qidian) | Qidian (起点) lane for dsh agents |
 | [`dsh-manhua`](packages/dsh-manhua) | Manhua (漫画) lane for dsh agents |
 | [`dsh-wangwen`](packages/dsh-wangwen) | Wangwen (网文) toolkit for dsh agents |
+| [`dsh-dlss`](packages/dsh-dlss) | Dlss - frames from thin air |
 
 ### Personalization (18)
 
@@ -935,7 +944,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-jiaoyu`](packages/dsh-jiaoyu) | Jiaoyu (教育) lane for dsh agents |
 | [`dsh-kaoshi`](packages/dsh-kaoshi) | Kaoshi (考试) lane for dsh agents |
 
-### Research & quant (19)
+### Research & quant (20)
 
 | Name | Planned first release |
 | --- | --- |
@@ -958,6 +967,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-backtest`](packages/dsh-backtest) | Backtest harness for dsh agents |
 | [`dsh-kline`](packages/dsh-kline) | Kline (K线) lane for dsh agents |
 | [`dsh-factor`](packages/dsh-factor) | Factor lane for dsh agents |
+| [`dsh-praxis`](packages/dsh-praxis) | Praxis - research that executes |
 
 ### Embodied (29)
 
@@ -993,7 +1003,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-doip`](packages/dsh-doip) | Doip - diagnostics over IP |
 | [`dsh-flexray`](packages/dsh-flexray) | Flexray - deterministic by design |
 
-### Multi-agent (6)
+### Multi-agent (7)
 
 | Name | Planned first release |
 | --- | --- |
@@ -1003,6 +1013,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-delegate`](packages/dsh-delegate) | Delegation tool for dsh agents |
 | [`dsh-queue`](packages/dsh-queue) | Durable task queues for dsh bots |
 | [`dsh-council`](packages/dsh-council) | Council-of-agents deliberation for dsh |
+| [`dsh-coworker`](packages/dsh-coworker) | Coworker - the AI with a desk |
 
 ### Role presets (21)
 
@@ -1056,19 +1067,22 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-tour`](packages/dsh-tour) | Interactive product tours |
 | [`dsh-mirror`](packages/dsh-mirror) | Mirror a session to a second surface |
 
-### Evaluation (3)
+### Evaluation (5)
 
 | Name | Planned first release |
 | --- | --- |
 | [`dsh-judge`](packages/dsh-judge) | LLM-as-judge evaluation |
 | [`dsh-rubric`](packages/dsh-rubric) | Scoring rubrics for agent work |
 | [`dsh-coverage`](packages/dsh-coverage) | Agent edit coverage map |
+| [`dsh-modeldrift`](packages/dsh-modeldrift) | Modeldrift - the nerf question |
+| [`dsh-evals`](packages/dsh-evals) | Evals - the scoreboard of intelligence |
 
-### Protocols (1)
+### Protocols (2)
 
 | Name | Planned first release |
 | --- | --- |
 | [`dsh-lsp`](packages/dsh-lsp) | Language Server Protocol bridge for the DeepSeek Harness |
+| [`dsh-agui`](packages/dsh-agui) | Agui - the agent user interaction protocol |
 
 ### Ui (6)
 
@@ -1127,7 +1141,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-serve`](packages/dsh-serve) | Serve-mode extras for the dsh web GUI |
 | [`dsh-jobs`](packages/dsh-jobs) | Background jobs for dsh bots |
 
-### Security (11)
+### Security (12)
 
 | Name | Planned first release |
 | --- | --- |
@@ -1142,6 +1156,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-secrets`](packages/dsh-secrets) | Secrets handling for dsh agents |
 | [`dsh-policy`](packages/dsh-policy) | Approval policy engine for the DeepSeek Harness |
 | [`dsh-permission`](packages/dsh-permission) | Permission scopes for dsh tools |
+| [`dsh-governance`](packages/dsh-governance) | Governance - who let the agent do that |
 
 ### Work & hiring (74)
 
@@ -1330,7 +1345,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-omics`](packages/dsh-omics) | Omics - the suffix of scale |
 | [`dsh-trial`](packages/dsh-trial) | Trial - the randomized truth machine |
 
-### Film & post (29)
+### Film & post (30)
 
 | Name | Planned first release |
 | --- | --- |
@@ -1363,6 +1378,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-gaffer`](packages/dsh-gaffer) | Gaffer - the chief of light |
 | [`dsh-dubbing`](packages/dsh-dubbing) | Dubbing - the voice, replaced |
 | [`dsh-loudness`](packages/dsh-loudness) | Loudness - the mixed-to spec |
+| [`dsh-compositor`](packages/dsh-compositor) | Compositor - the tool behind the stack |
 
 ### Sports data (28)
 
@@ -1396,6 +1412,18 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-overunder`](packages/dsh-overunder) | Overunder - the total |
 | [`dsh-wingspan`](packages/dsh-wingspan) | Wingspan - the measurables |
 | [`dsh-scouting`](packages/dsh-scouting) | Scouting - the eye and the model |
+
+### Energy (7)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-vpp`](packages/dsh-vpp) | Vpp - the power plant made of houses |
+| [`dsh-microgrid`](packages/dsh-microgrid) | Microgrid - the grid that can island |
+| [`dsh-inverter`](packages/dsh-inverter) | Inverter - the brain of solar |
+| [`dsh-curtailment`](packages/dsh-curtailment) | Curtailment - the power we throw away |
+| [`dsh-demandresponse`](packages/dsh-demandresponse) | Demandresponse - load that listens |
+| [`dsh-grid`](packages/dsh-grid) | Grid - the machine that is the power system |
+| [`dsh-battery`](packages/dsh-battery) | Battery - the molecule that stores time |
 <details>
 <summary>External waves (175 names, reconciled from the npm registry)</summary>
 

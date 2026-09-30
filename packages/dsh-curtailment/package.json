@@ -1,0 +1,21 @@
+{
+  "name": "dsh-curtailment",
+  "version": "0.0.1",
+  "description": "Curtailment - the power we throw away - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "curtailment",
+    "oversupply"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-curtailment"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-curtailment#readme"
+}
