@@ -71,11 +71,12 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-models`](packages/dsh-models) | Model registry panel for the DeepSeek Harness |
 | [`dsh-providers`](packages/dsh-providers) | Provider registry for the DeepSeek Harness |
 
-### Developer tools (26)
+### Developer tools (27)
 
 | Name | Planned first release |
 | --- | --- |
 | [`dsh-gitlab`](packages/dsh-gitlab) | GitLab bridge for dsh agents |
+| [`dsh-dots`](packages/dsh-dots) | Dots - my dots, your dots |
 | [`dsh-vercel`](packages/dsh-vercel) | Vercel bridge for dsh agents |
 | [`dsh-cloudflare`](packages/dsh-cloudflare) | Cloudflare bridge for dsh agents |
 | [`dsh-netlify`](packages/dsh-netlify) | Netlify bridge for dsh agents |

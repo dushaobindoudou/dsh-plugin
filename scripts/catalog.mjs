@@ -303,6 +303,12 @@ export const CORE = {
     extra: ['providers', 'llm', 'registry'],
   },
   // ---- developer tools --------------------------------------------------
+  'dsh-dots': {
+    niche: 'developer tools',
+    headline: 'Dots - my dots, your dots',
+    body: 'Dotfiles culture - the configs developers carry between machines; zsh, vim, git, and now the harness, versioned and symlinked - the sibling of every rc file.',
+    extra: ['dots', 'dotfiles'],
+  },
   'dsh-vercel': {
     niche: 'developer tools',
     headline: 'Vercel bridge for dsh agents',
