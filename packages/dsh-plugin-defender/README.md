@@ -7,7 +7,7 @@
 
 This package name is reserved; the first release is in development.
 
-The bare dsh-defender stem is taken by a stranger; this twin keeps the plugin-scoped name of the same job in-family.
+Bare dsh-defender was claimed the same day under this account; this twin keeps the plugin-scoped seat of the same job.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

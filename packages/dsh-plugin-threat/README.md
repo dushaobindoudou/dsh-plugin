@@ -7,7 +7,7 @@
 
 This package name is reserved; the first release is in development.
 
-The bare dsh-threat stem is taken by a stranger; this twin holds the plugin-scoped threat-model name.
+The bare dsh-threat stem is held by the family tudamu account; this twin holds the plugin-scoped threat-model name.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

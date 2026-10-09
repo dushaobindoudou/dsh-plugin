@@ -7,7 +7,7 @@
 
 This package name is reserved; the first release is in development.
 
-Hardening presets scoped to plugin capabilities; bare twin still open, reserved here too.
+Hardening presets scoped to plugin capabilities; bare twin claimed the same day, both held.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

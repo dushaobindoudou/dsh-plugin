@@ -7,7 +7,7 @@
 
 This package name is reserved; the first release is in development.
 
-Second-factor prompts scoped to plugin actions; bare twin still open, reserved here too.
+Second-factor prompts scoped to plugin actions; bare twin claimed the same day, both held.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

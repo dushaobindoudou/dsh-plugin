@@ -7,7 +7,7 @@
 
 This package name is reserved; the first release is in development.
 
-Pattern packs for the plugin-scanning lane under the second prefix; bare twin still free, both held anyway.
+Pattern packs for the plugin-scanning lane under the second prefix; bare twin claimed the same day, both held.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

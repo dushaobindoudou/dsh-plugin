@@ -5982,9 +5982,14 @@ export const CORE = {
     body: 'Grant a session read-only, write-scope, or network access explicitly - scopes shown live in the header.',
     extra: ['permissions'],
   },
-  // 2026-10-09: registry recon found squatters moving on the security stem
-  // (tudamu holds eight bare names; dsh-plugin-audit/guard/vault/sandbox/doctor
-  // are gone). Everything below was verified FREE on the npm registry the same
+  // 2026-10-09: registry recon found the security stem moving fast. tudamu is
+  // a family account, NOT a squatter: its firewall/scanner/trust/threat/cve/
+  // malware/privilege/quarantine bare holdings and the plugin-sandbox seat are
+  // family seats (user-confirmed 2026-10-09). Genuine third-party losses at
+  // recon time: bare sentinel(fuhefei)/audit/guard/shield(gugugaga001)/vault/
+  // harden/watchdog/warden/inspector/keyring/sentry and the plugin-scoped
+  // audit(jack-random)/guard(wuweilab)/vault(wwrs)/doctor(xrainsmile) seats.
+  // Everything below was verified FREE on the npm registry the same
   // day and is reserved in both forms - the bare dsh-xxx seat and the
   // dsh-plugin-xxx twin. The plugin-prefixed series is intentionally curated
   // here in CORE: the external importer still skips names containing
@@ -6112,13 +6117,13 @@ export const CORE = {
   'dsh-plugin-defender': {
     niche: 'security',
     headline: 'Defender - the plugin-prefixed watch seat',
-    body: 'The bare dsh-defender stem is taken by a stranger; this twin keeps the plugin-scoped name of the same job in-family.',
+    body: 'Bare dsh-defender was claimed the same day under this account; this twin keeps the plugin-scoped seat of the same job.',
     extra: ['defense'],
   },
   'dsh-plugin-antivirus': {
     niche: 'security',
     headline: 'Antivirus - the plugin-prefixed AV seat',
-    body: 'Pattern packs for the plugin-scanning lane under the second prefix; bare twin still free, both held anyway.',
+    body: 'Pattern packs for the plugin-scanning lane under the second prefix; bare twin claimed the same day, both held.',
     extra: ['antivirus'],
   },
   'dsh-plugin-pentest': {
@@ -6130,67 +6135,67 @@ export const CORE = {
   'dsh-plugin-leak': {
     niche: 'security',
     headline: 'Leak - the plugin-prefixed tripwire seat',
-    body: 'Secret-leak tripwires scoped to plugin output; bare twin still open, reserved here too.',
+    body: 'Secret-leak tripwires scoped to plugin output; bare twin claimed the same day, both held.',
     extra: ['leak'],
   },
   'dsh-plugin-vuln': {
     niche: 'security',
     headline: 'Vuln - the plugin-prefixed advisory seat',
-    body: 'Advisories for plugin packages under the second prefix; bare twin still open, reserved here too.',
+    body: 'Advisories for plugin packages under the second prefix; bare twin claimed the same day, both held.',
     extra: ['vuln'],
   },
   'dsh-plugin-exploit': {
     niche: 'security',
     headline: 'Exploit - the plugin-prefixed PoC seat',
-    body: 'Proof-of-concept shelf for plugin advisories; bare twin still open, reserved here too.',
+    body: 'Proof-of-concept shelf for plugin advisories; bare twin claimed the same day, both held.',
     extra: ['exploit'],
   },
   'dsh-plugin-passkey': {
     niche: 'security',
     headline: 'Passkey - the plugin-prefixed WebAuthn seat',
-    body: 'Passkey flows scoped to plugin sign-in surfaces; bare twin still open, reserved here too.',
+    body: 'Passkey flows scoped to plugin sign-in surfaces; bare twin claimed the same day, both held.',
     extra: ['passkey'],
   },
   'dsh-plugin-otp': {
     niche: 'security',
     headline: 'OTP - the plugin-prefixed code seat',
-    body: 'One-time code handling scoped to plugin flows; bare twin still open, reserved here too.',
+    body: 'One-time code handling scoped to plugin flows; bare twin claimed the same day, both held.',
     extra: ['otp'],
   },
   'dsh-plugin-2fa': {
     niche: 'security',
     headline: '2FA - the plugin-prefixed second-factor seat',
-    body: 'Second-factor prompts scoped to plugin actions; bare twin still open, reserved here too.',
+    body: 'Second-factor prompts scoped to plugin actions; bare twin claimed the same day, both held.',
     extra: ['2fa'],
   },
   'dsh-plugin-armor': {
     niche: 'security',
     headline: 'Armor - the plugin-prefixed hardening seat',
-    body: 'Hardening presets scoped to plugin capabilities; bare twin still open, reserved here too.',
+    body: 'Hardening presets scoped to plugin capabilities; bare twin claimed the same day, both held.',
     extra: ['armor'],
   },
   'dsh-plugin-lockdown': {
     niche: 'security',
     headline: 'Lockdown - the plugin-prefixed kill switch',
-    body: 'Disable every plugin in one move when something feels off; bare twin still open, reserved here too.',
+    body: 'Disable every plugin in one move when something feels off; bare twin claimed the same day, both held.',
     extra: ['lockdown'],
   },
   'dsh-plugin-bastion': {
     niche: 'security',
     headline: 'Bastion - the plugin-prefixed jump seat',
-    body: 'Audited plugin network entry under the second prefix; bare twin still open, reserved here too.',
+    body: 'Audited plugin network entry under the second prefix; bare twin claimed the same day, both held.',
     extra: ['bastion'],
   },
   'dsh-plugin-fortress': {
     niche: 'security',
     headline: 'Fortress - the plugin-prefixed hard profile',
-    body: 'The hardened plugin profile bundle under the second prefix; bare twin still open, reserved here too.',
+    body: 'The hardened plugin profile bundle under the second prefix; bare twin claimed the same day, both held.',
     extra: ['fortress'],
   },
   'dsh-plugin-threat': {
     niche: 'security',
     headline: 'Threat - the plugin-prefixed intel seat',
-    body: 'The bare dsh-threat stem is taken by a stranger; this twin holds the plugin-scoped threat-model name.',
+    body: 'The bare dsh-threat stem is held by the family tudamu account; this twin holds the plugin-scoped threat-model name.',
     extra: ['threat'],
   },
   'dsh-plugin-watchdog': {
