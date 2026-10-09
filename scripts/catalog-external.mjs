@@ -14,7 +14,21 @@ export const EXTERNAL = {
     headline: "Agent Client Protocol (ACP) server plugin for the DeepSeek Harness (dsh) — drive dsh agents from Zed and any ACP client",
     body: "Agent Client Protocol (ACP) server plugin for the DeepSeek Harness (dsh) — drive dsh agents from Zed and any ACP client. (Recorded from the npm registry at import time.)",
     extra: ["agent-client-protocol","acp","zed","coding-agent"],
-    version: "0.11.1",
+    version: "0.12.0",
+  },
+  "dsh-agent-evals": {
+    niche: "external waves",
+    headline: "Versioned eval suites for dsh agents",
+    body: "Versioned eval suites for dsh agents. (Recorded from the npm registry at import time.)",
+    extra: ["evals"],
+    version: "0.0.1",
+  },
+  "dsh-agentic-cloud": {
+    niche: "external waves",
+    headline: "Agentic cloud profiles for dsh",
+    body: "Agentic cloud profiles for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["agentic-cloud"],
+    version: "0.0.1",
   },
   "dsh-agentpay": {
     niche: "external waves",
@@ -30,11 +44,11 @@ export const EXTERNAL = {
     extra: ["airtable"],
     version: "0.0.1",
   },
-  "dsh-anime": {
+  "dsh-animation": {
     niche: "external waves",
-    headline: "Anime toolkit for dsh",
-    body: "Anime toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["anime"],
+    headline: "Animation pipeline for dsh",
+    body: "Animation pipeline for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["animation"],
     version: "0.0.1",
   },
   "dsh-ansible": {
@@ -49,13 +63,6 @@ export const EXTERNAL = {
     headline: "Agent Payment Protocol stack for dsh - trust rails on top of x402. Name reserved; spec below; first release in development.",
     body: "Agent Payment Protocol stack for dsh - trust rails on top of x402. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
     extra: ["ap2","agent-payment-protocol","payments","trust"],
-    version: "0.0.1",
-  },
-  "dsh-arbitrum": {
-    niche: "external waves",
-    headline: "Arbitrum tools for dsh - the L2 where deep DeFi liquidity settles. Name reserved; spec below; first release in development.",
-    body: "Arbitrum tools for dsh - the L2 where deep DeFi liquidity settles. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
-    extra: ["arbitrum","l2","usdc","defi"],
     version: "0.0.1",
   },
   "dsh-asana": {
@@ -147,7 +154,14 @@ export const EXTERNAL = {
     headline: "Multi-bot workbench for DeepSeek Harness: bridges the sdk-bots orchestration gateway (group chats, single bots) into the dsh web shell with official-styled UI.",
     body: "Multi-bot workbench for DeepSeek Harness: bridges the sdk-bots orchestration gateway (group chats, single bots) into the dsh web shell with official-styled UI.. (Recorded from the npm registry at import time.)",
     extra: ["bots","cordis","dsh-plugins","group-chat","mcp","multibot"],
-    version: "0.2.47",
+    version: "0.2.64",
+  },
+  "dsh-bounty": {
+    niche: "external waves",
+    headline: "Bug-bounty workflow for dsh",
+    body: "Bug-bounty workflow for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["bug-bounty"],
+    version: "0.0.1",
   },
   "dsh-brand": {
     niche: "external waves",
@@ -177,13 +191,6 @@ export const EXTERNAL = {
     extra: ["calculator"],
     version: "0.0.1",
   },
-  "dsh-car": {
-    niche: "external waves",
-    headline: "Car companion for dsh",
-    body: "Car companion for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["car","auto"],
-    version: "0.0.1",
-  },
   "dsh-chem": {
     niche: "external waves",
     headline: "Chemistry toolkit for dsh",
@@ -203,13 +210,6 @@ export const EXTERNAL = {
     headline: "Comic toolkit for dsh",
     body: "Comic toolkit for dsh. (Recorded from the npm registry at import time.)",
     extra: ["comics"],
-    version: "0.0.1",
-  },
-  "dsh-compliance": {
-    niche: "external waves",
-    headline: "Compliance review workflows for dsh",
-    body: "Compliance review workflows for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["compliance"],
     version: "0.0.1",
   },
   "dsh-config": {
@@ -254,20 +254,6 @@ export const EXTERNAL = {
     extra: ["cpp","cmake"],
     version: "0.0.1",
   },
-  "dsh-critic": {
-    niche: "external waves",
-    headline: "The critic pattern for dsh - a second pass judges every finished turn against the spec. Name reserved; spec below; first release in development.",
-    body: "The critic pattern for dsh - a second pass judges every finished turn against the spec. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
-    extra: ["critic","review","quality-gate","agent"],
-    version: "0.0.1",
-  },
-  "dsh-crm": {
-    niche: "external waves",
-    headline: "CRM toolkit for dsh",
-    body: "CRM toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["crm"],
-    version: "0.0.1",
-  },
   "dsh-crypto": {
     niche: "external waves",
     headline: "Crypto market tools for dsh",
@@ -280,6 +266,13 @@ export const EXTERNAL = {
     headline: "C# toolkit for dsh",
     body: "C# toolkit for dsh. (Recorded from the npm registry at import time.)",
     extra: ["csharp","dotnet"],
+    version: "0.0.1",
+  },
+  "dsh-cyber": {
+    niche: "external waves",
+    headline: "Cyber defense tooling for dsh",
+    body: "Cyber defense tooling for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["security"],
     version: "0.0.1",
   },
   "dsh-data": {
@@ -308,13 +301,6 @@ export const EXTERNAL = {
     headline: "Deployment workflows for dsh",
     body: "Deployment workflows for dsh. (Recorded from the npm registry at import time.)",
     extra: ["deploy","release"],
-    version: "0.0.1",
-  },
-  "dsh-dex": {
-    niche: "external waves",
-    headline: "DEX math for dsh - price impact you compute before you sign, not after you regret. Name reserved; spec below; first release in development.",
-    body: "DEX math for dsh - price impact you compute before you sign, not after you regret. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
-    extra: ["dex","amm","defi","uniswap","liquidity"],
     version: "0.0.1",
   },
   "dsh-dict": {
@@ -359,6 +345,13 @@ export const EXTERNAL = {
     extra: ["ecommerce"],
     version: "0.0.1",
   },
+  "dsh-edge-cache": {
+    niche: "external waves",
+    headline: "Edge cache policy helpers for dsh",
+    body: "Edge cache policy helpers for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["cache"],
+    version: "0.0.1",
+  },
   "dsh-edu": {
     niche: "external waves",
     headline: "Education workspace for dsh",
@@ -366,18 +359,18 @@ export const EXTERNAL = {
     extra: ["education"],
     version: "0.0.1",
   },
+  "dsh-embodied": {
+    niche: "external waves",
+    headline: "Embodied-agent abstractions for dsh",
+    body: "Embodied-agent abstractions for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["embodied-ai"],
+    version: "0.0.1",
+  },
   "dsh-english": {
     niche: "external waves",
     headline: "English learning toolkit for dsh",
     body: "English learning toolkit for dsh. (Recorded from the npm registry at import time.)",
     extra: ["english","esl"],
-    version: "0.0.1",
-  },
-  "dsh-erp": {
-    niche: "external waves",
-    headline: "ERP integration toolkit for dsh",
-    body: "ERP integration toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["erp"],
     version: "0.0.1",
   },
   "dsh-escrow": {
@@ -406,6 +399,13 @@ export const EXTERNAL = {
     headline: "Offline Ethereum tooling the agent can trust - decode without a node, verify without a website. Name reserved; spec below; first release in development.",
     body: "Offline Ethereum tooling the agent can trust - decode without a node, verify without a website. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
     extra: ["ethereum","eth","evm","web3","abi","decoder"],
+    version: "0.0.1",
+  },
+  "dsh-experts": {
+    niche: "external waves",
+    headline: "Mixture-of-experts toolkit for dsh",
+    body: "Mixture-of-experts toolkit for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["moe"],
     version: "0.0.1",
   },
   "dsh-fashion": {
@@ -490,7 +490,7 @@ export const EXTERNAL = {
     headline: "Free-tier model aggregation for the DeepSeek Harness (dsh): registers the freeroute provider over a pool of free-quota upstreams (OpenCode Zen / B.AI / OpenRouter / SenseNova built in, plus remote catalogs and custom gateways), transparent failover before",
     body: "Free-tier model aggregation for the DeepSeek Harness (dsh): registers the freeroute provider over a pool of free-quota upstreams (OpenCode Zen / B.AI / OpenRouter / SenseNova built in, plus remote catalogs and custom gateways), transparent failover before. (Recorded from the npm registry at import time.)",
     extra: ["openrouter","free-tier","llm-routing","failover","openai-compatible"],
-    version: "0.8.5",
+    version: "0.8.23",
   },
   "dsh-fun": {
     niche: "external waves",
@@ -513,13 +513,6 @@ export const EXTERNAL = {
     extra: ["futures"],
     version: "0.0.1",
   },
-  "dsh-game": {
-    niche: "external waves",
-    headline: "Game development toolkit for dsh",
-    body: "Game development toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["gamedev"],
-    version: "0.0.1",
-  },
   "dsh-garden": {
     niche: "external waves",
     headline: "Garden toolkit for dsh",
@@ -534,18 +527,11 @@ export const EXTERNAL = {
     extra: ["gcp"],
     version: "0.0.1",
   },
-  "dsh-gift": {
+  "dsh-glasses": {
     niche: "external waves",
-    headline: "Gift planning for dsh",
-    body: "Gift planning for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["gifts"],
-    version: "0.0.1",
-  },
-  "dsh-gitlab": {
-    niche: "external waves",
-    headline: "GitLab bridge for dsh",
-    body: "GitLab bridge for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["gitlab","mr"],
+    headline: "Smart-glasses toolkit for dsh",
+    body: "Smart-glasses toolkit for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["smart-glasses"],
     version: "0.0.1",
   },
   "dsh-go": {
@@ -555,11 +541,11 @@ export const EXTERNAL = {
     extra: ["golang"],
     version: "0.0.1",
   },
-  "dsh-habit": {
+  "dsh-gui-agent": {
     niche: "external waves",
-    headline: "Habit tracker for dsh",
-    body: "Habit tracker for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["habits"],
+    headline: "GUI agent toolkit for dsh",
+    body: "GUI agent toolkit for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["gui-agent"],
     version: "0.0.1",
   },
   "dsh-helm": {
@@ -581,13 +567,6 @@ export const EXTERNAL = {
     headline: "Holiday planning for dsh",
     body: "Holiday planning for dsh. (Recorded from the npm registry at import time.)",
     extra: ["holiday"],
-    version: "0.0.1",
-  },
-  "dsh-home": {
-    niche: "external waves",
-    headline: "Home management for dsh",
-    body: "Home management for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["home"],
     version: "0.0.1",
   },
   "dsh-horoscope": {
@@ -625,18 +604,32 @@ export const EXTERNAL = {
     extra: ["hyperevm","evm","hyperliquid","usdc-bridge"],
     version: "0.0.1",
   },
-  "dsh-hyperliquid": {
-    niche: "external waves",
-    headline: "Hyperliquid toolkit for dsh - positions, spot tokens, builder codes, with everything cited. Name reserved; spec below; first release in development.",
-    body: "Hyperliquid toolkit for dsh - positions, spot tokens, builder codes, with everything cited. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
-    extra: ["hyperliquid","perps","hip-1","hip-2","builder-codes"],
-    version: "0.0.1",
-  },
   "dsh-icon": {
     niche: "external waves",
     headline: "Icon packs for the dsh web GUI",
     body: "Icon packs for the dsh web GUI. (Recorded from the npm registry at import time.)",
     extra: ["icons"],
+    version: "0.0.1",
+  },
+  "dsh-image-edit": {
+    niche: "external waves",
+    headline: "Image editing tools for dsh",
+    body: "Image editing tools for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["image-editing"],
+    version: "0.0.1",
+  },
+  "dsh-image-to-video": {
+    niche: "external waves",
+    headline: "Image-to-video tools for dsh",
+    body: "Image-to-video tools for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["image-to-video"],
+    version: "0.0.1",
+  },
+  "dsh-imaging": {
+    niche: "external waves",
+    headline: "Medical imaging toolkit for dsh",
+    body: "Medical imaging toolkit for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["medical-imaging"],
     version: "0.0.1",
   },
   "dsh-infra": {
@@ -646,18 +639,18 @@ export const EXTERNAL = {
     extra: ["infrastructure"],
     version: "0.0.1",
   },
+  "dsh-integrations": {
+    niche: "external waves",
+    headline: "Integration directory for dsh",
+    body: "Integration directory for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["integrations"],
+    version: "0.0.1",
+  },
   "dsh-invoice": {
     niche: "external waves",
     headline: "Invoice tools for dsh",
     body: "Invoice tools for dsh. (Recorded from the npm registry at import time.)",
     extra: ["invoice"],
-    version: "0.0.1",
-  },
-  "dsh-iot": {
-    niche: "external waves",
-    headline: "IoT toolkit for dsh",
-    body: "IoT toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["iot","smarthome"],
     version: "0.0.1",
   },
   "dsh-irc": {
@@ -688,13 +681,6 @@ export const EXTERNAL = {
     extra: ["jokes"],
     version: "0.0.1",
   },
-  "dsh-journal": {
-    niche: "external waves",
-    headline: "Journaling workspace for dsh",
-    body: "Journaling workspace for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["journal"],
-    version: "0.0.1",
-  },
   "dsh-jupyter": {
     niche: "external waves",
     headline: "Jupyter bridge for dsh",
@@ -707,13 +693,6 @@ export const EXTERNAL = {
     headline: "Kubernetes toolkit for dsh",
     body: "Kubernetes toolkit for dsh. (Recorded from the npm registry at import time.)",
     extra: ["kubernetes","k8s"],
-    version: "0.0.1",
-  },
-  "dsh-karaoke": {
-    niche: "external waves",
-    headline: "Karaoke toolkit for dsh",
-    body: "Karaoke toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["karaoke","lyrics"],
     version: "0.0.1",
   },
   "dsh-kotlin": {
@@ -730,6 +709,13 @@ export const EXTERNAL = {
     extra: ["language-learning"],
     version: "0.0.1",
   },
+  "dsh-latency": {
+    niche: "external waves",
+    headline: "Latency instrumentation for dsh",
+    body: "Latency instrumentation for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["latency"],
+    version: "0.0.1",
+  },
   "dsh-latex": {
     niche: "external waves",
     headline: "LaTeX toolkit for dsh agents",
@@ -742,34 +728,6 @@ export const EXTERNAL = {
     headline: "Legal research workspace for dsh",
     body: "Legal research workspace for dsh. (Recorded from the npm registry at import time.)",
     extra: ["law","legal"],
-    version: "0.0.1",
-  },
-  "dsh-ledger": {
-    niche: "external waves",
-    headline: "Plain-text accounting tools for dsh",
-    body: "Plain-text accounting tools for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["ledger","beancount"],
-    version: "0.0.1",
-  },
-  "dsh-legal": {
-    niche: "external waves",
-    headline: "The spelled-out legal workspace form",
-    body: "The spelled-out legal workspace form. (Recorded from the npm registry at import time.)",
-    extra: ["legal"],
-    version: "0.0.1",
-  },
-  "dsh-lightning": {
-    niche: "external waves",
-    headline: "Lightning for dsh - the original micropayment network, offline-decoded. Name reserved; spec below; first release in development.",
-    body: "Lightning for dsh - the original micropayment network, offline-decoded. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
-    extra: ["lightning","bolt11","bolt12","lnurl","bitcoin"],
-    version: "0.0.1",
-  },
-  "dsh-line": {
-    niche: "external waves",
-    headline: "LINE bridge for dsh",
-    body: "LINE bridge for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["line","messaging"],
     version: "0.0.1",
   },
   "dsh-linear": {
@@ -786,11 +744,32 @@ export const EXTERNAL = {
     extra: ["linux","sysadmin"],
     version: "0.0.1",
   },
-  "dsh-lottery": {
+  "dsh-local-llm": {
     niche: "external waves",
-    headline: "Lottery results checker for dsh",
-    body: "Lottery results checker for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["lottery"],
+    headline: "Local LLM runner profiles for dsh",
+    body: "Local LLM runner profiles for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["local-llm"],
+    version: "0.0.1",
+  },
+  "dsh-locomotion": {
+    niche: "external waves",
+    headline: "Loco-manipulation data tools for dsh",
+    body: "Loco-manipulation data tools for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["locomotion"],
+    version: "0.0.1",
+  },
+  "dsh-long-context": {
+    niche: "external waves",
+    headline: "Long-context toolkit for dsh",
+    body: "Long-context toolkit for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["long-context"],
+    version: "0.0.1",
+  },
+  "dsh-lora": {
+    niche: "external waves",
+    headline: "LoRA adapter management for dsh",
+    body: "LoRA adapter management for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["lora"],
     version: "0.0.1",
   },
   "dsh-macos": {
@@ -807,6 +786,13 @@ export const EXTERNAL = {
     extra: ["marketing"],
     version: "0.0.1",
   },
+  "dsh-materials": {
+    niche: "external waves",
+    headline: "Materials-science toolkit for dsh",
+    body: "Materials-science toolkit for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["materials"],
+    version: "0.0.1",
+  },
   "dsh-math": {
     niche: "external waves",
     headline: "Math workspace for dsh",
@@ -819,13 +805,6 @@ export const EXTERNAL = {
     headline: "Matrix bridge for dsh",
     body: "Matrix bridge for dsh. (Recorded from the npm registry at import time.)",
     extra: ["matrix"],
-    version: "0.0.1",
-  },
-  "dsh-medical": {
-    niche: "external waves",
-    headline: "Medical literature tools for dsh",
-    body: "Medical literature tools for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["medical","pubmed"],
     version: "0.0.1",
   },
   "dsh-meditate": {
@@ -849,18 +828,18 @@ export const EXTERNAL = {
     extra: ["machine-learning"],
     version: "0.0.1",
   },
+  "dsh-model-gateway": {
+    niche: "external waves",
+    headline: "Model gateway helpers for dsh",
+    body: "Model gateway helpers for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["gateway"],
+    version: "0.0.1",
+  },
   "dsh-mongo": {
     niche: "external waves",
     headline: "MongoDB tools for dsh agents",
     body: "MongoDB tools for dsh agents. (Recorded from the npm registry at import time.)",
     extra: ["mongodb"],
-    version: "0.0.1",
-  },
-  "dsh-mood": {
-    niche: "external waves",
-    headline: "Mood tracking for dsh",
-    body: "Mood tracking for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["mood","wellbeing"],
     version: "0.0.1",
   },
   "dsh-movie": {
@@ -877,11 +856,11 @@ export const EXTERNAL = {
     extra: ["multi-agent","panel","dashboard","agents"],
     version: "0.0.1",
   },
-  "dsh-music": {
+  "dsh-multimodal": {
     niche: "external waves",
-    headline: "Music toolkit for dsh",
-    body: "Music toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["music"],
+    headline: "Multimodal routing for dsh",
+    body: "Multimodal routing for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["multimodal"],
     version: "0.0.1",
   },
   "dsh-mysql": {
@@ -889,6 +868,13 @@ export const EXTERNAL = {
     headline: "MySQL tools for dsh agents",
     body: "MySQL tools for dsh agents. (Recorded from the npm registry at import time.)",
     extra: ["mysql"],
+    version: "0.0.1",
+  },
+  "dsh-neurosymbolic": {
+    niche: "external waves",
+    headline: "Neurosymbolic helpers for dsh",
+    body: "Neurosymbolic helpers for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["neurosymbolic"],
     version: "0.0.1",
   },
   "dsh-news": {
@@ -933,6 +919,13 @@ export const EXTERNAL = {
     extra: ["onchain","rpc","evm","web3","eth-call"],
     version: "0.0.1",
   },
+  "dsh-openweights": {
+    niche: "external waves",
+    headline: "Open-weights model registry for dsh",
+    body: "Open-weights model registry for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["open-weights"],
+    version: "0.0.1",
+  },
   "dsh-options": {
     niche: "external waves",
     headline: "Options analytics for dsh",
@@ -945,13 +938,6 @@ export const EXTERNAL = {
     headline: "Research paper toolkit for dsh",
     body: "Research paper toolkit for dsh. (Recorded from the npm registry at import time.)",
     extra: ["academic","paper"],
-    version: "0.0.1",
-  },
-  "dsh-pay": {
-    niche: "external waves",
-    headline: "The shortest pay command in dsh - one verb, any rail, full receipt. Name reserved; spec below; first release in development.",
-    body: "The shortest pay command in dsh - one verb, any rail, full receipt. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
-    extra: ["pay","payments","micropayments"],
     version: "0.0.1",
   },
   "dsh-payment": {
@@ -987,27 +973,6 @@ export const EXTERNAL = {
     headline: "Physics toolkit for dsh",
     body: "Physics toolkit for dsh. (Recorded from the npm registry at import time.)",
     extra: ["physics"],
-    version: "0.0.1",
-  },
-  "dsh-play": {
-    niche: "external waves",
-    headline: "Play mode for dsh",
-    body: "Play mode for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["games"],
-    version: "0.0.1",
-  },
-  "dsh-podcast": {
-    niche: "external waves",
-    headline: "Podcast toolkit for dsh",
-    body: "Podcast toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["podcast"],
-    version: "0.0.1",
-  },
-  "dsh-portfolio": {
-    niche: "external waves",
-    headline: "Portfolio lens for dsh",
-    body: "Portfolio lens for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["portfolio"],
     version: "0.0.1",
   },
   "dsh-postgres": {
@@ -1052,6 +1017,13 @@ export const EXTERNAL = {
     extra: ["pyusd","paypal","stablecoin","fiat-ramp"],
     version: "0.0.1",
   },
+  "dsh-quadruped": {
+    niche: "external waves",
+    headline: "Quadruped robot toolkit for dsh",
+    body: "Quadruped robot toolkit for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["robotics"],
+    version: "0.0.1",
+  },
   "dsh-quiz": {
     niche: "external waves",
     headline: "Quiz tools for dsh",
@@ -1064,6 +1036,13 @@ export const EXTERNAL = {
     headline: "Radio toolkit for dsh",
     body: "Radio toolkit for dsh. (Recorded from the npm registry at import time.)",
     extra: ["radio"],
+    version: "0.0.1",
+  },
+  "dsh-radiology": {
+    niche: "external waves",
+    headline: "Radiology report tools for dsh",
+    body: "Radiology report tools for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["radiology"],
     version: "0.0.1",
   },
   "dsh-react": {
@@ -1094,32 +1073,11 @@ export const EXTERNAL = {
     extra: ["redis"],
     version: "0.0.1",
   },
-  "dsh-refine": {
-    niche: "external waves",
-    headline: "DeepSeek Harness (dsh) plugin: a shell around the dsh-continual-harness self-refinement engine — mounts the engine itself and owns /refine (status / entry browsing / refinement history / one-click rollback / scoped triggers) plus a settings panel; engine ",
-    body: "DeepSeek Harness (dsh) plugin: a shell around the dsh-continual-harness self-refinement engine — mounts the engine itself and owns /refine (status / entry browsing / refinement history / one-click rollback / scoped triggers) plus a settings panel; engine . (Recorded from the npm registry at import time.)",
-    extra: ["deepseek","plugin","cordis","continual-harness","agent-harness","refine"],
-    version: "1.2.0",
-  },
-  "dsh-reflect": {
-    niche: "external waves",
-    headline: "The reflection loop for dsh - retrospectives that feed forward, and survive compaction. Name reserved; spec below; first release in development.",
-    body: "The reflection loop for dsh - retrospectives that feed forward, and survive compaction. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
-    extra: ["reflection","retrospective","agents","memory"],
-    version: "0.0.1",
-  },
   "dsh-rent": {
     niche: "external waves",
     headline: "Renting toolkit for dsh",
     body: "Renting toolkit for dsh. (Recorded from the npm registry at import time.)",
     extra: ["renting"],
-    version: "0.0.1",
-  },
-  "dsh-resume": {
-    niche: "external waves",
-    headline: "Resume toolkit for dsh",
-    body: "Resume toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["resume","career"],
     version: "0.0.1",
   },
   "dsh-risk": {
@@ -1164,11 +1122,25 @@ export const EXTERNAL = {
     extra: ["seo"],
     version: "0.0.1",
   },
+  "dsh-seo-agent": {
+    niche: "external waves",
+    headline: "Unattended SEO agent tasks for dsh",
+    body: "Unattended SEO agent tasks for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["seo"],
+    version: "0.0.1",
+  },
   "dsh-settings": {
     niche: "external waves",
     headline: "Settings extensions for the dsh web GUI",
     body: "Settings extensions for the dsh web GUI. (Recorded from the npm registry at import time.)",
     extra: ["settings"],
+    version: "0.0.1",
+  },
+  "dsh-shared-workspace": {
+    niche: "external waves",
+    headline: "Shared workspace for humans and dsh agents",
+    body: "Shared workspace for humans and dsh agents. (Recorded from the npm registry at import time.)",
+    extra: ["collaboration"],
     version: "0.0.1",
   },
   "dsh-shop": {
@@ -1178,25 +1150,18 @@ export const EXTERNAL = {
     extra: ["shop"],
     version: "0.0.1",
   },
+  "dsh-sim2real": {
+    niche: "external waves",
+    headline: "Sim-to-real bridge for dsh",
+    body: "Sim-to-real bridge for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["sim2real"],
+    version: "0.0.1",
+  },
   "dsh-sleep": {
     niche: "external waves",
     headline: "Sleep tracker tools for dsh",
     body: "Sleep tracker tools for dsh. (Recorded from the npm registry at import time.)",
     extra: ["sleep"],
-    version: "0.0.1",
-  },
-  "dsh-solana": {
-    niche: "external waves",
-    headline: "Solana tools for dsh - fast blocks, SPL tokens, payments at machine speed. Name reserved; spec below; first release in development.",
-    body: "Solana tools for dsh - fast blocks, SPL tokens, payments at machine speed. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
-    extra: ["solana","spl","usdc","payments"],
-    version: "0.0.1",
-  },
-  "dsh-solidity": {
-    niche: "external waves",
-    headline: "Smart contract development for dsh - decode first, then reason, then write. Name reserved; spec below; first release in development.",
-    body: "Smart contract development for dsh - decode first, then reason, then write. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
-    extra: ["solidity","smart-contracts","foundry","hardhat","evm"],
     version: "0.0.1",
   },
   "dsh-sports": {
@@ -1218,13 +1183,6 @@ export const EXTERNAL = {
     headline: "The short form of the stablecoin settlement layer - what the terminal types. Name reserved; spec below; first release in development.",
     body: "The short form of the stablecoin settlement layer - what the terminal types. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
     extra: ["stablecoin","stable","usdc"],
-    version: "0.0.1",
-  },
-  "dsh-stablecoin": {
-    niche: "external waves",
-    headline: "Stablecoin settlement for dsh - one currency of account across every rail. Name reserved; spec below; first release in development.",
-    body: "Stablecoin settlement for dsh - one currency of account across every rail. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
-    extra: ["stablecoin","usdc","usdt","settlement"],
     version: "0.0.1",
   },
   "dsh-stats": {
@@ -1290,13 +1248,6 @@ export const EXTERNAL = {
     extra: ["swift"],
     version: "0.0.1",
   },
-  "dsh-tarot": {
-    niche: "external waves",
-    headline: "Tarot companion for dsh",
-    body: "Tarot companion for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["tarot"],
-    version: "0.0.1",
-  },
   "dsh-task": {
     niche: "external waves",
     headline: "Task board for dsh",
@@ -1339,11 +1290,11 @@ export const EXTERNAL = {
     extra: ["tipping","value4value","lightning"],
     version: "0.0.1",
   },
-  "dsh-trading": {
+  "dsh-tracking": {
     niche: "external waves",
-    headline: "Trading research panel for dsh",
-    body: "Trading research panel for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["trading","backtest"],
+    headline: "Visual tracking tools for dsh",
+    body: "Visual tracking tools for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["tracking"],
     version: "0.0.1",
   },
   "dsh-transit": {
@@ -1374,25 +1325,11 @@ export const EXTERNAL = {
     extra: ["trip","journal"],
     version: "0.0.1",
   },
-  "dsh-tutor": {
-    niche: "external waves",
-    headline: "Tutoring mode for dsh sessions",
-    body: "Tutoring mode for dsh sessions. (Recorded from the npm registry at import time.)",
-    extra: ["tutoring"],
-    version: "0.0.1",
-  },
   "dsh-tv": {
     niche: "external waves",
     headline: "TV toolkit for dsh",
     body: "TV toolkit for dsh. (Recorded from the npm registry at import time.)",
     extra: ["tv","series"],
-    version: "0.0.1",
-  },
-  "dsh-twitter": {
-    niche: "external waves",
-    headline: "Twitter/X content toolkit for dsh",
-    body: "Twitter/X content toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["twitter"],
     version: "0.0.1",
   },
   "dsh-typescript": {
@@ -1416,13 +1353,6 @@ export const EXTERNAL = {
     extra: ["usdc","circle","eip-3009","stablecoin"],
     version: "0.0.1",
   },
-  "dsh-usdt": {
-    niche: "external waves",
-    headline: "USDT tools for dsh - deepest-liquidity stablecoin, handled with its quirks in mind. Name reserved; spec below; first release in development.",
-    body: "USDT tools for dsh - deepest-liquidity stablecoin, handled with its quirks in mind. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
-    extra: ["usdt","tether","stablecoin","trc20"],
-    version: "0.0.1",
-  },
   "dsh-ux": {
     niche: "external waves",
     headline: "UX toolkit for dsh",
@@ -1430,11 +1360,11 @@ export const EXTERNAL = {
     extra: ["ux","design"],
     version: "0.0.1",
   },
-  "dsh-video": {
+  "dsh-video-to-video": {
     niche: "external waves",
-    headline: "Video toolkit for dsh",
-    body: "Video toolkit for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["video","ffmpeg"],
+    headline: "Video-to-video restyling for dsh",
+    body: "Video-to-video restyling for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["video-to-video"],
     version: "0.0.1",
   },
   "dsh-vocab": {
@@ -1458,6 +1388,20 @@ export const EXTERNAL = {
     extra: ["water","health"],
     version: "0.0.1",
   },
+  "dsh-watermark": {
+    niche: "external waves",
+    headline: "Provenance watermarks for dsh",
+    body: "Provenance watermarks for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["watermark"],
+    version: "0.0.1",
+  },
+  "dsh-web-crawler": {
+    niche: "external waves",
+    headline: "Web crawler toolkit for dsh",
+    body: "Web crawler toolkit for dsh. (Recorded from the npm registry at import time.)",
+    extra: ["crawler"],
+    version: "0.0.1",
+  },
   "dsh-web3": {
     niche: "external waves",
     headline: "DeepSeek Harness (DSH) plugin: agent-safe EVM wallet with encrypted vault, signing policy, model tools, bundled skill, and web UI.",
@@ -1479,13 +1423,6 @@ export const EXTERNAL = {
     extra: ["weibo"],
     version: "0.0.1",
   },
-  "dsh-whatsapp": {
-    niche: "external waves",
-    headline: "WhatsApp bridge for dsh",
-    body: "WhatsApp bridge for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["whatsapp"],
-    version: "0.0.1",
-  },
   "dsh-word": {
     niche: "external waves",
     headline: "Word of the day for dsh",
@@ -1505,13 +1442,6 @@ export const EXTERNAL = {
     headline: "x402 payments for dsh - agents pay for APIs over HTTP 402, natively. Name reserved; spec below; first release in development.",
     body: "x402 payments for dsh - agents pay for APIs over HTTP 402, natively. Name reserved; spec below; first release in development.. (Recorded from the npm registry at import time.)",
     extra: ["x402","http-402","eip-3009","usdc","agentic-payments"],
-    version: "0.0.1",
-  },
-  "dsh-yuque": {
-    niche: "external waves",
-    headline: "Yuque bridge for dsh",
-    body: "Yuque bridge for dsh. (Recorded from the npm registry at import time.)",
-    extra: ["yuque"],
     version: "0.0.1",
   },
   "dsh-zhihu": {

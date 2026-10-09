@@ -1,0 +1,21 @@
+{
+  "name": "dsh-vuln",
+  "version": "0.0.1",
+  "description": "Vuln - the advisory feed for the dsh family - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "vuln",
+    "advisory"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-vuln"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-vuln#readme"
+}

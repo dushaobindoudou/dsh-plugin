@@ -1,0 +1,20 @@
+{
+  "name": "dsh-plugin-threat",
+  "version": "0.0.1",
+  "description": "Threat - the plugin-prefixed intel seat - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "threat"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-plugin-threat"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-plugin-threat#readme"
+}

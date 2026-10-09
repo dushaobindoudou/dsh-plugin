@@ -1,0 +1,20 @@
+{
+  "name": "dsh-plugin-fortress",
+  "version": "0.0.1",
+  "description": "Fortress - the plugin-prefixed hard profile - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "fortress"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-plugin-fortress"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-plugin-fortress#readme"
+}

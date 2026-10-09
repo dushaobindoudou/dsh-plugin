@@ -1,0 +1,20 @@
+{
+  "name": "dsh-antivirus",
+  "version": "0.0.1",
+  "description": "Antivirus - pattern packs for hostile plugins - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "antivirus"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-antivirus"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-antivirus#readme"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "dsh-plugin-2fa",
+  "version": "0.0.1",
+  "description": "2FA - the plugin-prefixed second-factor seat - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "2fa"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-plugin-2fa"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-plugin-2fa#readme"
+}

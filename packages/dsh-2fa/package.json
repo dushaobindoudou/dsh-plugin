@@ -1,0 +1,21 @@
+{
+  "name": "dsh-2fa",
+  "version": "0.0.1",
+  "description": "2FA - second-factor prompts as a tool - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "2fa",
+    "mfa"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-2fa"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-2fa#readme"
+}

@@ -13,9 +13,18 @@ const expected = new Set([...Object.keys(CATALOG), ...REAL_PACKAGES])
 const errors = []
 const rows = []
 
-// Naming rule: the namespace is dsh-xxx - "plugin" never appears inside a name.
+// Naming rule: the namespace is dsh-xxx - "plugin" never appears inside a
+// name, with one reserved exception: the `dsh-plugin-` prefix series
+// (2026-10-09). Registry recon showed third parties claiming the
+// plugin-scoped security names (dsh-plugin-audit/guard/vault/sandbox/doctor
+// gone to strangers), so the security seats are now curated in CORE in both
+// forms - bare dsh-xxx and the dsh-plugin-xxx twin. "plugin" still may not
+// appear anywhere else inside a name (dsh-myplugin-x stays invalid), and the
+// external importer keeps skipping plugin-named registry discoveries.
+const PLUGIN_PREFIX = 'dsh-plugin-'
 for (const name of expected) {
-  if (name.includes('plugin')) fail(name, 'naming rule violation: dsh-xxx must not contain "plugin"')
+  const withoutPrefix = name.startsWith(PLUGIN_PREFIX) ? name.slice(PLUGIN_PREFIX.length) : name
+  if (withoutPrefix.includes('plugin')) fail(name, 'naming rule violation: "plugin" may only appear as the reserved dsh-plugin- prefix')
 }
 
 function fail(name, msg) {

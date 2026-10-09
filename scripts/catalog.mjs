@@ -5982,6 +5982,235 @@ export const CORE = {
     body: 'Grant a session read-only, write-scope, or network access explicitly - scopes shown live in the header.',
     extra: ['permissions'],
   },
+  // 2026-10-09: registry recon found squatters moving on the security stem
+  // (tudamu holds eight bare names; dsh-plugin-audit/guard/vault/sandbox/doctor
+  // are gone). Everything below was verified FREE on the npm registry the same
+  // day and is reserved in both forms - the bare dsh-xxx seat and the
+  // dsh-plugin-xxx twin. The plugin-prefixed series is intentionally curated
+  // here in CORE: the external importer still skips names containing
+  // "plugin", so CORE is the only lane that can hold them.
+  'dsh-defender': {
+    niche: 'security',
+    headline: 'Defender - the standing guard for dsh installs',
+    body: 'Runtime watch over tool calls, patch edits and profile changes - the always-on lane behind the scanners.',
+    extra: ['defense'],
+  },
+  'dsh-antivirus': {
+    niche: 'security',
+    headline: 'Antivirus - pattern packs for hostile plugins',
+    body: 'Signature packs for the scanner family - install-script hooks, exfil endpoints, lookalike names, updated like any AV.',
+    extra: ['antivirus'],
+  },
+  'dsh-pentest': {
+    niche: 'security',
+    headline: 'Pentest - break your own harness on purpose',
+    body: 'Replays known prompt-injection and tool-abuse playbooks against a copy of your profile - findings, not vibes.',
+    extra: ['pentest', 'offense'],
+  },
+  'dsh-leak': {
+    niche: 'security',
+    headline: 'Leak - catch secrets before they leave',
+    body: 'Output filters and egress tripwires for tokens in tool results, logs and patches - the last checkpoint before a value escapes.',
+    extra: ['leak', 'egress'],
+  },
+  'dsh-vuln': {
+    niche: 'security',
+    headline: 'Vuln - the advisory feed for the dsh family',
+    body: 'Machine-readable advisories for dsh-* packages - what is affected, since when, and what closes it.',
+    extra: ['vuln', 'advisory'],
+  },
+  'dsh-exploit': {
+    niche: 'security',
+    headline: 'Exploit - the proof-of-concept shelf',
+    body: 'Harmless reproductions that prove each advisory actually fires - no PoC, no advisory.',
+    extra: ['exploit', 'poc'],
+  },
+  'dsh-passkey': {
+    niche: 'security',
+    headline: 'Passkey - WebAuthn sign-in surfaces',
+    body: 'Passkey enroll and assertion flows as dsh tools - phishing-resistant second factor without a phone dance.',
+    extra: ['passkey', 'webauthn'],
+  },
+  'dsh-otp': {
+    niche: 'security',
+    headline: 'OTP - one-time codes without the clipboard',
+    body: 'Fetches and fills one-time codes from the secret store - the code never lands in a chat log.',
+    extra: ['otp'],
+  },
+  'dsh-2fa': {
+    niche: 'security',
+    headline: '2FA - second-factor prompts as a tool',
+    body: 'A tool that can request, but never self-approve, a second factor - the human stays in the loop by construction.',
+    extra: ['2fa', 'mfa'],
+  },
+  'dsh-armor': {
+    niche: 'security',
+    headline: 'Armor - hardening presets for profiles',
+    body: 'One preset that tightens sandbox, approval and egress defaults together - reviewed as a diff, applied as a profile.',
+    extra: ['armor', 'hardening'],
+  },
+  'dsh-lockdown': {
+    niche: 'security',
+    headline: 'Lockdown - the read-only big red switch',
+    body: 'Flips the whole harness to read-only, no-egress in one move - for when something feels off and you want receipts.',
+    extra: ['lockdown'],
+  },
+  'dsh-bastion': {
+    niche: 'security',
+    headline: 'Bastion - the jump-host profile',
+    body: 'Agents reach private networks only through this audited SSH entrypoint - one door, all doors logged.',
+    extra: ['bastion', 'ssh'],
+  },
+  'dsh-fortress': {
+    niche: 'security',
+    headline: 'Fortress - the whole wall in one profile',
+    body: 'Bundles sentinel, defender, armor and lockdown into a single hardened profile - the paranoid preset, documented.',
+    extra: ['fortress'],
+  },
+  'dsh-plugin-sentinel': {
+    niche: 'security',
+    headline: 'Sentinel - the plugin security scanner (real package)',
+    body: 'Static security scan of installed profile plugins - twelve rules over manifests, patches, configs and sources, graded A-F with file:line evidence. Real code lives in dsh-workspace; this seat keeps the name in-family until it publishes.',
+    extra: ['sentinel', 'scanner', 'audit'],
+  },
+  'dsh-plugin-security': {
+    niche: 'security',
+    headline: 'Plugin Security - the family umbrella seat',
+    body: 'Already registered to this account; now curated here so the umbrella name for the security plugin family is managed with the rest instead of floating outside the catalog.',
+    extra: ['security', 'umbrella'],
+  },
+  'dsh-plugin-shield': {
+    niche: 'security',
+    headline: 'Shield - block risky tool calls at the guard',
+    body: 'Plugin-prefixed twin of the shield seat - a tools.guard layer that denies destructive calls before they run.',
+    extra: ['shield', 'guard'],
+  },
+  'dsh-plugin-firewall': {
+    niche: 'security',
+    headline: 'Firewall - egress rules for plugins',
+    body: 'Plugin-prefixed twin of dsh-firewall - allowlist plugin endpoints, deny the rest, log every attempt.',
+    extra: ['firewall', 'egress'],
+  },
+  'dsh-plugin-scanner': {
+    niche: 'security',
+    headline: 'Scanner - periodic rescan of installed plugins',
+    body: 'Plugin-prefixed twin of dsh-scanner - scheduled sentinel runs with a diff between scans, so a bad update cannot sneak in.',
+    extra: ['scanner'],
+  },
+  'dsh-plugin-permission': {
+    niche: 'security',
+    headline: 'Permission - per-plugin capability ledger',
+    body: 'Plugin-prefixed twin of dsh-permission - what each installed plugin may reach, recorded and revocable.',
+    extra: ['permission'],
+  },
+  'dsh-plugin-recovery': {
+    niche: 'security',
+    headline: 'Recovery - undo a bad plugin install',
+    body: 'Plugin-prefixed twin of dsh-recovery - snapshots profile state before installs and rolls back when a plugin misbehaves.',
+    extra: ['recovery', 'rollback'],
+  },
+  'dsh-plugin-defender': {
+    niche: 'security',
+    headline: 'Defender - the plugin-prefixed watch seat',
+    body: 'The bare dsh-defender stem is taken by a stranger; this twin keeps the plugin-scoped name of the same job in-family.',
+    extra: ['defense'],
+  },
+  'dsh-plugin-antivirus': {
+    niche: 'security',
+    headline: 'Antivirus - the plugin-prefixed AV seat',
+    body: 'Pattern packs for the plugin-scanning lane under the second prefix; bare twin still free, both held anyway.',
+    extra: ['antivirus'],
+  },
+  'dsh-plugin-pentest': {
+    niche: 'security',
+    headline: 'Pentest - the plugin-prefixed offense seat',
+    body: 'Same playbooks as dsh-pentest, aimed at plugin surfaces; the second prefix costs nothing today and may not tomorrow.',
+    extra: ['pentest'],
+  },
+  'dsh-plugin-leak': {
+    niche: 'security',
+    headline: 'Leak - the plugin-prefixed tripwire seat',
+    body: 'Secret-leak tripwires scoped to plugin output; bare twin still open, reserved here too.',
+    extra: ['leak'],
+  },
+  'dsh-plugin-vuln': {
+    niche: 'security',
+    headline: 'Vuln - the plugin-prefixed advisory seat',
+    body: 'Advisories for plugin packages under the second prefix; bare twin still open, reserved here too.',
+    extra: ['vuln'],
+  },
+  'dsh-plugin-exploit': {
+    niche: 'security',
+    headline: 'Exploit - the plugin-prefixed PoC seat',
+    body: 'Proof-of-concept shelf for plugin advisories; bare twin still open, reserved here too.',
+    extra: ['exploit'],
+  },
+  'dsh-plugin-passkey': {
+    niche: 'security',
+    headline: 'Passkey - the plugin-prefixed WebAuthn seat',
+    body: 'Passkey flows scoped to plugin sign-in surfaces; bare twin still open, reserved here too.',
+    extra: ['passkey'],
+  },
+  'dsh-plugin-otp': {
+    niche: 'security',
+    headline: 'OTP - the plugin-prefixed code seat',
+    body: 'One-time code handling scoped to plugin flows; bare twin still open, reserved here too.',
+    extra: ['otp'],
+  },
+  'dsh-plugin-2fa': {
+    niche: 'security',
+    headline: '2FA - the plugin-prefixed second-factor seat',
+    body: 'Second-factor prompts scoped to plugin actions; bare twin still open, reserved here too.',
+    extra: ['2fa'],
+  },
+  'dsh-plugin-armor': {
+    niche: 'security',
+    headline: 'Armor - the plugin-prefixed hardening seat',
+    body: 'Hardening presets scoped to plugin capabilities; bare twin still open, reserved here too.',
+    extra: ['armor'],
+  },
+  'dsh-plugin-lockdown': {
+    niche: 'security',
+    headline: 'Lockdown - the plugin-prefixed kill switch',
+    body: 'Disable every plugin in one move when something feels off; bare twin still open, reserved here too.',
+    extra: ['lockdown'],
+  },
+  'dsh-plugin-bastion': {
+    niche: 'security',
+    headline: 'Bastion - the plugin-prefixed jump seat',
+    body: 'Audited plugin network entry under the second prefix; bare twin still open, reserved here too.',
+    extra: ['bastion'],
+  },
+  'dsh-plugin-fortress': {
+    niche: 'security',
+    headline: 'Fortress - the plugin-prefixed hard profile',
+    body: 'The hardened plugin profile bundle under the second prefix; bare twin still open, reserved here too.',
+    extra: ['fortress'],
+  },
+  'dsh-plugin-threat': {
+    niche: 'security',
+    headline: 'Threat - the plugin-prefixed intel seat',
+    body: 'The bare dsh-threat stem is taken by a stranger; this twin holds the plugin-scoped threat-model name.',
+    extra: ['threat'],
+  },
+  'dsh-plugin-watchdog': {
+    niche: 'security',
+    headline: 'Watchdog - the plugin-prefixed monitor seat',
+    body: 'The bare dsh-watchdog stem is taken by a stranger; this twin holds the plugin-scoped watchdog name.',
+    extra: ['watchdog'],
+  },
+  'dsh-plugin-warden': {
+    niche: 'security',
+    headline: 'Warden - the plugin-prefixed custody seat',
+    body: 'The bare dsh-warden stem is taken by a stranger; this twin holds the plugin-scoped warden name.',
+    extra: ['warden'],
+  },
+  'dsh-plugin-harden': {
+    niche: 'security',
+    headline: 'Harden - the plugin-prefixed tightening seat',
+    body: 'The bare dsh-harden stem is taken by a stranger; this twin holds the plugin-scoped hardening name.',
+    extra: ['harden'],
+  },
   // ---- work & hiring -----------------------------------------------------
   'dsh-hire': {
     niche: 'work & hiring',
