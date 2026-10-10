@@ -1,0 +1,21 @@
+{
+  "name": "dsh-spreadsheets",
+  "version": "0.0.1",
+  "description": "Spreadsheets - the workbook shelf - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "spreadsheets",
+    "workbook"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-spreadsheets"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-spreadsheets#readme"
+}

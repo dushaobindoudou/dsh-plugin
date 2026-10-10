@@ -1,0 +1,20 @@
+{
+  "name": "dsh-plugin-tasks",
+  "version": "0.0.1",
+  "description": "Tasks plugin twin - completing the pair - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "tasks"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-plugin-tasks"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-plugin-tasks#readme"
+}

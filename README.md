@@ -1274,6 +1274,147 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-jd`](packages/dsh-jd) | Job description library |
 | [`dsh-headhunt`](packages/dsh-headhunt) | Headhunter workbench |
 
+### Office (136)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-workbuddy`](packages/dsh-workbuddy) | WorkBuddy - the office companion |
+| [`dsh-plugin-workbuddy`](packages/dsh-plugin-workbuddy) | WorkBuddy plugin twin - the office companion as a bundle |
+| [`dsh-officemate`](packages/dsh-officemate) | OfficeMate - the desk-side assistant |
+| [`dsh-plugin-officemate`](packages/dsh-plugin-officemate) | OfficeMate plugin twin |
+| [`dsh-workmate`](packages/dsh-workmate) | WorkMate - the colleague-shaped assistant |
+| [`dsh-plugin-workmate`](packages/dsh-plugin-workmate) | WorkMate plugin twin |
+| [`dsh-plugin-workhub`](packages/dsh-plugin-workhub) | WorkHub plugin twin - the office hub, plugin-scoped |
+| [`dsh-officedesk`](packages/dsh-officedesk) | OfficeDesk - the office surface |
+| [`dsh-plugin-officedesk`](packages/dsh-plugin-officedesk) | OfficeDesk plugin twin |
+| [`dsh-workdesk`](packages/dsh-workdesk) | WorkDesk - the personal workbench |
+| [`dsh-plugin-workdesk`](packages/dsh-plugin-workdesk) | WorkDesk plugin twin |
+| [`dsh-docx`](packages/dsh-docx) | Docx - Word documents |
+| [`dsh-plugin-docx`](packages/dsh-plugin-docx) | Docx plugin twin |
+| [`dsh-pptx`](packages/dsh-pptx) | Pptx - PowerPoint decks |
+| [`dsh-plugin-pptx`](packages/dsh-plugin-pptx) | Pptx plugin twin |
+| [`dsh-brief`](packages/dsh-brief) | Brief - one-page briefs |
+| [`dsh-plugin-brief`](packages/dsh-plugin-brief) | Brief plugin twin |
+| [`dsh-drafts`](packages/dsh-drafts) | Drafts - the drafting table |
+| [`dsh-plugin-drafts`](packages/dsh-plugin-drafts) | Drafts plugin twin |
+| [`dsh-plugin-draft`](packages/dsh-plugin-draft) | Draft plugin twin - the drafting seat, plugin-scoped |
+| [`dsh-prose`](packages/dsh-prose) | Prose - long-form office writing |
+| [`dsh-plugin-prose`](packages/dsh-plugin-prose) | Prose plugin twin |
+| [`dsh-manuscript`](packages/dsh-manuscript) | Manuscript - outline-first documents |
+| [`dsh-plugin-manuscript`](packages/dsh-plugin-manuscript) | Manuscript plugin twin |
+| [`dsh-typewriter`](packages/dsh-typewriter) | Typewriter - zero-friction capture |
+| [`dsh-plugin-typewriter`](packages/dsh-plugin-typewriter) | Typewriter plugin twin |
+| [`dsh-ghostwrite`](packages/dsh-ghostwrite) | Ghostwrite - writing in your voice |
+| [`dsh-plugin-ghostwrite`](packages/dsh-plugin-ghostwrite) | Ghostwrite plugin twin |
+| [`dsh-sheet`](packages/dsh-sheet) | Sheet - spreadsheets |
+| [`dsh-plugin-sheet`](packages/dsh-plugin-sheet) | Sheet plugin twin |
+| [`dsh-spreadsheet`](packages/dsh-spreadsheet) | Spreadsheet - formula-first tables |
+| [`dsh-plugin-spreadsheet`](packages/dsh-plugin-spreadsheet) | Spreadsheet plugin twin |
+| [`dsh-spreadsheets`](packages/dsh-spreadsheets) | Spreadsheets - the workbook shelf |
+| [`dsh-plugin-spreadsheets`](packages/dsh-plugin-spreadsheets) | Spreadsheets plugin twin |
+| [`dsh-cells`](packages/dsh-cells) | Cells - cell-level table access |
+| [`dsh-plugin-cells`](packages/dsh-plugin-cells) | Cells plugin twin |
+| [`dsh-plugin-grid`](packages/dsh-plugin-grid) | Grid plugin twin - the data grid seat, plugin-scoped |
+| [`dsh-pivot`](packages/dsh-pivot) | Pivot - pivot tables |
+| [`dsh-plugin-pivot`](packages/dsh-plugin-pivot) | Pivot plugin twin |
+| [`dsh-plugin-ledger`](packages/dsh-plugin-ledger) | Ledger plugin twin - the ledger seat, plugin-scoped |
+| [`dsh-deck`](packages/dsh-deck) | Deck - slide decks |
+| [`dsh-plugin-deck`](packages/dsh-plugin-deck) | Deck plugin twin |
+| [`dsh-keynote`](packages/dsh-keynote) | Keynote - keynote decks |
+| [`dsh-plugin-keynote`](packages/dsh-plugin-keynote) | Keynote plugin twin |
+| [`dsh-lectern`](packages/dsh-lectern) | Lectern - presentation delivery |
+| [`dsh-plugin-lectern`](packages/dsh-plugin-lectern) | Lectern plugin twin |
+| [`dsh-podium`](packages/dsh-podium) | Podium - talk preparation |
+| [`dsh-plugin-podium`](packages/dsh-plugin-podium) | Podium plugin twin |
+| [`dsh-plugin-slide`](packages/dsh-plugin-slide) | Slide plugin twin |
+| [`dsh-plugin-slides`](packages/dsh-plugin-slides) | Slides plugin twin |
+| [`dsh-contacts`](packages/dsh-contacts) | Contacts - the office directory |
+| [`dsh-plugin-contacts`](packages/dsh-plugin-contacts) | Contacts plugin twin |
+| [`dsh-conference`](packages/dsh-conference) | Conference - meetings end to end |
+| [`dsh-plugin-conference`](packages/dsh-plugin-conference) | Conference plugin twin |
+| [`dsh-plugin-webinar`](packages/dsh-plugin-webinar) | Webinar plugin twin |
+| [`dsh-voicemail`](packages/dsh-voicemail) | Voicemail - async voice notes |
+| [`dsh-plugin-voicemail`](packages/dsh-plugin-voicemail) | Voicemail plugin twin |
+| [`dsh-fax`](packages/dsh-fax) | Fax - the legacy lane |
+| [`dsh-plugin-fax`](packages/dsh-plugin-fax) | Fax plugin twin |
+| [`dsh-outbox`](packages/dsh-outbox) | Outbox - outgoing mail |
+| [`dsh-plugin-outbox`](packages/dsh-plugin-outbox) | Outbox plugin twin |
+| [`dsh-plugin-mail`](packages/dsh-plugin-mail) | Mail plugin twin |
+| [`dsh-plugin-email`](packages/dsh-plugin-email) | Email plugin twin |
+| [`dsh-plugin-meeting`](packages/dsh-plugin-meeting) | Meeting plugin twin |
+| [`dsh-plugin-inbox`](packages/dsh-plugin-inbox) | Inbox plugin twin |
+| [`dsh-plugin-chat`](packages/dsh-plugin-chat) | Chat plugin twin |
+| [`dsh-plugin-sprint`](packages/dsh-plugin-sprint) | Sprint plugin twin |
+| [`dsh-plugin-timesheet`](packages/dsh-plugin-timesheet) | Timesheet plugin twin |
+| [`dsh-plugin-attendance`](packages/dsh-plugin-attendance) | Attendance plugin twin |
+| [`dsh-plugin-approval`](packages/dsh-plugin-approval) | Approval plugin twin |
+| [`dsh-roster`](packages/dsh-roster) | Roster - duty rosters |
+| [`dsh-plugin-roster`](packages/dsh-plugin-roster) | Roster plugin twin |
+| [`dsh-shift`](packages/dsh-shift) | Shift - shift handover |
+| [`dsh-plugin-shift`](packages/dsh-plugin-shift) | Shift plugin twin |
+| [`dsh-plugin-standup`](packages/dsh-plugin-standup) | Standup plugin twin |
+| [`dsh-plugin-retro`](packages/dsh-plugin-retro) | Retro plugin twin |
+| [`dsh-plugin-milestone`](packages/dsh-plugin-milestone) | Milestone plugin twin |
+| [`dsh-plugin-roadmap`](packages/dsh-plugin-roadmap) | Roadmap plugin twin |
+| [`dsh-plugin-gantt`](packages/dsh-plugin-gantt) | Gantt plugin twin |
+| [`dsh-plugin-backlog`](packages/dsh-plugin-backlog) | Backlog plugin twin |
+| [`dsh-manual`](packages/dsh-manual) | Manual - product manuals |
+| [`dsh-plugin-manual`](packages/dsh-plugin-manual) | Manual plugin twin |
+| [`dsh-handbook`](packages/dsh-handbook) | Handbook - the company handbook |
+| [`dsh-plugin-handbook`](packages/dsh-plugin-handbook) | Handbook plugin twin |
+| [`dsh-plugin-playbook`](packages/dsh-plugin-playbook) | Playbook plugin twin |
+| [`dsh-glossary`](packages/dsh-glossary) | Glossary - shared terminology |
+| [`dsh-plugin-glossary`](packages/dsh-plugin-glossary) | Glossary plugin twin |
+| [`dsh-faq`](packages/dsh-faq) | Faq - living FAQs |
+| [`dsh-plugin-faq`](packages/dsh-plugin-faq) | Faq plugin twin |
+| [`dsh-plugin-sop`](packages/dsh-plugin-sop) | Sop plugin twin |
+| [`dsh-room`](packages/dsh-room) | Room - meeting rooms |
+| [`dsh-plugin-room`](packages/dsh-plugin-room) | Room plugin twin |
+| [`dsh-desk`](packages/dsh-desk) | Desk - hot-desking |
+| [`dsh-plugin-desk`](packages/dsh-plugin-desk) | Desk plugin twin |
+| [`dsh-printer`](packages/dsh-printer) | Printer - the print lane |
+| [`dsh-plugin-printer`](packages/dsh-plugin-printer) | Printer plugin twin |
+| [`dsh-clip`](packages/dsh-clip) | Clip - the shared clipboard |
+| [`dsh-plugin-clip`](packages/dsh-plugin-clip) | Clip plugin twin |
+| [`dsh-plugin-archive`](packages/dsh-plugin-archive) | Archive plugin twin |
+| [`dsh-filer`](packages/dsh-filer) | Filer - document filing |
+| [`dsh-plugin-filer`](packages/dsh-plugin-filer) | Filer plugin twin |
+| [`dsh-folder`](packages/dsh-folder) | Folder - folder guard |
+| [`dsh-plugin-folder`](packages/dsh-plugin-folder) | Folder plugin twin |
+| [`dsh-cabinet`](packages/dsh-cabinet) | Cabinet - the long-term archive |
+| [`dsh-plugin-cabinet`](packages/dsh-plugin-cabinet) | Cabinet plugin twin |
+| [`dsh-stapler`](packages/dsh-stapler) | Stapler - document bundles |
+| [`dsh-plugin-stapler`](packages/dsh-plugin-stapler) | Stapler plugin twin |
+| [`dsh-envelope`](packages/dsh-envelope) | Envelope - document dispatch |
+| [`dsh-plugin-envelope`](packages/dsh-plugin-envelope) | Envelope plugin twin |
+| [`dsh-plugin-word`](packages/dsh-plugin-word) | Word plugin twin - completing the pair |
+| [`dsh-plugin-docs`](packages/dsh-plugin-docs) | Docs plugin twin - completing the pair |
+| [`dsh-plugin-task`](packages/dsh-plugin-task) | Task plugin twin - completing the pair |
+| [`dsh-plugin-tasks`](packages/dsh-plugin-tasks) | Tasks plugin twin - completing the pair |
+| [`dsh-plugin-workflow`](packages/dsh-plugin-workflow) | Workflow plugin twin - completing the pair |
+| [`dsh-plugin-workflows`](packages/dsh-plugin-workflows) | Workflows plugin twin - completing the pair |
+| [`dsh-plugin-crm`](packages/dsh-plugin-crm) | Crm plugin twin - completing the pair |
+| [`dsh-plugin-erp`](packages/dsh-plugin-erp) | Erp plugin twin - completing the pair |
+| [`dsh-plugin-hr`](packages/dsh-plugin-hr) | Hr plugin twin - completing the pair |
+| [`dsh-plugin-invoice`](packages/dsh-plugin-invoice) | Invoice plugin twin - completing the pair |
+| [`dsh-plugin-contract`](packages/dsh-plugin-contract) | Contract plugin twin - completing the pair |
+| [`dsh-plugin-ocr`](packages/dsh-plugin-ocr) | Ocr plugin twin - completing the pair |
+| [`dsh-plugin-paper`](packages/dsh-plugin-paper) | Paper plugin twin - completing the pair |
+| [`dsh-plugin-drive`](packages/dsh-plugin-drive) | Drive plugin twin - completing the pair |
+| [`dsh-plugin-print`](packages/dsh-plugin-print) | Print plugin twin - completing the pair |
+| [`dsh-plugin-planner`](packages/dsh-plugin-planner) | Planner plugin twin - completing the pair |
+| [`dsh-plugin-notebook`](packages/dsh-plugin-notebook) | Notebook plugin twin - completing the pair |
+| [`dsh-plugin-resignation`](packages/dsh-plugin-resignation) | Resignation plugin twin - completing the pair |
+| [`dsh-plugin-onboarding`](packages/dsh-plugin-onboarding) | Onboarding plugin twin - completing the pair |
+| [`dsh-plugin-offboarding`](packages/dsh-plugin-offboarding) | Offboarding plugin twin - completing the pair |
+| [`dsh-plugin-workday`](packages/dsh-plugin-workday) | Workday plugin twin - completing the pair |
+| [`dsh-plugin-coworker`](packages/dsh-plugin-coworker) | Coworker plugin twin - completing the pair |
+| [`dsh-plugin-payroll`](packages/dsh-plugin-payroll) | Payroll plugin twin - completing the pair |
+| [`dsh-expenses`](packages/dsh-expenses) | Expenses - expense claims |
+| [`dsh-plugin-expenses`](packages/dsh-plugin-expenses) | Expenses plugin twin |
+| [`dsh-meeting-notes`](packages/dsh-meeting-notes) | MeetingNotes - minutes that file themselves |
+| [`dsh-plugin-meeting-notes`](packages/dsh-plugin-meeting-notes) | MeetingNotes plugin twin |
+
 ### Meta / product (16)
 
 | Name | Planned first release |

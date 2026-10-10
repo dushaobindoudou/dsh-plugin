@@ -1,0 +1,21 @@
+{
+  "name": "dsh-plugin-workbuddy",
+  "version": "0.0.1",
+  "description": "WorkBuddy plugin twin - the office companion as a bundle - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "workbuddy",
+    "office"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-plugin-workbuddy"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-plugin-workbuddy#readme"
+}
