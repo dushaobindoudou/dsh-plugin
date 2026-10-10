@@ -6671,830 +6671,836 @@ export const CORE = {
   // both forms - the bare dsh-xxx seat and the dsh-plugin-xxx twin wherever
   // the bare seat allowed it. Lost bare seats are recorded on their twins.
   // office: suite / buddy
-  "dsh-workbuddy": {
+  'dsh-workbuddy': {
     niche: 'office',
     headline: "WorkBuddy - the office companion",
     body: "One buddy across docs, sheets, mail and meetings - the umbrella persona the office family hangs off.",
-    extra: ["workbuddy","office","companion"],
+    extra: ['workbuddy', 'office', 'companion'],
   },
-  "dsh-plugin-workbuddy": {
+  'dsh-plugin-workbuddy': {
     niche: 'office',
     headline: "WorkBuddy plugin twin - the office companion as a bundle",
     body: "Plugin-prefixed twin of dsh-workbuddy; bare and plugin seats held the same day.",
-    extra: ["workbuddy","office"],
+    extra: ['workbuddy', 'office'],
   },
-  "dsh-officemate": {
+  'dsh-officemate': {
     niche: 'office',
     headline: "OfficeMate - the desk-side assistant",
     body: "Desk-side helper for the daily grind: drafts, follow-ups, summaries and reminders.",
-    extra: ["officemate","assistant"],
+    extra: ['officemate', 'assistant'],
   },
-  "dsh-plugin-officemate": {
+  'dsh-plugin-officemate': {
     niche: 'office',
     headline: "OfficeMate plugin twin",
     body: "Plugin-prefixed twin of dsh-officemate; bare and plugin seats held the same day.",
-    extra: ["officemate"],
+    extra: ['officemate'],
   },
-  "dsh-workmate": {
+  'dsh-workmate': {
     niche: 'office',
     headline: "WorkMate - the colleague-shaped assistant",
     body: "Picks up office tasks the way a teammate would - hand it a chore, get it back done.",
-    extra: ["workmate","coworker"],
+    extra: ['workmate', 'coworker'],
   },
-  "dsh-plugin-workmate": {
+  'dsh-plugin-workmate': {
     niche: 'office',
     headline: "WorkMate plugin twin",
     body: "Plugin-prefixed twin of dsh-workmate; bare and plugin seats held the same day.",
-    extra: ["workmate"],
+    extra: ['workmate'],
   },
-  "dsh-plugin-workhub": {
+  'dsh-plugin-workhub': {
     niche: 'office',
     headline: "WorkHub plugin twin - the office hub, plugin-scoped",
     body: "The bare workhub seat is gone to a stranger; this plugin twin keeps the hub idea in-family.",
-    extra: ["workhub","hub"],
+    extra: ['workhub', 'hub'],
   },
-  "dsh-officedesk": {
+  'dsh-officedesk': {
     niche: 'office',
     headline: "OfficeDesk - the office surface",
     body: "Today's docs, approvals, meetings and inbox arranged in one office panel.",
-    extra: ["officedesk","dashboard"],
+    extra: ['officedesk', 'dashboard'],
   },
-  "dsh-plugin-officedesk": {
+  'dsh-plugin-officedesk': {
     niche: 'office',
     headline: "OfficeDesk plugin twin",
     body: "Plugin-prefixed twin of dsh-officedesk; bare and plugin seats held the same day.",
-    extra: ["officedesk"],
+    extra: ['officedesk'],
   },
-  "dsh-workdesk": {
+  'dsh-workdesk': {
     niche: 'office',
     headline: "WorkDesk - the personal workbench",
     body: "A personal workbench that arranges tasks, drafts and notes for one workday.",
-    extra: ["workdesk","workbench"],
+    extra: ['workdesk', 'workbench'],
   },
-  "dsh-plugin-workdesk": {
+  'dsh-plugin-workdesk': {
     niche: 'office',
     headline: "WorkDesk plugin twin",
     body: "Plugin-prefixed twin of dsh-workdesk; bare and plugin seats held the same day.",
-    extra: ["workdesk"],
+    extra: ['workdesk'],
   },
   // office: docs & writing
-  "dsh-docx": {
+  'dsh-plugin-doc': {
+    niche: 'office',
+    headline: 'Doc plugin twin - the docs seat, plugin-scoped',
+    body: 'The bare dsh-doc seat went to a stranger; the plugin twin keeps the docs lane in-family. Found as a clear tombstone (no maintainer, no versions) on recheck.',
+    extra: ['doc'],
+  },
+  'dsh-docx': {
     niche: 'office',
     headline: "Docx - Word documents",
     body: "Create and edit .docx from sessions - styles, tables and tracked changes included.",
-    extra: ["docx","word"],
+    extra: ['docx', 'word'],
   },
-  "dsh-plugin-docx": {
+  'dsh-plugin-docx': {
     niche: 'office',
     headline: "Docx plugin twin",
     body: "Plugin-prefixed twin of dsh-docx; bare and plugin seats held the same day.",
-    extra: ["docx"],
+    extra: ['docx'],
   },
-  "dsh-pptx": {
+  'dsh-pptx': {
     niche: 'office',
     headline: "Pptx - PowerPoint decks",
     body: "Generate and revise .pptx decks - layouts, charts and speaker notes.",
-    extra: ["pptx","powerpoint"],
+    extra: ['pptx', 'powerpoint'],
   },
-  "dsh-plugin-pptx": {
+  'dsh-plugin-pptx': {
     niche: 'office',
     headline: "Pptx plugin twin",
     body: "Plugin-prefixed twin of dsh-pptx; bare and plugin seats held the same day.",
-    extra: ["pptx"],
+    extra: ['pptx'],
   },
-  "dsh-brief": {
+  'dsh-brief': {
     niche: 'office',
     headline: "Brief - one-page briefs",
     body: "Distill threads and docs into one-pagers with owners, deadlines and the ask.",
-    extra: ["brief","summary"],
+    extra: ['brief', 'summary'],
   },
-  "dsh-plugin-brief": {
+  'dsh-plugin-brief': {
     niche: 'office',
     headline: "Brief plugin twin",
     body: "Plugin-prefixed twin of dsh-brief; bare and plugin seats held the same day.",
-    extra: ["brief"],
+    extra: ['brief'],
   },
-  "dsh-drafts": {
+  'dsh-drafts': {
     niche: 'office',
     headline: "Drafts - the drafting table",
     body: "A rolling table where session output becomes versioned document drafts.",
-    extra: ["drafts","writing"],
+    extra: ['drafts', 'writing'],
   },
-  "dsh-plugin-drafts": {
+  'dsh-plugin-drafts': {
     niche: 'office',
     headline: "Drafts plugin twin",
     body: "Plugin-prefixed twin of dsh-drafts; bare and plugin seats held the same day.",
-    extra: ["drafts"],
+    extra: ['drafts'],
   },
-  "dsh-plugin-draft": {
+  'dsh-plugin-draft': {
     niche: 'office',
     headline: "Draft plugin twin - the drafting seat, plugin-scoped",
     body: "The bare draft seat is taken; the plugin twin keeps drafting in-family.",
-    extra: ["draft"],
+    extra: ['draft'],
   },
-  "dsh-prose": {
+  'dsh-prose': {
     niche: 'office',
     headline: "Prose - long-form office writing",
     body: "Reports, announcements and memos written at length with one consistent voice.",
-    extra: ["prose","writing"],
+    extra: ['prose', 'writing'],
   },
-  "dsh-plugin-prose": {
+  'dsh-plugin-prose': {
     niche: 'office',
     headline: "Prose plugin twin",
     body: "Plugin-prefixed twin of dsh-prose; bare and plugin seats held the same day.",
-    extra: ["prose"],
+    extra: ['prose'],
   },
-  "dsh-manuscript": {
+  'dsh-manuscript': {
     niche: 'office',
     headline: "Manuscript - outline-first documents",
     body: "Outline to numbered, reviewed manuscript - structure before prose.",
-    extra: ["manuscript","document"],
+    extra: ['manuscript', 'document'],
   },
-  "dsh-plugin-manuscript": {
+  'dsh-plugin-manuscript': {
     niche: 'office',
     headline: "Manuscript plugin twin",
     body: "Plugin-prefixed twin of dsh-manuscript; bare and plugin seats held the same day.",
-    extra: ["manuscript"],
+    extra: ['manuscript'],
   },
-  "dsh-typewriter": {
+  'dsh-typewriter': {
     niche: 'office',
     headline: "Typewriter - zero-friction capture",
     body: "Session notes land as formatted office documents without prompting.",
-    extra: ["typewriter","capture"],
+    extra: ['typewriter', 'capture'],
   },
-  "dsh-plugin-typewriter": {
+  'dsh-plugin-typewriter': {
     niche: 'office',
     headline: "Typewriter plugin twin",
     body: "Plugin-prefixed twin of dsh-typewriter; bare and plugin seats held the same day.",
-    extra: ["typewriter"],
+    extra: ['typewriter'],
   },
-  "dsh-ghostwrite": {
+  'dsh-ghostwrite': {
     niche: 'office',
     headline: "Ghostwrite - writing in your voice",
     body: "Replies and announcements in the user's tone, learned from past mails and docs.",
-    extra: ["ghostwrite","tone"],
+    extra: ['ghostwrite', 'tone'],
   },
-  "dsh-plugin-ghostwrite": {
+  'dsh-plugin-ghostwrite': {
     niche: 'office',
     headline: "Ghostwrite plugin twin",
     body: "Plugin-prefixed twin of dsh-ghostwrite; bare and plugin seats held the same day.",
-    extra: ["ghostwrite"],
+    extra: ['ghostwrite'],
   },
   // office: sheets & data
-  "dsh-sheet": {
+  'dsh-sheet': {
     niche: 'office',
     headline: "Sheet - spreadsheets",
     body: "Read, edit and audit spreadsheets with formulas intact - xlsx and csv.",
-    extra: ["sheet","excel","xlsx"],
+    extra: ['sheet', 'excel', 'xlsx'],
   },
-  "dsh-plugin-sheet": {
+  'dsh-plugin-sheet': {
     niche: 'office',
     headline: "Sheet plugin twin",
     body: "Plugin-prefixed twin of dsh-sheet; bare and plugin seats held the same day.",
-    extra: ["sheet"],
+    extra: ['sheet'],
   },
-  "dsh-spreadsheet": {
+  'dsh-spreadsheet': {
     niche: 'office',
     headline: "Spreadsheet - formula-first tables",
     body: "Formula-aware spreadsheet editing with recalculation and diff review.",
-    extra: ["spreadsheet","formula"],
+    extra: ['spreadsheet', 'formula'],
   },
-  "dsh-plugin-spreadsheet": {
+  'dsh-plugin-spreadsheet': {
     niche: 'office',
     headline: "Spreadsheet plugin twin",
     body: "Plugin-prefixed twin of dsh-spreadsheet; bare and plugin seats held the same day.",
-    extra: ["spreadsheet"],
+    extra: ['spreadsheet'],
   },
-  "dsh-spreadsheets": {
+  'dsh-spreadsheets': {
     niche: 'office',
     headline: "Spreadsheets - the workbook shelf",
     body: "Multi-sheet workbooks handled as a shelf - cross-sheet links kept honest.",
-    extra: ["spreadsheets","workbook"],
+    extra: ['spreadsheets', 'workbook'],
   },
-  "dsh-plugin-spreadsheets": {
+  'dsh-plugin-spreadsheets': {
     niche: 'office',
     headline: "Spreadsheets plugin twin",
     body: "Plugin-prefixed twin of dsh-spreadsheets; bare and plugin seats held the same day.",
-    extra: ["spreadsheets"],
+    extra: ['spreadsheets'],
   },
-  "dsh-cells": {
+  'dsh-cells': {
     niche: 'office',
     headline: "Cells - cell-level table access",
     body: "Address spreadsheet ranges like memory - read and patch cell windows safely.",
-    extra: ["cells","range"],
+    extra: ['cells', 'range'],
   },
-  "dsh-plugin-cells": {
+  'dsh-plugin-cells': {
     niche: 'office',
     headline: "Cells plugin twin",
     body: "Plugin-prefixed twin of dsh-cells; bare and plugin seats held the same day.",
-    extra: ["cells"],
+    extra: ['cells'],
   },
-  "dsh-plugin-grid": {
+  'dsh-plugin-grid': {
     niche: 'office',
     headline: "Grid plugin twin - the data grid seat, plugin-scoped",
     body: "The bare grid seat is taken; the plugin twin holds the grid idea.",
-    extra: ["grid"],
+    extra: ['grid'],
   },
-  "dsh-pivot": {
+  'dsh-pivot': {
     niche: 'office',
     headline: "Pivot - pivot tables",
     body: "Pivot, group and aggregate office tables on request.",
-    extra: ["pivot","aggregate"],
+    extra: ['pivot', 'aggregate'],
   },
-  "dsh-plugin-pivot": {
+  'dsh-plugin-pivot': {
     niche: 'office',
     headline: "Pivot plugin twin",
     body: "Plugin-prefixed twin of dsh-pivot; bare and plugin seats held the same day.",
-    extra: ["pivot"],
+    extra: ['pivot'],
   },
-  "dsh-plugin-ledger": {
+  'dsh-plugin-ledger': {
     niche: 'office',
     headline: "Ledger plugin twin - the ledger seat, plugin-scoped",
     body: "The bare ledger seat is taken; the plugin twin keeps ledgers in-family.",
-    extra: ["ledger"],
+    extra: ['ledger'],
   },
   // office: slides
-  "dsh-deck": {
+  'dsh-deck': {
     niche: 'office',
     headline: "Deck - slide decks",
     body: "Assemble and revise slide decks - outline, layout and speaker notes.",
-    extra: ["deck","slides"],
+    extra: ['deck', 'slides'],
   },
-  "dsh-plugin-deck": {
+  'dsh-plugin-deck': {
     niche: 'office',
     headline: "Deck plugin twin",
     body: "Plugin-prefixed twin of dsh-deck; bare and plugin seats held the same day.",
-    extra: ["deck"],
+    extra: ['deck'],
   },
-  "dsh-keynote": {
+  'dsh-keynote': {
     niche: 'office',
     headline: "Keynote - keynote decks",
     body: "Keynote-style decks from an outline, with talk track and visuals.",
-    extra: ["keynote","talk"],
+    extra: ['keynote', 'talk'],
   },
-  "dsh-plugin-keynote": {
+  'dsh-plugin-keynote': {
     niche: 'office',
     headline: "Keynote plugin twin",
     body: "Plugin-prefixed twin of dsh-keynote; bare and plugin seats held the same day.",
-    extra: ["keynote"],
+    extra: ['keynote'],
   },
-  "dsh-lectern": {
+  'dsh-lectern': {
     niche: 'office',
     headline: "Lectern - presentation delivery",
     body: "Presenter mode: run the deck, keep the talk track, capture audience questions.",
-    extra: ["lectern","present"],
+    extra: ['lectern', 'present'],
   },
-  "dsh-plugin-lectern": {
+  'dsh-plugin-lectern': {
     niche: 'office',
     headline: "Lectern plugin twin",
     body: "Plugin-prefixed twin of dsh-lectern; bare and plugin seats held the same day.",
-    extra: ["lectern"],
+    extra: ['lectern'],
   },
-  "dsh-podium": {
+  'dsh-podium': {
     niche: 'office',
     headline: "Podium - talk preparation",
     body: "Turn documents into talks - narrative arc, slides and rehearsal notes.",
-    extra: ["podium","rehearse"],
+    extra: ['podium', 'rehearse'],
   },
-  "dsh-plugin-podium": {
+  'dsh-plugin-podium': {
     niche: 'office',
     headline: "Podium plugin twin",
     body: "Plugin-prefixed twin of dsh-podium; bare and plugin seats held the same day.",
-    extra: ["podium"],
+    extra: ['podium'],
   },
-  "dsh-plugin-slide": {
+  'dsh-plugin-slide': {
     niche: 'office',
     headline: "Slide plugin twin",
     body: "The bare slide seat is taken; the plugin twin keeps slides in-family.",
-    extra: ["slide"],
+    extra: ['slide'],
   },
-  "dsh-plugin-slides": {
+  'dsh-plugin-slides': {
     niche: 'office',
     headline: "Slides plugin twin",
     body: "The bare slides seat is taken; the plugin twin keeps the deck lane in-family.",
-    extra: ["slides"],
+    extra: ['slides'],
   },
   // office: comms
-  "dsh-contacts": {
+  'dsh-contacts': {
     niche: 'office',
     headline: "Contacts - the office directory",
     body: "The shared contact book - people, teams, roles and how to reach them.",
-    extra: ["contacts","directory"],
+    extra: ['contacts', 'directory'],
   },
-  "dsh-plugin-contacts": {
+  'dsh-plugin-contacts': {
     niche: 'office',
     headline: "Contacts plugin twin",
     body: "Plugin-prefixed twin of dsh-contacts; bare and plugin seats held the same day.",
-    extra: ["contacts"],
+    extra: ['contacts'],
   },
-  "dsh-conference": {
+  'dsh-conference': {
     niche: 'office',
     headline: "Conference - meetings end to end",
     body: "Spin up and document meetings - agenda, invites, recap and actions.",
-    extra: ["conference","meeting"],
+    extra: ['conference', 'meeting'],
   },
-  "dsh-plugin-conference": {
+  'dsh-plugin-conference': {
     niche: 'office',
     headline: "Conference plugin twin",
     body: "Plugin-prefixed twin of dsh-conference; bare and plugin seats held the same day.",
-    extra: ["conference"],
+    extra: ['conference'],
   },
-  "dsh-plugin-webinar": {
+  'dsh-plugin-webinar': {
     niche: 'office',
     headline: "Webinar plugin twin",
     body: "The bare webinar seat is taken; the plugin twin keeps webinars in-family.",
-    extra: ["webinar"],
+    extra: ['webinar'],
   },
-  "dsh-voicemail": {
+  'dsh-voicemail': {
     niche: 'office',
     headline: "Voicemail - async voice notes",
     body: "Voice notes and transcripts as first-class office messages.",
-    extra: ["voicemail","voice"],
+    extra: ['voicemail', 'voice'],
   },
-  "dsh-plugin-voicemail": {
+  'dsh-plugin-voicemail': {
     niche: 'office',
     headline: "Voicemail plugin twin",
     body: "Plugin-prefixed twin of dsh-voicemail; bare and plugin seats held the same day.",
-    extra: ["voicemail"],
+    extra: ['voicemail'],
   },
-  "dsh-fax": {
+  'dsh-fax': {
     niche: 'office',
     headline: "Fax - the legacy lane",
     body: "Send and receive faxes for the offices that still live there.",
-    extra: ["fax","legacy"],
+    extra: ['fax', 'legacy'],
   },
-  "dsh-plugin-fax": {
+  'dsh-plugin-fax': {
     niche: 'office',
     headline: "Fax plugin twin",
     body: "Plugin-prefixed twin of dsh-fax; bare and plugin seats held the same day.",
-    extra: ["fax"],
+    extra: ['fax'],
   },
-  "dsh-outbox": {
+  'dsh-outbox': {
     niche: 'office',
     headline: "Outbox - outgoing mail",
     body: "Draft, queue and send office email with a review gate before delivery.",
-    extra: ["outbox","email"],
+    extra: ['outbox', 'email'],
   },
-  "dsh-plugin-outbox": {
+  'dsh-plugin-outbox': {
     niche: 'office',
     headline: "Outbox plugin twin",
     body: "Plugin-prefixed twin of dsh-outbox; bare and plugin seats held the same day.",
-    extra: ["outbox"],
+    extra: ['outbox'],
   },
-  "dsh-plugin-mail": {
+  'dsh-plugin-mail': {
     niche: 'office',
     headline: "Mail plugin twin",
     body: "The bare mail seat is taken; the plugin twin keeps the mail lane in-family.",
-    extra: ["mail"],
+    extra: ['mail'],
   },
-  "dsh-plugin-email": {
+  'dsh-plugin-email': {
     niche: 'office',
     headline: "Email plugin twin",
     body: "The bare email seat is taken; the plugin twin keeps email in-family.",
-    extra: ["email"],
+    extra: ['email'],
   },
-  "dsh-plugin-meeting": {
+  'dsh-plugin-meeting': {
     niche: 'office',
     headline: "Meeting plugin twin",
     body: "The bare meeting seat is taken; the plugin twin keeps meetings in-family.",
-    extra: ["meeting"],
+    extra: ['meeting'],
   },
-  "dsh-plugin-inbox": {
+  'dsh-plugin-inbox': {
     niche: 'office',
     headline: "Inbox plugin twin",
     body: "The bare inbox seat is taken; the plugin twin keeps the inbox lane in-family.",
-    extra: ["inbox"],
+    extra: ['inbox'],
   },
-  "dsh-plugin-chat": {
+  'dsh-plugin-chat': {
     niche: 'office',
     headline: "Chat plugin twin",
     body: "The bare chat seat is taken; the plugin twin keeps office chat in-family.",
-    extra: ["chat"],
+    extra: ['chat'],
   },
   // office: planning
-  "dsh-plugin-sprint": {
+  'dsh-plugin-sprint': {
     niche: 'office',
     headline: "Sprint plugin twin",
     body: "The bare sprint seat is taken; the plugin twin keeps sprints in-family.",
-    extra: ["sprint"],
+    extra: ['sprint'],
   },
-  "dsh-plugin-timesheet": {
+  'dsh-plugin-timesheet': {
     niche: 'office',
     headline: "Timesheet plugin twin",
     body: "The bare timesheet seat is taken; the plugin twin keeps time tracking in-family.",
-    extra: ["timesheet"],
+    extra: ['timesheet'],
   },
-  "dsh-plugin-attendance": {
+  'dsh-plugin-attendance': {
     niche: 'office',
     headline: "Attendance plugin twin",
     body: "The bare attendance seat is taken; the plugin twin keeps attendance in-family.",
-    extra: ["attendance"],
+    extra: ['attendance'],
   },
-  "dsh-plugin-approval": {
+  'dsh-plugin-approval': {
     niche: 'office',
     headline: "Approval plugin twin",
     body: "The bare approval seat is taken; the plugin twin keeps approval flows in-family.",
-    extra: ["approval"],
+    extra: ['approval'],
   },
-  "dsh-roster": {
+  'dsh-roster': {
     niche: 'office',
     headline: "Roster - duty rosters",
     body: "Build and publish team rosters with swaps and conflicts flagged.",
-    extra: ["roster","shifts"],
+    extra: ['roster', 'shifts'],
   },
-  "dsh-plugin-roster": {
+  'dsh-plugin-roster': {
     niche: 'office',
     headline: "Roster plugin twin",
     body: "Plugin-prefixed twin of dsh-roster; bare and plugin seats held the same day.",
-    extra: ["roster"],
+    extra: ['roster'],
   },
-  "dsh-shift": {
+  'dsh-shift': {
     niche: 'office',
     headline: "Shift - shift handover",
     body: "Handover notes that survive the schedule - what happened, what is next.",
-    extra: ["shift","handover"],
+    extra: ['shift', 'handover'],
   },
-  "dsh-plugin-shift": {
+  'dsh-plugin-shift': {
     niche: 'office',
     headline: "Shift plugin twin",
     body: "Plugin-prefixed twin of dsh-shift; bare and plugin seats held the same day.",
-    extra: ["shift"],
+    extra: ['shift'],
   },
-  "dsh-plugin-standup": {
+  'dsh-plugin-standup': {
     niche: 'office',
     headline: "Standup plugin twin",
     body: "The bare standup seat is taken; the plugin twin keeps standups in-family.",
-    extra: ["standup"],
+    extra: ['standup'],
   },
-  "dsh-plugin-retro": {
+  'dsh-plugin-retro': {
     niche: 'office',
     headline: "Retro plugin twin",
     body: "The bare retro seat is taken; the plugin twin keeps retros in-family.",
-    extra: ["retro"],
+    extra: ['retro'],
   },
-  "dsh-plugin-milestone": {
+  'dsh-plugin-milestone': {
     niche: 'office',
     headline: "Milestone plugin twin",
     body: "The bare milestone seat is taken; the plugin twin keeps milestones in-family.",
-    extra: ["milestone"],
+    extra: ['milestone'],
   },
-  "dsh-plugin-roadmap": {
+  'dsh-plugin-roadmap': {
     niche: 'office',
     headline: "Roadmap plugin twin",
     body: "The bare roadmap seat is taken; the plugin twin keeps roadmaps in-family.",
-    extra: ["roadmap"],
+    extra: ['roadmap'],
   },
-  "dsh-plugin-gantt": {
+  'dsh-plugin-gantt': {
     niche: 'office',
     headline: "Gantt plugin twin",
     body: "The bare gantt seat is taken; the plugin twin keeps gantt charts in-family.",
-    extra: ["gantt"],
+    extra: ['gantt'],
   },
-  "dsh-plugin-backlog": {
+  'dsh-plugin-backlog': {
     niche: 'office',
     headline: "Backlog plugin twin",
     body: "The bare backlog seat is taken; the plugin twin keeps backlogs in-family.",
-    extra: ["backlog"],
+    extra: ['backlog'],
   },
   // office: knowledge
-  "dsh-manual": {
+  'dsh-manual': {
     niche: 'office',
     headline: "Manual - product manuals",
     body: "Write and maintain product manuals from sessions, versioned per release.",
-    extra: ["manual","docs"],
+    extra: ['manual', 'docs'],
   },
-  "dsh-plugin-manual": {
+  'dsh-plugin-manual': {
     niche: 'office',
     headline: "Manual plugin twin",
     body: "Plugin-prefixed twin of dsh-manual; bare and plugin seats held the same day.",
-    extra: ["manual"],
+    extra: ['manual'],
   },
-  "dsh-handbook": {
+  'dsh-handbook': {
     niche: 'office',
     headline: "Handbook - the company handbook",
     body: "The living company handbook - policies and how-we-work, always current.",
-    extra: ["handbook","policy"],
+    extra: ['handbook', 'policy'],
   },
-  "dsh-plugin-handbook": {
+  'dsh-plugin-handbook': {
     niche: 'office',
     headline: "Handbook plugin twin",
     body: "Plugin-prefixed twin of dsh-handbook; bare and plugin seats held the same day.",
-    extra: ["handbook"],
+    extra: ['handbook'],
   },
-  "dsh-plugin-playbook": {
+  'dsh-plugin-playbook': {
     niche: 'office',
     headline: "Playbook plugin twin",
     body: "The bare playbook seat is taken; the plugin twin keeps playbooks in-family.",
-    extra: ["playbook"],
+    extra: ['playbook'],
   },
-  "dsh-glossary": {
+  'dsh-glossary': {
     niche: 'office',
     headline: "Glossary - shared terminology",
     body: "One glossary for terms and acronyms, enforced in generated documents.",
-    extra: ["glossary","terms"],
+    extra: ['glossary', 'terms'],
   },
-  "dsh-plugin-glossary": {
+  'dsh-plugin-glossary': {
     niche: 'office',
     headline: "Glossary plugin twin",
     body: "Plugin-prefixed twin of dsh-glossary; bare and plugin seats held the same day.",
-    extra: ["glossary"],
+    extra: ['glossary'],
   },
-  "dsh-faq": {
+  'dsh-faq': {
     niche: 'office',
     headline: "Faq - living FAQs",
     body: "Recurring questions become a maintained FAQ with sources.",
-    extra: ["faq","questions"],
+    extra: ['faq', 'questions'],
   },
-  "dsh-plugin-faq": {
+  'dsh-plugin-faq': {
     niche: 'office',
     headline: "Faq plugin twin",
     body: "Plugin-prefixed twin of dsh-faq; bare and plugin seats held the same day.",
-    extra: ["faq"],
+    extra: ['faq'],
   },
-  "dsh-plugin-sop": {
+  'dsh-plugin-sop': {
     niche: 'office',
     headline: "Sop plugin twin",
     body: "The bare sop seat is taken; the plugin twin keeps SOPs in-family.",
-    extra: ["sop"],
+    extra: ['sop'],
   },
   // office: misc office
-  "dsh-room": {
+  'dsh-room': {
     niche: 'office',
     headline: "Room - meeting rooms",
     body: "Book rooms, see occupancy, sync with the calendar.",
-    extra: ["room","booking"],
+    extra: ['room', 'booking'],
   },
-  "dsh-plugin-room": {
+  'dsh-plugin-room': {
     niche: 'office',
     headline: "Room plugin twin",
     body: "Plugin-prefixed twin of dsh-room; bare and plugin seats held the same day.",
-    extra: ["room"],
+    extra: ['room'],
   },
-  "dsh-desk": {
+  'dsh-desk': {
     niche: 'office',
     headline: "Desk - hot-desking",
     body: "Hot-desk booking and neighborhood plans for hybrid offices.",
-    extra: ["desk","booking"],
+    extra: ['desk', 'booking'],
   },
-  "dsh-plugin-desk": {
+  'dsh-plugin-desk': {
     niche: 'office',
     headline: "Desk plugin twin",
     body: "Plugin-prefixed twin of dsh-desk; bare and plugin seats held the same day.",
-    extra: ["desk"],
+    extra: ['desk'],
   },
-  "dsh-printer": {
+  'dsh-printer': {
     niche: 'office',
     headline: "Printer - the print lane",
     body: "Print jobs and label printing for the office printers.",
-    extra: ["printer","print"],
+    extra: ['printer', 'print'],
   },
-  "dsh-plugin-printer": {
+  'dsh-plugin-printer': {
     niche: 'office',
     headline: "Printer plugin twin",
     body: "Plugin-prefixed twin of dsh-printer; bare and plugin seats held the same day.",
-    extra: ["printer"],
+    extra: ['printer'],
   },
-  "dsh-clip": {
+  'dsh-clip': {
     niche: 'office',
     headline: "Clip - the shared clipboard",
     body: "A shared clipboard for sessions - clip, label and reuse snippets.",
-    extra: ["clip","clipboard"],
+    extra: ['clip', 'clipboard'],
   },
-  "dsh-plugin-clip": {
+  'dsh-plugin-clip': {
     niche: 'office',
     headline: "Clip plugin twin",
     body: "Plugin-prefixed twin of dsh-clip; bare and plugin seats held the same day.",
-    extra: ["clip"],
+    extra: ['clip'],
   },
-  "dsh-plugin-archive": {
+  'dsh-plugin-archive': {
     niche: 'office',
     headline: "Archive plugin twin",
     body: "The bare archive seat is taken; the plugin twin keeps archiving in-family.",
-    extra: ["archive"],
+    extra: ['archive'],
   },
-  "dsh-filer": {
+  'dsh-filer': {
     niche: 'office',
     headline: "Filer - document filing",
     body: "File every artifact into the right folder, naming rules enforced.",
-    extra: ["filer","filing"],
+    extra: ['filer', 'filing'],
   },
-  "dsh-plugin-filer": {
+  'dsh-plugin-filer': {
     niche: 'office',
     headline: "Filer plugin twin",
     body: "Plugin-prefixed twin of dsh-filer; bare and plugin seats held the same day.",
-    extra: ["filer"],
+    extra: ['filer'],
   },
-  "dsh-folder": {
+  'dsh-folder': {
     niche: 'office',
     headline: "Folder - folder guard",
     body: "Folder conventions and cleanups - moves, renames and permission checks.",
-    extra: ["folder","organize"],
+    extra: ['folder', 'organize'],
   },
-  "dsh-plugin-folder": {
+  'dsh-plugin-folder': {
     niche: 'office',
     headline: "Folder plugin twin",
     body: "Plugin-prefixed twin of dsh-folder; bare and plugin seats held the same day.",
-    extra: ["folder"],
+    extra: ['folder'],
   },
-  "dsh-cabinet": {
+  'dsh-cabinet': {
     niche: 'office',
     headline: "Cabinet - the long-term archive",
     body: "Long-term document storage with retention rules and search.",
-    extra: ["cabinet","archive"],
+    extra: ['cabinet', 'archive'],
   },
-  "dsh-plugin-cabinet": {
+  'dsh-plugin-cabinet': {
     niche: 'office',
     headline: "Cabinet plugin twin",
     body: "Plugin-prefixed twin of dsh-cabinet; bare and plugin seats held the same day.",
-    extra: ["cabinet"],
+    extra: ['cabinet'],
   },
-  "dsh-stapler": {
+  'dsh-stapler': {
     niche: 'office',
     headline: "Stapler - document bundles",
     body: "Bundle related documents into one stapled packet for review.",
-    extra: ["stapler","bundle"],
+    extra: ['stapler', 'bundle'],
   },
-  "dsh-plugin-stapler": {
+  'dsh-plugin-stapler': {
     niche: 'office',
     headline: "Stapler plugin twin",
     body: "Plugin-prefixed twin of dsh-stapler; bare and plugin seats held the same day.",
-    extra: ["stapler"],
+    extra: ['stapler'],
   },
-  "dsh-envelope": {
+  'dsh-envelope': {
     niche: 'office',
     headline: "Envelope - document dispatch",
     body: "Address, attach and dispatch documents to the right recipients.",
-    extra: ["envelope","dispatch"],
+    extra: ['envelope', 'dispatch'],
   },
-  "dsh-plugin-envelope": {
+  'dsh-plugin-envelope': {
     niche: 'office',
     headline: "Envelope plugin twin",
     body: "Plugin-prefixed twin of dsh-envelope; bare and plugin seats held the same day.",
-    extra: ["envelope"],
+    extra: ['envelope'],
   },
   // office: twins of seats this monorepo already holds
-  "dsh-plugin-word": {
+  'dsh-plugin-word': {
     niche: 'office',
     headline: "Word plugin twin - completing the pair",
     body: "dsh-word is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["word"],
+    extra: ['word'],
   },
-  "dsh-plugin-docs": {
+  'dsh-plugin-docs': {
     niche: 'office',
     headline: "Docs plugin twin - completing the pair",
     body: "dsh-docs is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["docs"],
+    extra: ['docs'],
   },
-  "dsh-plugin-task": {
+  'dsh-plugin-task': {
     niche: 'office',
     headline: "Task plugin twin - completing the pair",
     body: "dsh-task is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["task"],
+    extra: ['task'],
   },
-  "dsh-plugin-tasks": {
+  'dsh-plugin-tasks': {
     niche: 'office',
     headline: "Tasks plugin twin - completing the pair",
     body: "dsh-tasks is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["tasks"],
+    extra: ['tasks'],
   },
-  "dsh-plugin-workflow": {
+  'dsh-plugin-workflow': {
     niche: 'office',
     headline: "Workflow plugin twin - completing the pair",
     body: "dsh-workflow is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["workflow"],
+    extra: ['workflow'],
   },
-  "dsh-plugin-workflows": {
+  'dsh-plugin-workflows': {
     niche: 'office',
     headline: "Workflows plugin twin - completing the pair",
     body: "dsh-workflows is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["workflows"],
+    extra: ['workflows'],
   },
-  "dsh-plugin-crm": {
+  'dsh-plugin-crm': {
     niche: 'office',
     headline: "Crm plugin twin - completing the pair",
     body: "dsh-crm is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["crm"],
+    extra: ['crm'],
   },
-  "dsh-plugin-erp": {
+  'dsh-plugin-erp': {
     niche: 'office',
     headline: "Erp plugin twin - completing the pair",
     body: "dsh-erp is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["erp"],
+    extra: ['erp'],
   },
-  "dsh-plugin-hr": {
+  'dsh-plugin-hr': {
     niche: 'office',
     headline: "Hr plugin twin - completing the pair",
     body: "dsh-hr is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["hr"],
+    extra: ['hr'],
   },
-  "dsh-plugin-invoice": {
+  'dsh-plugin-invoice': {
     niche: 'office',
     headline: "Invoice plugin twin - completing the pair",
     body: "dsh-invoice is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["invoice"],
+    extra: ['invoice'],
   },
-  "dsh-plugin-contract": {
+  'dsh-plugin-contract': {
     niche: 'office',
     headline: "Contract plugin twin - completing the pair",
     body: "dsh-contract is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["contract"],
+    extra: ['contract'],
   },
-  "dsh-plugin-ocr": {
+  'dsh-plugin-ocr': {
     niche: 'office',
     headline: "Ocr plugin twin - completing the pair",
     body: "dsh-ocr is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["ocr"],
+    extra: ['ocr'],
   },
-  "dsh-plugin-paper": {
+  'dsh-plugin-paper': {
     niche: 'office',
     headline: "Paper plugin twin - completing the pair",
     body: "dsh-paper is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["paper"],
+    extra: ['paper'],
   },
-  "dsh-plugin-drive": {
+  'dsh-plugin-drive': {
     niche: 'office',
     headline: "Drive plugin twin - completing the pair",
     body: "dsh-drive is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["drive"],
+    extra: ['drive'],
   },
-  "dsh-plugin-print": {
+  'dsh-plugin-print': {
     niche: 'office',
     headline: "Print plugin twin - completing the pair",
     body: "dsh-print is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["print"],
+    extra: ['print'],
   },
-  "dsh-plugin-planner": {
+  'dsh-plugin-planner': {
     niche: 'office',
     headline: "Planner plugin twin - completing the pair",
     body: "dsh-planner is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["planner"],
+    extra: ['planner'],
   },
-  "dsh-plugin-notebook": {
+  'dsh-plugin-notebook': {
     niche: 'office',
     headline: "Notebook plugin twin - completing the pair",
     body: "dsh-notebook is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["notebook"],
+    extra: ['notebook'],
   },
-  "dsh-plugin-resignation": {
+  'dsh-plugin-resignation': {
     niche: 'office',
     headline: "Resignation plugin twin - completing the pair",
     body: "dsh-resignation is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["resignation"],
+    extra: ['resignation'],
   },
-  "dsh-plugin-onboarding": {
+  'dsh-plugin-onboarding': {
     niche: 'office',
     headline: "Onboarding plugin twin - completing the pair",
     body: "dsh-onboarding is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["onboarding"],
+    extra: ['onboarding'],
   },
-  "dsh-plugin-offboarding": {
+  'dsh-plugin-offboarding': {
     niche: 'office',
     headline: "Offboarding plugin twin - completing the pair",
     body: "dsh-offboarding is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["offboarding"],
+    extra: ['offboarding'],
   },
-  "dsh-plugin-workday": {
+  'dsh-plugin-workday': {
     niche: 'office',
     headline: "Workday plugin twin - completing the pair",
     body: "dsh-workday is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["workday"],
+    extra: ['workday'],
   },
-  "dsh-plugin-coworker": {
+  'dsh-plugin-coworker': {
     niche: 'office',
     headline: "Coworker plugin twin - completing the pair",
     body: "dsh-coworker is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["coworker"],
+    extra: ['coworker'],
   },
-  "dsh-plugin-payroll": {
+  'dsh-plugin-payroll': {
     niche: 'office',
     headline: "Payroll plugin twin - completing the pair",
     body: "dsh-payroll is held as a bare seat in this monorepo; the plugin-prefixed twin completes the pair.",
-    extra: ["payroll"],
+    extra: ['payroll'],
   },
   // office: standalone pairs
-  "dsh-expenses": {
+  'dsh-expenses': {
     niche: 'office',
     headline: "Expenses - expense claims",
     body: "Capture receipts, build claims and track reimbursements.",
-    extra: ["expenses","reimburse"],
+    extra: ['expenses', 'reimburse'],
   },
-  "dsh-plugin-expenses": {
+  'dsh-plugin-expenses': {
     niche: 'office',
     headline: "Expenses plugin twin",
     body: "Plugin-prefixed twin of dsh-expenses; bare and plugin seats held the same day.",
-    extra: ["expenses"],
+    extra: ['expenses'],
   },
-  "dsh-meeting-notes": {
+  'dsh-meeting-notes': {
     niche: 'office',
     headline: "MeetingNotes - minutes that file themselves",
     body: "Minutes with owners and deadlines, filed to the right doc automatically.",
-    extra: ["minutes","notes"],
+    extra: ['minutes', 'notes'],
   },
-  "dsh-plugin-meeting-notes": {
+  'dsh-plugin-meeting-notes': {
     niche: 'office',
     headline: "MeetingNotes plugin twin",
     body: "Plugin-prefixed twin of dsh-meeting-notes; bare and plugin seats held the same day.",
-    extra: ["minutes"],
+    extra: ['minutes'],
   },
 
   // ---- meta / product ----------------------------------------------------

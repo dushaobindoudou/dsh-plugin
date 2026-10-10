@@ -1274,7 +1274,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-jd`](packages/dsh-jd) | Job description library |
 | [`dsh-headhunt`](packages/dsh-headhunt) | Headhunter workbench |
 
-### Office (136)
+### Office (137)
 
 | Name | Planned first release |
 | --- | --- |
@@ -1289,6 +1289,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-plugin-officedesk`](packages/dsh-plugin-officedesk) | OfficeDesk plugin twin |
 | [`dsh-workdesk`](packages/dsh-workdesk) | WorkDesk - the personal workbench |
 | [`dsh-plugin-workdesk`](packages/dsh-plugin-workdesk) | WorkDesk plugin twin |
+| [`dsh-plugin-doc`](packages/dsh-plugin-doc) | Doc plugin twin - the docs seat, plugin-scoped |
 | [`dsh-docx`](packages/dsh-docx) | Docx - Word documents |
 | [`dsh-plugin-docx`](packages/dsh-plugin-docx) | Docx plugin twin |
 | [`dsh-pptx`](packages/dsh-pptx) | Pptx - PowerPoint decks |
