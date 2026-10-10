@@ -1,0 +1,20 @@
+{
+  "name": "dsh-plugin-agenda",
+  "version": "0.0.1",
+  "description": "Agenda plugin twin - the agenda seat, plugin-scoped - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "agenda"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-plugin-agenda"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-plugin-agenda#readme"
+}

@@ -1274,7 +1274,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-jd`](packages/dsh-jd) | Job description library |
 | [`dsh-headhunt`](packages/dsh-headhunt) | Headhunter workbench |
 
-### Office (137)
+### Office (269)
 
 | Name | Planned first release |
 | --- | --- |
@@ -1415,6 +1415,138 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-plugin-expenses`](packages/dsh-plugin-expenses) | Expenses plugin twin |
 | [`dsh-meeting-notes`](packages/dsh-meeting-notes) | MeetingNotes - minutes that file themselves |
 | [`dsh-plugin-meeting-notes`](packages/dsh-plugin-meeting-notes) | MeetingNotes plugin twin |
+| [`dsh-plugin-calendar`](packages/dsh-plugin-calendar) | Calendar plugin twin - the calendar seat, plugin-scoped |
+| [`dsh-plugin-pdf`](packages/dsh-plugin-pdf) | Pdf plugin twin - the pdf seat, plugin-scoped |
+| [`dsh-plugin-excel`](packages/dsh-plugin-excel) | Excel plugin twin - the excel seat, plugin-scoped |
+| [`dsh-plugin-xlsx`](packages/dsh-plugin-xlsx) | Xlsx plugin twin - the xlsx seat, plugin-scoped |
+| [`dsh-plugin-wiki`](packages/dsh-plugin-wiki) | Wiki plugin twin - the wiki seat, plugin-scoped |
+| [`dsh-plugin-kanban`](packages/dsh-plugin-kanban) | Kanban plugin twin - the kanban seat, plugin-scoped |
+| [`dsh-plugin-mindmap`](packages/dsh-plugin-mindmap) | Mindmap plugin twin - the mindmap seat, plugin-scoped |
+| [`dsh-plugin-agenda`](packages/dsh-plugin-agenda) | Agenda plugin twin - the agenda seat, plugin-scoped |
+| [`dsh-plugin-minutes`](packages/dsh-plugin-minutes) | Minutes plugin twin - the minutes seat, plugin-scoped |
+| [`dsh-plugin-survey`](packages/dsh-plugin-survey) | Survey plugin twin - the survey seat, plugin-scoped |
+| [`dsh-plugin-document`](packages/dsh-plugin-document) | Document plugin twin - the document seat, plugin-scoped |
+| [`dsh-plugin-sign`](packages/dsh-plugin-sign) | Sign plugin twin - the sign seat, plugin-scoped |
+| [`dsh-plugin-newsletter`](packages/dsh-plugin-newsletter) | Newsletter plugin twin - completing the pair |
+| [`dsh-plugin-holiday`](packages/dsh-plugin-holiday) | Holiday plugin twin - completing the pair |
+| [`dsh-calendars`](packages/dsh-calendars) | Calendars - the calendar collection |
+| [`dsh-plugin-calendars`](packages/dsh-plugin-calendars) | Calendars plugin twin |
+| [`dsh-quarter`](packages/dsh-quarter) | Quarter - the quarterly rhythm |
+| [`dsh-plugin-quarter`](packages/dsh-plugin-quarter) | Quarter plugin twin |
+| [`dsh-weekly`](packages/dsh-weekly) | Weekly - the weekly ritual |
+| [`dsh-plugin-weekly`](packages/dsh-plugin-weekly) | Weekly plugin twin |
+| [`dsh-daily`](packages/dsh-daily) | Daily - the daily brief |
+| [`dsh-plugin-daily`](packages/dsh-plugin-daily) | Daily plugin twin |
+| [`dsh-monthly`](packages/dsh-monthly) | Monthly - the monthly close |
+| [`dsh-plugin-monthly`](packages/dsh-plugin-monthly) | Monthly plugin twin |
+| [`dsh-vacation`](packages/dsh-vacation) | Vacation - out-of-office planning |
+| [`dsh-plugin-vacation`](packages/dsh-plugin-vacation) | Vacation plugin twin |
+| [`dsh-pto`](packages/dsh-pto) | Pto - paid time off |
+| [`dsh-plugin-pto`](packages/dsh-plugin-pto) | Pto plugin twin |
+| [`dsh-plugin-leave`](packages/dsh-plugin-leave) | Leave plugin twin - the leave seat, plugin-scoped |
+| [`dsh-mailer`](packages/dsh-mailer) | Mailer - outbound campaigns |
+| [`dsh-plugin-mailer`](packages/dsh-plugin-mailer) | Mailer plugin twin |
+| [`dsh-mails`](packages/dsh-mails) | Mails - the mail shelf |
+| [`dsh-plugin-mails`](packages/dsh-plugin-mails) | Mails plugin twin |
+| [`dsh-letter`](packages/dsh-letter) | Letter - formal letters |
+| [`dsh-plugin-letter`](packages/dsh-plugin-letter) | Letter plugin twin |
+| [`dsh-letters`](packages/dsh-letters) | Letters - correspondence archive |
+| [`dsh-plugin-letters`](packages/dsh-plugin-letters) | Letters plugin twin |
+| [`dsh-correspondence`](packages/dsh-correspondence) | Correspondence - the correspondence desk |
+| [`dsh-plugin-correspondence`](packages/dsh-plugin-correspondence) | Correspondence plugin twin |
+| [`dsh-mailroom`](packages/dsh-mailroom) | Mailroom - incoming mail triage |
+| [`dsh-plugin-mailroom`](packages/dsh-plugin-mailroom) | Mailroom plugin twin |
+| [`dsh-meetings`](packages/dsh-meetings) | Meetings - the meetings shelf |
+| [`dsh-plugin-meetings`](packages/dsh-plugin-meetings) | Meetings plugin twin |
+| [`dsh-huddle`](packages/dsh-huddle) | Huddle - quick syncs |
+| [`dsh-plugin-huddle`](packages/dsh-plugin-huddle) | Huddle plugin twin |
+| [`dsh-allhands`](packages/dsh-allhands) | Allhands - all-hands |
+| [`dsh-plugin-allhands`](packages/dsh-plugin-allhands) | Allhands plugin twin |
+| [`dsh-oneonone`](packages/dsh-oneonone) | OneOnOne - one-on-ones |
+| [`dsh-plugin-oneonone`](packages/dsh-plugin-oneonone) | Oneonone plugin twin |
+| [`dsh-call`](packages/dsh-call) | Call - voice calls |
+| [`dsh-plugin-call`](packages/dsh-plugin-call) | Call plugin twin |
+| [`dsh-calls`](packages/dsh-calls) | Calls - the call log |
+| [`dsh-plugin-calls`](packages/dsh-plugin-calls) | Calls plugin twin |
+| [`dsh-pdfs`](packages/dsh-pdfs) | Pdfs - the pdf workbench |
+| [`dsh-plugin-pdfs`](packages/dsh-plugin-pdfs) | Pdfs plugin twin |
+| [`dsh-digitize`](packages/dsh-digitize) | Digitize - paper to data |
+| [`dsh-plugin-digitize`](packages/dsh-plugin-digitize) | Digitize plugin twin |
+| [`dsh-scans`](packages/dsh-scans) | Scans - the scan inbox |
+| [`dsh-plugin-scans`](packages/dsh-plugin-scans) | Scans plugin twin |
+| [`dsh-paperless`](packages/dsh-paperless) | Paperless - the paperless office |
+| [`dsh-plugin-paperless`](packages/dsh-plugin-paperless) | Paperless plugin twin |
+| [`dsh-formula`](packages/dsh-formula) | Formula - formula help |
+| [`dsh-plugin-formula`](packages/dsh-plugin-formula) | Formula plugin twin |
+| [`dsh-formulas`](packages/dsh-formulas) | Formulas - formula library |
+| [`dsh-plugin-formulas`](packages/dsh-plugin-formulas) | Formulas plugin twin |
+| [`dsh-workbook`](packages/dsh-workbook) | Workbook - one workbook |
+| [`dsh-plugin-workbook`](packages/dsh-plugin-workbook) | Workbook plugin twin |
+| [`dsh-workbooks`](packages/dsh-workbooks) | Workbooks - the workbook shelf |
+| [`dsh-plugin-workbooks`](packages/dsh-plugin-workbooks) | Workbooks plugin twin |
+| [`dsh-cell`](packages/dsh-cell) | Cell - single-cell access |
+| [`dsh-plugin-cell`](packages/dsh-plugin-cell) | Cell plugin twin |
+| [`dsh-wikis`](packages/dsh-wikis) | Wikis - the wiki shelf |
+| [`dsh-plugin-wikis`](packages/dsh-plugin-wikis) | Wikis plugin twin |
+| [`dsh-knowledgebase`](packages/dsh-knowledgebase) | Knowledgebase - the KB |
+| [`dsh-plugin-knowledgebase`](packages/dsh-plugin-knowledgebase) | Knowledgebase plugin twin |
+| [`dsh-intranet`](packages/dsh-intranet) | Intranet - the company front page |
+| [`dsh-plugin-intranet`](packages/dsh-plugin-intranet) | Intranet plugin twin |
+| [`dsh-plugin-portal`](packages/dsh-plugin-portal) | Portal plugin twin - the portal seat, plugin-scoped |
+| [`dsh-kanbans`](packages/dsh-kanbans) | Kanbans - the board collection |
+| [`dsh-plugin-kanbans`](packages/dsh-plugin-kanbans) | Kanbans plugin twin |
+| [`dsh-boards`](packages/dsh-boards) | Boards - board views |
+| [`dsh-plugin-boards`](packages/dsh-plugin-boards) | Boards plugin twin |
+| [`dsh-card`](packages/dsh-card) | Card - the card |
+| [`dsh-plugin-card`](packages/dsh-plugin-card) | Card plugin twin |
+| [`dsh-swimlane`](packages/dsh-swimlane) | Swimlane - swimlanes |
+| [`dsh-plugin-swimlane`](packages/dsh-plugin-swimlane) | Swimlane plugin twin |
+| [`dsh-swimlanes`](packages/dsh-swimlanes) | Swimlanes - lane discipline |
+| [`dsh-plugin-swimlanes`](packages/dsh-plugin-swimlanes) | Swimlanes plugin twin |
+| [`dsh-plugin-board`](packages/dsh-plugin-board) | Board plugin twin - the board seat, plugin-scoped |
+| [`dsh-mindmaps`](packages/dsh-mindmaps) | Mindmaps - the map shelf |
+| [`dsh-plugin-mindmaps`](packages/dsh-plugin-mindmaps) | Mindmaps plugin twin |
+| [`dsh-mindmapper`](packages/dsh-mindmapper) | Mindmapper - mapping engine |
+| [`dsh-plugin-mindmapper`](packages/dsh-plugin-mindmapper) | Mindmapper plugin twin |
+| [`dsh-brainstorm`](packages/dsh-brainstorm) | Brainstorm - ideation |
+| [`dsh-plugin-brainstorm`](packages/dsh-plugin-brainstorm) | Brainstorm plugin twin |
+| [`dsh-ideate`](packages/dsh-ideate) | Ideate - the idea pipeline |
+| [`dsh-plugin-ideate`](packages/dsh-plugin-ideate) | Ideate plugin twin |
+| [`dsh-idea`](packages/dsh-idea) | Idea - one idea |
+| [`dsh-plugin-idea`](packages/dsh-plugin-idea) | Idea plugin twin |
+| [`dsh-ideas`](packages/dsh-ideas) | Ideas - the idea backlog |
+| [`dsh-plugin-ideas`](packages/dsh-plugin-ideas) | Ideas plugin twin |
+| [`dsh-summary`](packages/dsh-summary) | Summary - summarization |
+| [`dsh-plugin-summary`](packages/dsh-plugin-summary) | Summary plugin twin |
+| [`dsh-digest`](packages/dsh-digest) | Digest - digests on schedule |
+| [`dsh-plugin-digest`](packages/dsh-plugin-digest) | Digest plugin twin |
+| [`dsh-bulletin`](packages/dsh-bulletin) | Bulletin - internal bulletins |
+| [`dsh-plugin-bulletin`](packages/dsh-plugin-bulletin) | Bulletin plugin twin |
+| [`dsh-courier`](packages/dsh-courier) | Courier - internal delivery |
+| [`dsh-plugin-courier`](packages/dsh-plugin-courier) | Courier plugin twin |
+| [`dsh-plugin-dispatch`](packages/dsh-plugin-dispatch) | Dispatch plugin twin - the dispatch seat, plugin-scoped |
+| [`dsh-appointment`](packages/dsh-appointment) | Appointment - appointments |
+| [`dsh-plugin-appointment`](packages/dsh-plugin-appointment) | Appointment plugin twin |
+| [`dsh-followup`](packages/dsh-followup) | Followup - follow-ups |
+| [`dsh-plugin-followup`](packages/dsh-plugin-followup) | Followup plugin twin |
+| [`dsh-followups`](packages/dsh-followups) | Followups - the follow-up queue |
+| [`dsh-plugin-followups`](packages/dsh-plugin-followups) | Followups plugin twin |
+| [`dsh-checkin`](packages/dsh-checkin) | Checkin - check-ins |
+| [`dsh-plugin-checkin`](packages/dsh-plugin-checkin) | Checkin plugin twin |
+| [`dsh-checkins`](packages/dsh-checkins) | Checkins - the check-in cadence |
+| [`dsh-plugin-checkins`](packages/dsh-plugin-checkins) | Checkins plugin twin |
+| [`dsh-offsite`](packages/dsh-offsite) | Offsite - offsites |
+| [`dsh-plugin-offsite`](packages/dsh-plugin-offsite) | Offsite plugin twin |
+| [`dsh-townhall`](packages/dsh-townhall) | Townhall - town halls |
+| [`dsh-plugin-townhall`](packages/dsh-plugin-townhall) | Townhall plugin twin |
+| [`dsh-watercooler`](packages/dsh-watercooler) | Watercooler - the casual lane |
+| [`dsh-plugin-watercooler`](packages/dsh-plugin-watercooler) | Watercooler plugin twin |
+| [`dsh-plugin-booking`](packages/dsh-plugin-booking) | Booking plugin twin - the booking seat, plugin-scoped |
+| [`dsh-plugin-scheduler`](packages/dsh-plugin-scheduler) | Scheduler plugin twin - the scheduler seat, plugin-scoped |
+| [`dsh-plugin-reminder`](packages/dsh-plugin-reminder) | Reminder plugin twin - the reminder seat, plugin-scoped |
+| [`dsh-plugin-reminders`](packages/dsh-plugin-reminders) | Reminders plugin twin - the reminders seat, plugin-scoped |
+| [`dsh-plugin-handoff`](packages/dsh-plugin-handoff) | Handoff plugin twin - the handoff seat, plugin-scoped |
+| [`dsh-plugin-delegation`](packages/dsh-plugin-delegation) | Delegation plugin twin - the delegation seat, plugin-scoped |
 
 ### Meta / product (16)
 
