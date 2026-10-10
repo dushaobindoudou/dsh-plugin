@@ -1488,8 +1488,8 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-plugin-cell`](packages/dsh-plugin-cell) | Cell plugin twin |
 | [`dsh-wikis`](packages/dsh-wikis) | Wikis - the wiki shelf |
 | [`dsh-plugin-wikis`](packages/dsh-plugin-wikis) | Wikis plugin twin |
-| [`dsh-knowledgebase`](packages/dsh-knowledgebase) | Knowledgebase - the KB |
-| [`dsh-plugin-knowledgebase`](packages/dsh-plugin-knowledgebase) | Knowledgebase plugin twin |
+| [`dsh-knowledgehub`](packages/dsh-knowledgehub) | Knowledgehub - the KB |
+| [`dsh-plugin-knowledgehub`](packages/dsh-plugin-knowledgehub) | Knowledgehub plugin twin |
 | [`dsh-intranet`](packages/dsh-intranet) | Intranet - the company front page |
 | [`dsh-plugin-intranet`](packages/dsh-plugin-intranet) | Intranet plugin twin |
 | [`dsh-plugin-portal`](packages/dsh-plugin-portal) | Portal plugin twin - the portal seat, plugin-scoped |
@@ -1548,7 +1548,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-plugin-handoff`](packages/dsh-plugin-handoff) | Handoff plugin twin - the handoff seat, plugin-scoped |
 | [`dsh-plugin-delegation`](packages/dsh-plugin-delegation) | Delegation plugin twin - the delegation seat, plugin-scoped |
 
-### Trading (307)
+### Trading (309)
 
 | Name | Planned first release |
 | --- | --- |
@@ -1629,7 +1629,8 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-candles`](packages/dsh-candles) | Candles - candlestick data |
 | [`dsh-candlestick`](packages/dsh-candlestick) | Candlestick - pattern reading |
 | [`dsh-candlesticks`](packages/dsh-candlesticks) | Candlesticks - the candle library |
-| [`dsh-pattern`](packages/dsh-pattern) | Pattern - one pattern |
+| [`dsh-patternbook`](packages/dsh-patternbook) | Patternbook - the pattern book |
+| [`dsh-plugin-patternbook`](packages/dsh-plugin-patternbook) | Patternbook plugin twin |
 | [`dsh-patterns`](packages/dsh-patterns) | Patterns - the pattern scanner |
 | [`dsh-indicator`](packages/dsh-indicator) | Indicator - one indicator |
 | [`dsh-indicators`](packages/dsh-indicators) | Indicators - the indicator shelf |
@@ -1641,7 +1642,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-plugin-candle`](packages/dsh-plugin-candle) | Candle plugin twin |
 | [`dsh-plugin-candles`](packages/dsh-plugin-candles) | Candles plugin twin |
 | [`dsh-plugin-candlestick`](packages/dsh-plugin-candlestick) | Candlestick plugin twin |
-| [`dsh-plugin-pattern`](packages/dsh-plugin-pattern) | Pattern plugin twin |
+| [`dsh-plugin-pattern`](packages/dsh-plugin-pattern) | Pattern plugin twin - the pattern seat, plugin-scoped |
 | [`dsh-plugin-patterns`](packages/dsh-plugin-patterns) | Patterns plugin twin |
 | [`dsh-plugin-indicator`](packages/dsh-plugin-indicator) | Indicator plugin twin |
 | [`dsh-plugin-indicators`](packages/dsh-plugin-indicators) | Indicators plugin twin |
@@ -1650,11 +1651,12 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-plugin-depthchart`](packages/dsh-plugin-depthchart) | Depthchart plugin twin - completing the pair |
 | [`dsh-watchlist`](packages/dsh-watchlist) | Watchlist - one watchlist |
 | [`dsh-watchlists`](packages/dsh-watchlists) | Watchlists - the watchlist shelf |
-| [`dsh-watch`](packages/dsh-watch) | Watch - the market watch |
+| [`dsh-watching`](packages/dsh-watching) | Watching - the market watch |
+| [`dsh-plugin-watching`](packages/dsh-plugin-watching) | Watching plugin twin |
 | [`dsh-screener`](packages/dsh-screener) | Screener - one screener |
 | [`dsh-screeners`](packages/dsh-screeners) | Screeners - the screener farm |
 | [`dsh-watchtower`](packages/dsh-watchtower) | Watchtower - the standing watch |
-| [`dsh-plugin-watch`](packages/dsh-plugin-watch) | Watch plugin twin |
+| [`dsh-plugin-watch`](packages/dsh-plugin-watch) | Watch plugin twin - the watch seat, plugin-scoped |
 | [`dsh-plugin-watchlist`](packages/dsh-plugin-watchlist) | Watchlist plugin twin |
 | [`dsh-plugin-watchlists`](packages/dsh-plugin-watchlists) | Watchlists plugin twin |
 | [`dsh-plugin-screener`](packages/dsh-plugin-screener) | Screener plugin twin |

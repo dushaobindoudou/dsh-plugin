@@ -1,7 +1,7 @@
 {
-  "name": "dsh-watch",
+  "name": "dsh-watching",
   "version": "0.0.1",
-  "description": "Watch - the market watch - name reserved; first release in development.",
+  "description": "Watching - the market watch - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
@@ -9,13 +9,13 @@
     "dsh-plugin",
     "deepseek-harness",
     "cordis-plugin",
-    "watch",
+    "watching",
     "market"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
-    "directory": "packages/dsh-watch"
+    "directory": "packages/dsh-watching"
   },
-  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-watch#readme"
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-watching#readme"
 }

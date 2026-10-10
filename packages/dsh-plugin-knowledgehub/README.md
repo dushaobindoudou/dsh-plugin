@@ -1,13 +1,13 @@
-# dsh-pattern
+# dsh-plugin-knowledgehub
 
-[![npm](https://img.shields.io/npm/v/dsh-pattern.svg)](https://www.npmjs.com/package/dsh-pattern)
+[![npm](https://img.shields.io/npm/v/dsh-plugin-knowledgehub.svg)](https://www.npmjs.com/package/dsh-plugin-knowledgehub)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-**Pattern - one pattern** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
+**Knowledgehub plugin twin** - a plugin for the [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`).
 
 This package name is reserved; the first release is in development.
 
-One pattern defined, detected and scored across history.
+Plugin-prefixed twin of dsh-knowledgehub; bare and plugin seats held the same day.
 
 Source and roadmap live in the [dsh-plugin monorepo](https://github.com/dushaobindoudou/dsh-plugin).
 Watch the repo or the npm package to catch the release. Related releases from

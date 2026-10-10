@@ -7954,17 +7954,17 @@ export const CORE = {
     body: 'Plugin-prefixed twin of dsh-wikis; bare and plugin seats held the same day.',
     extra: ['wikis'],
   },
-  'dsh-knowledgebase': {
+  'dsh-knowledgehub': {
     niche: 'office',
-    headline: 'Knowledgebase - the KB',
-    body: 'Support-style knowledge base with articles, revisions and gaps flagged.',
-    extra: ['knowledgebase', 'kb'],
+    headline: 'Knowledgehub - the KB',
+    body: "Support-style knowledge hub with articles, revisions and gaps flagged. dsh-knowledgebase was tried first but npm's typosquat guard 403s it against ts-pattern-adjacent names; the hub spelling went straight through.",
+    extra: ['knowledgehub', 'kb'],
   },
-  'dsh-plugin-knowledgebase': {
+  'dsh-plugin-knowledgehub': {
     niche: 'office',
-    headline: 'Knowledgebase plugin twin',
-    body: 'Plugin-prefixed twin of dsh-knowledgebase; bare and plugin seats held the same day.',
-    extra: ['knowledgebase'],
+    headline: 'Knowledgehub plugin twin',
+    body: 'Plugin-prefixed twin of dsh-knowledgehub; bare and plugin seats held the same day.',
+    extra: ['knowledgehub'],
   },
   'dsh-intranet': {
     niche: 'office',
@@ -8789,11 +8789,17 @@ export const CORE = {
     body: 'A candle library: every named pattern, detected and backtested.',
     extra: ['candlesticks', 'library'],
   },
-  'dsh-pattern': {
+  'dsh-patternbook': {
     niche: 'trading',
-    headline: 'Pattern - one pattern',
-    body: 'One pattern defined, detected and scored across history.',
-    extra: ['pattern', 'detection'],
+    headline: 'Patternbook - the pattern book',
+    body: 'The pattern book: every pattern defined, detected and scored across history. The bare dsh-pattern seat is unwinnable - npm\u2019s typosquat guard 403s it against ts-pattern - so the book spelling carries the lane.',
+    extra: ['patternbook', 'detection'],
+  },
+  'dsh-plugin-patternbook': {
+    niche: 'trading',
+    headline: 'Patternbook plugin twin',
+    body: 'Plugin-prefixed twin of dsh-patternbook; bare and plugin seats held the same day.',
+    extra: ['patternbook'],
   },
   'dsh-patterns': {
     niche: 'trading',
@@ -8863,8 +8869,8 @@ export const CORE = {
   },
   'dsh-plugin-pattern': {
     niche: 'trading',
-    headline: 'Pattern plugin twin',
-    body: 'Plugin-prefixed twin of dsh-pattern; bare and plugin seats held the same day.',
+    headline: 'Pattern plugin twin - the pattern seat, plugin-scoped',
+    body: "The bare dsh-pattern seat is unwinnable (npm's typosquat guard vs ts-pattern); this plugin twin keeps the pattern lane in-family.",
     extra: ['pattern'],
   },
   'dsh-plugin-patterns': {
@@ -8916,11 +8922,17 @@ export const CORE = {
     body: 'Watchlists as a shelf: daily, swing, earnings and the purge list.',
     extra: ['watchlists', 'shelf'],
   },
-  'dsh-watch': {
+  'dsh-watching': {
     niche: 'trading',
-    headline: 'Watch - the market watch',
-    body: 'The market watch: indices, breadth and the fear gauge at a glance.',
-    extra: ['watch', 'market'],
+    headline: 'Watching - the market watch',
+    body: 'The market watch: indices, breadth and the fear gauge at a glance. The bare dsh-watch seat is unwinnable - npm\u2019s typosquat guard 403s it - so the -ing form keeps the lane.',
+    extra: ['watching', 'market'],
+  },
+  'dsh-plugin-watching': {
+    niche: 'trading',
+    headline: 'Watching plugin twin',
+    body: 'Plugin-prefixed twin of dsh-watching; bare and plugin seats held the same day.',
+    extra: ['watching'],
   },
   'dsh-screener': {
     niche: 'trading',
@@ -8942,8 +8954,8 @@ export const CORE = {
   },
   'dsh-plugin-watch': {
     niche: 'trading',
-    headline: 'Watch plugin twin',
-    body: 'Plugin-prefixed twin of dsh-watch; bare and plugin seats held the same day.',
+    headline: 'Watch plugin twin - the watch seat, plugin-scoped',
+    body: "The bare dsh-watch seat is unwinnable (npm's typosquat guard); this plugin twin keeps the market-watch lane in-family.",
     extra: ['watch'],
   },
   'dsh-plugin-watchlist': {
