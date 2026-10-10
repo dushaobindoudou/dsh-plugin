@@ -1,0 +1,20 @@
+{
+  "name": "dsh-plugin-hedgefunds",
+  "version": "0.0.1",
+  "description": "Hedgefunds plugin twin - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "hedgefunds"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-plugin-hedgefunds"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-plugin-hedgefunds#readme"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "dsh-plugin-postmortem",
+  "version": "0.0.1",
+  "description": "Postmortem plugin twin - the postmortem seat, plugin-scoped - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "postmortem"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-plugin-postmortem"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-plugin-postmortem#readme"
+}

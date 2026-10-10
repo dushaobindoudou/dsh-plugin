@@ -1,0 +1,21 @@
+{
+  "name": "dsh-limitdown",
+  "version": "0.0.1",
+  "description": "Limitdown - limit-down watch - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "limitdown",
+    "circuitbreaker"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-limitdown"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-limitdown#readme"
+}

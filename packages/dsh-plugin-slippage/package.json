@@ -1,0 +1,20 @@
+{
+  "name": "dsh-plugin-slippage",
+  "version": "0.0.1",
+  "description": "Slippage plugin twin - the slippage seat, plugin-scoped - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "slippage"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-plugin-slippage"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-plugin-slippage#readme"
+}

@@ -1,0 +1,21 @@
+{
+  "name": "dsh-tradebuddy",
+  "version": "0.0.1",
+  "description": "TradeBuddy - the trading companion - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "tradebuddy",
+    "companion"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-tradebuddy"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-tradebuddy#readme"
+}

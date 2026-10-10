@@ -1,0 +1,21 @@
+{
+  "name": "dsh-candlestick",
+  "version": "0.0.1",
+  "description": "Candlestick - pattern reading - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "candlestick",
+    "patterns"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-candlestick"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-candlestick#readme"
+}

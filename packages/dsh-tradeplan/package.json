@@ -1,0 +1,21 @@
+{
+  "name": "dsh-tradeplan",
+  "version": "0.0.1",
+  "description": "TradePlan - the plan for the day - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "tradeplan",
+    "plan"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-tradeplan"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-tradeplan#readme"
+}

@@ -1,0 +1,21 @@
+{
+  "name": "dsh-watchlist",
+  "version": "0.0.1",
+  "description": "Watchlist - one watchlist - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "watchlist",
+    "symbols"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-watchlist"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-watchlist#readme"
+}

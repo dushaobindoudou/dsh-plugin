@@ -1548,6 +1548,318 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-plugin-handoff`](packages/dsh-plugin-handoff) | Handoff plugin twin - the handoff seat, plugin-scoped |
 | [`dsh-plugin-delegation`](packages/dsh-plugin-delegation) | Delegation plugin twin - the delegation seat, plugin-scoped |
 
+### Trading (307)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-tradingdesk`](packages/dsh-tradingdesk) | TradingDesk - the trading workbench |
+| [`dsh-tradebuddy`](packages/dsh-tradebuddy) | TradeBuddy - the trading companion |
+| [`dsh-trademate`](packages/dsh-trademate) | TradeMate - the desk-side mate |
+| [`dsh-tradehub`](packages/dsh-tradehub) | TradeHub - the trading hub |
+| [`dsh-controlroom`](packages/dsh-controlroom) | ControlRoom - the trading control room |
+| [`dsh-stockchart`](packages/dsh-stockchart) | Stockchart - stock charts |
+| [`dsh-marketdata`](packages/dsh-marketdata) | Marketdata - the market data plane |
+| [`dsh-plugin-tradingdesk`](packages/dsh-plugin-tradingdesk) | Tradingdesk plugin twin |
+| [`dsh-plugin-tradebuddy`](packages/dsh-plugin-tradebuddy) | Tradebuddy plugin twin |
+| [`dsh-plugin-trademate`](packages/dsh-plugin-trademate) | Trademate plugin twin |
+| [`dsh-plugin-tradehub`](packages/dsh-plugin-tradehub) | Tradehub plugin twin |
+| [`dsh-plugin-controlroom`](packages/dsh-plugin-controlroom) | Controlroom plugin twin |
+| [`dsh-plugin-workstation`](packages/dsh-plugin-workstation) | Workstation plugin twin - the workstation seat, plugin-scoped |
+| [`dsh-plugin-cockpit`](packages/dsh-plugin-cockpit) | Cockpit plugin twin - the cockpit seat, plugin-scoped |
+| [`dsh-trade`](packages/dsh-trade) | Trade - one trade |
+| [`dsh-trades`](packages/dsh-trades) | Trades - the trade log |
+| [`dsh-trader`](packages/dsh-trader) | Trader - the trader profile |
+| [`dsh-tradejournal`](packages/dsh-tradejournal) | TradeJournal - the trade journal |
+| [`dsh-tradelog`](packages/dsh-tradelog) | Tradelog - the structured log |
+| [`dsh-tradeplan`](packages/dsh-tradeplan) | TradePlan - the plan for the day |
+| [`dsh-tradebook`](packages/dsh-tradebook) | TradeBook - the trade book |
+| [`dsh-plugin-trade`](packages/dsh-plugin-trade) | Trade plugin twin |
+| [`dsh-plugin-trades`](packages/dsh-plugin-trades) | Trades plugin twin |
+| [`dsh-plugin-trader`](packages/dsh-plugin-trader) | Trader plugin twin |
+| [`dsh-plugin-tradebook`](packages/dsh-plugin-tradebook) | Tradebook plugin twin |
+| [`dsh-plugin-trading`](packages/dsh-plugin-trading) | Trading plugin twin - completing the pair |
+| [`dsh-plugin-tradejournal`](packages/dsh-plugin-tradejournal) | Tradejournal plugin twin |
+| [`dsh-plugin-tradelog`](packages/dsh-plugin-tradelog) | Tradelog plugin twin |
+| [`dsh-plugin-tradeplan`](packages/dsh-plugin-tradeplan) | Tradeplan plugin twin |
+| [`dsh-order`](packages/dsh-order) | Order - one order |
+| [`dsh-orders`](packages/dsh-orders) | Orders - the order flow |
+| [`dsh-ordering`](packages/dsh-ordering) | Ordering - order management |
+| [`dsh-blotter`](packages/dsh-blotter) | Blotter - the blotter |
+| [`dsh-executions`](packages/dsh-executions) | Executions - the execution record |
+| [`dsh-fill`](packages/dsh-fill) | Fill - one fill |
+| [`dsh-fills`](packages/dsh-fills) | Fills - the fill stream |
+| [`dsh-fillrate`](packages/dsh-fillrate) | Fillrate - execution quality |
+| [`dsh-ladder`](packages/dsh-ladder) | Ladder - the price ladder |
+| [`dsh-plugin-orderbook`](packages/dsh-plugin-orderbook) | Orderbook plugin twin - completing the pair |
+| [`dsh-plugin-ordering`](packages/dsh-plugin-ordering) | Ordering plugin twin |
+| [`dsh-plugin-executions`](packages/dsh-plugin-executions) | Executions plugin twin |
+| [`dsh-plugin-fillrate`](packages/dsh-plugin-fillrate) | Fillrate plugin twin |
+| [`dsh-plugin-execution`](packages/dsh-plugin-execution) | Execution plugin twin - the execution seat, plugin-scoped |
+| [`dsh-plugin-order`](packages/dsh-plugin-order) | Order plugin twin |
+| [`dsh-plugin-orders`](packages/dsh-plugin-orders) | Orders plugin twin |
+| [`dsh-plugin-blotter`](packages/dsh-plugin-blotter) | Blotter plugin twin |
+| [`dsh-plugin-fill`](packages/dsh-plugin-fill) | Fill plugin twin |
+| [`dsh-plugin-fills`](packages/dsh-plugin-fills) | Fills plugin twin |
+| [`dsh-plugin-ladder`](packages/dsh-plugin-ladder) | Ladder plugin twin |
+| [`dsh-plugin-tape`](packages/dsh-plugin-tape) | Tape plugin twin - the tape seat, plugin-scoped |
+| [`dsh-plugin-slippage`](packages/dsh-plugin-slippage) | Slippage plugin twin - the slippage seat, plugin-scoped |
+| [`dsh-quotes`](packages/dsh-quotes) | Quotes - the quote board |
+| [`dsh-quotation`](packages/dsh-quotation) | Quotation - quote snapshots |
+| [`dsh-ticks`](packages/dsh-ticks) | Ticks - the tick stream |
+| [`dsh-tickdata`](packages/dsh-tickdata) | Tickdata - tick storage |
+| [`dsh-level2`](packages/dsh-level2) | Level2 - depth of book |
+| [`dsh-spread`](packages/dsh-spread) | Spread - the spread |
+| [`dsh-spreads`](packages/dsh-spreads) | Spreads - spread trading |
+| [`dsh-depth`](packages/dsh-depth) | Depth - market depth |
+| [`dsh-plugin-quotation`](packages/dsh-plugin-quotation) | Quotation plugin twin |
+| [`dsh-plugin-ticks`](packages/dsh-plugin-ticks) | Ticks plugin twin |
+| [`dsh-plugin-quote`](packages/dsh-plugin-quote) | Quote plugin twin - the quote seat, plugin-scoped |
+| [`dsh-plugin-quotes`](packages/dsh-plugin-quotes) | Quotes plugin twin |
+| [`dsh-plugin-tick`](packages/dsh-plugin-tick) | Tick plugin twin - the tick seat, plugin-scoped |
+| [`dsh-plugin-tickdata`](packages/dsh-plugin-tickdata) | Tickdata plugin twin |
+| [`dsh-plugin-level2`](packages/dsh-plugin-level2) | Level2 plugin twin |
+| [`dsh-plugin-spread`](packages/dsh-plugin-spread) | Spread plugin twin |
+| [`dsh-plugin-spreads`](packages/dsh-plugin-spreads) | Spreads plugin twin |
+| [`dsh-plugin-depth`](packages/dsh-plugin-depth) | Depth plugin twin |
+| [`dsh-plugin-liquidity`](packages/dsh-plugin-liquidity) | Liquidity plugin twin - the liquidity seat, plugin-scoped |
+| [`dsh-plugin-marketdata`](packages/dsh-plugin-marketdata) | Marketdata plugin twin |
+| [`dsh-charts`](packages/dsh-charts) | Charts - the chart desk |
+| [`dsh-charting`](packages/dsh-charting) | Charting - the charting engine |
+| [`dsh-candle`](packages/dsh-candle) | Candle - one candle |
+| [`dsh-candles`](packages/dsh-candles) | Candles - candlestick data |
+| [`dsh-candlestick`](packages/dsh-candlestick) | Candlestick - pattern reading |
+| [`dsh-candlesticks`](packages/dsh-candlesticks) | Candlesticks - the candle library |
+| [`dsh-pattern`](packages/dsh-pattern) | Pattern - one pattern |
+| [`dsh-patterns`](packages/dsh-patterns) | Patterns - the pattern scanner |
+| [`dsh-indicator`](packages/dsh-indicator) | Indicator - one indicator |
+| [`dsh-indicators`](packages/dsh-indicators) | Indicators - the indicator shelf |
+| [`dsh-overlay`](packages/dsh-overlay) | Overlay - chart overlays |
+| [`dsh-plugin-candlesticks`](packages/dsh-plugin-candlesticks) | Candlesticks plugin twin |
+| [`dsh-plugin-chart`](packages/dsh-plugin-chart) | Chart plugin twin - the chart seat, plugin-scoped |
+| [`dsh-plugin-charts`](packages/dsh-plugin-charts) | Charts plugin twin |
+| [`dsh-plugin-charting`](packages/dsh-plugin-charting) | Charting plugin twin |
+| [`dsh-plugin-candle`](packages/dsh-plugin-candle) | Candle plugin twin |
+| [`dsh-plugin-candles`](packages/dsh-plugin-candles) | Candles plugin twin |
+| [`dsh-plugin-candlestick`](packages/dsh-plugin-candlestick) | Candlestick plugin twin |
+| [`dsh-plugin-pattern`](packages/dsh-plugin-pattern) | Pattern plugin twin |
+| [`dsh-plugin-patterns`](packages/dsh-plugin-patterns) | Patterns plugin twin |
+| [`dsh-plugin-indicator`](packages/dsh-plugin-indicator) | Indicator plugin twin |
+| [`dsh-plugin-indicators`](packages/dsh-plugin-indicators) | Indicators plugin twin |
+| [`dsh-plugin-overlay`](packages/dsh-plugin-overlay) | Overlay plugin twin |
+| [`dsh-plugin-stockchart`](packages/dsh-plugin-stockchart) | Stockchart plugin twin |
+| [`dsh-plugin-depthchart`](packages/dsh-plugin-depthchart) | Depthchart plugin twin - completing the pair |
+| [`dsh-watchlist`](packages/dsh-watchlist) | Watchlist - one watchlist |
+| [`dsh-watchlists`](packages/dsh-watchlists) | Watchlists - the watchlist shelf |
+| [`dsh-watch`](packages/dsh-watch) | Watch - the market watch |
+| [`dsh-screener`](packages/dsh-screener) | Screener - one screener |
+| [`dsh-screeners`](packages/dsh-screeners) | Screeners - the screener farm |
+| [`dsh-watchtower`](packages/dsh-watchtower) | Watchtower - the standing watch |
+| [`dsh-plugin-watch`](packages/dsh-plugin-watch) | Watch plugin twin |
+| [`dsh-plugin-watchlist`](packages/dsh-plugin-watchlist) | Watchlist plugin twin |
+| [`dsh-plugin-watchlists`](packages/dsh-plugin-watchlists) | Watchlists plugin twin |
+| [`dsh-plugin-screener`](packages/dsh-plugin-screener) | Screener plugin twin |
+| [`dsh-plugin-screeners`](packages/dsh-plugin-screeners) | Screeners plugin twin |
+| [`dsh-plugin-shortlist`](packages/dsh-plugin-shortlist) | Shortlist plugin twin - the shortlist seat, plugin-scoped |
+| [`dsh-plugin-watchtower`](packages/dsh-plugin-watchtower) | Watchtower plugin twin |
+| [`dsh-strategy`](packages/dsh-strategy) | Strategy - one strategy |
+| [`dsh-strategies`](packages/dsh-strategies) | Strategies - the strategy shelf |
+| [`dsh-signals`](packages/dsh-signals) | Signals - the signal feed |
+| [`dsh-alerts`](packages/dsh-alerts) | Alerts - trading alerts |
+| [`dsh-setup`](packages/dsh-setup) | Setup - one setup |
+| [`dsh-setups`](packages/dsh-setups) | Setups - the setup library |
+| [`dsh-theses`](packages/dsh-theses) | Theses - the thesis book |
+| [`dsh-conviction`](packages/dsh-conviction) | Conviction - position conviction |
+| [`dsh-alphas`](packages/dsh-alphas) | Alphas - the alpha shelf |
+| [`dsh-plugin-strategy`](packages/dsh-plugin-strategy) | Strategy plugin twin |
+| [`dsh-plugin-strategies`](packages/dsh-plugin-strategies) | Strategies plugin twin |
+| [`dsh-plugin-signal`](packages/dsh-plugin-signal) | Signal plugin twin - the signal seat, plugin-scoped |
+| [`dsh-plugin-signals`](packages/dsh-plugin-signals) | Signals plugin twin |
+| [`dsh-plugin-alert`](packages/dsh-plugin-alert) | Alert plugin twin - the alert seat, plugin-scoped |
+| [`dsh-plugin-alerts`](packages/dsh-plugin-alerts) | Alerts plugin twin |
+| [`dsh-plugin-setup`](packages/dsh-plugin-setup) | Setup plugin twin |
+| [`dsh-plugin-setups`](packages/dsh-plugin-setups) | Setups plugin twin |
+| [`dsh-plugin-thesis`](packages/dsh-plugin-thesis) | Thesis plugin twin - the thesis seat, plugin-scoped |
+| [`dsh-plugin-theses`](packages/dsh-plugin-theses) | Theses plugin twin |
+| [`dsh-plugin-conviction`](packages/dsh-plugin-conviction) | Conviction plugin twin |
+| [`dsh-plugin-edge`](packages/dsh-plugin-edge) | Edge plugin twin - the edge seat, plugin-scoped |
+| [`dsh-plugin-alpha`](packages/dsh-plugin-alpha) | Alpha plugin twin - the alpha seat, plugin-scoped |
+| [`dsh-plugin-alphas`](packages/dsh-plugin-alphas) | Alphas plugin twin |
+| [`dsh-exposure`](packages/dsh-exposure) | Exposure - exposure monitor |
+| [`dsh-positionsize`](packages/dsh-positionsize) | PositionSize - sizing math |
+| [`dsh-sizing`](packages/dsh-sizing) | Sizing - the sizing policy |
+| [`dsh-risklimit`](packages/dsh-risklimit) | Risklimit - the limits |
+| [`dsh-limitup`](packages/dsh-limitup) | Limitup - limit-up watch |
+| [`dsh-limitdown`](packages/dsh-limitdown) | Limitdown - limit-down watch |
+| [`dsh-plugin-exposure`](packages/dsh-plugin-exposure) | Exposure plugin twin |
+| [`dsh-plugin-positionsize`](packages/dsh-plugin-positionsize) | Positionsize plugin twin |
+| [`dsh-plugin-sizing`](packages/dsh-plugin-sizing) | Sizing plugin twin |
+| [`dsh-plugin-risklimit`](packages/dsh-plugin-risklimit) | Risklimit plugin twin |
+| [`dsh-plugin-limitup`](packages/dsh-plugin-limitup) | Limitup plugin twin |
+| [`dsh-plugin-limitdown`](packages/dsh-plugin-limitdown) | Limitdown plugin twin |
+| [`dsh-plugin-drawdown`](packages/dsh-plugin-drawdown) | Drawdown plugin twin - the drawdown seat, plugin-scoped |
+| [`dsh-plugin-drift`](packages/dsh-plugin-drift) | Drift plugin twin - the drift seat, plugin-scoped |
+| [`dsh-pnl`](packages/dsh-pnl) | Pnl - the pnl ledger |
+| [`dsh-profit`](packages/dsh-profit) | Profit - profit tracking |
+| [`dsh-profits`](packages/dsh-profits) | Profits - the profits report |
+| [`dsh-loss`](packages/dsh-loss) | Loss - loss discipline |
+| [`dsh-losses`](packages/dsh-losses) | Losses - the loss study |
+| [`dsh-gains`](packages/dsh-gains) | Gains - the gains ledger |
+| [`dsh-expectancy`](packages/dsh-expectancy) | Expectancy - the expectancy math |
+| [`dsh-rmultiple`](packages/dsh-rmultiple) | Rmultiple - R thinking |
+| [`dsh-plugin-pnl`](packages/dsh-plugin-pnl) | Pnl plugin twin |
+| [`dsh-plugin-profit`](packages/dsh-plugin-profit) | Profit plugin twin |
+| [`dsh-plugin-profits`](packages/dsh-plugin-profits) | Profits plugin twin |
+| [`dsh-plugin-loss`](packages/dsh-plugin-loss) | Loss plugin twin |
+| [`dsh-plugin-losses`](packages/dsh-plugin-losses) | Losses plugin twin |
+| [`dsh-plugin-gains`](packages/dsh-plugin-gains) | Gains plugin twin |
+| [`dsh-plugin-expectancy`](packages/dsh-plugin-expectancy) | Expectancy plugin twin |
+| [`dsh-plugin-rmultiple`](packages/dsh-plugin-rmultiple) | Rmultiple plugin twin |
+| [`dsh-rebalance`](packages/dsh-rebalance) | Rebalance - rebalancing |
+| [`dsh-rebalancing`](packages/dsh-rebalancing) | Rebalancing - the rebalance engine |
+| [`dsh-allocation`](packages/dsh-allocation) | Allocation - one allocation |
+| [`dsh-allocations`](packages/dsh-allocations) | Allocations - the allocation sheet |
+| [`dsh-weights`](packages/dsh-weights) | Weights - portfolio weights |
+| [`dsh-plugin-rebalance`](packages/dsh-plugin-rebalance) | Rebalance plugin twin |
+| [`dsh-plugin-rebalancing`](packages/dsh-plugin-rebalancing) | Rebalancing plugin twin |
+| [`dsh-plugin-allocation`](packages/dsh-plugin-allocation) | Allocation plugin twin |
+| [`dsh-plugin-allocations`](packages/dsh-plugin-allocations) | Allocations plugin twin |
+| [`dsh-plugin-weights`](packages/dsh-plugin-weights) | Weights plugin twin |
+| [`dsh-plugin-portfolio`](packages/dsh-plugin-portfolio) | Portfolio plugin twin - completing the pair |
+| [`dsh-stocks`](packages/dsh-stocks) | Stocks - the stock shelf |
+| [`dsh-plugin-stocks`](packages/dsh-plugin-stocks) | Stocks plugin twin |
+| [`dsh-stockmarket`](packages/dsh-stockmarket) | Stockmarket - the market overview |
+| [`dsh-plugin-stockmarket`](packages/dsh-plugin-stockmarket) | Stockmarket plugin twin |
+| [`dsh-backtesting`](packages/dsh-backtesting) | Backtesting - the backtest harness |
+| [`dsh-backtests`](packages/dsh-backtests) | Backtests - the backtest shelf |
+| [`dsh-papertrade`](packages/dsh-papertrade) | Papertrade - paper trading |
+| [`dsh-papertrading`](packages/dsh-papertrading) | Papertrading - the paper desk |
+| [`dsh-papertrader`](packages/dsh-papertrader) | Papertrader - the sim trader |
+| [`dsh-simulator`](packages/dsh-simulator) | Simulator - the market simulator |
+| [`dsh-simulation`](packages/dsh-simulation) | Simulation - scenario runs |
+| [`dsh-dryrun`](packages/dsh-dryrun) | Dryrun - dry-run mode |
+| [`dsh-plugin-backtesting`](packages/dsh-plugin-backtesting) | Backtesting plugin twin |
+| [`dsh-plugin-backtests`](packages/dsh-plugin-backtests) | Backtests plugin twin |
+| [`dsh-plugin-papertrade`](packages/dsh-plugin-papertrade) | Papertrade plugin twin |
+| [`dsh-plugin-papertrading`](packages/dsh-plugin-papertrading) | Papertrading plugin twin |
+| [`dsh-plugin-papertrader`](packages/dsh-plugin-papertrader) | Papertrader plugin twin |
+| [`dsh-plugin-simulator`](packages/dsh-plugin-simulator) | Simulator plugin twin |
+| [`dsh-plugin-simulation`](packages/dsh-plugin-simulation) | Simulation plugin twin |
+| [`dsh-plugin-dryrun`](packages/dsh-plugin-dryrun) | Dryrun plugin twin |
+| [`dsh-plugin-backtest`](packages/dsh-plugin-backtest) | Backtest plugin twin - completing the pair |
+| [`dsh-marketclock`](packages/dsh-marketclock) | Marketclock - the market clock |
+| [`dsh-tradingclock`](packages/dsh-tradingclock) | Tradingclock - session timing |
+| [`dsh-tradingday`](packages/dsh-tradingday) | Tradingday - one trading day |
+| [`dsh-tradingweek`](packages/dsh-tradingweek) | Tradingweek - the trading week |
+| [`dsh-tradingcalendar`](packages/dsh-tradingcalendar) | Tradingcalendar - the trading calendar |
+| [`dsh-marketcalendar`](packages/dsh-marketcalendar) | Marketcalendar - the market calendar |
+| [`dsh-postmarket`](packages/dsh-postmarket) | Postmarket - after the close |
+| [`dsh-halfday`](packages/dsh-halfday) | Halfday - half-day sessions |
+| [`dsh-plugin-marketclock`](packages/dsh-plugin-marketclock) | Marketclock plugin twin |
+| [`dsh-plugin-tradingclock`](packages/dsh-plugin-tradingclock) | Tradingclock plugin twin |
+| [`dsh-plugin-tradingday`](packages/dsh-plugin-tradingday) | Tradingday plugin twin |
+| [`dsh-plugin-tradingweek`](packages/dsh-plugin-tradingweek) | Tradingweek plugin twin |
+| [`dsh-plugin-tradingcalendar`](packages/dsh-plugin-tradingcalendar) | Tradingcalendar plugin twin |
+| [`dsh-plugin-marketcalendar`](packages/dsh-plugin-marketcalendar) | Marketcalendar plugin twin |
+| [`dsh-plugin-postmarket`](packages/dsh-plugin-postmarket) | Postmarket plugin twin |
+| [`dsh-plugin-afterhours`](packages/dsh-plugin-afterhours) | Afterhours plugin twin - the afterhours seat, plugin-scoped |
+| [`dsh-plugin-overnight`](packages/dsh-plugin-overnight) | Overnight plugin twin - the overnight seat, plugin-scoped |
+| [`dsh-plugin-halfday`](packages/dsh-plugin-halfday) | Halfday plugin twin |
+| [`dsh-plugin-premarket`](packages/dsh-plugin-premarket) | Premarket plugin twin - completing the pair |
+| [`dsh-earnings`](packages/dsh-earnings) | Earnings - earnings season |
+| [`dsh-earningscalendar`](packages/dsh-earningscalendar) | Earningscalendar - the earnings calendar |
+| [`dsh-dividend`](packages/dsh-dividend) | Dividend - dividends |
+| [`dsh-ipos`](packages/dsh-ipos) | Ipos - the IPO shelf |
+| [`dsh-fee`](packages/dsh-fee) | Fee - one fee |
+| [`dsh-commission`](packages/dsh-commission) | Commission - commission math |
+| [`dsh-commissions`](packages/dsh-commissions) | Commissions - the cost sheet |
+| [`dsh-fundingrate`](packages/dsh-fundingrate) | Fundingrate - perp funding |
+| [`dsh-fundingrates`](packages/dsh-fundingrates) | Fundingrates - the funding board |
+| [`dsh-plugin-earnings`](packages/dsh-plugin-earnings) | Earnings plugin twin |
+| [`dsh-plugin-earningscalendar`](packages/dsh-plugin-earningscalendar) | Earningscalendar plugin twin |
+| [`dsh-plugin-dividend`](packages/dsh-plugin-dividend) | Dividend plugin twin |
+| [`dsh-plugin-dividends`](packages/dsh-plugin-dividends) | Dividends plugin twin - the dividends seat, plugin-scoped |
+| [`dsh-plugin-splits`](packages/dsh-plugin-splits) | Splits plugin twin - the splits seat, plugin-scoped |
+| [`dsh-plugin-ipo`](packages/dsh-plugin-ipo) | Ipo plugin twin - the ipo seat, plugin-scoped |
+| [`dsh-plugin-ipos`](packages/dsh-plugin-ipos) | Ipos plugin twin |
+| [`dsh-plugin-fee`](packages/dsh-plugin-fee) | Fee plugin twin |
+| [`dsh-plugin-fees`](packages/dsh-plugin-fees) | Fees plugin twin - the fees seat, plugin-scoped |
+| [`dsh-plugin-commission`](packages/dsh-plugin-commission) | Commission plugin twin |
+| [`dsh-plugin-commissions`](packages/dsh-plugin-commissions) | Commissions plugin twin |
+| [`dsh-plugin-fundingrate`](packages/dsh-plugin-fundingrate) | Fundingrate plugin twin |
+| [`dsh-plugin-fundingrates`](packages/dsh-plugin-fundingrates) | Fundingrates plugin twin |
+| [`dsh-hedging`](packages/dsh-hedging) | Hedging - hedge execution |
+| [`dsh-hedgefund`](packages/dsh-hedgefund) | Hedgefund - the fund desk |
+| [`dsh-hedgefunds`](packages/dsh-hedgefunds) | Hedgefunds - the fund tracker |
+| [`dsh-perp`](packages/dsh-perp) | Perp - perpetual futures |
+| [`dsh-perps`](packages/dsh-perps) | Perps - the perp desk |
+| [`dsh-spot`](packages/dsh-spot) | Spot - spot trading |
+| [`dsh-spotmarket`](packages/dsh-spotmarket) | Spotmarket - spot markets |
+| [`dsh-plugin-hedging`](packages/dsh-plugin-hedging) | Hedging plugin twin |
+| [`dsh-plugin-hedgefund`](packages/dsh-plugin-hedgefund) | Hedgefund plugin twin |
+| [`dsh-plugin-hedgefunds`](packages/dsh-plugin-hedgefunds) | Hedgefunds plugin twin |
+| [`dsh-plugin-leverage`](packages/dsh-plugin-leverage) | Leverage plugin twin - the leverage seat, plugin-scoped |
+| [`dsh-plugin-margin`](packages/dsh-plugin-margin) | Margin plugin twin - the margin seat, plugin-scoped |
+| [`dsh-plugin-liquidation`](packages/dsh-plugin-liquidation) | Liquidation plugin twin - the liquidation seat, plugin-scoped |
+| [`dsh-plugin-perp`](packages/dsh-plugin-perp) | Perp plugin twin |
+| [`dsh-plugin-perps`](packages/dsh-plugin-perps) | Perps plugin twin |
+| [`dsh-plugin-spot`](packages/dsh-plugin-spot) | Spot plugin twin |
+| [`dsh-plugin-spotmarket`](packages/dsh-plugin-spotmarket) | Spotmarket plugin twin |
+| [`dsh-momentum`](packages/dsh-momentum) | Momentum - momentum tracking |
+| [`dsh-trend`](packages/dsh-trend) | Trend - one trend |
+| [`dsh-trends`](packages/dsh-trends) | Trends - the trend board |
+| [`dsh-trending`](packages/dsh-trending) | Trending - what is trending |
+| [`dsh-volatility`](packages/dsh-volatility) | Volatility - vol tracking |
+| [`dsh-volume`](packages/dsh-volume) | Volume - volume analysis |
+| [`dsh-volumes`](packages/dsh-volumes) | Volumes - the volume profile |
+| [`dsh-breakouts`](packages/dsh-breakouts) | Breakouts - breakout tracking |
+| [`dsh-levels`](packages/dsh-levels) | Levels - the level book |
+| [`dsh-range`](packages/dsh-range) | Range - one range |
+| [`dsh-ranges`](packages/dsh-ranges) | Ranges - range regimes |
+| [`dsh-plugin-momentum`](packages/dsh-plugin-momentum) | Momentum plugin twin |
+| [`dsh-plugin-trend`](packages/dsh-plugin-trend) | Trend plugin twin |
+| [`dsh-plugin-trends`](packages/dsh-plugin-trends) | Trends plugin twin |
+| [`dsh-plugin-trending`](packages/dsh-plugin-trending) | Trending plugin twin |
+| [`dsh-plugin-volatility`](packages/dsh-plugin-volatility) | Volatility plugin twin |
+| [`dsh-plugin-volume`](packages/dsh-plugin-volume) | Volume plugin twin |
+| [`dsh-plugin-volumes`](packages/dsh-plugin-volumes) | Volumes plugin twin |
+| [`dsh-plugin-breakout`](packages/dsh-plugin-breakout) | Breakout plugin twin - the breakout seat, plugin-scoped |
+| [`dsh-plugin-breakouts`](packages/dsh-plugin-breakouts) | Breakouts plugin twin |
+| [`dsh-plugin-support`](packages/dsh-plugin-support) | Support plugin twin - the support seat, plugin-scoped |
+| [`dsh-plugin-resistance`](packages/dsh-plugin-resistance) | Resistance plugin twin - the resistance seat, plugin-scoped |
+| [`dsh-plugin-levels`](packages/dsh-plugin-levels) | Levels plugin twin |
+| [`dsh-plugin-range`](packages/dsh-plugin-range) | Range plugin twin |
+| [`dsh-plugin-ranges`](packages/dsh-plugin-ranges) | Ranges plugin twin |
+| [`dsh-recaps`](packages/dsh-recaps) | Recaps - the recap shelf |
+| [`dsh-plugin-journal`](packages/dsh-plugin-journal) | Journal plugin twin - the journal seat, plugin-scoped |
+| [`dsh-plugin-recap`](packages/dsh-plugin-recap) | Recap plugin twin - the recap seat, plugin-scoped |
+| [`dsh-plugin-recaps`](packages/dsh-plugin-recaps) | Recaps plugin twin |
+| [`dsh-plugin-debrief`](packages/dsh-plugin-debrief) | Debrief plugin twin - the debrief seat, plugin-scoped |
+| [`dsh-plugin-postmortem`](packages/dsh-plugin-postmortem) | Postmortem plugin twin - the postmortem seat, plugin-scoped |
+| [`dsh-tradeideas`](packages/dsh-tradeideas) | TradeIdeas - the idea board |
+| [`dsh-plugin-tradeideas`](packages/dsh-plugin-tradeideas) | Tradeideas plugin twin |
+| [`dsh-tradereview`](packages/dsh-tradereview) | Tradereview - the review ritual |
+| [`dsh-plugin-tradereview`](packages/dsh-plugin-tradereview) | Tradereview plugin twin |
+| [`dsh-traderecords`](packages/dsh-traderecords) | Traderecords - the record room |
+| [`dsh-plugin-traderecords`](packages/dsh-plugin-traderecords) | Traderecords plugin twin |
+| [`dsh-plugin-ticker`](packages/dsh-plugin-ticker) | Ticker plugin twin - completing the pair |
+| [`dsh-plugin-broker`](packages/dsh-plugin-broker) | Broker plugin twin - completing the pair |
+| [`dsh-plugin-hedge`](packages/dsh-plugin-hedge) | Hedge plugin twin - completing the pair |
+| [`dsh-plugin-futures`](packages/dsh-plugin-futures) | Futures plugin twin - completing the pair |
+| [`dsh-plugin-options`](packages/dsh-plugin-options) | Options plugin twin - completing the pair |
+| [`dsh-plugin-forex`](packages/dsh-plugin-forex) | Forex plugin twin - completing the pair |
+| [`dsh-plugin-fund`](packages/dsh-plugin-fund) | Fund plugin twin - completing the pair |
+| [`dsh-plugin-funding`](packages/dsh-plugin-funding) | Funding plugin twin - completing the pair |
+| [`dsh-plugin-bond`](packages/dsh-plugin-bond) | Bond plugin twin - completing the pair |
+| [`dsh-plugin-etf`](packages/dsh-plugin-etf) | Etf plugin twin - completing the pair |
+| [`dsh-plugin-finance`](packages/dsh-plugin-finance) | Finance plugin twin - completing the pair |
+| [`dsh-plugin-crypto`](packages/dsh-plugin-crypto) | Crypto plugin twin - completing the pair |
+| [`dsh-plugin-defi`](packages/dsh-plugin-defi) | Defi plugin twin - completing the pair |
+| [`dsh-plugin-web3`](packages/dsh-plugin-web3) | Web3 plugin twin - completing the pair |
+| [`dsh-plugin-banking`](packages/dsh-plugin-banking) | Banking plugin twin - completing the pair |
+| [`dsh-plugin-bitcoin`](packages/dsh-plugin-bitcoin) | Bitcoin plugin twin - completing the pair |
+| [`dsh-plugin-stablecoin`](packages/dsh-plugin-stablecoin) | Stablecoin plugin twin - completing the pair |
+| [`dsh-plugin-hedgehog`](packages/dsh-plugin-hedgehog) | Hedgehog plugin twin - completing the pair |
+
 ### Meta / product (16)
 
 | Name | Planned first release |
