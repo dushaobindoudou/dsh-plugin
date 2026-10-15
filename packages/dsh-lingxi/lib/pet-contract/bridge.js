@@ -99,7 +99,8 @@ export class PetBridge {
       data = null
     }
     if (!response.ok) {
-      const message = data && typeof data === 'object' && typeof data.error === 'string' ? data.error : `HTTP ${response.status}`
+      const rejected = Array.isArray(data?.rejected) ? data.rejected.filter((reason) => typeof reason === 'string') : []
+      const message = typeof data?.error === 'string' ? data.error : rejected.length ? rejected.join('; ') : `HTTP ${response.status}`
       return { ok: false, status: response.status, data, error: message }
     }
     return { ok: true, status: response.status, data }
@@ -139,7 +140,10 @@ export class PetBridge {
 
   /** POST /control — one stage action ({say}, {expression}, {action}, …). */
   async control(action) {
-    return this.request('POST', '/control', action)
+    // taskId correlates notification decisions and deliveries in the host log.
+    // It is not a /control field; the app rejects unknown fields with HTTP 400.
+    const { taskId: _taskId, ...command } = action
+    return this.request('POST', '/control', command)
   }
 
   /** POST /memory — persist one fact about the user on the pet's side. */

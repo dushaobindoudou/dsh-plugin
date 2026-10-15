@@ -366,7 +366,7 @@ export class TaskWatch {
         const agent = payload?.agent
         if (agent !== undefined && agent !== null) {
           taskId = agent.id
-          this.track(taskId, { source: 'agent', state: 'needs_approval', title: `等待授权：${describeApproval(payload)}` })
+          this.track(taskId, { source: 'agent', state: 'needs_approval', title: `等待授权：${describeApproval(payload)}`, composed: true })
         }
       } catch (error) {
         console.error('dsh-lingxi task watch: approval/request observer failed:', error instanceof Error ? error.message : error)
@@ -382,7 +382,7 @@ export class TaskWatch {
           // The ask itself is the best title: the bubble reads
           // "「文档入库：.gitignore 目前忽略了 docs…」有个问题想问你。" instead
           // of a generic "等待你的回答" that makes the user ask "什么问题？".
-          this.track(taskId, { source: 'agent', state: 'needs_input', title: describeQuestion(payload) })
+          this.track(taskId, { source: 'agent', state: 'needs_input', title: describeQuestion(payload), composed: true })
         }
       } catch (error) {
         console.error('dsh-lingxi task watch: user-questions/request observer failed:', error instanceof Error ? error.message : error)
@@ -412,7 +412,7 @@ export class TaskWatch {
    * the row and the feed ride, but announcing a start nobody observed
    * would claim the work just began.
    */
-  track(taskId, { source, state, title, progress, sayGeneric, discovered }) {
+  track(taskId, { source, state, title, progress, sayGeneric, composed, discovered }) {
     const previous = this.tracked.get(taskId)
     // Whether the title is the generic fallback decides how the settle line
     // is built: a generic 「子任务」 adds nothing in front of a real outcome.
@@ -435,6 +435,10 @@ export class TaskWatch {
       source,
       // A reconcile discovery rides the feed but not the mouth — see track()'s doc.
       discovered: discovered === true || (discovered === undefined && previous?.discovered === true),
+      // composed marks the title as the watch's OWN bounded phrasing
+      // (approval ask, question text, credential ask) rather than unbounded
+      // human text — the say gate may quote it past the length rule.
+      composed: composed === true,
       // progress sticks: a source that knows it (goal rounds, todo counts)
       // supplies it; one that does not keeps what the row last had.
       progress: clampProgress(progress) ?? previous?.progress,
@@ -451,12 +455,16 @@ export class TaskWatch {
    * One task left the running set (or died).
    *
    * The optional note is the CAUSE ("第 3 步出错", "exit 1") in the
-   * reporter's own words, and it is the WHOLE summary: the pet app reads a
-   * terminal summary aloud as the turn's RESULT, so prefixing the row
-   * title here had the cat "complete" the user's own ask back at them
-   * ("已完成：我看 freeroute 又需要更新了，"). The row's subject travels
-   * in `label` (emit); a settle without a note has nothing honest to say,
-   * and the app narrates its own lifecycle line instead.
+   * reporter's own words. For AGENT rows it is the WHOLE summary: the pet
+   * app reads a terminal summary aloud as the turn's RESULT, so prefixing
+   * the row title here had the cat "complete" the user's own ask back at
+   * them ("已完成：我看 freeroute 又需要更新了，"). For rows whose title
+   * names the WORK (workflow run, background job), the title IS the
+   * subject the user needs — the summary composes `title · note`
+   * ("audit-freeroute · parse catalog · 阶段抛错了"); a generic row title
+   * (子任务) adds nothing and is skipped. A settle without a note has
+   * nothing honest to say for agent rows; the app narrates its own
+   * lifecycle line instead.
    */
   settle(taskId, state, source, note) {
     const previous = this.tracked.get(taskId)
@@ -464,7 +472,14 @@ export class TaskWatch {
     const entry = { ...previous, state, kind: kindOf(source), source }
     this.tracked.set(taskId, entry)
     const trimmed = typeof note === 'string' && note.trim() ? note.trim() : undefined
-    this.emit(taskId, { ...entry, summary: trimmed })
+    const title = typeof previous.title === 'string' ? previous.title.trim() : ''
+    const composable = source !== 'agent'
+      && title !== '' && previous.titleGeneric !== true
+      && title !== trimmed
+    const summary = composable && trimmed !== undefined ? `${title} · ${trimmed}`
+      : composable ? title
+      : trimmed
+    this.emit(taskId, { ...entry, summary })
     if (state !== 'needs_approval' && state !== 'needs_input') this.tracked.delete(taskId)
   }
 
@@ -499,7 +514,7 @@ export class TaskWatch {
     this.inputHints.set(sessionId, hint)
     const previous = this.tracked.get(sessionId)
     if (previous === undefined || previous.state !== 'running') {
-      this.track(sessionId, { source: 'input', state: 'queued', title: hint })
+      this.track(sessionId, { source: 'input', state: 'queued', title: hint, composed: true })
       return
     }
     // Steering during active work adds no row and no bubble, but the row's
@@ -608,7 +623,13 @@ export class TaskWatch {
         // watch is the HOST's voice, never the agent's own report.
         label: entry.title,
         origin: 'hook',
-        titleGeneric: entry.titleGeneric === true,
+        // titleGeneric marks the TITLE's provenance (a conversation name or
+        // a generic fallback must not be quoted). An explicit summary is a
+        // settle NOTE or a composed `title · note` — the reporter's own
+        // words about the work — and speaks even for a generic-titled row;
+        // suppressing it reduced every failure bubble to subject-less noise
+        // (2026-09-30 smoke regression).
+        titleGeneric: entry.summary === undefined && entry.titleGeneric === true,
         source: entry.source,
         ...(entry.discovered === true ? { discovered: true } : {}),
         ...(entry.progress === undefined ? {} : { progress: entry.progress }),

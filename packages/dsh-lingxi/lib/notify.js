@@ -135,7 +135,12 @@ export class AttentionNotifier {
     // ("开工了，有进展我再吱声～"). The feed's summary is untouched: the
     // taskEvent above still carries the full title.
     const saySummary = known?.summary
-      ?? (transition.titleGeneric === true ? undefined : readableSubject(transition.summary))
+      ?? (transition.composed === true
+        // A watch-composed subject is bounded by its composer — it skips
+        // the unbounded-title length rule, and titleGeneric (which marks
+        // the ROW title's provenance) does not suppress it.
+        ? readableSubject(transition.summary, { bounded: true })
+        : transition.titleGeneric === true ? undefined : readableSubject(transition.summary))
     // The decision record rides with it: what would have been said, and where
     // the summary came from. Delivery is the wire layer's record.
     const eid = this.log?.nextEid()
@@ -222,8 +227,8 @@ export class AttentionNotifier {
       say: sayText,
       agent: settings.agentId,
       priority: stagePriorityFor(level),
-      // Not for the stage — the app's control endpoint ignores unknown
-      // fields; the wire log keys a delivered say back to its task by it.
+      // Host-log correlation only: PetBridge strips this before /control,
+      // whose strict contract rejects unknown fields.
       taskId,
     })
     // A say that never showed is a mystery unless someone records it: the
@@ -237,7 +242,16 @@ export class AttentionNotifier {
   }
 }
 
-/** Longest subject quoted without a sentence terminator, in characters. */
+/** Longest subject quoted without a sentence terminator, in characters.
+ *  This cap guards the one UNBOUNDED source — raw session titles / model
+ *  prompt slices, truncated mid-clause — from being quoted verbatim.
+ *  Watch-composed subjects (approval tool·reason, question header:ask,
+ *  credential asks, settle notes) are already truncated by their composers
+ *  at 40–80 chars and end mid-clause BY CONSTRUCTION; they arrive marked
+ *  `composed` on the transition and skip this rule (ID/stop filters still
+ *  apply). At 12 with no composed channel every composed subject was
+ *  dropped and the bubbles all degraded to subject-less lines
+ *  (2026-09-30 smoke regression). */
 const QUOTE_MAX_CHARS = 12
 
 /** A subject that is a key wearing a topic's clothes: optional session-like
@@ -270,12 +284,13 @@ const ENDS_READABLE = /[。！？；…〉」』）.)!?;]$/
  * activity rows keep the full unfiltered title either way; the gate is about
  * the bubble's mouth only.
  */
-export function readableSubject(summary) {
+export function readableSubject(summary, { bounded = false } = {}) {
   if (typeof summary !== 'string') return undefined
   const subject = summary.trim()
   if (!subject) return undefined
   if (ID_SHAPED.test(subject)) return undefined
   if (STOP_SUBJECTS.has(subject) || STOP_SUBJECTS.has(subject.toLowerCase())) return undefined
+  if (bounded) return subject
   const chars = Array.from(subject)
   if (chars.length <= QUOTE_MAX_CHARS) return subject
   if (ENDS_READABLE.test(chars[chars.length - 1])) return subject
@@ -297,7 +312,9 @@ export function sayLine(state, summary) {
   const what = typeof summary === 'string' && summary.trim() ? summary.trim() : undefined
   const quoted = what ? `「${what}」` : ''
   switch (state) {
-    case 'queued': return what ? `收到新任务：「${what}」` : '收到新任务，等我看看。'
+    // The queued subject is the user's own full ask (inputHint) — no quote
+    // marks on top of a complete sentence; the colon reads cleaner.
+    case 'queued': return what ? `收到新任务：${what}` : '收到新任务，等我看看。'
     case 'running': return what ? `开始${quoted}，有进展我再吱声～` : '开工了，有进展我再吱声～'
     case 'needs_approval': return what ? `${quoted}需要你授权，我在等你点头。` : '有任务需要你授权，我在等你点头。'
     // A question wants an answer; a credential wait (需要凭据/登录) wants the

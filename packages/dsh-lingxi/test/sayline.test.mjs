@@ -58,9 +58,9 @@ test('steering words name no subject — they answer nothing when quoted', () =>
   assert.equal(readableSubject('继续修登录页'), '继续修登录页')
 })
 
-test('sayLine quotes the subject it is given — the gate ran upstream', () => {
+test('sayLine quotes running subjects and reads queued requests as a full sentence', () => {
   assert.equal(sayLine('running', '修好登录页'), '开始「修好登录页」，有进展我再吱声～')
-  assert.equal(sayLine('queued', '修好登录页'), '收到新任务：「修好登录页」')
+  assert.equal(sayLine('queued', '修好登录页'), '收到新任务：修好登录页')
 })
 
 test('sayLine degrades to subject-less phrasing when given nothing', () => {

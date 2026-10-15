@@ -16,6 +16,8 @@ import assert from 'node:assert/strict'
 import { readFileSync, existsSync, mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { createServer } from 'node:http'
+import { PetBridge } from '../lib/pet-contract/bridge.js'
 
 import { AttentionNotifier } from '../lib/notify.js'
 import { NotifyLog, loggingBridge } from '../lib/notify-log.js'
@@ -42,6 +44,46 @@ function notifierWith(log, bridge, delay = (_fn, _ms) => () => {}, notify = {}) 
 function lines(log) {
   return readFileSync(log.path, 'utf8').trim().split('\n').map((line) => JSON.parse(line))
 }
+
+test('task correlation stays in the log and never reaches the strict control endpoint', async () => {
+  const bodies = []
+  const server = createServer((req, res) => {
+    let body = ''
+    req.on('data', (chunk) => { body += chunk })
+    req.on('end', () => {
+      const action = JSON.parse(body)
+      bodies.push(action)
+      const rejected = 'taskId' in action ? ['unknown field "taskId"'] : []
+      res.writeHead(rejected.length ? 400 : 200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ ok: !rejected.length, rejected }))
+    })
+  })
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve))
+  try {
+    const log = makeLog('control-contract')
+    const bridge = new PetBridge({ port: server.address().port, token: 'test', agentId: 'dsh' })
+    const wrapped = loggingBridge({ current: bridge }, log)
+    const result = await wrapped.control({ say: '需要确认', agent: 'dsh', priority: 'alert', taskId: 's1' })
+    assert.equal(result.ok, true, 'audit metadata must not cause an otherwise valid bubble to fail')
+    assert.equal(bodies[0].taskId, undefined)
+    assert.equal(bodies[0].say, '需要确认')
+    const record = lines(log).at(-1)
+    assert.equal(record.taskId, 's1')
+    assert.equal(record.decision, 'delivered')
+  } finally {
+    await new Promise((resolve) => server.close(resolve))
+  }
+})
+
+test('bridge rejection reasons survive into the delivery log', async () => {
+  const log = makeLog('rejection-reason')
+  const bridge = new PetBridge({ token: 'test', fetchImpl: async () => new Response(
+    JSON.stringify({ ok: false, rejected: ['stage busy: alert showing'] }),
+    { status: 400, headers: { 'Content-Type': 'application/json' } },
+  ) })
+  await loggingBridge({ current: bridge }, log).control({ say: '检查' })
+  assert.equal(lines(log).at(-1).delivery.error, 'stage busy: alert showing')
+})
 
 test('a model report emits a decision record with model-report provenance', () => {
   const log = makeLog('prov')
