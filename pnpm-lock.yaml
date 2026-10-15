@@ -18,6 +18,8 @@ importers:
 
   packages/dsh-2048: {}
 
+  packages/dsh-2fa: {}
+
   packages/dsh-36kr: {}
 
   packages/dsh-996: {}
@@ -50,11 +52,17 @@ importers:
 
   packages/dsh-agent: {}
 
+  packages/dsh-agent-evals: {}
+
+  packages/dsh-agentic-cloud: {}
+
   packages/dsh-agentpay: {}
 
   packages/dsh-agents: {}
 
   packages/dsh-agu: {}
+
+  packages/dsh-agui: {}
 
   packages/dsh-aid: {}
 
@@ -72,6 +80,8 @@ importers:
 
   packages/dsh-alert: {}
 
+  packages/dsh-alerts: {}
+
   packages/dsh-alexa: {}
 
   packages/dsh-algo: {}
@@ -82,7 +92,17 @@ importers:
 
   packages/dsh-aliyun: {}
 
+  packages/dsh-allhands: {}
+
+  packages/dsh-allocation: {}
+
+  packages/dsh-allocations: {}
+
   packages/dsh-alphafold: {}
+
+  packages/dsh-alphas: {}
+
+  packages/dsh-alwayson: {}
 
   packages/dsh-amap: {}
 
@@ -100,6 +120,8 @@ importers:
 
   packages/dsh-android: {}
 
+  packages/dsh-animation: {}
+
   packages/dsh-anime: {}
 
   packages/dsh-ansible: {}
@@ -107,6 +129,8 @@ importers:
   packages/dsh-anthropic: {}
 
   packages/dsh-antibody: {}
+
+  packages/dsh-antivirus: {}
 
   packages/dsh-ap2: {}
 
@@ -121,6 +145,8 @@ importers:
   packages/dsh-applepay: {}
 
   packages/dsh-applicant: {}
+
+  packages/dsh-appointment: {}
 
   packages/dsh-aptos: {}
 
@@ -138,11 +164,15 @@ importers:
 
   packages/dsh-archive: {}
 
+  packages/dsh-armor: {}
+
   packages/dsh-artemis: {}
 
   packages/dsh-asana: {}
 
   packages/dsh-assay: {}
+
+  packages/dsh-astra: {}
 
   packages/dsh-atom: {}
 
@@ -182,6 +212,10 @@ importers:
 
   packages/dsh-backtest: {}
 
+  packages/dsh-backtesting: {}
+
+  packages/dsh-backtests: {}
+
   packages/dsh-baichuan: {}
 
   packages/dsh-baidu: {}
@@ -209,6 +243,10 @@ importers:
   packages/dsh-basepair: {}
 
   packages/dsh-basis: {}
+
+  packages/dsh-bastion: {}
+
+  packages/dsh-battery: {}
 
   packages/dsh-bch: {}
 
@@ -248,6 +286,8 @@ importers:
 
   packages/dsh-blog: {}
 
+  packages/dsh-blotter: {}
+
   packages/dsh-bluesky: {}
 
   packages/dsh-blueteam: {}
@@ -255,6 +295,8 @@ importers:
   packages/dsh-bnb: {}
 
   packages/dsh-boardgame: {}
+
+  packages/dsh-boards: {}
 
   packages/dsh-boggle: {}
 
@@ -282,13 +324,21 @@ importers:
 
   packages/dsh-bots: {}
 
+  packages/dsh-bounty: {}
+
   packages/dsh-boxscore: {}
 
   packages/dsh-brain: {}
 
+  packages/dsh-brainstorm: {}
+
   packages/dsh-brand: {}
 
   packages/dsh-breakout: {}
+
+  packages/dsh-breakouts: {}
+
+  packages/dsh-brief: {}
 
   packages/dsh-broker: {}
 
@@ -298,11 +348,15 @@ importers:
 
   packages/dsh-buidl: {}
 
+  packages/dsh-bulletin: {}
+
   packages/dsh-bun: {}
 
   packages/dsh-bunny: {}
 
   packages/dsh-buyback: {}
+
+  packages/dsh-cabinet: {}
 
   packages/dsh-caigou: {}
 
@@ -314,13 +368,27 @@ importers:
 
   packages/dsh-calculator: {}
 
+  packages/dsh-calendars: {}
+
   packages/dsh-calibrate: {}
 
+  packages/dsh-call: {}
+
   packages/dsh-calldata: {}
+
+  packages/dsh-calls: {}
 
   packages/dsh-canbus: {}
 
   packages/dsh-candidate: {}
+
+  packages/dsh-candle: {}
+
+  packages/dsh-candles: {}
+
+  packages/dsh-candlestick: {}
+
+  packages/dsh-candlesticks: {}
 
   packages/dsh-canvas: {}
 
@@ -329,6 +397,8 @@ importers:
   packages/dsh-car: {}
 
   packages/dsh-carcassonne: {}
+
+  packages/dsh-card: {}
 
   packages/dsh-cardano: {}
 
@@ -354,6 +424,10 @@ importers:
 
   packages/dsh-celestia: {}
 
+  packages/dsh-cell: {}
+
+  packages/dsh-cells: {}
+
   packages/dsh-cex: {}
 
   packages/dsh-chailv: {}
@@ -366,7 +440,15 @@ importers:
 
   packages/dsh-chaoyou: {}
 
+  packages/dsh-charting: {}
+
+  packages/dsh-charts: {}
+
   packages/dsh-checkers: {}
+
+  packages/dsh-checkin: {}
+
+  packages/dsh-checkins: {}
 
   packages/dsh-checkpoint: {}
 
@@ -402,6 +484,8 @@ importers:
 
   packages/dsh-clinical: {}
 
+  packages/dsh-clip: {}
+
   packages/dsh-closer: {}
 
   packages/dsh-cloud: {}
@@ -424,7 +508,13 @@ importers:
 
   packages/dsh-comic: {}
 
+  packages/dsh-commission: {}
+
+  packages/dsh-commissions: {}
+
   packages/dsh-commit: {}
+
+  packages/dsh-compaction: {}
 
   packages/dsh-compensation: {}
 
@@ -436,7 +526,11 @@ importers:
 
   packages/dsh-compositing: {}
 
+  packages/dsh-compositor: {}
+
   packages/dsh-compound: {}
+
+  packages/dsh-conference: {}
 
   packages/dsh-config: {}
 
@@ -450,15 +544,21 @@ importers:
 
   packages/dsh-constellation: {}
 
+  packages/dsh-contacts: {}
+
   packages/dsh-continuum: {}
 
   packages/dsh-contract: {}
 
   packages/dsh-contractor: {}
 
+  packages/dsh-controlroom: {}
+
   packages/dsh-convert: {}
 
   packages/dsh-convex: {}
+
+  packages/dsh-conviction: {}
 
   packages/dsh-cook: {}
 
@@ -467,6 +567,8 @@ importers:
   packages/dsh-corgi: {}
 
   packages/dsh-corporateaction: {}
+
+  packages/dsh-correspondence: {}
 
   packages/dsh-costco: {}
 
@@ -478,11 +580,15 @@ importers:
 
   packages/dsh-counteroffer: {}
 
+  packages/dsh-courier: {}
+
   packages/dsh-course: {}
 
   packages/dsh-coverage: {}
 
   packages/dsh-coverletter: {}
+
+  packages/dsh-coworker: {}
 
   packages/dsh-cpp: {}
 
@@ -510,11 +616,15 @@ importers:
 
   packages/dsh-cursor: {}
 
+  packages/dsh-curtailment: {}
+
   packages/dsh-curve: {}
 
   packages/dsh-cusip: {}
 
   packages/dsh-customize: {}
+
+  packages/dsh-cyber: {}
 
   packages/dsh-daemon: {}
 
@@ -523,6 +633,8 @@ importers:
   packages/dsh-dai: {}
 
   packages/dsh-dailies: {}
+
+  packages/dsh-daily: {}
 
   packages/dsh-daiyu: {}
 
@@ -538,6 +650,8 @@ importers:
 
   packages/dsh-debug: {}
 
+  packages/dsh-deck: {}
+
   packages/dsh-deepsearch: {}
 
   packages/dsh-deepseek: {}
@@ -545,6 +659,8 @@ importers:
   packages/dsh-deepspace: {}
 
   packages/dsh-deer: {}
+
+  packages/dsh-defender: {}
 
   packages/dsh-defi: {}
 
@@ -556,15 +672,21 @@ importers:
 
   packages/dsh-deltav: {}
 
+  packages/dsh-demandresponse: {}
+
   packages/dsh-dengmi: {}
 
   packages/dsh-deno: {}
 
   packages/dsh-deploy: {}
 
+  packages/dsh-depth: {}
+
   packages/dsh-depthchart: {}
 
   packages/dsh-designer: {}
+
+  packages/dsh-desk: {}
 
   packages/dsh-dev: {}
 
@@ -586,7 +708,11 @@ importers:
 
   packages/dsh-diff: {}
 
+  packages/dsh-digest: {}
+
   packages/dsh-digitalnomad: {}
+
+  packages/dsh-digitize: {}
 
   packages/dsh-dingdan: {}
 
@@ -596,13 +722,19 @@ importers:
 
   packages/dsh-disney: {}
 
+  packages/dsh-dividend: {}
+
   packages/dsh-dividends: {}
 
   packages/dsh-dixit: {}
 
+  packages/dsh-dlss: {}
+
   packages/dsh-dnd: {}
 
   packages/dsh-docs: {}
+
+  packages/dsh-docx: {}
 
   packages/dsh-dog: {}
 
@@ -626,6 +758,8 @@ importers:
 
   packages/dsh-dot: {}
 
+  packages/dsh-dots: {}
+
   packages/dsh-douban: {}
 
   packages/dsh-doubao: {}
@@ -633,6 +767,8 @@ importers:
   packages/dsh-douyin: {}
 
   packages/dsh-downlink: {}
+
+  packages/dsh-drafts: {}
 
   packages/dsh-dragon: {}
 
@@ -649,6 +785,8 @@ importers:
   packages/dsh-dropbox: {}
 
   packages/dsh-drug: {}
+
+  packages/dsh-dryrun: {}
 
   packages/dsh-dtc: {}
 
@@ -672,6 +810,10 @@ importers:
 
   packages/dsh-eagle: {}
 
+  packages/dsh-earnings: {}
+
+  packages/dsh-earningscalendar: {}
+
   packages/dsh-ebay: {}
 
   packages/dsh-echo: {}
@@ -681,6 +823,8 @@ importers:
   packages/dsh-ecu: {}
 
   packages/dsh-eda: {}
+
+  packages/dsh-edge-cache: {}
 
   packages/dsh-edit: {}
 
@@ -702,6 +846,8 @@ importers:
 
   packages/dsh-embeddings: {}
 
+  packages/dsh-embodied: {}
+
   packages/dsh-endtoend: {}
 
   packages/dsh-engine: {}
@@ -715,6 +861,8 @@ importers:
   packages/dsh-ens: {}
 
   packages/dsh-ensemble: {}
+
+  packages/dsh-envelope: {}
 
   packages/dsh-eos: {}
 
@@ -750,6 +898,8 @@ importers:
 
   packages/dsh-etsy: {}
 
+  packages/dsh-evals: {}
+
   packages/dsh-evernote: {}
 
   packages/dsh-evolve: {}
@@ -758,9 +908,21 @@ importers:
 
   packages/dsh-execution: {}
 
+  packages/dsh-executions: {}
+
+  packages/dsh-expectancy: {}
+
   packages/dsh-expedia: {}
 
+  packages/dsh-expenses: {}
+
+  packages/dsh-experts: {}
+
+  packages/dsh-exploit: {}
+
   packages/dsh-export: {}
+
+  packages/dsh-exposure: {}
 
   packages/dsh-facebook: {}
 
@@ -780,11 +942,17 @@ importers:
 
   packages/dsh-fapiao: {}
 
+  packages/dsh-faq: {}
+
   packages/dsh-fashion: {}
 
   packages/dsh-fastq: {}
 
   packages/dsh-faucet: {}
+
+  packages/dsh-fax: {}
+
+  packages/dsh-fee: {}
 
   packages/dsh-fees: {}
 
@@ -810,7 +978,15 @@ importers:
 
   packages/dsh-fil: {}
 
+  packages/dsh-filer: {}
+
   packages/dsh-files: {}
+
+  packages/dsh-fill: {}
+
+  packages/dsh-fillrate: {}
+
+  packages/dsh-fills: {}
 
   packages/dsh-finalize: {}
 
@@ -840,9 +1016,15 @@ importers:
 
   packages/dsh-floorplan: {}
 
+  packages/dsh-folder: {}
+
   packages/dsh-folding: {}
 
   packages/dsh-foley: {}
+
+  packages/dsh-followup: {}
+
+  packages/dsh-followups: {}
 
   packages/dsh-font: {}
 
@@ -853,6 +1035,12 @@ importers:
   packages/dsh-forge: {}
 
   packages/dsh-fork: {}
+
+  packages/dsh-formula: {}
+
+  packages/dsh-formulas: {}
+
+  packages/dsh-fortress: {}
 
   packages/dsh-fortune: {}
 
@@ -886,6 +1074,10 @@ importers:
 
   packages/dsh-funding: {}
 
+  packages/dsh-fundingrate: {}
+
+  packages/dsh-fundingrates: {}
+
   packages/dsh-futures: {}
 
   packages/dsh-fyp: {}
@@ -893,6 +1085,8 @@ importers:
   packages/dsh-gacha: {}
 
   packages/dsh-gaffer: {}
+
+  packages/dsh-gains: {}
 
   packages/dsh-gala: {}
 
@@ -926,6 +1120,8 @@ importers:
 
   packages/dsh-ghosting: {}
 
+  packages/dsh-ghostwrite: {}
+
   packages/dsh-gif: {}
 
   packages/dsh-gift: {}
@@ -938,9 +1134,13 @@ importers:
 
   packages/dsh-glassdoor: {}
 
+  packages/dsh-glasses: {}
+
   packages/dsh-glm: {}
 
   packages/dsh-global: {}
+
+  packages/dsh-glossary: {}
 
   packages/dsh-gmx: {}
 
@@ -968,6 +1168,8 @@ importers:
 
   packages/dsh-googlepay: {}
 
+  packages/dsh-governance: {}
+
   packages/dsh-gpt: {}
 
   packages/dsh-grab: {}
@@ -977,6 +1179,8 @@ importers:
   packages/dsh-greenhouse: {}
 
   packages/dsh-greenscreen: {}
+
+  packages/dsh-grid: {}
 
   packages/dsh-groq: {}
 
@@ -990,6 +1194,8 @@ importers:
 
   packages/dsh-guanzhu: {}
 
+  packages/dsh-gui-agent: {}
+
   packages/dsh-guokr: {}
 
   packages/dsh-guoxue: {}
@@ -1002,6 +1208,8 @@ importers:
 
   packages/dsh-habit: {}
 
+  packages/dsh-halfday: {}
+
   packages/dsh-halo: {}
 
   packages/dsh-halt: {}
@@ -1009,6 +1217,8 @@ importers:
   packages/dsh-hamster: {}
 
   packages/dsh-hanabi: {}
+
+  packages/dsh-handbook: {}
 
   packages/dsh-hanfu: {}
 
@@ -1034,7 +1244,13 @@ importers:
 
   packages/dsh-hedge: {}
 
+  packages/dsh-hedgefund: {}
+
+  packages/dsh-hedgefunds: {}
+
   packages/dsh-hedgehog: {}
+
+  packages/dsh-hedging: {}
 
   packages/dsh-helix: {}
 
@@ -1084,6 +1300,8 @@ importers:
 
   packages/dsh-hubspot: {}
 
+  packages/dsh-huddle: {}
+
   packages/dsh-huggingface: {}
 
   packages/dsh-huikuan: {}
@@ -1104,7 +1322,54 @@ importers:
 
   packages/dsh-hyperevm: {}
 
-  packages/dsh-hyperliquid: {}
+  packages/dsh-hyperliquid:
+    dependencies:
+      '@deepseek-ai/schemastery':
+        specifier: ^3.18.4
+        version: 3.18.4
+      '@nktkas/hyperliquid':
+        specifier: ^0.33.3
+        version: 0.33.3(typescript@5.9.3)
+      '@noble/curves':
+        specifier: ^1.9.7
+        version: 1.9.7
+      '@noble/hashes':
+        specifier: ^1.8.0
+        version: 1.8.0
+    devDependencies:
+      '@deepseek-ai/dsh-typert-protocol':
+        specifier: 0.2.0-rc.2
+        version: 0.2.0-rc.2(@deepseek-ai/cordis@4.0.1)
+      '@types/react':
+        specifier: ^19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
+      dsh-web3:
+        specifier: ^0.8.1
+        version: 0.8.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-typert-protocol@0.2.0-rc.2(@deepseek-ai/cordis@4.0.1))
+      esbuild:
+        specifier: ^0.28.2
+        version: 0.28.2
+      ethers:
+        specifier: ^6.13.0
+        version: 6.17.0
+      lightweight-charts:
+        specifier: ^5.2.1
+        version: 5.2.1
+      playwright-core:
+        specifier: ^1.64.0
+        version: 1.64.1
+      react:
+        specifier: ^19.3.0
+        version: 19.3.1
+      react-dom:
+        specifier: ^19.3.0
+        version: 19.3.1(react@19.3.1)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/dsh-i18n: {}
 
@@ -1114,15 +1379,31 @@ importers:
 
   packages/dsh-icp: {}
 
+  packages/dsh-idea: {}
+
+  packages/dsh-ideas: {}
+
+  packages/dsh-ideate: {}
+
   packages/dsh-idiom: {}
 
   packages/dsh-idle: {}
+
+  packages/dsh-image-edit: {}
+
+  packages/dsh-image-to-video: {}
+
+  packages/dsh-imaging: {}
 
   packages/dsh-immutable: {}
 
   packages/dsh-indeed: {}
 
   packages/dsh-index: {}
+
+  packages/dsh-indicator: {}
+
+  packages/dsh-indicators: {}
 
   packages/dsh-infra: {}
 
@@ -1132,11 +1413,17 @@ importers:
 
   packages/dsh-instagram: {}
 
+  packages/dsh-integrations: {}
+
   packages/dsh-intercom: {}
+
+  packages/dsh-intranet: {}
 
   packages/dsh-introspect: {}
 
   packages/dsh-inventory: {}
+
+  packages/dsh-inverter: {}
 
   packages/dsh-invitro: {}
 
@@ -1153,6 +1440,8 @@ importers:
   packages/dsh-iota: {}
 
   packages/dsh-ipo: {}
+
+  packages/dsh-ipos: {}
 
   packages/dsh-iqiyi: {}
 
@@ -1238,6 +1527,8 @@ importers:
 
   packages/dsh-kakao: {}
 
+  packages/dsh-kanbans: {}
+
   packages/dsh-kanjia: {}
 
   packages/dsh-kaoqin: {}
@@ -1260,11 +1551,15 @@ importers:
 
   packages/dsh-kernel: {}
 
+  packages/dsh-kev: {}
+
   packages/dsh-keyframe: {}
 
   packages/dsh-keying: {}
 
   packages/dsh-keymap: {}
+
+  packages/dsh-keynote: {}
 
   packages/dsh-killchain: {}
 
@@ -1280,6 +1575,8 @@ importers:
 
   packages/dsh-klotski: {}
 
+  packages/dsh-knowledgehub: {}
+
   packages/dsh-koi: {}
 
   packages/dsh-kotlin: {}
@@ -1293,6 +1590,8 @@ importers:
   packages/dsh-kyc: {}
 
   packages/dsh-l10n: {}
+
+  packages/dsh-ladder: {}
 
   packages/dsh-lagou: {}
 
@@ -1310,6 +1609,8 @@ importers:
 
   packages/dsh-laoban: {}
 
+  packages/dsh-latency: {}
+
   packages/dsh-latex: {}
 
   packages/dsh-law: {}
@@ -1320,6 +1621,10 @@ importers:
 
   packages/dsh-leaderboard: {}
 
+  packages/dsh-leak: {}
+
+  packages/dsh-lectern: {}
+
   packages/dsh-ledger: {}
 
   packages/dsh-legal: {}
@@ -1327,6 +1632,14 @@ importers:
   packages/dsh-lending: {}
 
   packages/dsh-lesson: {}
+
+  packages/dsh-letter: {}
+
+  packages/dsh-letters: {}
+
+  packages/dsh-level2: {}
+
+  packages/dsh-levels: {}
 
   packages/dsh-levelup: {}
 
@@ -1343,6 +1656,10 @@ importers:
   packages/dsh-lighter: {}
 
   packages/dsh-lightning: {}
+
+  packages/dsh-limitdown: {}
+
+  packages/dsh-limitup: {}
 
   packages/dsh-line: {}
 
@@ -1392,7 +1709,15 @@ importers:
 
   packages/dsh-lmstudio: {}
 
+  packages/dsh-local-llm: {}
+
+  packages/dsh-lockdown: {}
+
+  packages/dsh-locomotion: {}
+
   packages/dsh-logs: {}
+
+  packages/dsh-long-context: {}
 
   packages/dsh-longrun: {}
 
@@ -1401,6 +1726,12 @@ importers:
   packages/dsh-lookdev: {}
 
   packages/dsh-loot: {}
+
+  packages/dsh-lora: {}
+
+  packages/dsh-loss: {}
+
+  packages/dsh-losses: {}
 
   packages/dsh-lottery: {}
 
@@ -1436,6 +1767,12 @@ importers:
 
   packages/dsh-mailchimp: {}
 
+  packages/dsh-mailer: {}
+
+  packages/dsh-mailroom: {}
+
+  packages/dsh-mails: {}
+
   packages/dsh-mainnet: {}
 
   packages/dsh-maker: {}
@@ -1448,6 +1785,10 @@ importers:
 
   packages/dsh-mantle: {}
 
+  packages/dsh-manual: {}
+
+  packages/dsh-manuscript: {}
+
   packages/dsh-maoyan: {}
 
   packages/dsh-marathon: {}
@@ -1455,6 +1796,12 @@ importers:
   packages/dsh-margin: {}
 
   packages/dsh-marinade: {}
+
+  packages/dsh-marketcalendar: {}
+
+  packages/dsh-marketclock: {}
+
+  packages/dsh-marketdata: {}
 
   packages/dsh-marketing: {}
 
@@ -1465,6 +1812,8 @@ importers:
   packages/dsh-mastodon: {}
 
   packages/dsh-matchmove: {}
+
+  packages/dsh-materials: {}
 
   packages/dsh-math: {}
 
@@ -1483,6 +1832,10 @@ importers:
   packages/dsh-meditate: {}
 
   packages/dsh-medium: {}
+
+  packages/dsh-meeting-notes: {}
+
+  packages/dsh-meetings: {}
 
   packages/dsh-meigu: {}
 
@@ -1520,7 +1873,13 @@ importers:
 
   packages/dsh-miaosha: {}
 
+  packages/dsh-microgrid: {}
+
   packages/dsh-micropay: {}
+
+  packages/dsh-mindmapper: {}
+
+  packages/dsh-mindmaps: {}
 
   packages/dsh-minigame: {}
 
@@ -1538,11 +1897,19 @@ importers:
 
   packages/dsh-ml: {}
 
+  packages/dsh-mlx: {}
+
   packages/dsh-mocap: {}
 
   packages/dsh-mode: {}
 
+  packages/dsh-model-gateway: {}
+
+  packages/dsh-modeldrift: {}
+
   packages/dsh-models: {}
+
+  packages/dsh-momentum: {}
 
   packages/dsh-monero: {}
 
@@ -1553,6 +1920,8 @@ importers:
   packages/dsh-monkey: {}
 
   packages/dsh-monopoly: {}
+
+  packages/dsh-monthly: {}
 
   packages/dsh-mood: {}
 
@@ -1569,6 +1938,8 @@ importers:
   packages/dsh-muda: {}
 
   packages/dsh-multiagent: {}
+
+  packages/dsh-multimodal: {}
 
   packages/dsh-multiversx: {}
 
@@ -1607,6 +1978,8 @@ importers:
   packages/dsh-netlify: {}
 
   packages/dsh-netlist: {}
+
+  packages/dsh-neurosymbolic: {}
 
   packages/dsh-newgame: {}
 
@@ -1656,6 +2029,12 @@ importers:
 
   packages/dsh-offer: {}
 
+  packages/dsh-officedesk: {}
+
+  packages/dsh-officemate: {}
+
+  packages/dsh-offsite: {}
+
   packages/dsh-ollama: {}
 
   packages/dsh-omics: {}
@@ -1668,6 +2047,8 @@ importers:
 
   packages/dsh-onedrive: {}
 
+  packages/dsh-oneonone: {}
+
   packages/dsh-oneshot: {}
 
   packages/dsh-onionskin: {}
@@ -1675,6 +2056,8 @@ importers:
   packages/dsh-openai: {}
 
   packages/dsh-openrouter: {}
+
+  packages/dsh-openweights: {}
 
   packages/dsh-opsec: {}
 
@@ -1686,7 +2069,13 @@ importers:
 
   packages/dsh-orbit: {}
 
+  packages/dsh-order: {}
+
   packages/dsh-orderbook: {}
+
+  packages/dsh-ordering: {}
+
+  packages/dsh-orders: {}
 
   packages/dsh-ordinals: {}
 
@@ -1694,7 +2083,13 @@ importers:
 
   packages/dsh-othello: {}
 
+  packages/dsh-otp: {}
+
+  packages/dsh-outbox: {}
+
   packages/dsh-outcome: {}
+
+  packages/dsh-overlay: {}
 
   packages/dsh-overnight: {}
 
@@ -1718,9 +2113,23 @@ importers:
 
   packages/dsh-paper: {}
 
+  packages/dsh-paperless: {}
+
+  packages/dsh-papertrade: {}
+
+  packages/dsh-papertrader: {}
+
+  packages/dsh-papertrading: {}
+
   packages/dsh-parlay: {}
 
+  packages/dsh-passkey: {}
+
   packages/dsh-patient: {}
+
+  packages/dsh-patternbook: {}
+
+  packages/dsh-patterns: {}
 
   packages/dsh-pay: {}
 
@@ -1736,6 +2145,8 @@ importers:
 
   packages/dsh-pcr: {}
 
+  packages/dsh-pdfs: {}
+
   packages/dsh-peek: {}
 
   packages/dsh-peloton: {}
@@ -1746,6 +2157,8 @@ importers:
 
   packages/dsh-pengyouquan: {}
 
+  packages/dsh-pentest: {}
+
   packages/dsh-pepe: {}
 
   packages/dsh-peptide: {}
@@ -1754,7 +2167,11 @@ importers:
 
   packages/dsh-permission: {}
 
+  packages/dsh-perp: {}
+
   packages/dsh-perplexity: {}
+
+  packages/dsh-perps: {}
 
   packages/dsh-persistence: {}
 
@@ -1782,6 +2199,8 @@ importers:
 
   packages/dsh-pinterest: {}
 
+  packages/dsh-pivot: {}
+
   packages/dsh-pixel: {}
 
   packages/dsh-pixiu: {}
@@ -1800,9 +2219,771 @@ importers:
 
   packages/dsh-playbyplay: {}
 
+  packages/dsh-plugin-2fa: {}
+
+  packages/dsh-plugin-afterhours: {}
+
+  packages/dsh-plugin-agenda: {}
+
+  packages/dsh-plugin-alert: {}
+
+  packages/dsh-plugin-alerts: {}
+
+  packages/dsh-plugin-allhands: {}
+
+  packages/dsh-plugin-allocation: {}
+
+  packages/dsh-plugin-allocations: {}
+
+  packages/dsh-plugin-alpha: {}
+
+  packages/dsh-plugin-alphas: {}
+
+  packages/dsh-plugin-antivirus: {}
+
+  packages/dsh-plugin-appointment: {}
+
+  packages/dsh-plugin-approval: {}
+
+  packages/dsh-plugin-archive: {}
+
+  packages/dsh-plugin-armor: {}
+
+  packages/dsh-plugin-attendance: {}
+
+  packages/dsh-plugin-backlog: {}
+
+  packages/dsh-plugin-backtest: {}
+
+  packages/dsh-plugin-backtesting: {}
+
+  packages/dsh-plugin-backtests: {}
+
+  packages/dsh-plugin-banking: {}
+
+  packages/dsh-plugin-bastion: {}
+
+  packages/dsh-plugin-bitcoin: {}
+
+  packages/dsh-plugin-blotter: {}
+
+  packages/dsh-plugin-board: {}
+
+  packages/dsh-plugin-boards: {}
+
+  packages/dsh-plugin-bond: {}
+
+  packages/dsh-plugin-booking: {}
+
+  packages/dsh-plugin-brainstorm: {}
+
+  packages/dsh-plugin-breakout: {}
+
+  packages/dsh-plugin-breakouts: {}
+
+  packages/dsh-plugin-brief: {}
+
+  packages/dsh-plugin-broker: {}
+
+  packages/dsh-plugin-bulletin: {}
+
+  packages/dsh-plugin-cabinet: {}
+
+  packages/dsh-plugin-calendar: {}
+
+  packages/dsh-plugin-calendars: {}
+
+  packages/dsh-plugin-call: {}
+
+  packages/dsh-plugin-calls: {}
+
+  packages/dsh-plugin-candle: {}
+
+  packages/dsh-plugin-candles: {}
+
+  packages/dsh-plugin-candlestick: {}
+
+  packages/dsh-plugin-candlesticks: {}
+
+  packages/dsh-plugin-card: {}
+
+  packages/dsh-plugin-cell: {}
+
+  packages/dsh-plugin-cells: {}
+
+  packages/dsh-plugin-chart: {}
+
+  packages/dsh-plugin-charting: {}
+
+  packages/dsh-plugin-charts: {}
+
+  packages/dsh-plugin-chat: {}
+
+  packages/dsh-plugin-checkin: {}
+
+  packages/dsh-plugin-checkins: {}
+
+  packages/dsh-plugin-clip: {}
+
+  packages/dsh-plugin-cockpit: {}
+
+  packages/dsh-plugin-commission: {}
+
+  packages/dsh-plugin-commissions: {}
+
+  packages/dsh-plugin-conference: {}
+
+  packages/dsh-plugin-contacts: {}
+
+  packages/dsh-plugin-contract: {}
+
+  packages/dsh-plugin-controlroom: {}
+
+  packages/dsh-plugin-conviction: {}
+
+  packages/dsh-plugin-correspondence: {}
+
+  packages/dsh-plugin-courier: {}
+
+  packages/dsh-plugin-coworker: {}
+
+  packages/dsh-plugin-crm: {}
+
+  packages/dsh-plugin-crypto: {}
+
+  packages/dsh-plugin-daily: {}
+
+  packages/dsh-plugin-debrief: {}
+
+  packages/dsh-plugin-deck: {}
+
+  packages/dsh-plugin-defender: {}
+
+  packages/dsh-plugin-defi: {}
+
+  packages/dsh-plugin-delegation: {}
+
+  packages/dsh-plugin-depth: {}
+
+  packages/dsh-plugin-depthchart: {}
+
+  packages/dsh-plugin-desk: {}
+
+  packages/dsh-plugin-digest: {}
+
+  packages/dsh-plugin-digitize: {}
+
+  packages/dsh-plugin-dispatch: {}
+
+  packages/dsh-plugin-dividend: {}
+
+  packages/dsh-plugin-dividends: {}
+
+  packages/dsh-plugin-doc: {}
+
+  packages/dsh-plugin-docs: {}
+
+  packages/dsh-plugin-document: {}
+
+  packages/dsh-plugin-docx: {}
+
+  packages/dsh-plugin-draft: {}
+
+  packages/dsh-plugin-drafts: {}
+
+  packages/dsh-plugin-drawdown: {}
+
+  packages/dsh-plugin-drift: {}
+
+  packages/dsh-plugin-drive: {}
+
+  packages/dsh-plugin-dryrun: {}
+
+  packages/dsh-plugin-earnings: {}
+
+  packages/dsh-plugin-earningscalendar: {}
+
+  packages/dsh-plugin-edge: {}
+
+  packages/dsh-plugin-email: {}
+
+  packages/dsh-plugin-envelope: {}
+
+  packages/dsh-plugin-erp: {}
+
+  packages/dsh-plugin-etf: {}
+
+  packages/dsh-plugin-excel: {}
+
+  packages/dsh-plugin-execution: {}
+
+  packages/dsh-plugin-executions: {}
+
+  packages/dsh-plugin-expectancy: {}
+
+  packages/dsh-plugin-expenses: {}
+
+  packages/dsh-plugin-exploit: {}
+
+  packages/dsh-plugin-exposure: {}
+
+  packages/dsh-plugin-faq: {}
+
+  packages/dsh-plugin-fax: {}
+
+  packages/dsh-plugin-fee: {}
+
+  packages/dsh-plugin-fees: {}
+
+  packages/dsh-plugin-filer: {}
+
+  packages/dsh-plugin-fill: {}
+
+  packages/dsh-plugin-fillrate: {}
+
+  packages/dsh-plugin-fills: {}
+
+  packages/dsh-plugin-finance: {}
+
+  packages/dsh-plugin-firewall: {}
+
+  packages/dsh-plugin-folder: {}
+
+  packages/dsh-plugin-followup: {}
+
+  packages/dsh-plugin-followups: {}
+
+  packages/dsh-plugin-forex: {}
+
+  packages/dsh-plugin-formula: {}
+
+  packages/dsh-plugin-formulas: {}
+
+  packages/dsh-plugin-fortress: {}
+
+  packages/dsh-plugin-fund: {}
+
+  packages/dsh-plugin-funding: {}
+
+  packages/dsh-plugin-fundingrate: {}
+
+  packages/dsh-plugin-fundingrates: {}
+
+  packages/dsh-plugin-futures: {}
+
+  packages/dsh-plugin-gains: {}
+
+  packages/dsh-plugin-gantt: {}
+
+  packages/dsh-plugin-ghostwrite: {}
+
+  packages/dsh-plugin-glossary: {}
+
+  packages/dsh-plugin-grid: {}
+
+  packages/dsh-plugin-halfday: {}
+
+  packages/dsh-plugin-handbook: {}
+
+  packages/dsh-plugin-handoff: {}
+
+  packages/dsh-plugin-harden: {}
+
+  packages/dsh-plugin-hedge: {}
+
+  packages/dsh-plugin-hedgefund: {}
+
+  packages/dsh-plugin-hedgefunds: {}
+
+  packages/dsh-plugin-hedgehog: {}
+
+  packages/dsh-plugin-hedging: {}
+
+  packages/dsh-plugin-holiday: {}
+
+  packages/dsh-plugin-hr: {}
+
+  packages/dsh-plugin-huddle: {}
+
+  packages/dsh-plugin-idea: {}
+
+  packages/dsh-plugin-ideas: {}
+
+  packages/dsh-plugin-ideate: {}
+
+  packages/dsh-plugin-inbox: {}
+
+  packages/dsh-plugin-indicator: {}
+
+  packages/dsh-plugin-indicators: {}
+
+  packages/dsh-plugin-intranet: {}
+
+  packages/dsh-plugin-invoice: {}
+
+  packages/dsh-plugin-ipo: {}
+
+  packages/dsh-plugin-ipos: {}
+
+  packages/dsh-plugin-journal: {}
+
+  packages/dsh-plugin-kanban: {}
+
+  packages/dsh-plugin-kanbans: {}
+
+  packages/dsh-plugin-keynote: {}
+
+  packages/dsh-plugin-knowledgehub: {}
+
+  packages/dsh-plugin-ladder: {}
+
+  packages/dsh-plugin-leak: {}
+
+  packages/dsh-plugin-leave: {}
+
+  packages/dsh-plugin-lectern: {}
+
+  packages/dsh-plugin-ledger: {}
+
+  packages/dsh-plugin-letter: {}
+
+  packages/dsh-plugin-letters: {}
+
+  packages/dsh-plugin-level2: {}
+
+  packages/dsh-plugin-levels: {}
+
+  packages/dsh-plugin-leverage: {}
+
+  packages/dsh-plugin-limitdown: {}
+
+  packages/dsh-plugin-limitup: {}
+
+  packages/dsh-plugin-liquidation: {}
+
+  packages/dsh-plugin-liquidity: {}
+
+  packages/dsh-plugin-lockdown: {}
+
+  packages/dsh-plugin-loss: {}
+
+  packages/dsh-plugin-losses: {}
+
+  packages/dsh-plugin-mail: {}
+
+  packages/dsh-plugin-mailer: {}
+
+  packages/dsh-plugin-mailroom: {}
+
+  packages/dsh-plugin-mails: {}
+
+  packages/dsh-plugin-manual: {}
+
+  packages/dsh-plugin-manuscript: {}
+
+  packages/dsh-plugin-margin: {}
+
+  packages/dsh-plugin-marketcalendar: {}
+
+  packages/dsh-plugin-marketclock: {}
+
+  packages/dsh-plugin-marketdata: {}
+
+  packages/dsh-plugin-meeting: {}
+
+  packages/dsh-plugin-meeting-notes: {}
+
+  packages/dsh-plugin-meetings: {}
+
+  packages/dsh-plugin-milestone: {}
+
+  packages/dsh-plugin-mindmap: {}
+
+  packages/dsh-plugin-mindmapper: {}
+
+  packages/dsh-plugin-mindmaps: {}
+
+  packages/dsh-plugin-minutes: {}
+
+  packages/dsh-plugin-momentum: {}
+
+  packages/dsh-plugin-monthly: {}
+
+  packages/dsh-plugin-newsletter: {}
+
+  packages/dsh-plugin-notebook: {}
+
+  packages/dsh-plugin-ocr: {}
+
+  packages/dsh-plugin-offboarding: {}
+
+  packages/dsh-plugin-officedesk: {}
+
+  packages/dsh-plugin-officemate: {}
+
+  packages/dsh-plugin-offsite: {}
+
+  packages/dsh-plugin-onboarding: {}
+
+  packages/dsh-plugin-oneonone: {}
+
+  packages/dsh-plugin-options: {}
+
+  packages/dsh-plugin-order: {}
+
+  packages/dsh-plugin-orderbook: {}
+
+  packages/dsh-plugin-ordering: {}
+
+  packages/dsh-plugin-orders: {}
+
+  packages/dsh-plugin-otp: {}
+
+  packages/dsh-plugin-outbox: {}
+
+  packages/dsh-plugin-overlay: {}
+
+  packages/dsh-plugin-overnight: {}
+
+  packages/dsh-plugin-paper: {}
+
+  packages/dsh-plugin-paperless: {}
+
+  packages/dsh-plugin-papertrade: {}
+
+  packages/dsh-plugin-papertrader: {}
+
+  packages/dsh-plugin-papertrading: {}
+
+  packages/dsh-plugin-passkey: {}
+
+  packages/dsh-plugin-pattern: {}
+
+  packages/dsh-plugin-patternbook: {}
+
+  packages/dsh-plugin-patterns: {}
+
+  packages/dsh-plugin-payroll: {}
+
+  packages/dsh-plugin-pdf: {}
+
+  packages/dsh-plugin-pdfs: {}
+
+  packages/dsh-plugin-pentest: {}
+
+  packages/dsh-plugin-permission: {}
+
+  packages/dsh-plugin-perp: {}
+
+  packages/dsh-plugin-perps: {}
+
+  packages/dsh-plugin-pivot: {}
+
+  packages/dsh-plugin-planner: {}
+
+  packages/dsh-plugin-playbook: {}
+
+  packages/dsh-plugin-pnl: {}
+
+  packages/dsh-plugin-podium: {}
+
+  packages/dsh-plugin-portal: {}
+
+  packages/dsh-plugin-portfolio: {}
+
+  packages/dsh-plugin-positionsize: {}
+
+  packages/dsh-plugin-postmarket: {}
+
+  packages/dsh-plugin-postmortem: {}
+
+  packages/dsh-plugin-pptx: {}
+
+  packages/dsh-plugin-premarket: {}
+
+  packages/dsh-plugin-print: {}
+
+  packages/dsh-plugin-printer: {}
+
+  packages/dsh-plugin-profit: {}
+
+  packages/dsh-plugin-profits: {}
+
+  packages/dsh-plugin-prose: {}
+
+  packages/dsh-plugin-pto: {}
+
+  packages/dsh-plugin-quarter: {}
+
+  packages/dsh-plugin-quotation: {}
+
+  packages/dsh-plugin-quote: {}
+
+  packages/dsh-plugin-quotes: {}
+
+  packages/dsh-plugin-range: {}
+
+  packages/dsh-plugin-ranges: {}
+
+  packages/dsh-plugin-rebalance: {}
+
+  packages/dsh-plugin-rebalancing: {}
+
+  packages/dsh-plugin-recap: {}
+
+  packages/dsh-plugin-recaps: {}
+
+  packages/dsh-plugin-recovery: {}
+
+  packages/dsh-plugin-reminder: {}
+
+  packages/dsh-plugin-reminders: {}
+
+  packages/dsh-plugin-resignation: {}
+
+  packages/dsh-plugin-resistance: {}
+
+  packages/dsh-plugin-retro: {}
+
+  packages/dsh-plugin-risklimit: {}
+
+  packages/dsh-plugin-rmultiple: {}
+
+  packages/dsh-plugin-roadmap: {}
+
+  packages/dsh-plugin-room: {}
+
+  packages/dsh-plugin-roster: {}
+
+  packages/dsh-plugin-scanner: {}
+
+  packages/dsh-plugin-scans: {}
+
+  packages/dsh-plugin-scheduler: {}
+
+  packages/dsh-plugin-screener: {}
+
+  packages/dsh-plugin-screeners: {}
+
+  packages/dsh-plugin-security: {}
+
+  packages/dsh-plugin-sentinel: {}
+
+  packages/dsh-plugin-setup: {}
+
+  packages/dsh-plugin-setups: {}
+
+  packages/dsh-plugin-sheet: {}
+
+  packages/dsh-plugin-shield: {}
+
+  packages/dsh-plugin-shift: {}
+
+  packages/dsh-plugin-shortlist: {}
+
+  packages/dsh-plugin-sign: {}
+
+  packages/dsh-plugin-signal: {}
+
+  packages/dsh-plugin-signals: {}
+
+  packages/dsh-plugin-simulation: {}
+
+  packages/dsh-plugin-simulator: {}
+
+  packages/dsh-plugin-sizing: {}
+
+  packages/dsh-plugin-slide: {}
+
+  packages/dsh-plugin-slides: {}
+
+  packages/dsh-plugin-slippage: {}
+
+  packages/dsh-plugin-sop: {}
+
+  packages/dsh-plugin-splits: {}
+
+  packages/dsh-plugin-spot: {}
+
+  packages/dsh-plugin-spotmarket: {}
+
+  packages/dsh-plugin-spread: {}
+
+  packages/dsh-plugin-spreads: {}
+
+  packages/dsh-plugin-spreadsheet: {}
+
+  packages/dsh-plugin-spreadsheets: {}
+
+  packages/dsh-plugin-sprint: {}
+
+  packages/dsh-plugin-stablecoin: {}
+
+  packages/dsh-plugin-standup: {}
+
+  packages/dsh-plugin-stapler: {}
+
+  packages/dsh-plugin-stockchart: {}
+
+  packages/dsh-plugin-stockmarket: {}
+
+  packages/dsh-plugin-stocks: {}
+
+  packages/dsh-plugin-strategies: {}
+
+  packages/dsh-plugin-strategy: {}
+
+  packages/dsh-plugin-summary: {}
+
+  packages/dsh-plugin-support: {}
+
+  packages/dsh-plugin-survey: {}
+
+  packages/dsh-plugin-swimlane: {}
+
+  packages/dsh-plugin-swimlanes: {}
+
+  packages/dsh-plugin-tape: {}
+
+  packages/dsh-plugin-task: {}
+
+  packages/dsh-plugin-tasks: {}
+
+  packages/dsh-plugin-theses: {}
+
+  packages/dsh-plugin-thesis: {}
+
+  packages/dsh-plugin-threat: {}
+
+  packages/dsh-plugin-tick: {}
+
+  packages/dsh-plugin-tickdata: {}
+
+  packages/dsh-plugin-ticker: {}
+
+  packages/dsh-plugin-ticks: {}
+
+  packages/dsh-plugin-timesheet: {}
+
+  packages/dsh-plugin-townhall: {}
+
+  packages/dsh-plugin-trade: {}
+
+  packages/dsh-plugin-tradebook: {}
+
+  packages/dsh-plugin-tradebuddy: {}
+
+  packages/dsh-plugin-tradehub: {}
+
+  packages/dsh-plugin-tradeideas: {}
+
+  packages/dsh-plugin-tradejournal: {}
+
+  packages/dsh-plugin-tradelog: {}
+
+  packages/dsh-plugin-trademate: {}
+
+  packages/dsh-plugin-tradeplan: {}
+
+  packages/dsh-plugin-trader: {}
+
+  packages/dsh-plugin-traderecords: {}
+
+  packages/dsh-plugin-tradereview: {}
+
+  packages/dsh-plugin-trades: {}
+
+  packages/dsh-plugin-trading: {}
+
+  packages/dsh-plugin-tradingcalendar: {}
+
+  packages/dsh-plugin-tradingclock: {}
+
+  packages/dsh-plugin-tradingday: {}
+
+  packages/dsh-plugin-tradingdesk: {}
+
+  packages/dsh-plugin-tradingweek: {}
+
+  packages/dsh-plugin-trend: {}
+
+  packages/dsh-plugin-trending: {}
+
+  packages/dsh-plugin-trends: {}
+
+  packages/dsh-plugin-typewriter: {}
+
+  packages/dsh-plugin-vacation: {}
+
+  packages/dsh-plugin-voicemail: {}
+
+  packages/dsh-plugin-volatility: {}
+
+  packages/dsh-plugin-volume: {}
+
+  packages/dsh-plugin-volumes: {}
+
+  packages/dsh-plugin-vuln: {}
+
+  packages/dsh-plugin-warden: {}
+
+  packages/dsh-plugin-watch: {}
+
+  packages/dsh-plugin-watchdog: {}
+
+  packages/dsh-plugin-watching: {}
+
+  packages/dsh-plugin-watchlist: {}
+
+  packages/dsh-plugin-watchlists: {}
+
+  packages/dsh-plugin-watchtower: {}
+
+  packages/dsh-plugin-watercooler: {}
+
+  packages/dsh-plugin-web3: {}
+
+  packages/dsh-plugin-webinar: {}
+
+  packages/dsh-plugin-weekly: {}
+
+  packages/dsh-plugin-weights: {}
+
+  packages/dsh-plugin-wiki: {}
+
+  packages/dsh-plugin-wikis: {}
+
+  packages/dsh-plugin-word: {}
+
+  packages/dsh-plugin-workbook: {}
+
+  packages/dsh-plugin-workbooks: {}
+
+  packages/dsh-plugin-workbuddy: {}
+
+  packages/dsh-plugin-workday: {}
+
+  packages/dsh-plugin-workdesk: {}
+
+  packages/dsh-plugin-workflow: {}
+
+  packages/dsh-plugin-workflows: {}
+
+  packages/dsh-plugin-workhub: {}
+
+  packages/dsh-plugin-workmate: {}
+
+  packages/dsh-plugin-workstation: {}
+
+  packages/dsh-plugin-xlsx: {}
+
   packages/dsh-plusminus: {}
 
+  packages/dsh-pnl: {}
+
   packages/dsh-podcast: {}
+
+  packages/dsh-podium: {}
 
   packages/dsh-pokayoke: {}
 
@@ -1820,11 +3001,19 @@ importers:
 
   packages/dsh-portfolio: {}
 
+  packages/dsh-positionsize: {}
+
   packages/dsh-possession: {}
 
   packages/dsh-postgres: {}
 
+  packages/dsh-postmarket: {}
+
   packages/dsh-postmortem: {}
+
+  packages/dsh-pptx: {}
+
+  packages/dsh-praxis: {}
 
   packages/dsh-preference: {}
 
@@ -1838,6 +3027,8 @@ importers:
 
   packages/dsh-previz: {}
 
+  packages/dsh-printer: {}
+
   packages/dsh-prisma: {}
 
   packages/dsh-probation: {}
@@ -1850,15 +3041,23 @@ importers:
 
   packages/dsh-profiles: {}
 
+  packages/dsh-profit: {}
+
+  packages/dsh-profits: {}
+
   packages/dsh-progress: {}
 
   packages/dsh-prompts: {}
+
+  packages/dsh-prose: {}
 
   packages/dsh-protein: {}
 
   packages/dsh-providers: {}
 
   packages/dsh-proxy: {}
+
+  packages/dsh-pto: {}
 
   packages/dsh-puppy: {}
 
@@ -1894,7 +3093,11 @@ importers:
 
   packages/dsh-qtum: {}
 
+  packages/dsh-quadruped: {}
+
   packages/dsh-quanzhi: {}
+
+  packages/dsh-quarter: {}
 
   packages/dsh-quest: {}
 
@@ -1903,6 +3106,10 @@ importers:
   packages/dsh-quiz: {}
 
   packages/dsh-qunliao: {}
+
+  packages/dsh-quotation: {}
+
+  packages/dsh-quotes: {}
 
   packages/dsh-qwen: {}
 
@@ -1914,7 +3121,13 @@ importers:
 
   packages/dsh-radio: {}
 
+  packages/dsh-radiology: {}
+
   packages/dsh-rag: {}
+
+  packages/dsh-range: {}
+
+  packages/dsh-ranges: {}
 
   packages/dsh-rat: {}
 
@@ -1926,9 +3139,15 @@ importers:
 
   packages/dsh-read: {}
 
+  packages/dsh-rebalance: {}
+
+  packages/dsh-rebalancing: {}
+
   packages/dsh-rebang: {}
 
   packages/dsh-rebirth: {}
+
+  packages/dsh-recaps: {}
 
   packages/dsh-recovery:
     dependencies:
@@ -2024,6 +3243,10 @@ importers:
 
   packages/dsh-risk: {}
 
+  packages/dsh-risklimit: {}
+
+  packages/dsh-rmultiple: {}
+
   packages/dsh-roadmap: {}
 
   packages/dsh-robinhood: {}
@@ -2038,9 +3261,13 @@ importers:
 
   packages/dsh-ronin: {}
 
+  packages/dsh-room: {}
+
   packages/dsh-rooster: {}
 
   packages/dsh-ros: {}
+
+  packages/dsh-roster: {}
 
   packages/dsh-rotoscope: {}
 
@@ -2090,11 +3317,17 @@ importers:
 
   packages/dsh-savepoint: {}
 
+  packages/dsh-scans: {}
+
   packages/dsh-scm: {}
 
   packages/dsh-scouting: {}
 
   packages/dsh-scrabble: {}
+
+  packages/dsh-screener: {}
+
+  packages/dsh-screeners: {}
 
   packages/dsh-screening: {}
 
@@ -2140,6 +3373,8 @@ importers:
 
   packages/dsh-seo: {}
 
+  packages/dsh-seo-agent: {}
+
   packages/dsh-sequencing: {}
 
   packages/dsh-serve: {}
@@ -2152,11 +3387,17 @@ importers:
 
   packages/dsh-settlement: {}
 
+  packages/dsh-setup: {}
+
+  packages/dsh-setups: {}
+
   packages/dsh-severance: {}
 
   packages/dsh-shangji: {}
 
   packages/dsh-shangshi: {}
+
+  packages/dsh-shared-workspace: {}
 
   packages/dsh-shareholder: {}
 
@@ -2167,6 +3408,8 @@ importers:
   packages/dsh-shebao: {}
 
   packages/dsh-sheep: {}
+
+  packages/dsh-sheet: {}
 
   packages/dsh-shein: {}
 
@@ -2181,6 +3424,8 @@ importers:
   packages/dsh-shiba: {}
 
   packages/dsh-shici: {}
+
+  packages/dsh-shift: {}
 
   packages/dsh-shipinhao: {}
 
@@ -2214,11 +3459,19 @@ importers:
 
   packages/dsh-sidekick: {}
 
+  packages/dsh-signals: {}
+
   packages/dsh-siliao: {}
 
   packages/dsh-silicon: {}
 
   packages/dsh-siliconflow: {}
+
+  packages/dsh-sim2real: {}
+
+  packages/dsh-simulation: {}
+
+  packages/dsh-simulator: {}
 
   packages/dsh-singlecell: {}
 
@@ -2229,6 +3482,8 @@ importers:
   packages/dsh-siri: {}
 
   packages/dsh-sixsigma: {}
+
+  packages/dsh-sizing: {}
 
   packages/dsh-skill: {}
 
@@ -2278,7 +3533,19 @@ importers:
 
   packages/dsh-sports: {}
 
+  packages/dsh-spot: {}
+
   packages/dsh-spotify: {}
+
+  packages/dsh-spotmarket: {}
+
+  packages/dsh-spread: {}
+
+  packages/dsh-spreads: {}
+
+  packages/dsh-spreadsheet: {}
+
+  packages/dsh-spreadsheets: {}
 
   packages/dsh-sprite: {}
 
@@ -2304,6 +3571,8 @@ importers:
 
   packages/dsh-staking: {}
 
+  packages/dsh-stapler: {}
+
   packages/dsh-stargate: {}
 
   packages/dsh-starknet: {}
@@ -2324,9 +3593,19 @@ importers:
 
   packages/dsh-stock: {}
 
+  packages/dsh-stockchart: {}
+
+  packages/dsh-stockmarket: {}
+
+  packages/dsh-stocks: {}
+
   packages/dsh-storyboard: {}
 
   packages/dsh-strands: {}
+
+  packages/dsh-strategies: {}
+
+  packages/dsh-strategy: {}
 
   packages/dsh-strava: {}
 
@@ -2354,6 +3633,8 @@ importers:
 
   packages/dsh-suite: {}
 
+  packages/dsh-summary: {}
+
   packages/dsh-supabase: {}
 
   packages/dsh-support: {}
@@ -2366,6 +3647,10 @@ importers:
 
   packages/dsh-swift: {}
 
+  packages/dsh-swimlane: {}
+
+  packages/dsh-swimlanes: {}
+
   packages/dsh-symptom: {}
 
   packages/dsh-synth: {}
@@ -2375,6 +3660,8 @@ importers:
   packages/dsh-synthetix: {}
 
   packages/dsh-systemdesign: {}
+
+  packages/dsh-systemone: {}
 
   packages/dsh-t1: {}
 
@@ -2436,11 +3723,17 @@ importers:
 
   packages/dsh-thegraph: {}
 
+  packages/dsh-theses: {}
+
   packages/dsh-threads: {}
 
   packages/dsh-tiaoyitiao: {}
 
+  packages/dsh-tickdata: {}
+
   packages/dsh-ticker: {}
+
+  packages/dsh-ticks: {}
 
   packages/dsh-tictactoe: {}
 
@@ -2478,11 +3771,51 @@ importers:
 
   packages/dsh-toutiao: {}
 
+  packages/dsh-townhall: {}
+
   packages/dsh-toy: {}
 
   packages/dsh-tplus1: {}
 
+  packages/dsh-tracking: {}
+
+  packages/dsh-trade: {}
+
+  packages/dsh-tradebook: {}
+
+  packages/dsh-tradebuddy: {}
+
+  packages/dsh-tradehub: {}
+
+  packages/dsh-tradeideas: {}
+
+  packages/dsh-tradejournal: {}
+
+  packages/dsh-tradelog: {}
+
+  packages/dsh-trademate: {}
+
+  packages/dsh-tradeplan: {}
+
+  packages/dsh-trader: {}
+
+  packages/dsh-traderecords: {}
+
+  packages/dsh-tradereview: {}
+
+  packages/dsh-trades: {}
+
   packages/dsh-trading: {}
+
+  packages/dsh-tradingcalendar: {}
+
+  packages/dsh-tradingclock: {}
+
+  packages/dsh-tradingday: {}
+
+  packages/dsh-tradingdesk: {}
+
+  packages/dsh-tradingweek: {}
 
   packages/dsh-transferagent: {}
 
@@ -2493,6 +3826,12 @@ importers:
   packages/dsh-treasuries: {}
 
   packages/dsh-trello: {}
+
+  packages/dsh-trend: {}
+
+  packages/dsh-trending: {}
+
+  packages/dsh-trends: {}
 
   packages/dsh-trezor: {}
 
@@ -2538,6 +3877,8 @@ importers:
 
   packages/dsh-typescript: {}
 
+  packages/dsh-typewriter: {}
+
   packages/dsh-uber: {}
 
   packages/dsh-ubereats: {}
@@ -2564,6 +3905,8 @@ importers:
 
   packages/dsh-vacancy: {}
 
+  packages/dsh-vacation: {}
+
   packages/dsh-vechain: {}
 
   packages/dsh-vector: {}
@@ -2582,7 +3925,11 @@ importers:
 
   packages/dsh-vfx: {}
 
+  packages/dsh-vibecoding: {}
+
   packages/dsh-video: {}
+
+  packages/dsh-video-to-video: {}
 
   packages/dsh-viem: {}
 
@@ -2598,13 +3945,25 @@ importers:
 
   packages/dsh-vocab: {}
 
+  packages/dsh-voicemail: {}
+
+  packages/dsh-volatility: {}
+
+  packages/dsh-volume: {}
+
+  packages/dsh-volumes: {}
+
   packages/dsh-voting: {}
 
   packages/dsh-voyager: {}
 
+  packages/dsh-vpp: {}
+
   packages/dsh-vscode: {}
 
   packages/dsh-vue: {}
+
+  packages/dsh-vuln: {}
 
   packages/dsh-vwap: {}
 
@@ -2622,17 +3981,37 @@ importers:
 
   packages/dsh-warp: {}
 
+  packages/dsh-watching: {}
+
+  packages/dsh-watchlist: {}
+
+  packages/dsh-watchlists: {}
+
+  packages/dsh-watchtower: {}
+
   packages/dsh-water: {}
 
+  packages/dsh-watercooler: {}
+
+  packages/dsh-watermark: {}
+
   packages/dsh-waze: {}
+
+  packages/dsh-web-crawler: {}
 
   packages/dsh-web3: {}
 
   packages/dsh-web3-core: {}
 
+  packages/dsh-webagent: {}
+
   packages/dsh-webgame: {}
 
+  packages/dsh-weekly: {}
+
   packages/dsh-weibo: {}
+
+  packages/dsh-weights: {}
 
   packages/dsh-weiqi: {}
 
@@ -2650,6 +4029,8 @@ importers:
 
   packages/dsh-wif: {}
 
+  packages/dsh-wikis: {}
+
   packages/dsh-windsurf: {}
 
   packages/dsh-wingspan: {}
@@ -2666,7 +4047,15 @@ importers:
 
   packages/dsh-wordle: {}
 
+  packages/dsh-workbook: {}
+
+  packages/dsh-workbooks: {}
+
+  packages/dsh-workbuddy: {}
+
   packages/dsh-workday: {}
+
+  packages/dsh-workdesk: {}
 
   packages/dsh-workflow:
     dependencies:
@@ -2675,6 +4064,8 @@ importers:
         version: 0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.7(@deepseek-ai/cordis@4.0.1))
 
   packages/dsh-workflows: {}
+
+  packages/dsh-workmate: {}
 
   packages/dsh-workspace: {}
 
@@ -2810,6 +4201,9 @@ importers:
 
 packages:
 
+  '@adraffy/ens-normalize@1.11.1':
+    resolution: {integrity: sha512-nhCBV3quEgesuf7c7KYfperqSS14T8bYuvJ8PcLJp6znkZpFc0AuW4qBtr8eKVyPPe/8RSr7sglCWPU5eaxwKQ==}
+
   '@deepseek-ai/cordis@4.0.1':
     resolution: {integrity: sha512-YBdskTU2Po1kru3GgcUWUbkTsPMA9LkSQDAY8rBkFJeajdgcQad3QPJZE26JyK99Xb6HaASvoXg2DSUTeN/0Nw==}
     hasBin: true
@@ -2824,6 +4218,14 @@ packages:
 
   '@deepseek-ai/cosmokit@1.8.2':
     resolution: {integrity: sha512-muBOKtSrUKU5m/xpq8ZXWL6hQ/jgd4PhU2PqH97bcxIiLEJfNwZOGQEx4t/aS/GgxRAR+ra9pMHPMtTHU4sqqA==}
+
+  '@deepseek-ai/cosmokit@1.8.5':
+    resolution: {integrity: sha512-LXsrlem9z8dq4sLflj2yuCuYX7KqhdzF5hZly3eZyuTo8d6oDSOXuEgC5DbQWKW+lksm6zmOutQLsP/ma6wR6A==}
+
+  '@deepseek-ai/dsh-brand@0.2.0-rc.2':
+    resolution: {integrity: sha512-A5XlN4tIgP0qObkYFhcZ7Oz/tM2oESEZqLwS0Qq+sM1ivGx6o4AMPgJdfKQlwLzqk0cMLNtAaVBHfiYoElt4lw==}
+    peerDependencies:
+      '@deepseek-ai/cordis': ~4.0.4
 
   '@deepseek-ai/dsh-invariants@0.1.0-rc.7':
     resolution: {integrity: sha512-PnO1F4aZGUmqZPyuPJpBUfQ4DZmjCGCNGr0yuN2iURTP/e6h0kGnTNTYgR2NqMvAtpP66WNiHhvH2LMqumk1+A==}
@@ -2841,16 +4243,293 @@ packages:
     peerDependencies:
       '@deepseek-ai/cordis': ^4.0.2
 
-  '@deepseek-ai/schemastery@3.18.1':
-    resolution: {integrity: sha512-Qn0FCSwCQnpnj6SB31I6i2sIKgKWnkbJM8O0EU91Gv2UsYVvtZTl6IA0sCwk2e2MZf5S8w5hpq9QkeVvK9qwxg==}
+  '@deepseek-ai/dsh-typert-protocol@0.2.0-rc.2':
+    resolution: {integrity: sha512-95RvIDcVac2BWdv1IxN6yKlRV+8eEvkofqSxV+d0r8x1kx2EIWEsbdxz6C+coYIm+8e03MiN+rwOt8J7sLfe7Q==}
+    peerDependencies:
+      '@deepseek-ai/cordis': ~4.0.4
+
+  '@deepseek-ai/schemastery@3.18.4':
+    resolution: {integrity: sha512-SSXO6tYuyrIqKVbmOnIq0s+riUywYzouFMcnBluHF9n4KMo2G8HvEzhCYj6pj2617/glOjbJuVInJ9hfONsjkg==}
+
+  '@esbuild/aix-ppc64@0.28.2':
+    resolution: {integrity: sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ==}
+    engines: {node: '>=18'}
+    cpu: [ppc64]
+    os: [aix]
+
+  '@esbuild/android-arm64@0.28.2':
+    resolution: {integrity: sha512-5YfKeeI8qWfBZIX+u2xZC3Zlb3Os/gLS2sbEKM+I4ZOcsWmHS2WLysCcQZDAFRslDUU5Oiq44gf6PYN1vGwG5A==}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [android]
+
+  '@esbuild/android-arm@0.28.2':
+    resolution: {integrity: sha512-kXXoiPVVGQcnIYGOeaovwOURpniDBpSq4A03qkQ+BMQqtGG6HYap3xne9C1O1yo4TR3qxlCX5IqqmX6fFo2Lqg==}
+    engines: {node: '>=18'}
+    cpu: [arm]
+    os: [android]
+
+  '@esbuild/android-x64@0.28.2':
+    resolution: {integrity: sha512-O387ite7SzUyCcy3JQX4P4bLtEA7bLLkx+esve5JHnyYfNTxcVpXZo9jhdB0lTKN44gztELTdU7nS8Nr16Fs1Q==}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [android]
+
+  '@esbuild/darwin-arm64@0.28.2':
+    resolution: {integrity: sha512-n4KqkOQrraxHJcgjM1RvwbigfQKIKJVpM7xp+KsxiyUSrRdIXnt73VhrPAx0fV44hgfmIVKjxMN9J1t5jySVkw==}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@esbuild/darwin-x64@0.28.2':
+    resolution: {integrity: sha512-uq6suIWYP37qzGddBKPw5QEQPi6HiLGsO7UmkpfyaYNQ3D+rN6w6WfwH+nuqcGXWvawGwxOEroO4YGnFh95azw==}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@esbuild/freebsd-arm64@0.28.2':
+    resolution: {integrity: sha512-n+I0BTSRIoy+d6RPKnEVwql5UwBJolytvY4mAOIEJorKlqgPII8ix6slVVrfZ5Tnj7glIZvloylbB/EJPMWEXw==}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [freebsd]
+
+  '@esbuild/freebsd-x64@0.28.2':
+    resolution: {integrity: sha512-78XJTJkvPs0kz2w61301PJjXl4g7q3JqiYMZ/M/yVI73EHBrCRTgkhu9oqG7vPqq+a/yadEW8aD+agKlk5xrmg==}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [freebsd]
+
+  '@esbuild/linux-arm64@0.28.2':
+    resolution: {integrity: sha512-pW4AC0P3it8c7do9MVM4p51FzHzdM/TZrerurgRcHJ2WTa1VQ1CIq18xncfpBJw4ojkiZZrKW2yIBWBP92j6Ug==}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@esbuild/linux-arm@0.28.2':
+    resolution: {integrity: sha512-XlDnu2q5yoqems+xay6wSAcg9DDD7K9RLKZEBOMZm3ckNpJBvOX20tSfby8KfrrhINDyv9V2YVZKY/SpoGJI8w==}
+    engines: {node: '>=18'}
+    cpu: [arm]
+    os: [linux]
+
+  '@esbuild/linux-ia32@0.28.2':
+    resolution: {integrity: sha512-CYbnj78HsIeA+DhgUKgFCfvNsTHFhMMrinUrMZpDXJXKN8T3XViTZ/+wtHeVxEWY8ewSzTFN+nRmSwO2tZaLUQ==}
+    engines: {node: '>=18'}
+    cpu: [ia32]
+    os: [linux]
+
+  '@esbuild/linux-loong64@0.28.2':
+    resolution: {integrity: sha512-buwkd8nsph4R+ajRvw0qM5Hja/TXQow3ptzWO2EbG/cqcIkHloRrdlBtQlshyYGTNFvfkfJ5tpPLVkY4DtsPfQ==}
+    engines: {node: '>=18'}
+    cpu: [loong64]
+    os: [linux]
+
+  '@esbuild/linux-mips64el@0.28.2':
+    resolution: {integrity: sha512-ZVykbDyk7519VwiNb9Lcj9m8XM6v5V9uKPvrEMkkEedVewf+0itkhahp4HDpgERXhwLRpWFypsGbG/J8s0QjJA==}
+    engines: {node: '>=18'}
+    cpu: [mips64el]
+    os: [linux]
+
+  '@esbuild/linux-ppc64@0.28.2':
+    resolution: {integrity: sha512-CAXl+Dtd9UUuJd8pKKdwh6MLm3MUMiqMPmhZ3tTSXPqfyQ3vDl6R5hZdZ/kYojK4ofXtdfSv1tFq8XzWx3heNQ==}
+    engines: {node: '>=18'}
+    cpu: [ppc64]
+    os: [linux]
+
+  '@esbuild/linux-riscv64@0.28.2':
+    resolution: {integrity: sha512-GeXCej4IQtU1B+QlDV8W/RRvbzI3O/Stss+/bCXv4lZls5WGRtu2a+3JkA3i4qIUlMXpcHebWpF8AkJhATowuA==}
+    engines: {node: '>=18'}
+    cpu: [riscv64]
+    os: [linux]
+
+  '@esbuild/linux-s390x@0.28.2':
+    resolution: {integrity: sha512-3H1weTYZPxt/WOhByszQZybS9w5lKzUn1FDMsgEChbHWQwHYQQRfBxgCcZvPhjHfKyJjIievvMmEUawJrdY9Dg==}
+    engines: {node: '>=18'}
+    cpu: [s390x]
+    os: [linux]
+
+  '@esbuild/linux-x64@0.28.2':
+    resolution: {integrity: sha512-4xTZr1FUmSoQW4XIWmit3tzQrUTZM+N3P0XV8xROKYF50XfI7xeO90+1bZvNwxIufQ9hDQVRJH5YhgPVF8A/HQ==}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [linux]
+
+  '@esbuild/netbsd-arm64@0.28.2':
+    resolution: {integrity: sha512-sSATRjPeDBg3pdgHoQfoYBob11Kk1FGa9lui5RIHZCoCkJa9QKlvl3/vKz2usCmYYjs7ymJR/2Nnsqe+Hjt5nw==}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [netbsd]
+
+  '@esbuild/netbsd-x64@0.28.2':
+    resolution: {integrity: sha512-lqnzCV+mM0gIADaKihiCg6ifgfU2L3h5E33rNQBN1Y4MaVGnzryzmvvf7UHxprpQdE8hpqLolJ9Rl+SkIRDpyw==}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [netbsd]
+
+  '@esbuild/openbsd-arm64@0.28.2':
+    resolution: {integrity: sha512-AL2qJILH7lNjrDmCQDvdxMfAUIv8KMNZOvrwAQ8i8//ntL9FflhOyMJ8OZSMBb8/AWXe3/5v5S20y3zCoZWKoQ==}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [openbsd]
+
+  '@esbuild/openbsd-x64@0.28.2':
+    resolution: {integrity: sha512-QtiuPytchRyC4rwUKhexJdQKvDuZ6hWloi3igqPQNUJCS1/v9EiO3UTOXR6A3FoMo4fnAKbWJdqaIwhOzh8qEw==}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [openbsd]
+
+  '@esbuild/openharmony-arm64@0.28.2':
+    resolution: {integrity: sha512-WkhYDmpTjLvGlScA1rwjRUmhl4k8oXR3cIbtqWmELgU/dFeHHlEllxDvdWcNJV9rbzCexB5vz8gtNewWLgCT7Q==}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [openharmony]
+
+  '@esbuild/sunos-x64@0.28.2':
+    resolution: {integrity: sha512-GPMSkTOtMnv2U2F8gxe4Io6qmVs+YKyp832Etqqxr0hFngmXQ3rzwytelm3GIn7T4VviRUlf3sOgBOiTdvaf7g==}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [sunos]
+
+  '@esbuild/win32-arm64@0.28.2':
+    resolution: {integrity: sha512-PIhhEkE9uPBleRBrQEJpUn7MBnibZzbGzYWPmY3x+YoVg/95zbjB4CxPPOQ8l5tYYM4mMaCthF8/1DIfBQQyWQ==}
+    engines: {node: '>=18'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@esbuild/win32-ia32@0.28.2':
+    resolution: {integrity: sha512-YmJbfTlvU7Sdn9BB+4PRES4oB6pxgS37MAONj+hBr/cpXS1aBPKXxNnDbu+QCWPj0o9dgyxeq79g6c5P8KeuYA==}
+    engines: {node: '>=18'}
+    cpu: [ia32]
+    os: [win32]
+
+  '@esbuild/win32-x64@0.28.2':
+    resolution: {integrity: sha512-5ebpxr3nWMzrL/rnUI755Jkuee0bHL/Gq0WTF9lvcpv73wAp5eu8MfBUgWK9bhWvZjj7yX8etf/8tI8Ney695g==}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [win32]
+
+  '@nktkas/hyperliquid@0.33.3':
+    resolution: {integrity: sha512-fvnEw/2ejN14ZZVXA+nFQ9YgfFNjCI1yLliYyUboC6hr3Gwd/RwC4Ox90K4e8tkKWqkVpOcLRQ30p0nTeK4NBQ==}
+    engines: {node: '>=22.12.0'}
+
+  '@nktkas/rews@4.1.0':
+    resolution: {integrity: sha512-lPcTIPD2AE8JsJgnI+YGn9hzOhZHW3E0hrzDNUpyuVP5d1NERNz7EugR1IxW4Ly7QsM9/WmVeLif4olZsKVKjQ==}
+    engines: {node: '>=22.12.0'}
+
+  '@noble/curves@1.2.0':
+    resolution: {integrity: sha512-oYclrNgRaM9SsBUBVbb8M6DTV7ZHRTKugureoYEncY5c65HOmRzvSiTE3y5CYaPYJA/GVkrhXEoF0M3Ya9PMnw==}
+
+  '@noble/curves@1.9.7':
+    resolution: {integrity: sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/hashes@1.3.2':
+    resolution: {integrity: sha512-MVC8EAQp7MvEcm30KWENFjgR+Mkmf+D189XJTkFIlwohU5hcBbn1ZkKq7KVTi2Hme3PMGF390DaL52beVrIihQ==}
+    engines: {node: '>= 16'}
+
+  '@noble/hashes@1.8.0':
+    resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/hashes@2.4.0':
+    resolution: {integrity: sha512-X5XaVWZIBCT7HHZGm5I7ZQXDwLG+bGXuSrMQAW+7Zvl87h1kmc1ZB1VSRJcpUfoUrGQp4Fkoxm5kZ+Ms+aW+eA==}
+    engines: {node: '>= 20.19.0'}
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
+
+  '@types/node@22.7.5':
+    resolution: {integrity: sha512-jML7s2NAzMWc//QSJ1a3prpk78cOPchGvXJsC3C6R6PSMoooztvRVQEz89gmBTBY1SPMaqo5teB4uNHPdetShQ==}
+
+  '@types/react-dom@19.3.0':
+    resolution: {integrity: sha512-ZI7bU42mZXXKHn/qNLEw2IrbiINU7X5+vfgdixBHkCNpYWXjKgfQ/P+uyGb5CjOLB9UcnTeg3rylQtV2hym44Q==}
+    peerDependencies:
+      '@types/react': ^19.3.0
+
+  '@types/react@19.3.0':
+    resolution: {integrity: sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg==}
+
+  aes-js@4.0.0-beta.5:
+    resolution: {integrity: sha512-G965FqalsNyrPqgEGON7nIx1e/OVENSgiEIzyC63haUMuvNnwIgIjMs52hlTCKhkBny7A2ORNlfY9Zu+jmGk1Q==}
+
+  csstype@3.2.3:
+    resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
+
+  decimal.js@10.6.0:
+    resolution: {integrity: sha512-YpgQiITW3JXGntzdUmyUR1V812Hn8T1YVXhCu+wO3OpS4eU9l4YdD3qjyiKdV6mvV29zapkMeD390UVEf2lkUg==}
+
+  dsh-web3-core@0.4.1:
+    resolution: {integrity: sha512-8KNAlcozrTJhMwRSWg9ZNmminkanrBN4l/Xr+o9WOLxkDwLugL2yGpmmhXR7tW5ukhsDcUF5p2oACKC4/5MpFQ==}
+    engines: {node: '>=20'}
+
+  dsh-web3@0.8.1:
+    resolution: {integrity: sha512-7epSKgHm2zPNHhpUIcuirGfwwCnprRM1M3iU146+CMlpOqI+q6tF6mXEm1/uAXc4zkdOf7T98GODtNguCbLRKA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@deepseek-ai/cordis': ^4.0.1
+      '@deepseek-ai/dsh-typert-protocol': '>=0.1.0-rc.6 <0.2.0 || >=0.2.0-rc.0 <0.3.0'
+
+  esbuild@0.28.2:
+    resolution: {integrity: sha512-HKVLS8dvII+xoKW9kmqxbRKrnWEXfJJr/FZhhJmiqIB0e053QNYFqOBouTMO/k5sID4MvCiUCvv8b9M4h32wIA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  ethers@6.17.0:
+    resolution: {integrity: sha512-BpyrpIPJ3ydEVow8zGaz1DuPS7YU8DcWxuBnY9a0UA/lvAPwrMr+EPXsfrul628SRaekPNeIM4UFh/91GWZang==}
+    engines: {node: '>=14.0.0'}
+
+  fancy-canvas@2.1.0:
+    resolution: {integrity: sha512-nifxXJ95JNLFR2NgRV4/MxVP45G9909wJTEKz5fg/TZS20JJZA6hfgRVh/bC9bwl2zBtBNcYPjiBE4njQHVBwQ==}
+
+  lightweight-charts@5.2.1:
+    resolution: {integrity: sha512-IVwoK1RLFiLPubaKIjNbtjWLnpPMqiABSrTay6whmNa8L1+19292VtHJ+BWyPUuLCwF0tcQlhEWd1CLB2a1nsQ==}
+
+  playwright-core@1.64.1:
+    resolution: {integrity: sha512-BC4s8y6SEVA6Q1rSxZTto8hI1KUI3xXlHGZgvGqP4IqPdI/a6FX9H29IDNz7vKo9l21b6LfYosScPL6M3xxyDQ==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  react-dom@19.3.1:
+    resolution: {integrity: sha512-Y0bARz53lhEC1NMCASs0/j+faB/zqt3R8hpvg1e8+61ZVJ4UL0UdC4cBbXfZMcIuhrfgeILTLe+ZeBCavQPtKQ==}
+    peerDependencies:
+      react: ^19.3.1
+
+  react@19.3.1:
+    resolution: {integrity: sha512-QNhWdt7nrgVWWQG58QuGsAR3jv3Hbe4mb4vz7w2csnHavciZJgda1CPNaldF6eVxv90ud3jUXpKlHL69gO38yw==}
+    engines: {node: '>=0.10.0'}
+
+  scheduler@0.28.0:
+    resolution: {integrity: sha512-juorfCmIkIw8tT+p5BXSm6PJjQF/ycEYmKyzURCIt/RaZIhL+PulbQ9Yu2z1HdOJDdqDTlxA1+xKBmHXJsczAw==}
+
+  tslib@2.7.0:
+    resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
 
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  undici-types@6.19.8:
+    resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
+  valibot@1.5.0:
+    resolution: {integrity: sha512-nil6AkP2TChWL43Z5uJ6GTxX01CUA+g8LWUM+N/rB9NBbkUMaUsi9PUNzlUPgoKASgmx9f7eGOYpJ04/fSa6FQ==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  ws@8.21.0:
+    resolution: {integrity: sha512-Vsp28b7DRcimFQvrqu2Wek3z1iYxDCWqHYB8Qsnk/S4RfaCQzPGPyBNuVjJV3cd6UiKtUtp6sNM77gWvzcCH+g==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
 
   yaml@2.9.0:
     resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
@@ -2859,6 +4538,8 @@ packages:
 
 snapshots:
 
+  '@adraffy/ens-normalize@1.11.1': {}
+
   '@deepseek-ai/cordis@4.0.1':
     dependencies:
       '@deepseek-ai/cosmokit': 1.8.2
@@ -2866,10 +4547,16 @@ snapshots:
 
   '@deepseek-ai/cosmokit@1.8.2': {}
 
+  '@deepseek-ai/cosmokit@1.8.5': {}
+
+  '@deepseek-ai/dsh-brand@0.2.0-rc.2(@deepseek-ai/cordis@4.0.1)':
+    dependencies:
+      '@deepseek-ai/cordis': 4.0.1
+
   '@deepseek-ai/dsh-invariants@0.1.0-rc.7(@deepseek-ai/cordis@4.0.1)':
     dependencies:
       '@deepseek-ai/cordis': 4.0.1
-      '@deepseek-ai/schemastery': 3.18.1
+      '@deepseek-ai/schemastery': 3.18.4
 
   '@deepseek-ai/dsh-typert-protocol@0.1.0-rc.6(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.0-rc.7(@deepseek-ai/cordis@4.0.1))':
     dependencies:
@@ -2880,13 +4567,227 @@ snapshots:
     dependencies:
       '@deepseek-ai/cordis': 4.0.1
 
-  '@deepseek-ai/schemastery@3.18.1':
+  '@deepseek-ai/dsh-typert-protocol@0.2.0-rc.2(@deepseek-ai/cordis@4.0.1)':
     dependencies:
-      '@deepseek-ai/cosmokit': 1.8.2
+      '@deepseek-ai/cordis': 4.0.1
+      '@deepseek-ai/dsh-brand': 0.2.0-rc.2(@deepseek-ai/cordis@4.0.1)
+
+  '@deepseek-ai/schemastery@3.18.4':
+    dependencies:
+      '@deepseek-ai/cosmokit': 1.8.5
       '@standard-schema/spec': 1.1.0
+
+  '@esbuild/aix-ppc64@0.28.2':
+    optional: true
+
+  '@esbuild/android-arm64@0.28.2':
+    optional: true
+
+  '@esbuild/android-arm@0.28.2':
+    optional: true
+
+  '@esbuild/android-x64@0.28.2':
+    optional: true
+
+  '@esbuild/darwin-arm64@0.28.2':
+    optional: true
+
+  '@esbuild/darwin-x64@0.28.2':
+    optional: true
+
+  '@esbuild/freebsd-arm64@0.28.2':
+    optional: true
+
+  '@esbuild/freebsd-x64@0.28.2':
+    optional: true
+
+  '@esbuild/linux-arm64@0.28.2':
+    optional: true
+
+  '@esbuild/linux-arm@0.28.2':
+    optional: true
+
+  '@esbuild/linux-ia32@0.28.2':
+    optional: true
+
+  '@esbuild/linux-loong64@0.28.2':
+    optional: true
+
+  '@esbuild/linux-mips64el@0.28.2':
+    optional: true
+
+  '@esbuild/linux-ppc64@0.28.2':
+    optional: true
+
+  '@esbuild/linux-riscv64@0.28.2':
+    optional: true
+
+  '@esbuild/linux-s390x@0.28.2':
+    optional: true
+
+  '@esbuild/linux-x64@0.28.2':
+    optional: true
+
+  '@esbuild/netbsd-arm64@0.28.2':
+    optional: true
+
+  '@esbuild/netbsd-x64@0.28.2':
+    optional: true
+
+  '@esbuild/openbsd-arm64@0.28.2':
+    optional: true
+
+  '@esbuild/openbsd-x64@0.28.2':
+    optional: true
+
+  '@esbuild/openharmony-arm64@0.28.2':
+    optional: true
+
+  '@esbuild/sunos-x64@0.28.2':
+    optional: true
+
+  '@esbuild/win32-arm64@0.28.2':
+    optional: true
+
+  '@esbuild/win32-ia32@0.28.2':
+    optional: true
+
+  '@esbuild/win32-x64@0.28.2':
+    optional: true
+
+  '@nktkas/hyperliquid@0.33.3(typescript@5.9.3)':
+    dependencies:
+      '@nktkas/rews': 4.1.0
+      '@noble/hashes': 2.4.0
+      decimal.js: 10.6.0
+      valibot: 1.5.0(typescript@5.9.3)
+    transitivePeerDependencies:
+      - typescript
+
+  '@nktkas/rews@4.1.0': {}
+
+  '@noble/curves@1.2.0':
+    dependencies:
+      '@noble/hashes': 1.3.2
+
+  '@noble/curves@1.9.7':
+    dependencies:
+      '@noble/hashes': 1.8.0
+
+  '@noble/hashes@1.3.2': {}
+
+  '@noble/hashes@1.8.0': {}
+
+  '@noble/hashes@2.4.0': {}
 
   '@standard-schema/spec@1.1.0': {}
 
+  '@types/node@22.7.5':
+    dependencies:
+      undici-types: 6.19.8
+
+  '@types/react-dom@19.3.0(@types/react@19.3.0)':
+    dependencies:
+      '@types/react': 19.3.0
+
+  '@types/react@19.3.0':
+    dependencies:
+      csstype: 3.2.3
+
+  aes-js@4.0.0-beta.5: {}
+
+  csstype@3.2.3: {}
+
+  decimal.js@10.6.0: {}
+
+  dsh-web3-core@0.4.1:
+    dependencies:
+      ethers: 6.17.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  dsh-web3@0.8.1(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-typert-protocol@0.2.0-rc.2(@deepseek-ai/cordis@4.0.1)):
+    dependencies:
+      '@deepseek-ai/cordis': 4.0.1
+      '@deepseek-ai/cosmokit': 1.8.2
+      '@deepseek-ai/dsh-typert-protocol': 0.2.0-rc.2(@deepseek-ai/cordis@4.0.1)
+      '@deepseek-ai/schemastery': 3.18.4
+      dsh-web3-core: 0.4.1
+      ethers: 6.17.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  esbuild@0.28.2:
+    optionalDependencies:
+      '@esbuild/aix-ppc64': 0.28.2
+      '@esbuild/android-arm': 0.28.2
+      '@esbuild/android-arm64': 0.28.2
+      '@esbuild/android-x64': 0.28.2
+      '@esbuild/darwin-arm64': 0.28.2
+      '@esbuild/darwin-x64': 0.28.2
+      '@esbuild/freebsd-arm64': 0.28.2
+      '@esbuild/freebsd-x64': 0.28.2
+      '@esbuild/linux-arm': 0.28.2
+      '@esbuild/linux-arm64': 0.28.2
+      '@esbuild/linux-ia32': 0.28.2
+      '@esbuild/linux-loong64': 0.28.2
+      '@esbuild/linux-mips64el': 0.28.2
+      '@esbuild/linux-ppc64': 0.28.2
+      '@esbuild/linux-riscv64': 0.28.2
+      '@esbuild/linux-s390x': 0.28.2
+      '@esbuild/linux-x64': 0.28.2
+      '@esbuild/netbsd-arm64': 0.28.2
+      '@esbuild/netbsd-x64': 0.28.2
+      '@esbuild/openbsd-arm64': 0.28.2
+      '@esbuild/openbsd-x64': 0.28.2
+      '@esbuild/openharmony-arm64': 0.28.2
+      '@esbuild/sunos-x64': 0.28.2
+      '@esbuild/win32-arm64': 0.28.2
+      '@esbuild/win32-ia32': 0.28.2
+      '@esbuild/win32-x64': 0.28.2
+
+  ethers@6.17.0:
+    dependencies:
+      '@adraffy/ens-normalize': 1.11.1
+      '@noble/curves': 1.2.0
+      '@noble/hashes': 1.3.2
+      '@types/node': 22.7.5
+      aes-js: 4.0.0-beta.5
+      tslib: 2.7.0
+      ws: 8.21.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  fancy-canvas@2.1.0: {}
+
+  lightweight-charts@5.2.1:
+    dependencies:
+      fancy-canvas: 2.1.0
+
+  playwright-core@1.64.1: {}
+
+  react-dom@19.3.1(react@19.3.1):
+    dependencies:
+      react: 19.3.1
+      scheduler: 0.28.0
+
+  react@19.3.1: {}
+
+  scheduler@0.28.0: {}
+
+  tslib@2.7.0: {}
+
   typescript@5.9.3: {}
+
+  undici-types@6.19.8: {}
+
+  valibot@1.5.0(typescript@5.9.3):
+    optionalDependencies:
+      typescript: 5.9.3
+
+  ws@8.21.0: {}
 
   yaml@2.9.0: {}

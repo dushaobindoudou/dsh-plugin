@@ -18,6 +18,7 @@ for names, niches, and descriptions is [`scripts/catalog.mjs`](scripts/catalog.m
 | [`dsh-bot`](packages/dsh-bot) | 0.1.0 | Bot framework - run headless dsh agents on cron schedules and webhooks, with retries, run logs, and CI-friendly exit codes. |
 | [`dsh-pets`](packages/dsh-pets) | 0.1.0 | Pet contract & bridge client - the shared layer for desktop-pet plugins: task vocabulary, localhost bridge client, shared settings store. |
 | [`dsh-lingxi`](packages/dsh-lingxi) | 0.1.0 | Lingxi (灵犀) - the desktop cat: five model tools (task/say/react/state/remember) over the pet bridge plus a settings page with live bridge status. |
+| [`dsh-hyperliquid`](packages/dsh-hyperliquid) | 0.1.0 | Hyperliquid trading desk - market workspace with chart, book and account, the native agent conversation beside it, and guarded live / paper trading with per-plugin limits. |
 
 ## Reserved names by niche
 
@@ -245,7 +246,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-salesforce`](packages/dsh-salesforce) | Salesforce bridge for dsh agents |
 | [`dsh-channels`](packages/dsh-channels) | Chat-channel framework for dsh bots |
 
-### Web3 & payments (234)
+### Web3 & payments (233)
 
 | Name | Planned first release |
 | --- | --- |
@@ -482,7 +483,6 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-solidity`](packages/dsh-solidity) | Solidity toolkit for dsh agents |
 | [`dsh-pay`](packages/dsh-pay) | The generic payment seat for dsh agents |
 | [`dsh-dex`](packages/dsh-dex) | DEX toolkit for dsh agents |
-| [`dsh-hyperliquid`](packages/dsh-hyperliquid) | Hyperliquid bridge for dsh agents |
 
 ### Daily life (66)
 
