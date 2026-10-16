@@ -13,7 +13,7 @@
 import * as React from 'react'
 import { tr } from './remote'
 import { fmtPrice } from './format'
-import { volumeProfile, DRAWING_CLICKS, FIB_EXT_LEVELS, FIB_LEVELS, FIB_TIME_SERIES, GANN_BOX_LEVELS, GANN_RATIOS, ICON_NAMES, TEXT_KINDS, type DrawingKind, type LineStyleName } from '../../lib/chart-drawings.js'
+import { volumeProfile, MULTI_KINDS, DRAWING_CLICKS, FIB_EXT_LEVELS, FIB_LEVELS, FIB_TIME_SERIES, GANN_BOX_LEVELS, GANN_RATIOS, ICON_NAMES, TEXT_KINDS, type DrawingKind, type LineStyleName } from '../../lib/chart-drawings.js'
 import type { Candle, ChartMark } from './types'
 
 export type { DrawingKind }
@@ -50,6 +50,7 @@ export const DRAWING_TOOLS: DrawingTool[] = [
   { group: 'fib', kind: 'fibarcs', zh: '斐波那契弧', en: 'Fib speed resistance arcs', hintZh: '点击波段起点，再点击终点，以终点为圆心画弧', hintEn: 'Click the swing start, then the end (arcs center on the end)', icon: 'M4 20a8 8 0 0 1 16 0M8 20a4 4 0 0 1 8 0' },
   { group: 'fib', kind: 'fibwedge', zh: '斐波那契楔形', en: 'Fib wedge', hintZh: '点击顶点，再点击两条边的端点', hintEn: 'Click the apex, then the ends of the two sides', icon: 'M3 12 21 4M3 12l18 8M15 6.7a7 7 0 0 1 0 10.6' },
   { group: 'fib', kind: 'fibtrendtime', zh: '基于趋势的斐波那契时间', en: 'Trend-based fib time', hintZh: '两点确定趋势时长，第三点起按比例画时间线', hintEn: 'Two points set the trend duration; lines start at the third', icon: 'M3 18 9 6M12 3v18M16 3v18M21 3v18' },
+  { group: 'fib', kind: 'fibspiral', zh: '斐波那契螺旋', en: 'Fib spiral', hintZh: '点击中心，再点击确定起始半径与方向（每四分之一圈放大 1.618 倍）', hintEn: 'Click the center, then the starting radius (grows 1.618× per quarter turn)', icon: 'M12 12a2 2 0 1 1 2-2c0 3-3 5-6 4s-5-5-3-8 7-5 10-3 5 7 3 11' },
   { group: 'fib', kind: 'gannbox', zh: '江恩箱', en: 'Gann box', hintZh: '点击两个对角，按 0.25/0.382/0.5/0.618/0.75 分割', hintEn: 'Click two corners; divided at Gann levels', icon: 'M4 4h16v16H4zM4 12h16M12 4v16M4 4l16 16' },
   { group: 'fib', kind: 'gannsquare', zh: '江恩方格', en: 'Gann square', hintZh: '点击两个对角，画四分网格、对角线与扇线', hintEn: 'Click two corners; quarters, diagonals and fans', icon: 'M4 4h16v16H4zM4 4l16 16M20 4 4 20M4 12h16M12 4v16' },
   { group: 'fib', kind: 'gannfan', zh: '江恩扇形', en: 'Gann fan', hintZh: '点击原点，再点击确定 1×1 线', hintEn: 'Click the origin, then a point on the 1×1 line', icon: 'M3 21 21 3M3 21 21 12M3 21 12 3M3 21h18' },
@@ -73,12 +74,16 @@ export const DRAWING_TOOLS: DrawingTool[] = [
   { group: 'shapes', kind: 'rotrect', zh: '旋转矩形', en: 'Rotated rectangle', hintZh: '两点画一条边，第三点设置宽度', hintEn: 'Two points for one side, a third for the width', icon: 'M4 14 14 4l6 6-10 10z' },
   { group: 'shapes', kind: 'arc', zh: '弧线', en: 'Arc', hintZh: '点击起点、终点，再点击弧线经过的点', hintEn: 'Click start, end, then a point on the arc', icon: 'M3 18c3-10 15-10 18 0' },
   { group: 'shapes', kind: 'curve', zh: '曲线', en: 'Curve', hintZh: '点击起点、终点，再点击控制点', hintEn: 'Click start, end, then the control point', icon: 'M3 18C8 2 14 22 21 6' },
+  { group: 'shapes', kind: 'highlighter', zh: '荧光笔', en: 'Highlighter', hintZh: '按住鼠标拖动，画半透明粗线', hintEn: 'Press and drag; a wide translucent stroke', icon: 'M4 16c4-5 7 1 11-3s5-3 6-2M3 21h8' },
+  { group: 'shapes', kind: 'path', zh: '路径', en: 'Path', hintZh: '逐点点击，双击或按 Enter 结束，末端带箭头', hintEn: 'Click point by point; double-click or Enter to finish (arrow at the end)', icon: 'M3 18 8 9l5 6 8-10M17 5h4v4' },
+  { group: 'shapes', kind: 'polyline', zh: '折线', en: 'Polyline', hintZh: '逐点点击，双击或按 Enter 结束', hintEn: 'Click point by point; double-click or Enter to finish', icon: 'M3 18 8 9l5 6 8-10' },
   { group: 'shapes', kind: 'brush', zh: '画笔', en: 'Brush', hintZh: '按住鼠标拖动自由绘制', hintEn: 'Press and drag to draw freehand', icon: 'M3 17c3-6 5 2 8-3s4-6 7-4 3 4 3 4' },
   { group: 'annotation', kind: 'text', zh: '文本', en: 'Text', hintZh: '单击位置后输入文字', hintEn: 'Click a spot, then type', icon: 'M5 6h14M12 6v13M9 19h6' },
   { group: 'annotation', kind: 'callout', zh: '标注气泡', en: 'Callout', hintZh: '点击要标注的位置，再点击文本框位置，然后输入文字', hintEn: 'Click the target, then the box, then type', icon: 'M4 4h16v10H10l-4 5v-5H4z' },
   { group: 'annotation', kind: 'note', zh: '便签', en: 'Note', hintZh: '单击位置后输入便签内容', hintEn: 'Click a spot, then type the note', icon: 'M5 4h14v11l-5 5H5zM14 20v-5h5' },
   { group: 'annotation', kind: 'pricenote', zh: '价格便签', en: 'Price note', hintZh: '点击要标注的价格，再点击便签位置，然后输入文字', hintEn: 'Click the price, then the note position, then type', icon: 'M3 16h6M9 16l4-6h8v8h-8z' },
   { group: 'annotation', kind: 'signpost', zh: '路标', en: 'Signpost', hintZh: '单击 K 线位置后输入路标文字', hintEn: 'Click a bar, then type the signpost text', icon: 'M8 21V4M8 4h11l-2 3 2 3H8' },
+  { group: 'annotation', kind: 'pin', zh: '图钉', en: 'Pin', hintZh: '单击位置后输入说明，图上显示图钉和说明', hintEn: 'Click a spot, then type; shows a pin with its note', icon: 'M12 21s-6-5.6-6-10a6 6 0 0 1 12 0c0 4.4-6 10-6 10zM12 8.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z' },
   { group: 'annotation', kind: 'pricelabel', zh: '价格标签', en: 'Price label', hintZh: '单击在该价格处放置标签', hintEn: 'Click to tag a price', icon: 'M3 12l5-6h13v12H8z' },
   { group: 'annotation', kind: 'icon', zh: '图标', en: 'Icon', hintZh: '单击位置后选择图标', hintEn: 'Click a spot, then pick an icon', icon: 'M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.6 6.7 19.4l1.2-6L3.4 9.3l6-.7z' },
   { group: 'annotation', kind: 'arrow', zh: '箭头', en: 'Arrow', hintZh: '点击起点和箭头指向的位置', hintEn: 'Click tail, then head', icon: 'M4 20 20 4M12 4h8v8' },
@@ -88,6 +93,7 @@ export const DRAWING_TOOLS: DrawingTool[] = [
   { group: 'measure', kind: 'forecast', zh: '预测', en: 'Forecast', hintZh: '点击起点，再点击预测目标，显示涨跌与时长', hintEn: 'Click the source, then the target; shows change and time', icon: 'M3 17 10 12M10 12l11-7M17 5h4v4M10 12v.01' },
   { group: 'measure', kind: 'avwap', zh: '锚定 VWAP', en: 'Anchored VWAP', hintZh: '单击锚定的 K 线，从该处累计到最新 K 线', hintEn: 'Click the anchor bar; accumulates to the latest bar', icon: 'M4 4v16M4 16c4-1 6-6 10-7s5 2 6 0' },
   { group: 'measure', kind: 'avprofile', zh: '锚定成交量分布', en: 'Anchored volume profile', hintZh: '单击锚定的 K 线，统计从该处到最新的成交量分布', hintEn: 'Click the anchor bar; volume by price up to the latest bar', icon: 'M4 3v18M4 6h7M4 10h12M4 14h9M4 18h5' },
+  { group: 'measure', kind: 'barspattern', zh: 'K 线形态', en: 'Bars pattern', hintZh: '点击源区间起点和终点，再点击粘贴位置，复制这段 K 线的形状', hintEn: 'Click the source range start and end, then where to paste its shape', icon: 'M6 5v14M4 8h2M6 15h2M12 3v12M10 6h2M12 12h2M18 8v12M16 10h2M18 17h2' },
   { group: 'measure', kind: 'long', zh: '多头头寸', en: 'Long position', hintZh: '点击入场价，再点击止损价（止盈默认 2R，可拖动）', hintEn: 'Click entry, then stop (target defaults to 2R)', icon: 'M4 4h16v8H4zM4 12h16v8H4zM4 12h16' },
   { group: 'measure', kind: 'short', zh: '空头头寸', en: 'Short position', hintZh: '点击入场价，再点击止损价（止盈默认 2R，可拖动）', hintEn: 'Click entry, then stop (target defaults to 2R)', icon: 'M4 4h16v8H4zM4 12h16v8H4zM4 12h16' },
 ]
@@ -111,6 +117,7 @@ export const ICONS: Record<string, [string, string, string]> = {
 }
 export const ICON_LIST = ICON_NAMES
 export const clicksNeeded = (kind: DrawingKind) => DRAWING_CLICKS[kind]
+export const isMultiKind = (kind: DrawingKind) => (MULTI_KINDS as string[]).includes(kind)
 
 export function ToolIcon({ kind, size = 16 }: { kind: DrawingKind; size?: number }) {
   return <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={toolOf(kind).icon} /></svg>
@@ -451,10 +458,64 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
         : p.length >= 3 ? <polygon className="dhl-drawing-fill" points={p.slice(0, 3).map((point) => `${point.x},${point.y}`).join(' ')} /> : null
       break
     }
-    case 'brush': {
+    case 'brush':
+    case 'highlighter': {
       if (p.length < 2) break
-      body = <polyline className="dhl-brush" points={p.map((point) => `${point.x},${point.y}`).join(' ')} />
+      body = <polyline className={kind === 'brush' ? 'dhl-brush' : 'dhl-brush dhl-highlighter'} points={p.map((point) => `${point.x},${point.y}`).join(' ')} />
       handles = []
+      break
+    }
+    case 'path':
+    case 'polyline': {
+      if (p.length < 2) break
+      body = <>
+        <polyline className="dhl-pattern" points={p.map((point) => `${point.x},${point.y}`).join(' ')} />
+        {kind === 'path' ? <polygon className="dhl-arrow-head" points={arrowHead(p[p.length - 2], p[p.length - 1])} /> : null}
+      </>
+      break
+    }
+    case 'pin': {
+      const value = textValue || label || tr('图钉', 'Pin')
+      const lines = wrapText(value, 220)
+      const width = (16 + Math.max(...lines.map(textWidth))) * k, height = (10 + lines.length * 16) * k
+      const top = p[0].y - 30 - height
+      body = <g className="dhl-pin">
+        <path className="dhl-pin-glyph" transform={`translate(${p[0].x - 9} ${p[0].y - 22}) scale(0.75)`} d="M12 21s-6-5.6-6-10a6 6 0 0 1 12 0c0 4.4-6 10-6 10zM12 8.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z" />
+        <rect className="dhl-text-box dhl-note-box" x={p[0].x - width / 2} y={top} width={width} height={height} rx="4" />
+        {lines.map((line, index) => <React.Fragment key={index}>{text(p[0].x - width / 2 + 8 * k, top + (17 + index * 16) * k - 2, line, 'start', 'dhl-drawing-text dhl-text-value')}</React.Fragment>)}
+      </g>
+      handles = [p[0]]
+      break
+    }
+    case 'fibspiral': {
+      if (!p[1]) break
+      // Golden spiral: the radius grows by φ every quarter turn, through the second point.
+      const r0 = Math.hypot(p[1].x - p[0].x, p[1].y - p[0].y), a0 = Math.atan2(p[1].y - p[0].y, p[1].x - p[0].x)
+      if (r0 < 1) break
+      const pts: string[] = []
+      for (let theta = -4 * Math.PI; theta <= 3 * Math.PI; theta += Math.PI / 32) {
+        const r = r0 * Math.pow(1.618034, theta / (Math.PI / 2))
+        if (r > 4 * Math.hypot(w, h)) break
+        pts.push(`${(p[0].x + r * Math.cos(a0 + theta)).toFixed(1)},${(p[0].y + r * Math.sin(a0 + theta)).toFixed(1)}`)
+      }
+      body = <><polyline className="dhl-pattern" points={pts.join(' ')} /><line className="dhl-drawing-mid" x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} /></>
+      break
+    }
+    case 'barspattern': {
+      if (!p[1]) break
+      const [from, to] = points[0].time <= points[1].time ? [points[0], points[1]] : [points[1], points[0]]
+      const source = view.candles?.(from.time, to.time) ?? []
+      if (!p[2]) { body = <rect className="dhl-drawing-mid" x={Math.min(p[0].x, p[1].x)} y={0} width={Math.abs(p[1].x - p[0].x)} height={h} fill="none" />; break }
+      if (!source.length) { body = text(p[2].x, p[2].y, tr('源区间暂无 K 线', 'No bars in the source range')); break }
+      // Shift in time to the paste point and in price so the first bar opens at the paste price.
+      const dt = points[2].time - source[0].time, dp = points[2].price - source[0].open
+      let d = ''
+      for (const bar of source) {
+        const hi = view.project(bar.time + dt, bar.high + dp), lo = view.project(bar.time + dt, bar.low + dp), op = view.project(bar.time + dt, bar.open + dp), cl = view.project(bar.time + dt, bar.close + dp)
+        if (!hi || !lo || !op || !cl) continue
+        d += `M${hi.x.toFixed(1)} ${hi.y.toFixed(1)}V${lo.y.toFixed(1)}M${(op.x - 3).toFixed(1)} ${op.y.toFixed(1)}H${op.x.toFixed(1)}M${cl.x.toFixed(1)} ${cl.y.toFixed(1)}H${(cl.x + 3).toFixed(1)}`
+      }
+      body = <><rect className="dhl-drawing-mid" x={Math.min(p[0].x, p[1].x)} y={0} width={Math.abs(p[1].x - p[0].x)} height={h} fill="none" /><path className="dhl-bars-copy" d={d} data-bars={source.length} /></>
       break
     }
     case 'callout': {

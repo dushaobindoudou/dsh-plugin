@@ -915,3 +915,9 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 /* Search at the top of the drawing menu (stays visible while the list scrolls). */
 .dhl-draw-popover .dhl-draw-search { position: sticky; top: -6px; z-index: 1; width: 100%; box-sizing: border-box; margin: -6px 0 4px; padding: 8px 10px; border: 0; border-bottom: 1px solid var(--dsw-alias-border-l1); background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-primary); font: inherit; font-size: 12px; outline: none; }
 .dhl-draw-popover .dhl-draw-empty { margin: 10px 8px; color: var(--dsw-alias-label-secondary); font-size: 11.5px; }
+
+/* 0.5.1: highlighter, pin, copied bars. */
+.dhl-drawing .dhl-highlighter { stroke-width: calc(var(--dhl-line-width, 2) * 6); stroke-opacity: .32; }
+.dhl-drawing .dhl-pin-glyph { fill: currentColor; fill-opacity: .25; stroke: currentColor; stroke-width: 2; }
+.dhl-drawing .dhl-bars-copy { fill: none; stroke: currentColor; stroke-width: 1.3; opacity: .8; }
+.dhl-drawing-hit .dhl-bars-copy, .dhl-drawing-hit .dhl-pin-glyph { pointer-events: stroke; }

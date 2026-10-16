@@ -12,7 +12,7 @@ import { buildToolDefinitions } from '../lib/tools.js'
 
 const now = Date.UTC(2026, 9, 15)
 const pt = (hours, price) => ({ time: now - hours * 3600_000, price })
-assert.equal(DRAWING_KINDS.length, 66)
+assert.equal(DRAWING_KINDS.length, 72)
 assert.deepEqual(drawingGeometry('hray', { points: [pt(5, 100)] }, now), { points: [pt(5, 100)] })
 assert.equal(drawingGeometry('channel', { points: [pt(9, 100), pt(3, 110), pt(6, 95)] }, now).points.length, 3)
 assert.deepEqual(drawingGeometry('trend', { fromTime: pt(400 * 24, 1).time, fromPrice: 1, toTime: pt(1, 2).time, toPrice: 2 }, now).fromPrice, 1, 'trend lines may start long before the old 90-day window')
@@ -218,6 +218,23 @@ try {
   assert.ok(renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'avwap', points: [{ time: now + 9 * 3600_000, price: 9 }], view: vview })).includes('暂无成交量'), 'no bars after the anchor')
   const early = renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'avwap', points: [{ time: now - 3 * 3600_000, price: 9 }], view: { ...vview, firstTime: now, barMs: 3600_000 } }))
   assert.ok(early.includes('暂不完整'), 'an anchor before the loaded history is flagged')
+  // 0.5.1: highlighter, path / polyline, pin, fib spiral, bars pattern.
+  assert.equal(drawingGeometry('path', { points: [pt(5, 100), pt(4, 110), pt(3, 105)] }, now).points.length, 3)
+  assert.throws(() => drawingGeometry('path', { points: [pt(5, 100)] }, now), /2-50/)
+  assert.throws(() => drawingGeometry('polyline', { points: Array.from({ length: 51 }, (_, i) => pt(60 - i, 100)) }, now), /2-50/)
+  assert.equal(drawingGeometry('highlighter', { points: Array.from({ length: 30 }, (_, i) => pt(30 - i, 100 + i)) }, now).points.length, 30)
+  assert.throws(() => drawingGeometry('barspattern', { points: [pt(2, 100), pt(4, 100), pt(1, 100)] }, now), /晚于起点/)
+  const pathPts = [[0, 100], [1, 120], [2, 110]].map(([i, price]) => ({ time: now + i * 3600_000, price }))
+  assert.ok(render('path', pathPts).includes('dhl-arrow-head') && !render('polyline', pathPts).includes('dhl-arrow-head'), 'path ends in an arrow, polyline does not')
+  assert.ok(render('highlighter', pathPts).includes('dhl-highlighter'), 'highlighter stroke')
+  assert.ok(render('pin', [{ time: now, price: 100 }], { text: '加仓点' }).includes('>加仓点<'), 'pin text')
+  const spiral = render('fibspiral', [{ time: now, price: 100 }, { time: now + 3600_000, price: 100 }])
+  assert.ok(spiral.includes('210.0,400.0'), 'the spiral passes through the second point (radius 10px at angle 0)')
+  // Bars pattern: two source bars pasted 5 hours later, first open moved to 200.
+  const src = [[0, 105, 95, 100, 102], [1, 110, 99, 102, 108]].map(([i, high, low, open, close]) => ({ time: now + i * 3600_000, open, high, low, close, volume: 1 }))
+  const bview = { ...view, candles: (from, to) => src.filter((bar) => bar.time >= from && bar.time <= to) }
+  const copy = renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'barspattern', points: [{ time: now, price: 100 }, { time: now + 3600_000, price: 100 }, { time: now + 5 * 3600_000, price: 200 }], view: bview }))
+  assert.ok(copy.includes('data-bars="2"') && copy.includes('M250.0 295.0V305.0'), `first copied bar: x = 200 + 50, high 105 → 205 (y 295), low 95 → 195 (y 305): ${copy.slice(0, 300)}`)
   const forecast = render('forecast', [{ time: now - 3 * 3600_000, price: 100 }, { time: now, price: 110 }])
   assert.ok(forecast.includes('+10.00%') && forecast.includes('3 根'), 'forecast change and bars')
   assert.ok(render('text', [{ time: now, price: 100 }], { text: 'x', bold: true, italic: true }).includes('--dhl-font-weight:700'), 'bold reaches the text')
@@ -263,4 +280,4 @@ try {
   assert.ok(render('icon', [{ time: now, price: 100 }], { text: 'emoji:🚀' }).includes('>🚀<'), 'stickers render their emoji')
   assert.ok(render('brush', Array.from({ length: 30 }, (_, i) => ({ time: now + i * 600_000, price: 100 + i }))).includes('<polyline'))
 } finally { rmSync(file, { force: true }) }
-console.log('画线工具（66 种）校验、编辑与锁定、agent 路径、头寸与 SVG 几何通过')
+console.log('画线工具（72 种）校验、编辑与锁定、agent 路径、头寸与 SVG 几何通过')

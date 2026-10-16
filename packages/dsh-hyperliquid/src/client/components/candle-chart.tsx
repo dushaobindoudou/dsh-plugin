@@ -38,8 +38,8 @@ import { chartIndicators, type IndicatorId, type ChartPoint } from '../chart-ind
 import { selectChartCandle, type ChartHit, type ChartSelection } from '../chart-reference'
 import type { TradeEvent } from '../trade-events'
 import { maLabel, maSeries, type MaLine } from '../../../lib/moving-average.js'
-import { DrawingShape, clicksNeeded, completePoints, constrainPoints, geometryPatch, markPoints, type DrawPoint, type DrawingKind, type Projector } from '../drawing-tools'
-import { BRUSH_MAX, volumeProfile } from '../../../lib/chart-drawings.js'
+import { DrawingShape, isMultiKind, clicksNeeded, completePoints, constrainPoints, geometryPatch, markPoints, type DrawPoint, type DrawingKind, type Projector } from '../drawing-tools'
+import { BRUSH_MAX, FREEHAND_KINDS, PATH_MAX, volumeProfile } from '../../../lib/chart-drawings.js'
 import { DrawToolbar, DRAW_COLORS } from './draw-toolbar'
 import { DrawingEditor } from './drawing-editor'
 import { UiIcon } from './panel-icons'
@@ -180,7 +180,7 @@ interface ChartProps {
 /** Overlay height the top toolbar occupies (top offset + one row + margin). */
 const TOOLBAR_CLEARANCE = 84
 // Only drawings whose geometry stays within their anchors (plus the margin): rotated rectangles and arcs do not.
-const FINITE_KINDS = new Set(['ellipse', 'curve', 'note', 'pricenote', 'signpost', 'forecast', 'cypher', 'threedrives', 'elliotttri', 'elliottwxy', 'elliottwxyxz', 'trend', 'rect', 'measure', 'fib', 'long', 'short', 'text', 'arrow', 'triangle', 'brush',
+const FINITE_KINDS = new Set(['highlighter', 'path', 'polyline', 'pin', 'ellipse', 'curve', 'note', 'pricenote', 'signpost', 'forecast', 'cypher', 'threedrives', 'elliotttri', 'elliottwxy', 'elliottwxyxz', 'trend', 'rect', 'measure', 'fib', 'long', 'short', 'text', 'arrow', 'triangle', 'brush',
   'infoline', 'trendangle', 'pricerange', 'daterange', 'elliott', 'elliottabc', 'xabcd', 'abcd', 'gannbox', 'gannsquare', 'icon', 'vprofile', 'regression'])
 /** Every anchor beyond the same side of the plot (with a margin for labels and handles). */
 function offscreen(points: DrawPoint[], view: { project: (time: number, price: number) => { x: number } | null; width: number }): boolean {
@@ -454,6 +454,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     // within 5px). The second anchor of a quickly drawn line was dropped that way (verified
     // against 0.1.0: 100ms between clicks missed 20/20, 700ms missed 0/20).
     let touchTapAt = -Infinity
+    let lastMultiClick: { x: number; y: number; at: number } | null = null, multiFinishedAt: { x: number; y: number; at: number } | null = null
     /** Whether a click came from a finger (Chrome reports it as a touch PointerEvent). */
     const fromTouch = (event: MouseEvent) => (event as PointerEvent).pointerType === 'touch' ||
       Boolean((event as MouseEvent & { sourceCapabilities?: { firesTouchEvents?: boolean } }).sourceCapabilities?.firesTouchEvents)
@@ -478,6 +479,19 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
         const point = pointAt(event, pending.current.at(-1))
         if (!point) return
         if (mode === 'level') { onDrawRef.current({ kind: 'level', price: point.price }); return }
+        if (isMultiKind(mode)) {
+          // Path / polyline: a second click within 6px of the previous one (raw pointer positions, so the
+          // magnet cannot move it out of range) is the double-click that finishes. The click after that
+          // finishing click is the rest of the same double-click: it must not start the next path.
+          const now = performance.now(), here = { x: event.clientX, y: event.clientY }
+          const near = (other: { x: number; y: number; at: number } | null, within = Infinity) => Boolean(other && now - other.at < within && Math.hypot(here.x - other.x, here.y - other.y) <= 6)
+          if (near(multiFinishedAt, 500)) { multiFinishedAt = null; return }
+          if (pending.current.length && near(lastMultiClick)) { multiFinishedAt = { ...here, at: now }; lastMultiClick = null; finishMultiRef.current(); return }
+          lastMultiClick = { ...here, at: now }
+          pending.current = [...pending.current, point]; setPendingPoints(pending.current)
+          if (pending.current.length >= PATH_MAX) finishMultiRef.current()
+          return
+        }
         const clicks = [...pending.current, point]
         if (clicks.length < clicksNeeded(mode)) { pending.current = clicks; setPendingPoints(clicks); return }
         pending.current = []
@@ -882,6 +896,25 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   }, [link?.range, candles, olderState, chartType])
 
   React.useEffect(() => { pending.current = []; setPendingPoints([]); setDrawingHover(null) }, [drawMode])
+  /** Commits a path / polyline from its clicks so far (needs two). */
+  const finishMulti = () => {
+    const mode = drawModeRef.current
+    const points = pending.current
+    pending.current = []; setPendingPoints([])
+    if (mode && isMultiKind(mode) && points.length >= 2) onDrawRef.current({ kind: mode as Exclude<DrawingKind, 'level' | 'trend'>, points })
+  }
+  const finishMultiRef = React.useRef(finishMulti)
+  finishMultiRef.current = finishMulti
+  React.useEffect(() => {
+    if (!drawMode || !isMultiKind(drawMode)) return undefined
+    const onKey = (event: KeyboardEvent) => {
+      const element = event.target as HTMLElement | null
+      if (event.key !== 'Enter' || element?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element?.tagName ?? '')) return
+      event.preventDefault(); finishMultiRef.current()
+    }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+  }, [drawMode])
 
   React.useEffect(() => {
     if (resetToken > 0) refs.current?.chart.timeScale().fitContent()
@@ -1020,7 +1053,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   React.useEffect(() => () => abortGesture.current?.(), [])
   const [brushPoints, setBrushPoints] = React.useState<DrawPoint[]>([])
   /** Freehand: the overlay captures the pointer (so the chart does not pan) and samples every ~4px. */
-  const beginBrush = (event: React.PointerEvent<SVGSVGElement>) => {
+  const beginBrush = (event: React.PointerEvent<SVGSVGElement>, freehandKind: DrawingKind) => {
     const snap = snapRef.current
     const first = snap?.(event.nativeEvent, undefined, false)
     if (!snap || !first) return
@@ -1050,7 +1083,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       if (collected.length < 2) return
       const stride = Math.ceil(collected.length / BRUSH_MAX)
       const points = collected.filter((_, index) => index % stride === 0 || index === collected.length - 1).slice(-BRUSH_MAX)
-      onDrawRef.current({ kind: 'brush', points })
+      onDrawRef.current({ kind: freehandKind as Exclude<DrawingKind, 'level' | 'trend'>, points })
     }
     abortGesture.current?.()
     abortGesture.current = cancel
@@ -1107,7 +1140,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
 
   /** Press on a drawing: select it; drag a handle to reshape or the body to move. Saved once on release. */
   const beginDrag = React.useCallback((event: React.PointerEvent<SVGSVGElement>) => {
-    if (drawModeRef.current === 'brush' && event.button === 0) { beginBrush(event); return }
+    if (drawModeRef.current && (FREEHAND_KINDS as string[]).includes(drawModeRef.current) && event.button === 0) { beginBrush(event, drawModeRef.current); return }
     if (drawModeRef.current || event.button !== 0) return
     const target = event.target as Element
     const fillId = target.closest('[data-fill-id]')?.getAttribute('data-fill-id')
@@ -1272,7 +1305,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   return (
     <>
     <div className="dhl-chartbox" ref={boxRef} style={{ height: expanded && !compact ? undefined : (compact ? 310 : CHART_HEIGHT) + paneCount * (compact ? 65 : 125) }}>
-      {view ? <svg className={'dhl-chart-drawing-overlay' + (drawMode ? ' drawing' : '') + (drawMode === 'brush' ? ' brushing' : '')} aria-hidden="true" onPointerDown={beginDrag}>
+      {view ? <svg className={'dhl-chart-drawing-overlay' + (drawMode ? ' drawing' : '') + (drawMode && (FREEHAND_KINDS as string[]).includes(drawMode) ? ' brushing' : '')} aria-hidden="true" onPointerDown={beginDrag}>
         <defs>
           <clipPath id={clipId.current}><rect x="0" y="0" width={view.width} height={view.height} /></clipPath>
           <marker id={`${clipId.current}-arrow`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="currentColor" /></marker>
@@ -1288,7 +1321,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
             const clampedDecoration = !(mark.source === 'user' || mark.kind === 'level') || Boolean(mark.alert) || Boolean(mark.shared)
             if (!selected && !clampedDecoration && !mark.extendLeft && !mark.extendRight && FINITE_KINDS.has(mark.kind) && offscreen(shown, view)) return null
             return <DrawingShape key={mark.id} id={mark.id} kind={mark.kind} points={shown} view={view} text={mark.label}
-              dataVersion={mark.kind === 'vprofile' || mark.kind === 'regression' || mark.kind === 'avwap' || mark.kind === 'avprofile' ? candles : undefined}
+              dataVersion={mark.kind === 'vprofile' || mark.kind === 'regression' || mark.kind === 'avwap' || mark.kind === 'avprofile' || mark.kind === 'barspattern' ? candles : undefined}
               className={`dhl-drawing ${roleClass(mark)}${mark.kind === 'level' ? ' is-level' : ''}${selected ? ' selected' : ''}${mark.locked || drawingsLocked ? ' locked' : ''}`}
               label={mark.source === 'user' || mark.kind === 'level' ? undefined : mark.label} anchors={selected} interactive={!drawMode}
               color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} alert={mark.alert} shared={mark.shared} rows={mark.rows} valueArea={mark.valueArea} levels={mark.levels} fontSize={mark.fontSize} bold={mark.bold} italic={mark.italic} fillOpacity={mark.fillOpacity} extendLeft={mark.extendLeft} extendRight={mark.extendRight} />
@@ -1305,9 +1338,9 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
               </g>
             })}
           </g>
-          {brushPoints.length > 1 ? <DrawingShape kind="brush" points={brushPoints} view={view} className="dhl-drawing dhl-drawing-preview role-user" /> : null}
+          {brushPoints.length > 1 ? <DrawingShape kind={drawMode === 'highlighter' ? 'highlighter' : 'brush'} points={brushPoints} view={view} className="dhl-drawing dhl-drawing-preview role-user" /> : null}
           {drawMode && drawingHover && hoverSnapped ? (() => { const at = view.project(drawingHover.time, drawingHover.price); return at ? <circle className="dhl-snap-ring" cx={at.x} cy={at.y} r="6" /> : null })() : null}
-          {drawMode && drawMode !== 'brush' && previewPoints.length ? <DrawingShape kind={drawMode} points={completePreview(drawMode, previewPoints)} view={view} className="dhl-drawing dhl-drawing-preview role-user" anchors /> : null}
+          {drawMode && !(FREEHAND_KINDS as string[]).includes(drawMode) && previewPoints.length ? <DrawingShape kind={drawMode} points={completePreview(drawMode, previewPoints)} view={view} className="dhl-drawing dhl-drawing-preview role-user" anchors /> : null}
         </g>
       </svg> : null}
       {fillCard && fillAt && view ? <div className="dhl-fill-card" role="dialog" aria-label={tr('成交详情', 'Fill details')}

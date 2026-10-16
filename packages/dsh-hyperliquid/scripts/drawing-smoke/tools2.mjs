@@ -21,7 +21,7 @@ try {
   await page.getByRole('searchbox', { name: '搜索画线工具' }).fill('vwap')
   check(await page.getByRole('menuitemradio').count() === 1 && await toolItem(page, '锚定 VWAP').count() === 1, 'searching the drawing menu for "vwap" leaves only anchored VWAP')
   await page.getByRole('searchbox', { name: '搜索画线工具' }).fill('斐波那契')
-  check(await page.getByRole('menuitemradio').count() === 9, 'searching 斐波那契 lists the 9 Fibonacci tools')
+  check(await page.getByRole('menuitemradio').count() === 10, 'searching 斐波那契 lists the 10 Fibonacci tools')
   await page.getByRole('searchbox', { name: '搜索画线工具' }).fill('')
   await page.locator('.dhl-draw-menu summary').click()
 
@@ -39,7 +39,7 @@ try {
     ['周期线', 'cycles', [[.3, .9], [.36, .9]]], ['正弦线', 'sine', [[.4, .15], [.46, .25]]],
     ['椭圆', 'ellipse', [[.76, .2], [.84, .35]]], ['旋转矩形', 'rotrect', [[.85, .5], [.9, .4], [.9, .55]]],
     ['弧线', 'arc', [[.6, .9], [.7, .9], [.65, .8]]], ['曲线', 'curve', [[.72, .9], [.82, .9], [.77, .75]]],
-    ['预测', 'forecast', [[.5, .55], [.6, .4]]], ['锚定 VWAP', 'avwap', [[.4, .5]]], ['锚定成交量分布', 'avprofile', [[.6, .5]]],
+    ['预测', 'forecast', [[.5, .55], [.6, .4]]], ['斐波那契螺旋', 'fibspiral', [[.45, .7], [.48, .7]]], ['K 线形态', 'barspattern', [[.3, .5], [.36, .5], [.86, .3]]], ['锚定 VWAP', 'avwap', [[.4, .5]]], ['锚定成交量分布', 'avprofile', [[.6, .5]]],
   ]
   for (const [name, kind, clicks] of plan) {
     await pick(name)
@@ -60,6 +60,41 @@ try {
     const mark = (await marks()).find((m) => m.kind === kind && m.label === value)
     check(Boolean(mark) && await page.locator('.dhl-chart-drawing-overlay text', { hasText: value }).count() > 0, `${name} drawn with its text`)
   }
+
+  // Path: click points, double-click the last one to finish. Polyline: Enter finishes.
+  await pick('路径')
+  for (const [fx, fy] of [[.2, .85], [.25, .75], [.3, .82]]) await clickAt(fx, fy)
+  { const last = at(.3, .82); await page.mouse.dblclick(last.x, last.y) }
+  await settle()
+  const path = (await marks()).find((m) => m.kind === 'path')
+  check(path?.points.length === 3 && await page.locator(`.dhl-drawing[data-mark-id="${path.id}"] > .dhl-arrow-head`).count() === 1, 'path: three clicks and a double-click make a 3-point path with an arrow', path?.points.length)
+  await pick('折线')
+  for (const [fx, fy] of [[.5, .88], [.55, .8], [.6, .86], [.65, .78]]) await clickAt(fx, fy)
+  await page.keyboard.press('Enter'); await settle()
+  check((await marks()).find((m) => m.kind === 'polyline')?.points.length === 4, 'polyline: Enter finishes after four clicks')
+  // Stay in drawing mode: the second click of the finishing double-click must not start the next polyline.
+  await page.locator('.dhl-draw-menu summary').click(); await page.getByLabel('连续绘制').check(); await page.locator('.dhl-draw-menu summary').click()
+  await pick('折线')
+  const before = (await marks()).filter((m) => m.kind === 'polyline').length
+  await clickAt(.12, .2); await clickAt(.16, .25); { const q = at(.2, .2); await page.mouse.dblclick(q.x, q.y) }
+  await page.waitForTimeout(400)
+  await clickAt(.24, .25); await clickAt(.28, .2); await page.keyboard.press('Enter'); await settle()
+  const lines = (await marks()).filter((m) => m.kind === 'polyline').slice(before)
+  check(lines.length === 2 && lines[0].points.length === 3 && lines[1].points.length === 2, 'stay-drawing: a double-click finishes one polyline without seeding the next', lines.map((m) => m.points.length))
+  await page.keyboard.press('Escape')
+  await page.locator('.dhl-draw-menu summary').click(); await page.getByLabel('连续绘制').uncheck(); await page.locator('.dhl-draw-menu summary').click()
+  // Highlighter: drag.
+  await pick('荧光笔')
+  { const h0 = at(.1, .6); await page.mouse.move(h0.x, h0.y); await page.mouse.down(); for (let i = 1; i <= 25; i += 1) await page.mouse.move(h0.x + i * 8, h0.y + Math.sin(i / 3) * 15); await page.mouse.up() }
+  await settle()
+  const hl = (await marks()).find((m) => m.kind === 'highlighter')
+  check(hl?.points.length >= 10 && await page.locator(`.dhl-drawing[data-mark-id="${hl.id}"] > .dhl-highlighter`).count() === 1, `highlighter records a freehand stroke (${hl?.points.length} points)`)
+  // Pin with its note; the bars pattern copies real bars.
+  await pick('图钉'); await clickAt(.7, .6)
+  await page.getByRole('dialog').getByRole('textbox').fill('加仓点'); await page.getByRole('dialog').getByRole('button', { name: '添加' }).click(); await settle()
+  check(await page.locator('.dhl-chart-drawing-overlay .dhl-drawing > .dhl-pin text', { hasText: '加仓点' }).count() === 1, '图钉 shows its note')
+  const copied = await page.locator('.dhl-chart-drawing-overlay .dhl-bars-copy').first().getAttribute('data-bars')
+  check(Number(copied) >= 3, `K 线形态 copies the source bars (${copied})`)
 
   // Editing works on the new kinds too: drag the ellipse's second anchor.
   const ellipse = (await marks()).find((m) => m.kind === 'ellipse')

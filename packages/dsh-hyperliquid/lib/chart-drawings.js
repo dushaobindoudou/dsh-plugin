@@ -30,7 +30,14 @@ export const DRAWING_POINTS = {
   ellipse: 2, rotrect: 3, arc: 3, curve: 3,
   note: 1, pricenote: 2, signpost: 1,
   avwap: 1, avprofile: 1, forecast: 2,
+  // Freehand highlighter (0 = variable, like brush); path / polyline take clicks until a double-click or Enter.
+  highlighter: 0, path: 0, polyline: 0, pin: 1, fibspiral: 2, barspattern: 3,
 }
+/** Freehand kinds drawn by dragging. */
+export const FREEHAND_KINDS = ['brush', 'highlighter']
+/** Kinds drawn click by click until a double-click or Enter. */
+export const MULTI_KINDS = ['path', 'polyline']
+export const PATH_MAX = 50
 /** Icon stickers (the drawing's label holds the icon name). */
 export const ICON_NAMES = ['flag', 'star', 'up', 'down', 'warning', 'check', 'cross', 'fire', 'target', 'bell', 'pin', 'clock', 'dollar', 'shield', 'bolt', 'heart', 'question', 'info']
 /** Sticker library (TradingView's emoji stickers): category → emoji. An icon label is a name or `emoji:<char>`. */
@@ -122,7 +129,7 @@ export function linePriceAt(mark, time) {
 export const BRUSH_MIN = 2
 export const BRUSH_MAX = 500
 /** Kinds whose label is free text shown on the chart (up to 200 characters). */
-export const TEXT_KINDS = ['text', 'callout', 'note', 'pricenote', 'signpost']
+export const TEXT_KINDS = ['text', 'callout', 'note', 'pricenote', 'signpost', 'pin']
 /** Clicks that create a drawing when they differ from its stored anchor count. */
 export const DRAWING_CLICKS = { ...Object.fromEntries(Object.entries(DRAWING_POINTS)), long: 2, short: 2 }
 export const DRAWING_KINDS = Object.keys(DRAWING_POINTS)
@@ -163,12 +170,15 @@ export function drawingGeometry(kind, request, now = Date.now()) {
   }
   const need = DRAWING_POINTS[kind]
   const raw = request?.points
-  if (kind === 'brush') {
-    if (!Array.isArray(raw) || raw.length < BRUSH_MIN || raw.length > BRUSH_MAX) throw new Error(`brush 需要 ${BRUSH_MIN}-${BRUSH_MAX} 个 points`)
+  if (FREEHAND_KINDS.includes(kind)) {
+    if (!Array.isArray(raw) || raw.length < BRUSH_MIN || raw.length > BRUSH_MAX) throw new Error(`${kind} 需要 ${BRUSH_MIN}-${BRUSH_MAX} 个 points`)
+  } else if (MULTI_KINDS.includes(kind)) {
+    if (!Array.isArray(raw) || raw.length < 2 || raw.length > PATH_MAX) throw new Error(`${kind} 需要 2-${PATH_MAX} 个 points`)
   } else if (!Array.isArray(raw) || raw.length !== need) throw new Error(`${kind} 需要 ${need} 个 points（{ time, price }）`)
   const points = raw.map((item, index) => point(item?.time, item?.price, `第 ${index + 1} 个点`))
   if (['trend', 'ray', 'extended', 'channel', 'fibchannel', 'gannfan', 'regression', 'fibtime', 'infoline', 'trendangle', 'flatchannel', 'disjoint', 'fibfan', 'fibtrendtime', 'cycles', 'sine', 'forecast'].includes(kind) && points[0].time === points[1].time) throw new Error('前两个点的时间不能相同')
   if ((kind === 'cycles' || kind === 'sine' || kind === 'fibtrendtime') && points[1].time < points[0].time) throw new Error('第二个点必须晚于第一个点')
+  if (kind === 'barspattern' && points[1].time <= points[0].time) throw new Error('K 线形态的源区间终点必须晚于起点')
   if (kind === 'vprofile') {
     if (points[0].time === points[1].time) throw new Error('成交量分布需要一个时间区间')
     // Only the time range matters, so either drawing direction is fine.
