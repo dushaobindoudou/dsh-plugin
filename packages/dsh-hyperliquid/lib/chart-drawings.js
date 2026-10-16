@@ -38,6 +38,8 @@ export const DRAWING_POINTS = {
   anchoredtext: 1, table: 1,
   // Gann square fixed: always square on screen, 5×5 units (TradingView Charting Library defaults).
   gannfixed: 2,
+  // Inside pitchfork, per TradingView's help: the median starts halfway (time and price) between the first two points.
+  insidepitchfork: 3,
 }
 /** Kinds that can be pinned to a screen position (screenX / screenY, 0-1 of the plot). */
 export const SCREEN_KINDS = ['anchoredtext', 'table']

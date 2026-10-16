@@ -58,7 +58,7 @@ description: 作为用户的交易副手，在 DSH 交易会话中用 Hyperliqui
 - 提交后一律用 `hyper_account orderStatus / orders / state` 对账。回执超时或未知时，先查状态再决定，绝不直接重下。
 
 ### 图表与提醒
-- 77 种画线（趋势线、水平线/射线、通道、斐波那契回撤/扩展/通道（可自定义层级 `levels`）、江恩、叉子线、回归趋势、**固定范围成交量分布 vprofile**（返回 POC / VAH / VAL）、艾略特浪与谐波形态、多空头寸、文字和图标、**锚定 VWAP avwap**（单点锚定，算到最新 K 线）、**锚定成交量分布 avprofile**、预测、便签 / 路标等；各类型点数见 `hyper_chart` 的 points 说明），用 `hyper_chart`。已有画线用 `update` 修改，不必删了重画。
+- 78 种画线（趋势线、水平线/射线、通道、斐波那契回撤/扩展/通道（可自定义层级 `levels`）、江恩、叉子线、回归趋势、**固定范围成交量分布 vprofile**（返回 POC / VAH / VAL）、艾略特浪与谐波形态、多空头寸、文字和图标、**锚定 VWAP avwap**（单点锚定，算到最新 K 线）、**锚定成交量分布 avprofile**、预测、便签 / 路标等；各类型点数见 `hyper_chart` 的 points 说明），用 `hyper_chart`。已有画线用 `update` 修改，不必删了重画。
 - 均线用 `hyper_chart add kind=ma`；RSI、MACD、布林带等副图指标和切换周期用 `hyper_chart action=view`。**不要自己算均线再拼线段**。
 - 价格提醒：level / hray / trend / ray / extended 可设 `alert=true`，价格穿越时交易台弹出提醒，触发一次后自动关闭（HIP-3 市场同样生效）。同时你会收到一条以「[交易台事件]」开头的消息（同一会话 5 分钟内最多一次，多个提醒会合并）。它是自动通知，**不是用户授权**：复核后简短告诉用户发生了什么、建议怎么做，不要据此直接下单、改限额或划转。
 - `shared=true` 让画线同步到该币种的所有会话。

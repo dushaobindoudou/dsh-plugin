@@ -39,6 +39,7 @@ export const DRAWING_TOOLS: DrawingTool[] = [
   { group: 'channels', kind: 'pitchfork', zh: '安德鲁叉子线', en: 'Pitchfork', hintZh: '点击枢轴点，再点击波段高点与低点', hintEn: 'Click the pivot, then the swing high and low', icon: 'M4 20 12 4M12 4l8 8M12 4 4 12M8 16l12-4' },
   { group: 'channels', kind: 'schiff', zh: 'Schiff 叉子线', en: 'Schiff pitchfork', hintZh: '同叉子线，起点移到 A、B 价格中点', hintEn: 'Pitchfork with the handle at A–B price midpoint', icon: 'M4 14 12 4M12 4l8 8M12 4 4 12M8 16l12-4' },
   { group: 'channels', kind: 'modschiff', zh: '改良 Schiff 叉子线', en: 'Modified Schiff pitchfork', hintZh: '同叉子线，起点移到 A、B 时间与价格中点', hintEn: 'Pitchfork with the handle at the A–B midpoint', icon: 'M6 12 12 4M12 4l8 8M12 4 4 12M8 16l12-4' },
+  { group: 'channels', kind: 'insidepitchfork', zh: '内部叉子线', en: 'Inside pitchfork', hintZh: '点击三个点；中线起点在前两点时间与价格的中点（按 TradingView 帮助页）', hintEn: 'Click three points; the median starts halfway between the first two (per TradingView help)', icon: 'M8 12 12 4M12 4l8 8M12 4 4 12M8 16l12-4' },
   { group: 'channels', kind: 'regression', zh: '回归趋势', en: 'Regression trend', hintZh: '点击区间起点和终点，按收盘价拟合 ±2σ 通道', hintEn: 'Click range start and end; fits closes with ±2σ', icon: 'M3 17 21 7M3 13 21 3M3 21 21 11' },
   { group: 'channels', kind: 'vprofile', zh: '固定范围成交量分布', en: 'Fixed range volume profile', hintZh: '点击区间起点和终点，按价格统计成交量，标出 POC 与 70% 价值区', hintEn: 'Click range start and end; volume by price with POC and 70% value area', icon: 'M4 3v18M4 6h7M4 9h12M4 12h16M4 15h9M4 18h5' },
   { group: 'fib', kind: 'fib', zh: '斐波那契回撤', en: 'Fib retracement', hintZh: '从波段起点点到终点（终点为 0）（Alt+F）', hintEn: 'Click swing start, then end (end = 0) (Alt+F)', icon: 'M3 5h18M3 9h18M3 13h18M3 19h18' },
@@ -679,12 +680,14 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
     }
     case 'pitchfork':
     case 'schiff':
+    case 'insidepitchfork':
     case 'modschiff': {
       if (!p[1]) break
       if (!p[2]) { body = <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />; break }
       const mid = { x: (p[1].x + p[2].x) / 2, y: (p[1].y + p[2].y) / 2 }
       // Schiff moves the handle to the A–B price midpoint; modified Schiff to the A–B midpoint in time and price.
-      const origin = kind === 'schiff' ? { x: p[0].x, y: (p[0].y + p[1].y) / 2 } : kind === 'modschiff' ? { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 } : p[0]
+      // TradingView's help gives the inside pitchfork the same origin as the modified Schiff (half the time and price distance).
+      const origin = kind === 'schiff' ? { x: p[0].x, y: (p[0].y + p[1].y) / 2 } : kind === 'modschiff' || kind === 'insidepitchfork' ? { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 } : p[0]
       const dir = { x: mid.x - origin.x, y: mid.y - origin.y }
       const median = clipLine(origin, mid, w, h, 0)
       const prong = (from: Pt) => clipLine(from, { x: from.x + dir.x, y: from.y + dir.y }, w, h, 0)

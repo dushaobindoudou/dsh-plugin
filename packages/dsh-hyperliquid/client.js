@@ -17772,7 +17772,9 @@ var DRAWING_POINTS = {
   anchoredtext: 1,
   table: 1,
   // Gann square fixed: always square on screen, 5×5 units (TradingView Charting Library defaults).
-  gannfixed: 2
+  gannfixed: 2,
+  // Inside pitchfork, per TradingView's help: the median starts halfway (time and price) between the first two points.
+  insidepitchfork: 3
 };
 var SCREEN_KINDS = ["anchoredtext", "table"];
 var FREEHAND_KINDS = ["brush", "highlighter"];
@@ -17909,6 +17911,7 @@ var DRAWING_TOOLS = [
   { group: "channels", kind: "pitchfork", zh: "\u5B89\u5FB7\u9C81\u53C9\u5B50\u7EBF", en: "Pitchfork", hintZh: "\u70B9\u51FB\u67A2\u8F74\u70B9\uFF0C\u518D\u70B9\u51FB\u6CE2\u6BB5\u9AD8\u70B9\u4E0E\u4F4E\u70B9", hintEn: "Click the pivot, then the swing high and low", icon: "M4 20 12 4M12 4l8 8M12 4 4 12M8 16l12-4" },
   { group: "channels", kind: "schiff", zh: "Schiff \u53C9\u5B50\u7EBF", en: "Schiff pitchfork", hintZh: "\u540C\u53C9\u5B50\u7EBF\uFF0C\u8D77\u70B9\u79FB\u5230 A\u3001B \u4EF7\u683C\u4E2D\u70B9", hintEn: "Pitchfork with the handle at A\u2013B price midpoint", icon: "M4 14 12 4M12 4l8 8M12 4 4 12M8 16l12-4" },
   { group: "channels", kind: "modschiff", zh: "\u6539\u826F Schiff \u53C9\u5B50\u7EBF", en: "Modified Schiff pitchfork", hintZh: "\u540C\u53C9\u5B50\u7EBF\uFF0C\u8D77\u70B9\u79FB\u5230 A\u3001B \u65F6\u95F4\u4E0E\u4EF7\u683C\u4E2D\u70B9", hintEn: "Pitchfork with the handle at the A\u2013B midpoint", icon: "M6 12 12 4M12 4l8 8M12 4 4 12M8 16l12-4" },
+  { group: "channels", kind: "insidepitchfork", zh: "\u5185\u90E8\u53C9\u5B50\u7EBF", en: "Inside pitchfork", hintZh: "\u70B9\u51FB\u4E09\u4E2A\u70B9\uFF1B\u4E2D\u7EBF\u8D77\u70B9\u5728\u524D\u4E24\u70B9\u65F6\u95F4\u4E0E\u4EF7\u683C\u7684\u4E2D\u70B9\uFF08\u6309 TradingView \u5E2E\u52A9\u9875\uFF09", hintEn: "Click three points; the median starts halfway between the first two (per TradingView help)", icon: "M8 12 12 4M12 4l8 8M12 4 4 12M8 16l12-4" },
   { group: "channels", kind: "regression", zh: "\u56DE\u5F52\u8D8B\u52BF", en: "Regression trend", hintZh: "\u70B9\u51FB\u533A\u95F4\u8D77\u70B9\u548C\u7EC8\u70B9\uFF0C\u6309\u6536\u76D8\u4EF7\u62DF\u5408 \xB12\u03C3 \u901A\u9053", hintEn: "Click range start and end; fits closes with \xB12\u03C3", icon: "M3 17 21 7M3 13 21 3M3 21 21 11" },
   { group: "channels", kind: "vprofile", zh: "\u56FA\u5B9A\u8303\u56F4\u6210\u4EA4\u91CF\u5206\u5E03", en: "Fixed range volume profile", hintZh: "\u70B9\u51FB\u533A\u95F4\u8D77\u70B9\u548C\u7EC8\u70B9\uFF0C\u6309\u4EF7\u683C\u7EDF\u8BA1\u6210\u4EA4\u91CF\uFF0C\u6807\u51FA POC \u4E0E 70% \u4EF7\u503C\u533A", hintEn: "Click range start and end; volume by price with POC and 70% value area", icon: "M4 3v18M4 6h7M4 9h12M4 12h16M4 15h9M4 18h5" },
   { group: "fib", kind: "fib", zh: "\u6590\u6CE2\u90A3\u5951\u56DE\u64A4", en: "Fib retracement", hintZh: "\u4ECE\u6CE2\u6BB5\u8D77\u70B9\u70B9\u5230\u7EC8\u70B9\uFF08\u7EC8\u70B9\u4E3A 0\uFF09\uFF08Alt+F\uFF09", hintEn: "Click swing start, then end (end = 0) (Alt+F)", icon: "M3 5h18M3 9h18M3 13h18M3 19h18" },
@@ -18428,6 +18431,7 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
     }
     case "pitchfork":
     case "schiff":
+    case "insidepitchfork":
     case "modschiff": {
       if (!p[1]) break;
       if (!p[2]) {
@@ -18435,7 +18439,7 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
         break;
       }
       const mid = { x: (p[1].x + p[2].x) / 2, y: (p[1].y + p[2].y) / 2 };
-      const origin = kind === "schiff" ? { x: p[0].x, y: (p[0].y + p[1].y) / 2 } : kind === "modschiff" ? { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 } : p[0];
+      const origin = kind === "schiff" ? { x: p[0].x, y: (p[0].y + p[1].y) / 2 } : kind === "modschiff" || kind === "insidepitchfork" ? { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 } : p[0];
       const dir = { x: mid.x - origin.x, y: mid.y - origin.y };
       const median = clipLine(origin, mid, w, h, 0);
       const prong = (from) => clipLine(from, { x: from.x + dir.x, y: from.y + dir.y }, w, h, 0);
