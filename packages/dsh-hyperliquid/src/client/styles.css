@@ -932,3 +932,6 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-drawing .dhl-table-rule { stroke: currentColor; stroke-width: 1; opacity: .35; }
 .dhl-drawing .dhl-table-head { font-weight: 650; }
 .dhl-drawing-hit .dhl-table-box { pointer-events: all; }
+
+/* 0.5.4: Gann square fixed grid. */
+.dhl-drawing .dhl-gann-grid { stroke: currentColor; stroke-width: 1; opacity: .35; }

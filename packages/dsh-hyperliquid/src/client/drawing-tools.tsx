@@ -53,6 +53,7 @@ export const DRAWING_TOOLS: DrawingTool[] = [
   { group: 'fib', kind: 'fibspiral', zh: '斐波那契螺旋', en: 'Fib spiral', hintZh: '点击中心，再点击确定起始半径与方向（每四分之一圈放大 1.618 倍）', hintEn: 'Click the center, then the starting radius (grows 1.618× per quarter turn)', icon: 'M12 12a2 2 0 1 1 2-2c0 3-3 5-6 4s-5-5-3-8 7-5 10-3 5 7 3 11' },
   { group: 'fib', kind: 'gannbox', zh: '江恩箱', en: 'Gann box', hintZh: '点击两个对角，按 0.25/0.382/0.5/0.618/0.75 分割', hintEn: 'Click two corners; divided at Gann levels', icon: 'M4 4h16v16H4zM4 12h16M12 4v16M4 4l16 16' },
   { group: 'fib', kind: 'gannsquare', zh: '江恩方格', en: 'Gann square', hintZh: '点击两个对角，画四分网格、对角线与扇线', hintEn: 'Click two corners; quarters, diagonals and fans', icon: 'M4 4h16v16H4zM4 4l16 16M20 4 4 20M4 12h16M12 4v16' },
+  { group: 'fib', kind: 'gannfixed', zh: '固定江恩方格', en: 'Gann square fixed', hintZh: '点击原点，再点击确定大小；始终为正方形，5×5 网格、弧线与 2×1/1×1/1×2 扇线', hintEn: 'Click the origin, then the size; always square, 5×5 grid, arcs and 2×1/1×1/1×2 fans', icon: 'M4 4h16v16H4zM4 20a16 16 0 0 1 16-16M4 20 20 4M4 20l16-8M4 20 12 4' },
   { group: 'fib', kind: 'gannfan', zh: '江恩扇形', en: 'Gann fan', hintZh: '点击原点，再点击确定 1×1 线', hintEn: 'Click the origin, then a point on the 1×1 line', icon: 'M3 21 21 3M3 21 21 12M3 21 12 3M3 21h18' },
   { group: 'patterns', kind: 'elliott', zh: '艾略特推动浪', en: 'Elliott impulse wave', hintZh: '依次点击 0、1、2、3、4、5 六个点', hintEn: 'Click points 0 through 5', icon: 'M2 18 6 10l3 4 5-10 3 6 5-6' },
   { group: 'patterns', kind: 'elliottabc', zh: '艾略特调整浪', en: 'Elliott correction wave', hintZh: '依次点击 0、A、B、C 四个点', hintEn: 'Click 0, A, B, C', icon: 'M3 6l6 10 5-6 7 10' },
@@ -727,6 +728,32 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
         {wave(p, names, text)}
         {neck ? <line className="dhl-neckline" x1={neck[0].x} y1={neck[0].y} x2={neck[1].x} y2={neck[1].y} /> : null}
       </>
+      break
+    }
+    case 'gannfixed': {
+      if (!p[1]) break
+      // TradingView's Gann square fixed (Charting Library defaults): a square of 5×5 units from the
+      // origin toward the second point, 6 grid levels, arcs at the unit points below (radius √(x²+y²)),
+      // and the 2×1, 1×1, 1×2 fan lines shown by default.
+      const side = Math.max(Math.abs(p[1].x - p[0].x), Math.abs(p[1].y - p[0].y))
+      if (side < 4) break
+      const sx = p[1].x >= p[0].x ? 1 : -1, sy = p[1].y >= p[0].y ? 1 : -1, unit = side / 5
+      const at = (ux: number, uy: number) => ({ x: p[0].x + sx * ux * unit, y: p[0].y + sy * uy * unit })
+      const far = at(5, 5)
+      const arcs = [[1, 0], [1, 1], [1.5, 0], [2, 0], [2, 1], [3, 0], [3, 1], [4, 0], [4, 1], [5, 0], [5, 1]]
+      const sweep = sx * sy > 0 ? 1 : 0
+      body = <g className="dhl-gann-fixed">
+        <rect className="dhl-drawing-mid" x={Math.min(p[0].x, far.x)} y={Math.min(p[0].y, far.y)} width={side} height={side} fill="none" />
+        {[0, 1, 2, 3, 4, 5].map((n) => <g key={`l${n}`}><line className="dhl-gann-grid" x1={at(n, 0).x} y1={at(n, 0).y} x2={at(n, 5).x} y2={at(n, 5).y} /><line className="dhl-gann-grid" x1={at(0, n).x} y1={at(0, n).y} x2={at(5, n).x} y2={at(5, n).y} /></g>)}
+        {arcs.map(([ux, uy]) => {
+          const r = Math.hypot(ux, uy) * unit
+          if (r > side * 1.0001) return null
+          const start = at(Math.hypot(ux, uy), 0), end = at(0, Math.hypot(ux, uy))
+          return <path key={`a${ux}-${uy}`} className="dhl-fib-ring" d={`M${start.x} ${start.y}A${r} ${r} 0 0 ${sweep} ${end.x} ${end.y}`} />
+        })}
+        {[[2, 1], [1, 1], [1, 2]].map(([ux, uy]) => { const end = ux >= uy ? at(5, 5 * uy / ux) : at(5 * ux / uy, 5); return <g key={`f${ux}x${uy}`}><line className={ux === uy ? 'dhl-fib-key' : undefined} x1={p[0].x} y1={p[0].y} x2={end.x} y2={end.y} />{text(end.x + sx * 3, end.y, `${ux}×${uy}`, sx > 0 ? 'start' : 'end')}</g> })}
+      </g>
+      handles = [p[0], far]
       break
     }
     case 'gannbox':

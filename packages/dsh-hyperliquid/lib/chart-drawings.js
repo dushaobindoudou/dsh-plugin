@@ -36,6 +36,8 @@ export const DRAWING_POINTS = {
   projection: 3, ghostfeed: 0,
   // Screen-anchored text (TradingView's anchored text) and a table (cells split by |, rows by ; or a new line).
   anchoredtext: 1, table: 1,
+  // Gann square fixed: always square on screen, 5×5 units (TradingView Charting Library defaults).
+  gannfixed: 2,
 }
 /** Kinds that can be pinned to a screen position (screenX / screenY, 0-1 of the plot). */
 export const SCREEN_KINDS = ['anchoredtext', 'table']

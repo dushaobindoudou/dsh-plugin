@@ -985,6 +985,9 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-drawing .dhl-table-rule { stroke: currentColor; stroke-width: 1; opacity: .35; }
 .dhl-drawing .dhl-table-head { font-weight: 650; }
 .dhl-drawing-hit .dhl-table-box { pointer-events: all; }
+
+/* 0.5.4: Gann square fixed grid. */
+.dhl-drawing .dhl-gann-grid { stroke: currentColor; stroke-width: 1; opacity: .35; }
 `;
 
 // src/client/locale.ts
@@ -17767,7 +17770,9 @@ var DRAWING_POINTS = {
   ghostfeed: 0,
   // Screen-anchored text (TradingView's anchored text) and a table (cells split by |, rows by ; or a new line).
   anchoredtext: 1,
-  table: 1
+  table: 1,
+  // Gann square fixed: always square on screen, 5×5 units (TradingView Charting Library defaults).
+  gannfixed: 2
 };
 var SCREEN_KINDS = ["anchoredtext", "table"];
 var FREEHAND_KINDS = ["brush", "highlighter"];
@@ -17918,6 +17923,7 @@ var DRAWING_TOOLS = [
   { group: "fib", kind: "fibspiral", zh: "\u6590\u6CE2\u90A3\u5951\u87BA\u65CB", en: "Fib spiral", hintZh: "\u70B9\u51FB\u4E2D\u5FC3\uFF0C\u518D\u70B9\u51FB\u786E\u5B9A\u8D77\u59CB\u534A\u5F84\u4E0E\u65B9\u5411\uFF08\u6BCF\u56DB\u5206\u4E4B\u4E00\u5708\u653E\u5927 1.618 \u500D\uFF09", hintEn: "Click the center, then the starting radius (grows 1.618\xD7 per quarter turn)", icon: "M12 12a2 2 0 1 1 2-2c0 3-3 5-6 4s-5-5-3-8 7-5 10-3 5 7 3 11" },
   { group: "fib", kind: "gannbox", zh: "\u6C5F\u6069\u7BB1", en: "Gann box", hintZh: "\u70B9\u51FB\u4E24\u4E2A\u5BF9\u89D2\uFF0C\u6309 0.25/0.382/0.5/0.618/0.75 \u5206\u5272", hintEn: "Click two corners; divided at Gann levels", icon: "M4 4h16v16H4zM4 12h16M12 4v16M4 4l16 16" },
   { group: "fib", kind: "gannsquare", zh: "\u6C5F\u6069\u65B9\u683C", en: "Gann square", hintZh: "\u70B9\u51FB\u4E24\u4E2A\u5BF9\u89D2\uFF0C\u753B\u56DB\u5206\u7F51\u683C\u3001\u5BF9\u89D2\u7EBF\u4E0E\u6247\u7EBF", hintEn: "Click two corners; quarters, diagonals and fans", icon: "M4 4h16v16H4zM4 4l16 16M20 4 4 20M4 12h16M12 4v16" },
+  { group: "fib", kind: "gannfixed", zh: "\u56FA\u5B9A\u6C5F\u6069\u65B9\u683C", en: "Gann square fixed", hintZh: "\u70B9\u51FB\u539F\u70B9\uFF0C\u518D\u70B9\u51FB\u786E\u5B9A\u5927\u5C0F\uFF1B\u59CB\u7EC8\u4E3A\u6B63\u65B9\u5F62\uFF0C5\xD75 \u7F51\u683C\u3001\u5F27\u7EBF\u4E0E 2\xD71/1\xD71/1\xD72 \u6247\u7EBF", hintEn: "Click the origin, then the size; always square, 5\xD75 grid, arcs and 2\xD71/1\xD71/1\xD72 fans", icon: "M4 4h16v16H4zM4 20a16 16 0 0 1 16-16M4 20 20 4M4 20l16-8M4 20 12 4" },
   { group: "fib", kind: "gannfan", zh: "\u6C5F\u6069\u6247\u5F62", en: "Gann fan", hintZh: "\u70B9\u51FB\u539F\u70B9\uFF0C\u518D\u70B9\u51FB\u786E\u5B9A 1\xD71 \u7EBF", hintEn: "Click the origin, then a point on the 1\xD71 line", icon: "M3 21 21 3M3 21 21 12M3 21 12 3M3 21h18" },
   { group: "patterns", kind: "elliott", zh: "\u827E\u7565\u7279\u63A8\u52A8\u6D6A", en: "Elliott impulse wave", hintZh: "\u4F9D\u6B21\u70B9\u51FB 0\u30011\u30012\u30013\u30014\u30015 \u516D\u4E2A\u70B9", hintEn: "Click points 0 through 5", icon: "M2 18 6 10l3 4 5-10 3 6 5-6" },
   { group: "patterns", kind: "elliottabc", zh: "\u827E\u7565\u7279\u8C03\u6574\u6D6A", en: "Elliott correction wave", hintZh: "\u4F9D\u6B21\u70B9\u51FB 0\u3001A\u3001B\u3001C \u56DB\u4E2A\u70B9", hintEn: "Click 0, A, B, C", icon: "M3 6l6 10 5-6 7 10" },
@@ -18456,6 +18462,27 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
       const names = ["", tr("\u5DE6\u80A9", "LS"), "", tr("\u5934", "Head"), "", tr("\u53F3\u80A9", "RS"), ""];
       const neck = p[4] ? clipLine(p[2], p[4], w, h, -Infinity) : null;
       body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, p[4] ? /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-drawing-fill", points: `${p[2].x},${p[2].y} ${p[3].x},${p[3].y} ${p[4].x},${p[4].y}` }) : null, wave(p, names, text), neck ? /* @__PURE__ */ React7.createElement("line", { className: "dhl-neckline", x1: neck[0].x, y1: neck[0].y, x2: neck[1].x, y2: neck[1].y }) : null);
+      break;
+    }
+    case "gannfixed": {
+      if (!p[1]) break;
+      const side2 = Math.max(Math.abs(p[1].x - p[0].x), Math.abs(p[1].y - p[0].y));
+      if (side2 < 4) break;
+      const sx = p[1].x >= p[0].x ? 1 : -1, sy = p[1].y >= p[0].y ? 1 : -1, unit = side2 / 5;
+      const at = (ux, uy) => ({ x: p[0].x + sx * ux * unit, y: p[0].y + sy * uy * unit });
+      const far = at(5, 5);
+      const arcs = [[1, 0], [1, 1], [1.5, 0], [2, 0], [2, 1], [3, 0], [3, 1], [4, 0], [4, 1], [5, 0], [5, 1]];
+      const sweep = sx * sy > 0 ? 1 : 0;
+      body = /* @__PURE__ */ React7.createElement("g", { className: "dhl-gann-fixed" }, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-drawing-mid", x: Math.min(p[0].x, far.x), y: Math.min(p[0].y, far.y), width: side2, height: side2, fill: "none" }), [0, 1, 2, 3, 4, 5].map((n2) => /* @__PURE__ */ React7.createElement("g", { key: `l${n2}` }, /* @__PURE__ */ React7.createElement("line", { className: "dhl-gann-grid", x1: at(n2, 0).x, y1: at(n2, 0).y, x2: at(n2, 5).x, y2: at(n2, 5).y }), /* @__PURE__ */ React7.createElement("line", { className: "dhl-gann-grid", x1: at(0, n2).x, y1: at(0, n2).y, x2: at(5, n2).x, y2: at(5, n2).y }))), arcs.map(([ux, uy]) => {
+        const r = Math.hypot(ux, uy) * unit;
+        if (r > side2 * 1.0001) return null;
+        const start = at(Math.hypot(ux, uy), 0), end = at(0, Math.hypot(ux, uy));
+        return /* @__PURE__ */ React7.createElement("path", { key: `a${ux}-${uy}`, className: "dhl-fib-ring", d: `M${start.x} ${start.y}A${r} ${r} 0 0 ${sweep} ${end.x} ${end.y}` });
+      }), [[2, 1], [1, 1], [1, 2]].map(([ux, uy]) => {
+        const end = ux >= uy ? at(5, 5 * uy / ux) : at(5 * ux / uy, 5);
+        return /* @__PURE__ */ React7.createElement("g", { key: `f${ux}x${uy}` }, /* @__PURE__ */ React7.createElement("line", { className: ux === uy ? "dhl-fib-key" : void 0, x1: p[0].x, y1: p[0].y, x2: end.x, y2: end.y }), text(end.x + sx * 3, end.y, `${ux}\xD7${uy}`, sx > 0 ? "start" : "end"));
+      }));
+      handles = [p[0], far];
       break;
     }
     case "gannbox":

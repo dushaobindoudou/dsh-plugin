@@ -12,7 +12,7 @@ import { buildToolDefinitions } from '../lib/tools.js'
 
 const now = Date.UTC(2026, 9, 15)
 const pt = (hours, price) => ({ time: now - hours * 3600_000, price })
-assert.equal(DRAWING_KINDS.length, 76)
+assert.equal(DRAWING_KINDS.length, 77)
 assert.deepEqual(drawingGeometry('hray', { points: [pt(5, 100)] }, now), { points: [pt(5, 100)] })
 assert.equal(drawingGeometry('channel', { points: [pt(9, 100), pt(3, 110), pt(6, 95)] }, now).points.length, 3)
 assert.deepEqual(drawingGeometry('trend', { fromTime: pt(400 * 24, 1).time, fromPrice: 1, toTime: pt(1, 2).time, toPrice: 2 }, now).fromPrice, 1, 'trend lines may start long before the old 90-day window')
@@ -270,6 +270,15 @@ try {
   assert.deepEqual(tableRows('品种|方向|止损; BTC | 多 | 81000\nETH|空|'), [['品种', '方向', '止损'], ['BTC', '多', '81000'], ['ETH', '空', '']])
   const tableSvg = render('table', [{ time: now, price: 100 }], { text: '品种|方向;BTC|多;ETH|空' })
   assert.ok(tableSvg.includes('data-rows="3"') && tableSvg.includes('data-cols="2"') && tableSvg.includes('>ETH<'), 'table grid')
+  // Gann square fixed: square from the origin (50px side → 10px units), grid, arcs within the square, 3 fans.
+  const gf = render('gannfixed', [{ time: now, price: 100 }, { time: now + 5 * 3600_000, price: 120 }])
+  assert.ok(gf.includes('width="50" height="50"') && (gf.match(/dhl-gann-grid/g) ?? []).length === 12 && (gf.match(/dhl-fib-ring/g) ?? []).length === 10 && gf.includes('>2×1<') && gf.includes('>1×2<'), `gann fixed: ${gf.slice(0, 160)}`)
+  // Each quadrant: the unit arc (radius 10px) starts on the horizontal edge and ends on the vertical one, around the origin (200, 400).
+  for (const [dh, dp, sweep, sx, sy] of [[5, 20, 0, 1, -1], [5, -20, 1, 1, 1], [-5, 20, 1, -1, -1], [-5, -20, 0, -1, 1]]) {
+    const svg = render('gannfixed', [{ time: now, price: 100 }, { time: now + dh * 3600_000, price: 100 + dp }])
+    const first = /class="dhl-fib-ring" d="M([\d.-]+) ([\d.-]+)A10 10 0 0 (\d) ([\d.-]+) ([\d.-]+)"/.exec(svg)
+    assert.ok(first && Number(first[1]) === 200 + 10 * sx && Number(first[2]) === 400 && Number(first[3]) === sweep && Number(first[4]) === 200 && Number(first[5]) === 400 + 10 * sy, `gann fixed quadrant ${dh},${dp}: ${first?.[0]}`)
+  }
   const forecast = render('forecast', [{ time: now - 3 * 3600_000, price: 100 }, { time: now, price: 110 }])
   assert.ok(forecast.includes('+10.00%') && forecast.includes('3 根'), 'forecast change and bars')
   assert.ok(render('text', [{ time: now, price: 100 }], { text: 'x', bold: true, italic: true }).includes('--dhl-font-weight:700'), 'bold reaches the text')
@@ -315,4 +324,4 @@ try {
   assert.ok(render('icon', [{ time: now, price: 100 }], { text: 'emoji:🚀' }).includes('>🚀<'), 'stickers render their emoji')
   assert.ok(render('brush', Array.from({ length: 30 }, (_, i) => ({ time: now + i * 600_000, price: 100 + i }))).includes('<polyline'))
 } finally { rmSync(file, { force: true }) }
-console.log('画线工具（76 种）校验、编辑与锁定、agent 路径、头寸与 SVG 几何通过')
+console.log('画线工具（77 种）校验、编辑与锁定、agent 路径、头寸与 SVG 几何通过')
