@@ -13,6 +13,9 @@ import { canonicalMarketCoin } from './market-symbol.js'
 import { HyperStore } from './store.js'
 import { addressFromPrivateKey, buildL1TypedData, splitSignature } from './signing.js'
 import { TradingGuard } from './trading-guard.js'
+import { normalizeMaLines } from './moving-average.js'
+import { ALERT_KINDS, ICON_NAMES, TEXT_KINDS, drawingGeometry, drawingStyle, isIconLabel, linePriceAt } from './chart-drawings.js'
+import { normalizeRiskSettings } from './risk-settings.js'
 
 const TOOL_CALL = Symbol('verified DSH tool call')
 
@@ -81,6 +84,7 @@ const ACCOUNT_MODE_TTL_MS = 30_000
 const TRADE_CAPACITY_TTL_MS = 15_000
 const SUB_SWEEP_MS = 30_000
 const SUB_IDLE_MS = 120_000
+const ALERT_CHECK_MS = 2_000
 const BOOK_GROUPINGS = {
   full: null,
   '5': { nSigFigs: 5 },
@@ -121,6 +125,10 @@ export class HyperRemote extends TypertRemoteService {
     if (this.cfg.tradingAddress && !/^0x[0-9a-fA-F]{40}$/.test(this.cfg.tradingAddress)) throw new Error('tradingAddress 必须为 20 字节 EVM 地址')
     this.client = new HyperliquidClient({ network: this.cfg.network, privateKey: this.cfg.privateKey })
     this.store = new HyperStore(this.cfg.dataDir, this.cfg.network)
+    this.baseRiskSettings = Object.fromEntries(['allowedCoins', 'maxOrderUsd', 'maxDailyUsd', 'maxPositionUsd', 'maxLeverage'].map((key) => [key, this.cfg[key]]))
+    const savedRiskSettings = this.store.getRiskSettings()
+    this.riskSettingsOverride = savedRiskSettings != null
+    if (savedRiskSettings) Object.assign(this.cfg, normalizeRiskSettings(savedRiskSettings))
     this.guard = new TradingGuard(this.cfg.dataDir, { ...this.cfg, dataDir: this.cfg.dataDir })
     this.paperGuard = new TradingGuard(this.cfg.dataDir, { ...this.cfg, dataDir: this.cfg.dataDir }, { budgetName: this.cfg.network === 'mainnet' ? 'paper-budget-mainnet.json' : 'paper-budget.json' })
     this.marketsCache = null
@@ -149,6 +157,10 @@ export class HyperRemote extends TypertRemoteService {
       }
     }
     this.sweepTimer = setInterval(() => this.sweepSubs(), SUB_SWEEP_MS)
+    this.sweepTimer.unref?.()
+    this.alertSides = new Map() // drawing id → last side of the mid price (-1 below, 1 above)
+    this.alertTimer = setInterval(() => { try { this.checkDrawingAlerts() } catch { /* next tick retries */ } }, ALERT_CHECK_MS)
+    this.alertTimer.unref?.()
   }
 
   sweepSubs() {
@@ -443,7 +455,7 @@ export class HyperRemote extends TypertRemoteService {
     const sessionId = String(request?.sessionId ?? '')
     if (!this.store.getSession(sessionId)) return { marks: [] }
     const coin = requireCoin(request)
-    const interval = requireInterval(request?.interval ?? this.desk.interval)
+    const interval = request?.allIntervals === true ? null : requireInterval(request?.interval ?? this.desk.interval)
     return { marks: this.store.listChartMarks(sessionId, coin, interval) }
   }
 
@@ -451,28 +463,84 @@ export class HyperRemote extends TypertRemoteService {
     this.requireTradingSession(sessionId)
     const coin = requireCoin(request)
     const interval = requireInterval(request?.interval ?? this.desk.interval)
-    const kind = request?.kind === 'trend' ? 'trend' : 'level'
+    const kind = request?.kind ?? 'level'
     const role = ['support', 'resistance', 'neutral'].includes(request?.role) ? request.role : 'neutral'
     const label = String(request?.label ?? '').trim()
-    if (!label || label.length > 60) throw new Error('图表标注需要 1-60 字标签')
-    const mark = { sessionId, coin, interval, kind, role, label, source }
-    if (kind === 'level') {
-      const price = Number(request?.price)
-      if (!Number.isFinite(price) || price <= 0) throw new Error('水平线 price 必须为正数')
-      mark.price = price
-    } else {
-      const fromTime = Number(request?.fromTime)
-      const toTime = Number(request?.toTime)
-      const fromPrice = Number(request?.fromPrice)
-      const toPrice = Number(request?.toPrice)
-      const oldest = Date.now() - 90 * 86_400_000
-      const latest = Date.now() + 86_400_000
-      if (!(fromTime >= oldest && toTime > fromTime && toTime <= latest && fromPrice > 0 && toPrice > 0 && Number.isFinite(fromPrice) && Number.isFinite(toPrice))) {
-        throw new Error('趋势线需要最近 90 天内递增的毫秒时间戳及正数价格')
-      }
-      Object.assign(mark, { fromTime, toTime, fromPrice, toPrice })
-    }
+    const maxLabel = TEXT_KINDS.includes(kind) ? 200 : 60
+    if (!label || label.length > maxLabel) throw new Error(`图表标注需要 1-${maxLabel} 字${TEXT_KINDS.includes(kind) ? '文本' : '标签'}`)
+    if (kind === 'icon' && !isIconLabel(label)) throw new Error(`图标 label 必须为 ${ICON_NAMES.join('/')} 或贴图库中的 emoji:<贴纸>`)
+    const mark = { sessionId, coin, interval, kind, role, label, source, ...drawingGeometry(kind, request), ...drawingStyle({ ...request, kind }) }
     return this.store.addChartMark(mark)
+  }
+
+  /** Replace a session chart's MA lines (agent path); the desk reloads on the `chart.ma` event. */
+  setSessionMaLines(sessionId, lines) {
+    this.requireTradingSession(sessionId)
+    const maLines = normalizeMaLines(lines)
+    this.store.updateSessionWorkspace(sessionId, { maLines })
+    this.store.recordEvent('chart.ma', { sessionId, ids: maLines.map((line) => line.id) })
+    return maLines
+  }
+
+  /** Move, reshape, restyle or relabel one drawing; geometry is re-validated as a whole. */
+  editChartMark(id, patch, sessionId) {
+    this.requireTradingSession(sessionId)
+    const current = this.store.getChartMark(sessionId, String(id ?? ''))
+    if (!patch || typeof patch !== 'object' || Array.isArray(patch)) throw new Error('画线修改无效')
+    const merged = { ...current, ...patch }
+    const geometryKeys = ['price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'points']
+    const fields = { ...drawingStyle({ ...patch, kind: current.kind }) }
+    if (patch?.alert === true) fields.alertTriggeredAt = undefined
+    // null clears a style back to its default (undo of a first restyle relies on this).
+    for (const key of ['color', 'lineWidth', 'lineStyle']) if (key in patch && patch[key] === null) fields[key] = undefined
+    if (geometryKeys.some((key) => key in patch)) Object.assign(fields, drawingGeometry(current.kind, merged))
+    if ('label' in patch) {
+      const label = String(patch.label ?? '').trim()
+      const maxLabel = TEXT_KINDS.includes(current.kind) ? 200 : 60
+      if (!label || label.length > maxLabel) throw new Error(`图表标注需要 1-${maxLabel} 字`)
+      fields.label = label
+    }
+    if (current.locked && !('locked' in patch) && Object.keys(fields).length) throw new Error('该画线已锁定，先解锁再修改')
+    return this.store.updateChartMark(sessionId, current.id, fields)
+  }
+
+  async updateChartMark(request) {
+    return this.editChartMark(request?.id, request?.patch, String(request?.sessionId ?? ''))
+  }
+
+  /**
+   * Drawing alerts: when the mid price crosses an alert-enabled line it fires once (the alert
+   * switches off, the time is recorded) and the desk gets a `chart.alert` event.
+   * @param mids - coin → mid (defaults to the live allMids snapshot).
+   */
+  checkDrawingAlerts(now = Date.now(), mids = null) {
+    const watched = this.store.allChartMarks?.().filter((mark) => mark.alert && ALERT_KINDS.includes(mark.kind)) ?? []
+    for (const id of [...this.alertSides.keys()]) if (!watched.some((mark) => mark.id === id)) this.alertSides.delete(id)
+    if (!watched.length) return []
+    let book = mids
+    if (!book) {
+      const key = this.touch(keys.allMids())
+      const snap = this.client.snapshot(key)
+      if (!snap || now - snap.at > 10_000) return []
+      book = snap.data?.mids ?? snap.data
+    }
+    const fired = []
+    for (const mark of watched) {
+      const mid = Number(book?.[mark.coin])
+      const line = linePriceAt(mark, now)
+      if (!Number.isFinite(mid) || line == null || !Number.isFinite(line)) continue
+      const side = mid > line ? 1 : mid < line ? -1 : 0
+      const before = this.alertSides.get(mark.id)
+      if (side !== 0) this.alertSides.set(mark.id, side)
+      if (before == null || side === 0 || side === before) continue
+      this.alertSides.delete(mark.id)
+      const saved = this.store.updateChartMark(mark.sessionId, mark.id, { alert: false, alertTriggeredAt: now })
+      const event = { sessionId: mark.shared ? null : mark.sessionId, shared: Boolean(mark.shared), coin: mark.coin, id: mark.id, label: mark.label, kind: mark.kind,
+        price: mid, line, direction: side > 0 ? 'up' : 'down', at: now }
+      this.store.recordEvent('chart.alert', event)
+      fired.push({ ...event, mark: saved })
+    }
+    return fired
   }
 
   removeChartMark(id, sessionId) {
@@ -513,13 +581,14 @@ export class HyperRemote extends TypertRemoteService {
       if (!Array.isArray(input.indicators) || input.indicators.length > allowed.length || input.indicators.some((id) => !allowed.includes(id))) throw new Error('图表指标无效')
       patch.indicators = [...new Set(input.indicators)]
     }
+    if ('maLines' in input) patch.maLines = normalizeMaLines(input.maLines)
     if ('priceScale' in input) {
       if (!['normal', 'log', 'percentage'].includes(input.priceScale)) throw new Error('价格刻度无效')
       patch.priceScale = input.priceScale
     }
     if ('chartLayers' in input) {
       const layers = input.chartLayers
-      if (!layers || typeof layers !== 'object' || Array.isArray(layers) || Object.keys(layers).some((key) => !['orders', 'fills', 'drawings'].includes(key)) || Object.values(layers).some((value) => typeof value !== 'boolean')) throw new Error('图表图层无效')
+      if (!layers || typeof layers !== 'object' || Array.isArray(layers) || Object.keys(layers).some((key) => !['orders', 'fills', 'drawings', 'reasons'].includes(key)) || Object.values(layers).some((value) => typeof value !== 'boolean')) throw new Error('图表图层无效')
       patch.chartLayers = layers
     }
     if ('layout' in input) {
@@ -616,6 +685,31 @@ export class HyperRemote extends TypertRemoteService {
     return { mode }
   }
 
+  /** Persist limits as one atomic override and update both live/paper guards. */
+  async updateRiskSettings(request) {
+    if (this.activeTradeOps > 0) throw new Error('交易操作仍在进行，暂不能修改限额')
+    const limits = normalizeRiskSettings(request?.limits)
+    this.store.saveRiskSettings(limits)
+    this.applyRiskSettings(limits, true)
+    return { riskLimits: { ...limits, usedTodayUsd: this.usedTodayUsd() } }
+  }
+
+  async resetRiskSettings(request) {
+    if (this.activeTradeOps > 0) throw new Error('交易操作仍在进行，暂不能修改限额')
+    this.store.clearRiskSettings()
+    this.applyRiskSettings(this.baseRiskSettings, false)
+    return { riskLimits: { ...this.baseRiskSettings, usedTodayUsd: this.usedTodayUsd() } }
+  }
+
+  applyRiskSettings(limits, override) {
+    Object.assign(this.cfg, limits)
+    Object.assign(this.guard.limits, limits)
+    Object.assign(this.paperGuard.limits, limits)
+    this.guard.plans.clear()
+    this.riskSettingsOverride = override
+    this.store.recordEvent('risk.changed')
+  }
+
   /** Today's (UTC) notional already counted against maxDailyUsd for the active mode. */
   usedTodayUsd() {
     const guard = this.cfg.tradingMode === 'paper' ? this.paperGuard : this.guard
@@ -632,6 +726,7 @@ export class HyperRemote extends TypertRemoteService {
       tradingMode: this.cfg.tradingMode,
       signer: this.cfg.signer,
       autonomousLive: this.cfg.autonomousLive,
+      riskSettingsSource: this.riskSettingsOverride ? 'desk' : 'plugin',
       riskLimits: { allowedCoins: this.cfg.allowedCoins, maxOrderUsd: this.cfg.maxOrderUsd, maxDailyUsd: this.cfg.maxDailyUsd, maxPositionUsd: this.cfg.maxPositionUsd, maxLeverage: this.cfg.maxLeverage,
         // Day budget of the ledger that applies to the current mode (paper and live are separate).
         usedTodayUsd: this.usedTodayUsd() },
@@ -830,7 +925,7 @@ export class HyperRemote extends TypertRemoteService {
   }
 
   /** Explicitly loaded history: these weighted API calls must not join the 3s account poll. */
-  async tradeHistory() {
+  async tradeHistory(request) {
     if (this.cfg.tradingMode === 'paper') {
       const paper = this.store.paperAccount()
       return { mode: 'paper', orders: paper.orders.slice(0, 200), fills: paper.fills.slice(0, 200) }
@@ -847,12 +942,13 @@ export class HyperRemote extends TypertRemoteService {
       const order = entry.order ?? entry
       const local = localByCloid[order.cloid]
       return { ...order, status: entry.status ?? local?.status ?? 'unknown', statusTimestamp: entry.statusTimestamp,
-        reason: local?.thesis ?? (local?.decisionId ? decisions[local.decisionId]?.thesis ?? null : null) }
+        reason: local?.thesis ?? (local?.decisionId ? decisions[local.decisionId]?.thesis ?? null : null),
+        sessionId: local?.sessionId ?? (local?.decisionId ? decisions[local.decisionId]?.sessionId ?? null : null) }
     }), fills: fills.slice(0, 2000) }
   }
 
   /** Hyperliquid portfolio samples are display data, not an accounting ledger. */
-  async portfolio() {
+  async portfolio(request) {
     if (this.cfg.tradingMode === 'paper') {
       const account = await this.account({})
       const fills = this.store.paperAccount().fills
@@ -1011,9 +1107,11 @@ export class HyperRemote extends TypertRemoteService {
     if (!sessionId || !this.store.getSession(sessionId)) throw new Error('交易操作必须来自已登记的交易会话')
   }
 
-  async authorizeToolAction(reason, exec) {
+  async authorizeToolAction(reason, exec, english = reason) {
     if (!exec?.agent) throw new Error('live 签名仅允许从 DSH agent 工具调用')
-    const outcome = await this.approvalGateway().request({ toolName: 'dsh-hyperliquid', callId: exec.callId, agent: exec.agent, signal: exec.signal, reason })
+    // reason stays the audit text; displayReason only localizes the approval panel.
+    const outcome = await this.approvalGateway().request({ toolName: 'dsh-hyperliquid', callId: exec.callId, agent: exec.agent, signal: exec.signal, reason,
+      displayReason: { en: english, zh: reason } })
     if (outcome !== 'allowed-once') throw new Error(`用户未批准 live 操作（${outcome}）`)
   }
 
@@ -1060,11 +1158,12 @@ export class HyperRemote extends TypertRemoteService {
       if (!checked.riskReducing && projectedMargin > risk.equity + 1e-8) throw new Error('模拟账户可用保证金不足')
       const budgetTicket = guard.reserve(checked.notionalUsd, { riskReducing: checked.riskReducing })
       let fill
-      try { fill = this.store.paperFill({ coin, isBuy, sz, px, reason: request?.reason ?? 'chat' }) }
+      const sessionId = request?.[TOOL_CALL]?.sessionId ?? null
+      try { fill = this.store.paperFill({ coin, isBuy, sz, px, reason: request?.reason ?? 'chat', sessionId }) }
       catch (err) { guard.release(budgetTicket); throw err }
       this.store.paperOrderRecord({ coin, isBuy, sz, px: request?.type === 'limit' ? Number(request.px) : px,
         filledPx: px, type: request?.type === 'limit' ? 'limit' : 'market', reduceOnly,
-        reason: request?.reason ?? '' })
+        reason: request?.reason ?? '', sessionId })
       return { mode: 'paper', fill, marginUsed: projectedMargin, availableMargin: Math.max(0, risk.equity - projectedMargin),
         simulation: '固定滑点；未模拟盘口深度、手续费、资金费或强平' }
     }
@@ -1077,7 +1176,8 @@ export class HyperRemote extends TypertRemoteService {
     const fresh = await this.checkLiveOrder(orderSpec)
     if (Math.abs(fresh.mid / preview.mid - 1) > 0.01) throw new Error('价格已偏离预检超过 1%，请重新决策')
     if (!this.cfg.autonomousLive) {
-      await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} ${coin} ${isBuy ? '买入' : '卖出'} ${sz}，预估名义价值 ${fresh.notionalUsd.toFixed(2)} USD。是否允许本次交易？`, trusted.exec)
+      await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} ${coin} ${isBuy ? '买入' : '卖出'} ${sz}，预估名义价值 ${fresh.notionalUsd.toFixed(2)} USD。是否允许本次交易？`, trusted.exec,
+        `Hyperliquid ${this.cfg.network}: ${isBuy ? 'buy' : 'sell'} ${sz} ${coin}, estimated notional ${fresh.notionalUsd.toFixed(2)} USD. Allow this trade?`)
     }
     const { universe } = await this.markets()
     const idx = universe.findIndex((u) => u.name === coin)
@@ -1156,7 +1256,7 @@ export class HyperRemote extends TypertRemoteService {
     if (this.cfg.tradingMode === 'paper') throw new Error('paper 模式没有挂单')
     const exec = request?.[TOOL_CALL]?.exec
     if (!exec?.agent) throw new Error('live 撤单仅允许从 DSH agent 工具调用')
-    if (!this.cfg.autonomousLive || !this.cfg.allowedCoins.includes(coin)) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 撤销 ${coin} 订单 oid=${oid}？`, exec)
+    if (!this.cfg.autonomousLive || !this.cfg.allowedCoins.includes(coin)) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 撤销 ${coin} 订单 oid=${oid}？`, exec, `Hyperliquid ${this.cfg.network}: cancel ${coin} order oid=${oid}?`)
     const { universe } = await this.markets()
     const idx = universe.findIndex((u) => u.name === coin)
     if (idx < 0) throw new Error(`未知合约 ${coin}`)
@@ -1194,7 +1294,7 @@ export class HyperRemote extends TypertRemoteService {
     if (!this.cfg.allowedCoins.includes(coin)) throw new Error(`交易限额：${coin} 不在允许交易币对内（allowedCoins）`)
     const exec = request?.[TOOL_CALL]?.exec
     if (!exec?.agent) throw new Error('live 杠杆变更仅允许从 DSH agent 工具调用')
-    if (!this.cfg.autonomousLive) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 将 ${coin} 杠杆设为 ${leverage}x？`, exec)
+    if (!this.cfg.autonomousLive) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 将 ${coin} 杠杆设为 ${leverage}x？`, exec, `Hyperliquid ${this.cfg.network}: set ${coin} leverage to ${leverage}x?`)
     const res = await this.submitAction({ type: 'updateLeverage', asset: idx, isCross, leverage }, exec)
     assertExchangeAccepted(res)
     this.store.recordEvent('live.leverage', { coin, leverage, isCross })
@@ -1218,6 +1318,7 @@ export class HyperRemote extends TypertRemoteService {
   /** Stop the WS loop on teardown. */
   stopWs() {
     clearInterval(this.sweepTimer)
+    clearInterval(this.alertTimer)
     this.client.close()
   }
 }
@@ -1385,7 +1486,7 @@ function paperRiskState(paper, mids, strict = false) {
 
 // Remote markers: every method the web client may call.
 for (const m of [
-  'status', 'switchNetwork', 'switchTradingMode', 'markets', 'marketCatalog', 'marketDetail', 'chartMarks', 'drawChartMark', 'eraseChartMark', 'sessionWorkspace', 'updateSessionWorkspace', 'snapshot', 'candles', 'fundingHistory', 'account', 'fills', 'tradeHistory', 'portfolio',
+  'status', 'switchNetwork', 'switchTradingMode', 'updateRiskSettings', 'resetRiskSettings', 'markets', 'marketCatalog', 'marketDetail', 'chartMarks', 'drawChartMark', 'updateChartMark', 'eraseChartMark', 'sessionWorkspace', 'updateSessionWorkspace', 'snapshot', 'candles', 'fundingHistory', 'account', 'fills', 'tradeHistory', 'portfolio',
   'sessions', 'registerSession', 'removeSession', 'bindCoin', 'deskState',
   'eventsSince',
 ]) {

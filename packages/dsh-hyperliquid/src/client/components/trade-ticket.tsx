@@ -1,5 +1,6 @@
 /** A typed order intent. Execution stays in the bound DSH conversation. */
 import * as React from 'react'
+import { Select } from './select'
 import { tr } from '../remote'
 import { fmt, fmtPrice } from '../format'
 import { isMarketStale, queueToAgent } from '../data'
@@ -33,7 +34,7 @@ export function TradeTicket({ onSubmitted }: { onSubmitted?: () => void }) {
   const [reason, setReason] = React.useState('')
   const [enabled, setEnabled] = React.useState(false)
   const decimals = Number(market?.szDecimals ?? 5)
-  const maxLeverage = Math.max(1, Math.min(50, Number(market?.maxLeverage ?? 2), s.status?.tradingMode === 'live' ? Number(s.status?.riskLimits?.maxLeverage ?? 2) : 50))
+  const maxLeverage = Math.max(1, Math.min(50, Number(market?.maxLeverage ?? 2), Number(s.status?.riskLimits?.maxLeverage ?? 2)))
   const priceNum = kind === 'limit' ? Number(price) : mark
   const sizeNum = Number(size)
   const orderValue = Number.isFinite(priceNum * sizeNum) ? priceNum * sizeNum : 0
@@ -113,8 +114,8 @@ export function TradeTicket({ onSubmitted }: { onSubmitted?: () => void }) {
   return (
     <section className="dhl-ticket" aria-label={tr('交易票据', 'Trade ticket')}>
       <div className="dhl-ticket-mode">
-        <label>{tr('保证金模式', 'Margin mode')}<select value={margin} onChange={(e) => setMargin(e.target.value as 'cross' | 'isolated')}><option value="cross">{tr('全仓', 'Cross')}</option><option value="isolated">{tr('逐仓', 'Isolated')}</option></select></label>
-        <label>{tr('杠杆', 'Leverage')}<select value={leverage} onChange={(e) => setLeverage(Number(e.target.value))}>{Array.from({ length: maxLeverage }, (_, i) => i + 1).map((v) => <option key={v} value={v}>{v}x</option>)}</select></label>
+        <label>{tr('保证金模式', 'Margin mode')}<Select value={margin} onChange={(e) => setMargin(e.target.value as 'cross' | 'isolated')}><option value="cross">{tr('全仓', 'Cross')}</option><option value="isolated">{tr('逐仓', 'Isolated')}</option></Select></label>
+        <label>{tr('杠杆', 'Leverage')}<Select value={leverage} onChange={(e) => setLeverage(Number(e.target.value))}>{Array.from({ length: maxLeverage }, (_, i) => i + 1).map((v) => <option key={v} value={v}>{v}x</option>)}</Select></label>
       </div>
       <div className="dhl-ticket-tabs" role="tablist" aria-label={tr('订单类型', 'Order type')}>
         <button type="button" role="tab" aria-selected={kind === 'market'} className={kind === 'market' ? 'on' : ''} onClick={() => setKind('market')}>{tr('市价', 'Market')}</button>

@@ -24,9 +24,9 @@ var __export = (target, all) => {
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    for (let key2 of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key2) && key2 !== except)
+        __defProp(to, key2, { get: () => from[key2], enumerable: !(desc = __getOwnPropDesc(from, key2)) || desc.enumerable });
   }
   return to;
 };
@@ -48,7 +48,7 @@ __export(index_exports, {
   inject: () => inject
 });
 module.exports = __toCommonJS(index_exports);
-var React20 = __toESM(require("react"), 1);
+var React29 = __toESM(require("react"), 1);
 
 // src/client/styles.css
 var styles_default = `/**
@@ -96,7 +96,8 @@ var styles_default = `/**
 .dhl-badge:is(.ok, .err, .paper, .live)::before {
   content: ''; flex: none; width: 6px; height: 6px; border-radius: 50%; background: currentColor;
 }
-.dhl-wallet-trigger { font: inherit; font-size: 11px; cursor: pointer; white-space: nowrap; }
+.dhl-wallet-trigger { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 26px; font: inherit; font-size: 11px; line-height: 1; cursor: pointer; white-space: nowrap; }
+.dhl-wallet-trigger svg { display: block; flex: none; }
 .dhl-wallet-trigger:hover, .dhl-wallet-trigger:focus-visible { border-color: var(--dsw-alias-brand-primary); color: var(--dsw-alias-label-primary); }
 .dhl-wallet-modal { width: min(540px, calc(100vw - 32px)); }
 .dhl-wallet-address { overflow-wrap: anywhere; font-size: 11px; color: var(--dsw-alias-label-secondary); margin-bottom: 14px; }
@@ -131,7 +132,9 @@ var styles_default = `/**
   width: 480px; min-width: 320px; flex: 0 1 auto;
   border-left: 1px solid var(--dsw-alias-border-l1);
   display: flex; flex-direction: column;
-  background: var(--dsw-alias-bg-layer-1);
+  /* Same surface as DSH's own conversation: its composer fade blends into bg-base, so a lighter
+     column showed a dark band at the bottom in dark mode. */
+  background: var(--dsw-alias-bg-base);
   min-height: 0;
 }
 .dhl-chatmount { flex: 1; min-height: 0; min-width: 0; position: relative; display: flex; flex-direction: column; overflow: hidden; }
@@ -156,6 +159,7 @@ var styles_default = `/**
   flex: none; letter-spacing: .02em;
 }
 .dhl-newbtn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
   margin: 0 10px 8px; padding: 6px 10px; border-radius: 8px;
   border: 1px dashed var(--dsw-alias-border-l2);
   background: transparent; color: var(--dsw-alias-label-secondary);
@@ -184,17 +188,7 @@ var styles_default = `/**
 .dhl-srow-action { flex: none; display: inline-grid; place-items: center; width: 21px; height: 21px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: var(--dsw-alias-label-secondary); cursor: pointer; font: inherit; }
 .dhl-srow-action:hover, .dhl-srow-action:focus-visible { background: var(--dsw-alias-interactive-bg-hover); color: var(--dsw-alias-label-primary); }
 .dhl-rename-modal { width: min(440px, calc(100vw - 48px)); }
-.dhl-rename-input { display: block; width: 100%; box-sizing: border-box; padding: 9px 11px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 6px; outline: none; background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-primary); font: inherit; }
-.dhl-rename-input:focus { border-color: var(--dsw-alias-brand-primary); }
-.dhl-modal-secondary, .dhl-modal-primary { padding: 7px 15px; border-radius: 6px; border: 1px solid var(--dsw-alias-border-l2); background: transparent; color: var(--dsw-alias-label-primary); cursor: pointer; font: inherit; }
-.dhl-modal-primary { background: var(--dsw-alias-brand-primary); border-color: var(--dsw-alias-brand-primary); color: var(--dsw-alias-bg-base); }
-.dhl-modal-primary:disabled { opacity: .5; cursor: default; }
 .dhl-coinline { display: flex; align-items: center; gap: 10px; padding: 10px 14px 4px; flex-wrap: wrap; }
-.dhl-select {
-  background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-label-primary);
-  border: 1px solid var(--dsw-alias-border-l1); border-radius: 8px;
-  padding: 4px 8px; font-size: 13px; outline: none;
-}
 .dhl-pxbig { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .dhl-up { color: var(--dsw-alias-state-success-primary); }
 .dhl-down { color: var(--dsw-alias-state-error-primary); }
@@ -304,7 +298,6 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
   background: var(--dsw-alias-bg-layer-1);
 }
 .dhl-market-name { display: flex; align-items: center; gap: 8px; flex: none; }
-.dhl-market-name .dhl-select { font-size: 16px; font-weight: 650; border: 0; background: transparent; padding: 3px 6px; max-width: 205px; }
 .dhl-market-tag { font-size: 10px; font-weight: 600; color: var(--dsw-alias-brand-primary); white-space: nowrap; }
 .dhl-market-stats { flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(6, minmax(72px, 1fr)); gap: 10px; }
 .dhl-market-stat { min-width: 0; font-variant-numeric: tabular-nums; }
@@ -320,7 +313,7 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 }
 .dhl-chart-tabs button:hover, .dhl-tape-tabs button:hover { color: var(--dsw-alias-label-primary); background: var(--dsw-alias-interactive-bg-hover); }
 .dhl-chart-tabs button.on, .dhl-tape-tabs button.on { color: var(--dsw-alias-brand-primary); border-bottom-color: var(--dsw-alias-brand-primary); }
-.dhl-chart-tools { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 11px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
+.dhl-chart-tools { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 11px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
 .dhl-intervals, .dhl-chart-indicators { display: flex; align-items: center; gap: 3px; }
 .dhl-chart-tools button { border: 0; border-radius: 5px; background: transparent; color: var(--dsw-alias-label-secondary); padding: 4px 6px; font: inherit; font-size: 11px; cursor: pointer; white-space: nowrap; }
 .dhl-chart-tools button:hover { background: var(--dsw-alias-interactive-bg-hover); color: var(--dsw-alias-label-primary); }
@@ -371,11 +364,12 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-ticket { flex: 1; min-height: 0; overflow-y: auto; padding: 14px 16px 20px; font-size: 12px; }
 .dhl-ticket-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .dhl-ticket-mode label { display: grid; gap: 5px; color: var(--dsw-alias-label-secondary); font-size: 10.5px; }
-.dhl-ticket-mode select, .dhl-ticket-field > div, .dhl-ticket-targets input {
+.dhl-ticket-field > div, .dhl-ticket-targets input {
   width: 100%; min-width: 0; border: 1px solid var(--dsw-alias-border-l1); border-radius: 7px;
   background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-label-primary); font: inherit;
 }
-.dhl-ticket-mode select { padding: 8px 10px; }
+.dhl-ticket-mode .dhl-select { width: 100%; }
+.dhl-ticket-mode .dhl-select > select { height: 34px; padding: 0 26px 0 10px; border-radius: 7px; background: var(--dsw-alias-bg-layer-2); font-size: 12px; }
 .dhl-ticket-tabs { display: flex; gap: 4px; margin: 17px 0 12px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
 .dhl-ticket-tabs button { border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--dsw-alias-label-secondary); padding: 8px 12px; font: inherit; cursor: pointer; }
 .dhl-ticket-tabs button.on { color: var(--dsw-alias-brand-primary); border-bottom-color: var(--dsw-alias-brand-primary); }
@@ -428,12 +422,11 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-market-trigger { display: inline-flex; align-items: center; gap: 10px; max-width: 250px; min-width: 0; border: 0; padding: 5px 2px; background: transparent; color: var(--dsw-alias-label-primary); font: inherit; cursor: pointer; }
 .dhl-market-trigger:hover { color: var(--dsw-alias-brand-primary); }
 .dhl-market-trigger strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 19px; font-weight: 600; letter-spacing: -.035em; }
-.dhl-market-icon { position: relative; display: inline-flex; flex: none; align-items: center; justify-content: center; width: 20px; height: 20px; overflow: hidden; border-radius: 50%; background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-secondary); }
+.dhl-market-icon { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 20px; height: 20px; }
 .dhl-market-icon-small { width: 18px; height: 18px; }
-.dhl-market-icon-fallback { font-size: 9px; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
-.dhl-market-icon img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; opacity: 0; }
+.dhl-market-icon img { display: block; width: 100%; height: 100%; object-fit: contain; opacity: 0; }
 .dhl-market-icon img.loaded { opacity: 1; }
-.dhl-market-chevron { color: var(--dsw-alias-label-secondary); font-size: 19px; transform: translateY(-3px); }
+.dhl-market-chevron { display: inline-flex; align-items: center; color: var(--dsw-alias-label-secondary); line-height: 0; }
 .dhl-market-kind, .dhl-market-tag, .dhl-market-readonly { border-radius: 4px; padding: 3px 5px; white-space: nowrap; color: var(--dsw-alias-brand-primary); background: color-mix(in srgb, var(--dsw-alias-brand-primary) 12%, transparent); font-size: 10px; font-weight: 650; }
 .dhl-market-readonly { color: var(--dsw-alias-label-secondary); background: var(--dsw-alias-bg-layer-2); }
 .dhl-market-stat > span { font-size: 11px; }
@@ -442,6 +435,14 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-chart-tabs button, .dhl-tape-tabs button { padding-top: 13px; padding-bottom: 12px; font-size: 13px; }
 .dhl-chart-tools { min-height: 42px; }
 .dhl-chartbox { height: 410px; }
+/* Above Lightweight Charts' own canvases (z-index 1\u20132, later in the DOM) so drawings receive the pointer. */
+.dhl-chart-drawing-overlay { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; overflow: hidden; pointer-events: none; color: #4c82d8; }
+.dhl-chart-drawing-overlay .role-user { color: #4c82d8; }
+.dhl-chart-drawing-overlay .role-support { color: var(--dsw-alias-state-success-primary); }
+.dhl-chart-drawing-overlay .role-resistance { color: var(--dsw-alias-state-error-primary); }
+.dhl-chart-anchor { fill: var(--dsw-alias-bg-base); stroke: currentColor; stroke-width: 2; }
+.dhl-chart-drawing-start { fill: #4c82d8; stroke: var(--dsw-alias-bg-base); stroke-width: 2; }
+.dhl-chart-drawing-preview { stroke: currentColor; stroke-width: 1.5; stroke-dasharray: 5 4; opacity: .9; }
 .dhl-chart-ohlc { position: absolute; z-index: 1; top: 6px; left: 10px; display: flex; flex-wrap: wrap; gap: 4px 10px; pointer-events: none; color: var(--dsw-alias-label-secondary); font-size: 10px; font-variant-numeric: tabular-nums; }
 .dhl-chart-ohlc b { font-weight: 550; }
 .dhl-chart-annotations { position: absolute; z-index: 1; right: 56px; top: 25px; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; max-width: 45%; pointer-events: none; font-size: 10px; }
@@ -452,7 +453,9 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-chart-click-hint { padding: 5px 8px 0; color: var(--dsw-alias-label-secondary); font-size: 10.5px; line-height: 1.4; }
 .dhl-chart-mark-list { display: flex; flex-wrap: wrap; gap: 5px; padding: 5px 10px; border-top: 1px solid var(--dsw-alias-border-l1); }
 .dhl-chart-mark-list span { display: inline-flex; align-items: center; gap: 4px; padding: 2px 5px; font-size: 11px; color: var(--dsw-alias-label-secondary); border: 1px solid var(--dsw-alias-border-l1); border-radius: 4px; }
-.dhl-chart-mark-list button { border: 0; background: transparent; color: inherit; cursor: pointer; font-size: 15px; line-height: 1; }
+.dhl-chart-mark-list .dhl-mark-user { color: #4c82d8; border-color: color-mix(in srgb, #4c82d8 45%, var(--dsw-alias-border-l1)); }
+.dhl-chart-mark-list small { font-size: 9px; opacity: .7; }
+.dhl-chart-mark-list button { display: inline-grid; place-items: center; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; line-height: 0; }
 .dhl-chart-mark-list button:hover { color: var(--dsw-alias-state-error-primary); }
 .dhl-indicator-menu { position: relative; flex: 0 0 auto; }
 .dhl-indicator-menu summary { display: flex; align-items: center; gap: 5px; padding: 5px 7px; border-radius: 5px; color: var(--dsw-alias-label-secondary); font-size: 11px; cursor: pointer; list-style: none; white-space: nowrap; }
@@ -467,6 +470,24 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-indicator-popover button small { color: var(--dsw-alias-label-secondary); font-size: 10px; }
 .dhl-indicator-check { display: grid; place-items: center; flex: 0 0 15px; width: 15px; height: 15px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 3px; color: var(--dsw-alias-brand-primary); }
 .dhl-indicator-popover button.on .dhl-indicator-check { border-color: var(--dsw-alias-brand-primary); }
+.dhl-strategy-menu { position: static; flex: 0 0 auto; font-size: 11px; }
+.dhl-strategy-menu summary { padding: 5px 7px; border-radius: 5px; color: var(--dsw-alias-label-secondary); cursor: pointer; list-style: none; white-space: nowrap; }
+.dhl-strategy-menu summary::-webkit-details-marker { display: none; }
+.dhl-strategy-menu summary:hover, .dhl-strategy-menu[open] summary { color: var(--dsw-alias-brand-primary); background: var(--dsw-alias-interactive-bg-hover); }
+.dhl-strategy-popover { position: absolute; z-index: 12; top: calc(100% + 2px); left: 8px; right: 8px; max-height: min(560px, 70vh); overflow-y: auto; padding: 12px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px; background: var(--dsw-alias-bg-layer-1); box-shadow: 0 12px 32px color-mix(in srgb, var(--dsw-alias-bg-base) 50%, transparent); color: var(--dsw-alias-label-primary); }
+.dhl-strategy-popover > header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 12px; }
+.dhl-strategy-popover > header small, .dhl-strategy-card > small { color: var(--dsw-alias-label-secondary); font-size: 10px; }
+.dhl-strategy-caveat { margin: 8px 0 12px; color: var(--dsw-alias-label-secondary); line-height: 1.45; }
+.dhl-strategy-card { display: grid; gap: 5px; padding: 10px 0; border-top: 1px solid var(--dsw-alias-border-l1); }
+.dhl-strategy-card-head, .dhl-strategy-card-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.dhl-strategy-card-head b { font-size: 12px; }
+.dhl-strategy-card-head span { font-size: 10px; color: var(--dsw-alias-label-secondary); }
+.dhl-strategy-card-head .state-candidate { color: var(--dsw-alias-brand-primary); }
+.dhl-strategy-card-head .state-stale, .dhl-strategy-card-head .state-insufficient { color: var(--dsw-alias-state-warn-primary); }
+.dhl-strategy-card p { margin: 0; line-height: 1.4; }
+.dhl-strategy-card-actions { margin-top: 4px; }
+.dhl-strategy-card-actions a { color: var(--dsw-alias-label-secondary); font-size: 10px; }
+.dhl-chart-tools .dhl-strategy-card-actions button { border: 1px solid var(--dsw-alias-border-l2); padding: 5px 8px; color: var(--dsw-alias-brand-primary); }
 .dhl-chart-study-legend { position: absolute; z-index: 1; left: 10px; bottom: 29px; display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 3px 5px; border-radius: 3px; background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-secondary); font-size: 10px; pointer-events: none; }
 .dhl-chart-study-legend b { color: var(--dsw-alias-label-primary); font-weight: 600; }
 .dhl-interval-more { width: 49px; border: 0; border-radius: 4px; padding: 4px 2px; background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-label-secondary); font: inherit; font-size: 11px; cursor: pointer; }
@@ -492,7 +513,7 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-picker-mode button, .dhl-picker-close { border: 0; border-radius: 4px; background: transparent; color: var(--dsw-alias-label-secondary); font: inherit; cursor: pointer; }
 .dhl-picker-mode button { padding: 6px 10px; }
 .dhl-picker-mode button.on { color: var(--dsw-alias-label-primary); background: var(--dsw-alias-bg-layer-1); }
-.dhl-picker-close { width: 29px; height: 29px; font-size: 22px; line-height: 1; }
+.dhl-picker-close { display: grid; place-items: center; width: 29px; height: 29px; padding: 0; line-height: 0; }
 .dhl-picker-close:hover { background: var(--dsw-alias-interactive-bg-hover); }
 .dhl-picker-readonly-note { margin: 0; padding: 0 18px 9px; color: var(--dsw-alias-label-secondary); font-size: 11px; line-height: 1.45; }
 .dhl-picker-tabs { flex: none; display: flex; gap: 0; overflow-x: auto; padding: 0 14px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
@@ -501,8 +522,9 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-picker-tabs button.on { border-bottom-color: var(--dsw-alias-brand-primary); color: var(--dsw-alias-brand-primary); }
 .dhl-picker-tablehead, .dhl-picker-row { display: grid; grid-template-columns: 32px minmax(155px, 1.4fr) repeat(5, minmax(86px, 1fr)); align-items: center; column-gap: 8px; padding: 0 16px; font-variant-numeric: tabular-nums; }
 .dhl-picker-tablehead { flex: none; min-height: 35px; color: var(--dsw-alias-label-secondary); border-bottom: 1px solid var(--dsw-alias-border-l1); }
-.dhl-picker-tablehead button { border: 0; padding: 0; background: transparent; color: inherit; font: inherit; text-align: right; cursor: pointer; }
-.dhl-picker-tablehead button:nth-child(2) { text-align: left; }
+.dhl-picker-tablehead button { display: inline-flex; align-items: center; justify-content: flex-end; gap: 3px; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; text-align: right; cursor: pointer; }
+.dhl-picker-tablehead button:nth-child(2) { justify-content: flex-start; text-align: left; }
+.dhl-picker-tablehead button svg { flex: none; }
 .dhl-picker-tablehead button:hover { color: var(--dsw-alias-label-primary); }
 .dhl-picker-list { min-height: 150px; overflow-y: auto; overscroll-behavior: contain; }
 .dhl-picker-row { min-height: 39px; border-bottom: 1px solid color-mix(in srgb, var(--dsw-alias-border-l1) 60%, transparent); }
@@ -510,7 +532,7 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-picker-row.active { box-shadow: inset 2px 0 var(--dsw-alias-brand-primary); }
 .dhl-picker-row > span { text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dhl-picker-star, .dhl-picker-market { border: 0; background: transparent; color: var(--dsw-alias-label-primary); font: inherit; cursor: pointer; }
-.dhl-picker-star { padding: 0; color: var(--dsw-alias-label-secondary); font-size: 19px; }
+.dhl-picker-star { display: inline-grid; place-items: center; width: 25px; height: 25px; padding: 0; color: var(--dsw-alias-label-secondary); line-height: 0; }
 .dhl-picker-star.on { color: var(--dsw-alias-brand-primary); }
 .dhl-picker-market { display: flex; align-items: center; gap: 7px; min-width: 0; padding: 7px 0; text-align: left; }
 .dhl-picker-market strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 650; }
@@ -545,7 +567,7 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 
 /* Topbar "more" menu: network, paper/live account and desk layout. */
 .dhl-more { position: relative; }
-.dhl-more-trigger { min-width: 28px; line-height: 1; font-size: 14px; }
+.dhl-more-trigger { display: inline-grid; place-items: center; min-width: 28px; min-height: 26px; padding: 3px; line-height: 0; }
 .dhl-more-popover { position: absolute; z-index: 30; top: calc(100% + 6px); right: 0; display: grid; gap: 12px; width: 220px; padding: 12px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px; background: var(--dsw-alias-bg-layer-1); box-shadow: 0 12px 32px color-mix(in srgb, var(--dsw-alias-bg-base) 50%, transparent); }
 .dhl-more-group { display: grid; gap: 6px; }
 .dhl-more-group > span { color: var(--dsw-alias-label-secondary); font-size: 11px; }
@@ -559,12 +581,246 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-chart-older { position: absolute; z-index: 2; left: 10px; top: 26px; padding: 3px 7px; border-radius: 4px; background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-secondary); font-size: 10.5px; pointer-events: none; }
 
 /* Trading limits vs wallet signing: two separate rule sets. */
-.dhl-more-link { padding: 6px 2px 0; border: 0; border-top: 1px solid var(--dsw-alias-border-l1); background: transparent; color: var(--dsw-alias-label-secondary); font: inherit; font-size: 11.5px; text-align: left; cursor: pointer; }
-.dhl-more-link:hover { color: var(--dsw-alias-brand-primary); }
 .dhl-limits-modal { width: min(520px, calc(100vw - 48px)); }
 .dhl-limits-section + .dhl-limits-section { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--dsw-alias-border-l1); }
-.dhl-limits-section h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 13px; font-weight: 600; }
+.dhl-limits-section h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font-size: 14px; line-height: 22px; font-weight: 600; color: var(--dsw-alias-label-primary); }
 .dhl-limits-section .dhl-ticket-note { margin-top: 10px; }
+.dhl-risk-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px 12px; }
+.dhl-risk-form label { display: grid; min-width: 0; gap: 6px; color: var(--dsw-alias-label-secondary); font-size: 13px; line-height: 20px; }
+.dhl-risk-form label.dhl-risk-wide, .dhl-risk-budget, .dhl-risk-error { grid-column: 1 / -1; }
+.dhl-risk-budget { margin: 2px 0 0; color: var(--dsw-alias-label-secondary); font-size: 13px; }
+.dhl-risk-error { margin: 0; color: var(--dsw-alias-state-error-primary); font-size: 13px; }
+
+/* hyper_* tool rows and the approval order card (rendered inside DSH's conversation). */
+.dhl-tool-verdict { color: var(--dsw-alias-label-tertiary, var(--dsw-alias-label-secondary)); font-size: var(--dsh-content-font-size-secondary, 13px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dhl-tool-verdict.err { color: var(--dsw-alias-state-error-primary); }
+.dhl-tool-output { margin: 4px 0 0; padding: 10px 12px; max-height: 280px; overflow: auto; border-radius: var(--dsw-radius-md, 8px); background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-secondary); font: 12px/1.6 var(--dsw-font-family-mono, ui-monospace, Menlo, monospace); white-space: pre-wrap; word-break: break-word; }
+.dhl-approval-card { display: grid; gap: 10px; padding: 12px 14px; border: 1px solid var(--dsw-alias-border-l1); border-radius: var(--dsw-radius-lg, 10px); background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-primary); font-size: 13px; }
+.dhl-approval-head { display: flex; align-items: center; gap: 8px; color: var(--dsw-alias-brand-primary); }
+.dhl-approval-head strong { color: var(--dsw-alias-label-primary); font-weight: 600; }
+.dhl-approval-env { margin-left: auto; padding: 2px 8px; border-radius: 10px; background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-label-secondary); font-size: 11.5px; }
+.dhl-approval-rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; margin: 0; }
+.dhl-approval-rows div { display: flex; justify-content: space-between; gap: 8px; min-width: 0; }
+.dhl-approval-rows dt { color: var(--dsw-alias-label-secondary); }
+.dhl-approval-rows dd { margin: 0; font-weight: 550; font-variant-numeric: tabular-nums; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dhl-approval-limits { padding-top: 8px; border-top: 1px solid var(--dsw-alias-border-l1); color: var(--dsw-alias-label-secondary); font-size: 12px; }
+.dhl-approval-reason { margin: 0; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 1.6; }
+.dhl-warn { color: var(--dsw-alias-state-warn-primary); }
+
+/* Configurable moving averages: indicator-menu editor + chart legend. */
+.dhl-ma-editor { display: grid; gap: 8px; margin-top: 6px; padding: 10px 8px 4px; border-top: 1px solid var(--dsw-alias-border-l1); }
+.dhl-ma-editor > strong { color: var(--dsw-alias-label-secondary); font-size: 11px; font-weight: 600; }
+.dhl-ma-list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.dhl-ma-list li { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--dsw-alias-label-primary); }
+.dhl-ma-list i { width: 10px; height: 3px; border-radius: 2px; flex: none; }
+.dhl-ma-list span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dhl-ma-list button { border: 0; background: transparent; color: var(--dsw-alias-label-secondary); cursor: pointer; font-size: 15px; line-height: 1; padding: 0 2px; }
+.dhl-ma-list button:hover { color: var(--dsw-alias-state-error-primary); }
+.dhl-ma-presets { display: flex; flex-wrap: wrap; gap: 4px; }
+.dhl-chart-tools .dhl-ma-presets button, .dhl-chart-tools .dhl-ma-form button { padding: 3px 7px; border: 1px solid var(--dsw-alias-border-l1); border-radius: 4px; background: transparent; color: var(--dsw-alias-label-secondary); font: inherit; font-size: 11px; cursor: pointer; }
+.dhl-chart-tools .dhl-ma-presets button:disabled { opacity: .4; cursor: default; }
+.dhl-ma-form { display: flex; gap: 4px; align-items: center; }
+.dhl-ma-form select, .dhl-ma-form input { min-width: 0; padding: 3px 4px; border: 1px solid var(--dsw-alias-border-l1); border-radius: 4px; background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-label-primary); font: inherit; font-size: 11px; }
+.dhl-ma-form select { flex: 1; }
+.dhl-ma-form input { width: 48px; flex: none; }
+.dhl-chart-tools .dhl-ma-form .dhl-ma-add { color: var(--dsw-alias-brand-primary); border-color: var(--dsw-alias-brand-primary); }
+.dhl-chart-ma-legend { position: absolute; z-index: 1; top: 22px; left: 10px; display: flex; flex-wrap: wrap; gap: 2px 12px; max-width: 70%; pointer-events: none; font-size: 10px; font-variant-numeric: tabular-nums; }
+.dhl-chart-ma-legend b { font-weight: 600; }
+.dhl-chart-tools .dhl-indicator-popover:has(.dhl-ma-editor) { width: 272px; }
+.dhl-chart-tools .dhl-indicator-popover .dhl-ma-editor button { display: inline-flex; width: auto; align-items: center; gap: 0; text-align: center; }
+.dhl-chart-tools .dhl-indicator-popover .dhl-ma-list button { padding: 0 2px; border: 0; }
+
+/* Trading settings modal: DSH Input/Button and the shell's 14px body scale. */
+.dhl-risk-form .dhl-risk-input { width: 100%; box-sizing: border-box; }
+.dhl-risk-form .dhl-risk-input input { width: 100%; }
+.dhl-limits-ledger { padding: 1px 8px; border-radius: 10px; background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-label-secondary); font-size: 12px; font-weight: 400; }
+.dhl-limits-note { margin: 12px 0 0; color: var(--dsw-alias-label-secondary); font-size: 13px; line-height: 20px; }
+.dhl-limits-modal { width: min(560px, calc(100vw - 48px)); }
+.dhl-rename-modal .dhl-rename-input { display: flex; width: 100%; box-sizing: border-box; }
+
+/* Chart toolbar wraps at every width so it never spills over the order book. */
+.dhl-chart-tools { flex-wrap: wrap; row-gap: 4px; min-width: 0; }
+.dhl-intervals { flex-wrap: wrap; min-width: 0; }
+.dhl-chart-actions { flex-wrap: wrap; justify-content: flex-end; min-width: 0; margin-left: auto; row-gap: 4px; }
+
+/* Drawing tools menu (TradingView's common set). */
+.dhl-draw-menu { position: relative; flex: 0 0 auto; font-size: 11px; }
+.dhl-draw-menu summary { display: inline-flex; align-items: center; gap: 5px; padding: 5px 7px; border-radius: 5px; color: var(--dsw-alias-label-secondary); cursor: pointer; list-style: none; white-space: nowrap; }
+.dhl-draw-menu summary::-webkit-details-marker { display: none; }
+.dhl-draw-menu summary:hover, .dhl-draw-menu[open] summary { color: var(--dsw-alias-label-primary); background: var(--dsw-alias-interactive-bg-hover); }
+.dhl-draw-menu.active summary { color: var(--dsw-alias-brand-primary); background: color-mix(in srgb, var(--dsw-alias-brand-primary) 10%, transparent); }
+.dhl-draw-popover { position: absolute; z-index: 12; top: calc(100% + 7px); right: 0; width: 248px; padding: 6px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px; background: var(--dsw-alias-bg-layer-1); box-shadow: 0 12px 32px color-mix(in srgb, var(--dsw-alias-bg-base) 50%, transparent); }
+.dhl-chart-tools .dhl-draw-popover button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 7px 8px; text-align: left; white-space: normal; }
+.dhl-draw-popover button > span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dhl-draw-popover button b { color: var(--dsw-alias-label-primary); font-size: 12px; font-weight: 550; }
+.dhl-draw-popover button small { color: var(--dsw-alias-label-secondary); font-size: 10.5px; line-height: 1.35; }
+.dhl-draw-popover button svg { flex: none; color: var(--dsw-alias-label-secondary); }
+.dhl-draw-popover button.on b, .dhl-draw-popover button.on svg { color: var(--dsw-alias-brand-primary); }
+
+/* Drawings: projected SVG over the price pane. */
+.dhl-drawing line, .dhl-drawing polygon { stroke: currentColor; stroke-width: var(--dhl-line-width, 1.8); stroke-dasharray: var(--dhl-dash, none); fill: none; vector-effect: non-scaling-stroke; }
+.dhl-drawing.role-support line, .dhl-drawing.role-resistance line, .dhl-drawing.role-neutral line { stroke-dasharray: var(--dhl-dash, 6 4); }
+.dhl-drawing .dhl-drawing-fill { fill: currentColor; fill-opacity: .08; stroke: currentColor; stroke-width: 1.2; }
+.dhl-drawing .dhl-drawing-mid { stroke-dasharray: 4 4; stroke-width: 1; opacity: .7; }
+.dhl-drawing-text { fill: currentColor; stroke: none; font-size: 10.5px; font-variant-numeric: tabular-nums; paint-order: stroke; }
+.dhl-drawing .dhl-fib-band { stroke: none; fill-opacity: .07; }
+.dhl-drawing .dhl-fib-band.band-0 { fill: #ef6f6c; } .dhl-drawing .dhl-fib-band.band-1 { fill: #e2a943; } .dhl-drawing .dhl-fib-band.band-2 { fill: #3b9c6d; }
+.dhl-drawing .dhl-fib-key { stroke-width: 2.2; }
+.dhl-measure.up { color: var(--dsw-alias-state-success-primary); } .dhl-measure.down { color: var(--dsw-alias-state-error-primary); }
+.dhl-measure line { stroke: currentColor; stroke-width: 1.5; }
+.dhl-measure .dhl-measure-box { fill: var(--dsw-alias-bg-layer-1); stroke: currentColor; stroke-width: 1; }
+.dhl-measure .dhl-drawing-text { font-size: 11px; font-weight: 600; }
+.dhl-drawing-preview { opacity: .85; }
+.dhl-drawing-preview line { stroke-dasharray: 5 4; }
+
+/* Direct manipulation: a transparent, wide hit layer on strokes (empty chart space still pans). */
+.dhl-drawing-hit * { stroke: transparent !important; fill: transparent !important; stroke-dasharray: none !important; stroke-width: 12px !important; pointer-events: stroke; cursor: move; }
+.dhl-drawing-hit .dhl-text-box, .dhl-drawing-hit .dhl-position rect, .dhl-drawing-hit text { pointer-events: all; }
+.dhl-chart-drawing-overlay.drawing .dhl-drawing-hit { display: none; }
+.dhl-drawing.locked .dhl-drawing-hit * { cursor: default; }
+.dhl-drawing:has(> .dhl-drawing-hit:hover) > line, .dhl-drawing:has(> .dhl-drawing-hit:hover) > g > line, .dhl-drawing.selected > line, .dhl-drawing.selected > g > line { stroke-width: calc(var(--dhl-line-width, 1.8) + 1); }
+.dhl-drawing.selected { filter: drop-shadow(0 0 3px color-mix(in srgb, currentColor 55%, transparent)); }
+.dhl-drawing.is-level > line { stroke: transparent !important; }
+.dhl-chart-anchor { pointer-events: all; cursor: grab; fill: var(--dsw-alias-bg-layer-1); stroke: currentColor; stroke-width: 2; }
+.dhl-drawing.locked .dhl-chart-anchor { cursor: default; }
+.dhl-chart-anchor:hover { fill: currentColor; }
+.dhl-text-box { fill: var(--dsw-alias-bg-layer-1); fill-opacity: .92; stroke: currentColor; stroke-width: 1; }
+.dhl-drawing .dhl-text-value { fill: var(--dsw-alias-label-primary); font-size: 12px; }
+.dhl-position .dhl-position-stop { fill: var(--dsw-alias-state-error-primary); fill-opacity: .16; stroke: none; }
+.dhl-position .dhl-position-target { fill: var(--dsw-alias-state-success-primary); fill-opacity: .16; stroke: none; }
+.dhl-drawing .dhl-position .dhl-position-entry { stroke: var(--dsw-alias-label-secondary); stroke-width: 1.5; stroke-dasharray: none; }
+.dhl-drawing .dhl-position-text { fill: var(--dsw-alias-label-primary); font-size: 11px; font-weight: 600; }
+
+/* Floating style toolbar for the selected drawing. */
+.dhl-draw-toolbar { position: absolute; z-index: 6; top: 30px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; max-width: calc(100% - 80px); flex-wrap: wrap; justify-content: center; padding: 5px 8px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px; background: var(--dsw-alias-bg-layer-1); box-shadow: 0 8px 24px color-mix(in srgb, var(--dsw-alias-bg-base) 45%, transparent); font-size: 12px; }
+.dhl-draw-toolbar-name { color: var(--dsw-alias-label-secondary); padding: 0 4px; white-space: nowrap; }
+.dhl-draw-toolbar-group { display: inline-flex; align-items: center; gap: 2px; padding-left: 6px; border-left: 1px solid var(--dsw-alias-border-l1); }
+.dhl-draw-toolbar button { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 4px; border: 0; border-radius: 5px; background: transparent; color: var(--dsw-alias-label-secondary); cursor: pointer; font: inherit; }
+.dhl-draw-toolbar button:hover:not(:disabled) { background: var(--dsw-alias-interactive-bg-hover); color: var(--dsw-alias-label-primary); }
+.dhl-draw-toolbar button.on { color: var(--dsw-alias-brand-primary); background: color-mix(in srgb, var(--dsw-alias-brand-primary) 10%, transparent); }
+.dhl-draw-toolbar button:disabled { opacity: .35; cursor: default; }
+.dhl-draw-toolbar .dhl-swatch { min-width: 18px; width: 18px; height: 18px; padding: 0; border-radius: 50%; border: 2px solid transparent; }
+.dhl-draw-toolbar .dhl-swatch.on { border-color: var(--dsw-alias-label-primary); }
+.dhl-draw-toolbar-text { width: 150px; height: 26px; padding: 0 8px; border: .5px solid var(--dsw-alias-border-l4, var(--dsw-alias-border-l2)); border-radius: 6px; background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-primary); font: inherit; font-size: 12px; }
+
+/* Drawing menu: groups and settings. */
+.dhl-draw-popover hr { margin: 4px 6px; border: 0; border-top: 1px solid var(--dsw-alias-border-l1); }
+.dhl-draw-popover { max-height: min(620px, 72vh); overflow-y: auto; }
+.dhl-draw-settings { display: grid; gap: 6px; margin-top: 4px; padding: 8px 8px 4px; border-top: 1px solid var(--dsw-alias-border-l1); }
+.dhl-draw-setting { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--dsw-alias-label-primary); font-size: 12px; cursor: pointer; }
+.dhl-draw-seg { display: inline-flex; gap: 2px; padding: 2px; border-radius: 6px; background: var(--dsw-alias-bg-layer-2); }
+.dhl-chart-tools .dhl-draw-seg button { width: auto; padding: 3px 9px; border-radius: 4px; }
+.dhl-chart-tools .dhl-draw-seg button.on { background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-primary); }
+.dhl-chart-tools .dhl-draw-popover .dhl-draw-clear { justify-content: center; margin-top: 2px; color: var(--dsw-alias-state-error-primary); }
+.dhl-chart-tools .dhl-draw-popover .dhl-draw-clear.confirm { background: color-mix(in srgb, var(--dsw-alias-state-error-primary) 12%, transparent); font-weight: 600; }
+/* While placing a drawing, every click must reach the chart (the preview's own handle sits under the cursor). */
+.dhl-chart-drawing-overlay.drawing *, .dhl-drawing-preview, .dhl-drawing-preview * { pointer-events: none !important; }
+
+/* Fills: exact-price dots; a ring marks a recorded AI rationale. */
+.dhl-fill { cursor: pointer; pointer-events: all; }
+.dhl-chart-drawing-overlay.drawing .dhl-fill { pointer-events: none; }
+.dhl-fill.buy { color: var(--dsw-alias-state-success-primary); } .dhl-fill.sell { color: var(--dsw-alias-state-error-primary); }
+.dhl-fill-dot { fill: currentColor; stroke: var(--dsw-alias-bg-layer-1); stroke-width: 2; }
+.dhl-fill-ring { fill: none; stroke: currentColor; stroke-width: 1.5; opacity: .55; }
+.dhl-fill:hover .dhl-fill-dot, .dhl-fill.selected .dhl-fill-dot { r: 6.5; }
+.dhl-fill.selected .dhl-fill-ring { opacity: 1; stroke-width: 2; }
+.dhl-fill-reason { fill: var(--dsw-alias-label-primary); font-size: 10.5px; paint-order: stroke; stroke: var(--dsw-alias-bg-layer-1); stroke-width: 3px; stroke-linejoin: round; }
+.dhl-fill-card { position: absolute; z-index: 6; width: 288px; display: grid; gap: 6px; padding: 12px 14px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 10px; background: var(--dsw-alias-bg-layer-1); box-shadow: 0 12px 32px color-mix(in srgb, var(--dsw-alias-bg-base) 50%, transparent); font-size: 13px; line-height: 20px; color: var(--dsw-alias-label-primary); }
+.dhl-fill-card header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.dhl-fill-card header b { font-weight: 600; }
+.dhl-fill-card header button { border: 0; background: transparent; color: var(--dsw-alias-label-secondary); font-size: 18px; line-height: 1; cursor: pointer; }
+.dhl-fill-card time { color: var(--dsw-alias-label-secondary); font-size: 12px; }
+.dhl-fill-card strong { margin-top: 4px; color: var(--dsw-alias-label-secondary); font-size: 12px; font-weight: 600; }
+.dhl-fill-card p { margin: 0; max-height: 160px; overflow-y: auto; white-space: pre-wrap; }
+.dhl-fill-card p.muted { color: var(--dsw-alias-label-secondary); }
+.dhl-fill-card footer { display: flex; justify-content: flex-end; margin-top: 4px; }
+.dhl-fill-analyze { height: 28px; padding: 0 12px; border: 0; border-radius: 8px; background: var(--dsw-alias-button-primary-fill, var(--dsw-alias-brand-primary)); color: var(--dsw-alias-label-primary-foreground, #fff); font: inherit; font-size: 12px; cursor: pointer; }
+.dhl-chart-drawing-overlay.brushing { pointer-events: all; cursor: crosshair; }
+.dhl-drawing .dhl-brush { fill: none; stroke: currentColor; stroke-width: var(--dhl-line-width, 2); stroke-dasharray: var(--dhl-dash, none); stroke-linecap: round; stroke-linejoin: round; }
+.dhl-drawing-hit .dhl-brush { pointer-events: stroke; }
+.dhl-drawing .dhl-arrow-head, .dhl-drawing .dhl-callout-dot { fill: currentColor; stroke: none; }
+.dhl-drawing circle.dhl-drawing-fill { fill: currentColor; fill-opacity: .08; stroke: currentColor; stroke-width: var(--dhl-line-width, 1.5); stroke-dasharray: var(--dhl-dash, none); }
+.dhl-drawing polyline.dhl-drawing-mid { fill: none; stroke: currentColor; }
+
+/* Drawings object list (under the chart). */
+.dhl-drawing-list { margin: 6px 10px 0; border: 1px solid var(--dsw-alias-border-l1); border-radius: 8px; font-size: 12px; }
+.dhl-drawing-list-head { display: flex; justify-content: space-between; width: 100%; padding: 6px 10px; border: 0; background: transparent; color: var(--dsw-alias-label-secondary); font: inherit; cursor: pointer; }
+.dhl-drawing-list ul { margin: 0; padding: 2px 4px 4px; list-style: none; max-height: 220px; overflow-y: auto; border-top: 1px solid var(--dsw-alias-border-l1); }
+.dhl-drawing-list li { display: flex; align-items: center; gap: 2px; border-radius: 6px; }
+.dhl-drawing-list li:hover { background: var(--dsw-alias-interactive-bg-hover); }
+.dhl-drawing-list li.is-hidden { opacity: .5; }
+.dhl-drawing-list li > button { flex: none; display: inline-grid; place-items: center; width: 26px; height: 26px; border: 0; border-radius: 5px; background: transparent; color: var(--dsw-alias-label-secondary); cursor: pointer; font: inherit; }
+.dhl-drawing-list li > button.on { color: var(--dsw-alias-brand-primary); }
+.dhl-drawing-list li > button:disabled { opacity: .35; cursor: default; }
+.dhl-drawing-list .dhl-drawing-list-name { flex: 1; display: flex; align-items: center; gap: 8px; width: auto; min-width: 0; padding: 0 6px; text-align: left; color: var(--dsw-alias-label-primary); }
+.dhl-drawing-list .dhl-drawing-list-name b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.dhl-drawing-list .dhl-drawing-list-name small { flex: none; margin-left: auto; color: var(--dsw-alias-label-secondary); font-size: 11px; }
+.dhl-draw-popover hr + button, .dhl-draw-popover button { scroll-margin: 4px; }
+
+.dhl-drawing .dhl-price-tag { fill: currentColor; stroke: none; }
+.dhl-drawing .dhl-price-tag-text { fill: #fff; font-weight: 600; }
+.dhl-drawing .dhl-angle-arc { fill: none; stroke: currentColor; stroke-width: 1.2; }
+.dhl-drawing .dhl-measure-box { fill: var(--dsw-alias-bg-layer-1); stroke: currentColor; stroke-width: 1; }
+
+/* Patterns (Elliott, harmonic, head & shoulders), Gann box/square, icons. */
+.dhl-drawing .dhl-pattern { fill: none; stroke: currentColor; stroke-width: var(--dhl-line-width, 1.8); stroke-dasharray: var(--dhl-dash, none); stroke-linejoin: round; }
+.dhl-drawing-hit .dhl-pattern { pointer-events: stroke; }
+.dhl-drawing .dhl-wave-label { font-size: 11.5px; font-weight: 700; }
+.dhl-drawing .dhl-ratio-label { font-size: 10.5px; opacity: .9; }
+.dhl-drawing .dhl-neckline { stroke: currentColor; stroke-width: 1.4; stroke-dasharray: 8 4; }
+.dhl-drawing .dhl-icon path { fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.dhl-drawing .dhl-icon-bg { fill: currentColor; stroke: var(--dsw-alias-bg-layer-1); stroke-width: 2; }
+.dhl-drawing-hit .dhl-icon-bg { pointer-events: all; }
+.dhl-icon-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.dhl-icon-grid button { display: grid; justify-items: center; gap: 4px; padding: 10px 4px; border: .5px solid var(--dsw-alias-border-l3, var(--dsw-alias-border-l2)); border-radius: 10px; background: transparent; color: var(--dsw-alias-label-primary); font: inherit; font-size: 12px; cursor: pointer; }
+.dhl-icon-grid button:hover { background: var(--dsw-alias-interactive-bg-hover); }
+
+.dhl-sticker-picker { display: grid; gap: 12px; }
+.dhl-sticker-tabs { display: flex; gap: 2px; padding: 2px; border-radius: 8px; background: var(--dsw-alias-bg-layer-2); }
+.dhl-sticker-tabs button { flex: 1; padding: 6px 0; border: 0; border-radius: 6px; background: transparent; color: var(--dsw-alias-label-secondary); font: inherit; font-size: 13px; cursor: pointer; }
+.dhl-sticker-tabs button.on { background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-primary); font-weight: 600; }
+.dhl-sticker-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+.dhl-sticker-grid button { height: 40px; border: 0; border-radius: 8px; background: transparent; font-size: 22px; cursor: pointer; }
+.dhl-sticker-grid button:hover { background: var(--dsw-alias-interactive-bg-hover); }
+.dhl-drawing .dhl-sticker { font-size: 24px; stroke: none; fill: initial; }
+.dhl-drawing-hit .dhl-sticker { pointer-events: all; }
+.dhl-drawing .dhl-drawing-badge { font-size: 11px; stroke: none; fill: currentColor; }
+
+/* Select: the native control without the OS arrow, on DSH tokens in both themes. */
+.dhl-select { position: relative; display: inline-flex; align-items: center; min-width: 0; color: var(--dsw-alias-label-secondary); }
+.dhl-select > select { appearance: none; -webkit-appearance: none; min-width: 0; width: 100%; height: 26px; padding: 0 22px 0 8px; border: .5px solid var(--dsw-alias-border-l3, var(--dsw-alias-border-l2)); border-radius: 6px;
+  background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-primary); font: inherit; font-size: 12px; cursor: pointer; color-scheme: light dark; }
+.dhl-select > select:hover { background: var(--dsw-alias-interactive-bg-hover); }
+.dhl-select > select:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: 1px; }
+.dhl-select > svg { position: absolute; right: 6px; pointer-events: none; }
+.dhl-select > select:disabled { opacity: .5; cursor: default; }
+.dhl-select > select option { background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-primary); }
+.dhl-chart-tools .dhl-select > select { height: 24px; border-color: transparent; background: transparent; color: var(--dsw-alias-label-secondary); font-size: 11px; }
+.dhl-chart-tools .dhl-select > select:hover { background: var(--dsw-alias-interactive-bg-hover); color: var(--dsw-alias-label-primary); }
+.dhl-ma-form .dhl-select { flex: 1; }
+.dhl-ma-form .dhl-select > select { height: 24px; font-size: 11px; }
+.dhl-drawing-badge-icon { color: inherit; }
+
+.dhl-drawing .dhl-drawing-badge { overflow: visible; color: currentColor; }
+.dhl-list-flag { display: inline-flex; vertical-align: -2px; margin-right: 4px; color: var(--dsw-alias-brand-primary); }
+.dhl-drawing-list-head svg { color: var(--dsw-alias-label-secondary); }
+.dhl-fill-card header button, .dhl-draw-toolbar button { line-height: 0; }
+
+/* Toolbar menus: no browser disclosure triangle; a trailing SVG chevron like DSH's own menus. */
+.dhl-layer-menu summary, .dhl-strategy-menu summary, .dhl-draw-menu summary { list-style: none; display: inline-flex; align-items: center; gap: 4px; }
+.dhl-layer-menu summary::-webkit-details-marker, .dhl-strategy-menu summary::-webkit-details-marker, .dhl-draw-menu summary::-webkit-details-marker { display: none; }
+.dhl-layer-menu summary::marker, .dhl-strategy-menu summary::marker, .dhl-draw-menu summary::marker { content: ''; }
+.dhl-layer-menu summary > svg, .dhl-strategy-menu summary > svg, .dhl-draw-menu summary > svg:last-child { opacity: .7; transition: transform .15s; }
+.dhl-layer-menu[open] summary > svg, .dhl-strategy-menu[open] summary > svg, .dhl-draw-menu[open] summary > svg:last-child { transform: rotate(180deg); }
+/* Segmented controls: a visible track in light mode too. */
+.dhl-segment { background: var(--dsw-alias-interactive-bg-hover); }
+.dhl-segment button.on { background: var(--dsw-alias-bg-layer-1); box-shadow: 0 1px 2px color-mix(in srgb, var(--dsw-alias-label-primary) 14%, transparent); }
+
+.dhl-sticker-custom { display: flex; gap: 8px; }
+.dhl-sticker-custom input { flex: 1; min-width: 0; height: 32px; padding: 0 10px; border: .5px solid var(--dsw-alias-border-l4, var(--dsw-alias-border-l2)); border-radius: 8px; background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-primary); font: inherit; font-size: 14px; }
+.dhl-sticker-custom button { height: 32px; padding: 0 14px; border: 0; border-radius: 8px; background: var(--dsw-alias-button-primary-fill, var(--dsw-alias-brand-primary)); color: var(--dsw-alias-label-primary-foreground, #fff); font: inherit; font-size: 13px; cursor: pointer; }
+.dhl-sticker-custom button:disabled { opacity: .4; cursor: default; }
+.dhl-icon-grid { grid-template-columns: repeat(6, 1fr); }
 `;
 
 // src/client/locale.ts
@@ -891,7 +1147,8 @@ var store = createStore({
   notice: null,
   eventsSeq: 0,
   ticketDraft: null,
-  chartReferences: []
+  chartReferences: [],
+  chartFocus: null
 });
 function useStore() {
   return (0, import_react.useSyncExternalStore)(store.subscribe, store.get, store.get);
@@ -938,8 +1195,8 @@ function getContext() {
 function setLocaleBinder(binder) {
   localeT = binder;
 }
-function t(key, fallback) {
-  return localeT(key, fallback);
+function t(key2, fallback) {
+  return localeT(key2, fallback);
 }
 function tr(zh, en) {
   return ctxRef?.get?.("locale")?.getLocale?.()?.active === "en" ? en : zh;
@@ -956,8 +1213,8 @@ async function hyperCall(method, request = null) {
 }
 
 // src/client/app.tsx
-var React18 = __toESM(require("react"), 1);
-var import_dsh_client_ui_primitives5 = require("@deepseek-ai/dsh-client-ui-primitives");
+var React27 = __toESM(require("react"), 1);
+var import_dsh_client_ui_primitives7 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // src/client/chart-indicators.ts
 function points(rows, values) {
@@ -1034,6 +1291,102 @@ function chartIndicators(candles) {
   };
 }
 
+// lib/moving-average.js
+var MA_KINDS = ["sma", "ema", "smma", "wma"];
+var MA_SOURCES = ["close", "open", "high", "low", "hl2", "hlc3", "ohlc4"];
+var MA_MAX_LINES = 8;
+var MA_MAX_PERIOD = 500;
+var COLOR = /^#[0-9a-fA-F]{6}$/;
+function normalizeMaLine(input) {
+  if (!input || typeof input !== "object") throw new Error("\u5747\u7EBF\u5B9A\u4E49\u65E0\u6548");
+  const kind = String(input.kind ?? "").toLowerCase();
+  if (!MA_KINDS.includes(kind)) throw new Error(`\u5747\u7EBF\u7C7B\u578B\u5FC5\u987B\u4E3A ${MA_KINDS.join("/")}`);
+  const period = Number(input.period);
+  if (!Number.isInteger(period) || period < 1 || period > MA_MAX_PERIOD) throw new Error(`\u5747\u7EBF\u5468\u671F\u5FC5\u987B\u4E3A 1-${MA_MAX_PERIOD} \u7684\u6574\u6570`);
+  const source = String(input.source ?? "close").toLowerCase();
+  if (!MA_SOURCES.includes(source)) throw new Error(`\u5747\u7EBF\u4EF7\u683C\u6E90\u5FC5\u987B\u4E3A ${MA_SOURCES.join("/")}`);
+  let smoothing = null;
+  if (input.smoothing != null) {
+    const sKind = String(input.smoothing.kind ?? "").toLowerCase();
+    const sPeriod = Number(input.smoothing.period);
+    if (!MA_KINDS.includes(sKind)) throw new Error(`\u5E73\u6ED1\u7C7B\u578B\u5FC5\u987B\u4E3A ${MA_KINDS.join("/")}`);
+    if (!Number.isInteger(sPeriod) || sPeriod < 1 || sPeriod > MA_MAX_PERIOD) throw new Error(`\u5E73\u6ED1\u5468\u671F\u5FC5\u987B\u4E3A 1-${MA_MAX_PERIOD} \u7684\u6574\u6570`);
+    smoothing = { kind: sKind, period: sPeriod };
+  }
+  const id = `${kind}${period}${source === "close" ? "" : "-" + source}${smoothing ? `-${smoothing.kind}${smoothing.period}` : ""}`;
+  const line = { id, kind, period, source, smoothing };
+  if (input.color != null) {
+    if (typeof input.color !== "string" || !COLOR.test(input.color)) throw new Error("\u5747\u7EBF\u989C\u8272\u5FC5\u987B\u4E3A #RRGGBB");
+    line.color = input.color.toLowerCase();
+  }
+  return line;
+}
+function maLabel(line) {
+  return `${line.kind.toUpperCase()} ${line.period}${line.source === "close" ? "" : " " + line.source}${line.smoothing ? ` \xB7 ${line.smoothing.kind.toUpperCase()} ${line.smoothing.period}` : ""}`;
+}
+function sourceOf(candle, source) {
+  const o = Number(candle.o), h = Number(candle.h), l = Number(candle.l), c = Number(candle.c);
+  switch (source) {
+    case "open":
+      return o;
+    case "high":
+      return h;
+    case "low":
+      return l;
+    case "hl2":
+      return (h + l) / 2;
+    case "hlc3":
+      return (h + l + c) / 3;
+    case "ohlc4":
+      return (o + h + l + c) / 4;
+    default:
+      return c;
+  }
+}
+function movingAverage(values, kind, period) {
+  const out = new Array(values.length).fill(null);
+  const window2 = [];
+  let prior = null;
+  for (let i = 0; i < values.length; i += 1) {
+    const value = values[i];
+    if (value == null || !Number.isFinite(value)) {
+      if (kind === "sma" || kind === "wma") window2.length = 0;
+      continue;
+    }
+    if (kind === "sma" || kind === "wma") {
+      window2.push(value);
+      if (window2.length > period) window2.shift();
+      if (window2.length < period) continue;
+      if (kind === "sma") out[i] = window2.reduce((sum, v) => sum + v, 0) / period;
+      else {
+        let num2 = 0;
+        for (let k = 0; k < period; k += 1) num2 += window2[k] * (k + 1);
+        out[i] = num2 / (period * (period + 1) / 2);
+      }
+      continue;
+    }
+    if (prior == null) {
+      window2.push(value);
+      if (window2.length < period) continue;
+      prior = window2.reduce((sum, v) => sum + v, 0) / period;
+    } else {
+      const alpha = kind === "ema" ? 2 / (period + 1) : 1 / period;
+      prior = alpha * value + (1 - alpha) * prior;
+    }
+    out[i] = prior;
+  }
+  return out;
+}
+function maSeries(candles, line) {
+  const input = candles.map((candle) => {
+    const v = sourceOf(candle, line.source);
+    return Number.isFinite(v) ? v : null;
+  });
+  const values = movingAverage(input, line.kind, line.period);
+  const smoothed = line.smoothing ? movingAverage(values, line.smoothing.kind, line.smoothing.period) : null;
+  return { values, smoothed };
+}
+
 // src/client/chart-reference.ts
 var SERIES = [
   ["sma20", "SMA20", "sma20"],
@@ -1047,18 +1400,23 @@ var SERIES = [
   ["macd", "\u4FE1\u53F7\u7EBF", "signal"],
   ["macd", "MACD\u67F1", "histogram"]
 ];
-function selectChartCandle(candles, time, active, hit) {
+function selectChartCandle(candles, time, active, hit, maLines = []) {
   const rows = candles;
   const index = rows.findIndex((candle2) => Math.floor(candle2.t / 1e3) === Math.floor(time / 1e3));
   if (index < 0) return null;
   const candle = rows[index];
   const studies = chartIndicators(rows);
   const epoch = Math.floor(candle.t / 1e3);
-  const values = SERIES.flatMap(([id, label, key]) => {
+  const values = SERIES.flatMap(([id, label, key2]) => {
     if (!active.has(id)) return [];
-    const point = studies[key].find((item) => item.time === epoch);
+    const point = studies[key2].find((item) => item.time === epoch);
     return point ? [{ label, value: point.value }] : [];
   });
+  for (const line of maLines) {
+    const { values: series, smoothed } = maSeries(rows, line);
+    if (series[index] != null) values.push({ label: maLabel(line).split(" \xB7 ")[0], value: series[index] });
+    if (smoothed?.[index] != null) values.push({ label: maLabel(line), value: smoothed[index] });
+  }
   const previous = rows.slice(Math.max(0, index - 20), index).map((row) => row.v).filter((value) => Number.isFinite(value) && value >= 0);
   const priorVolumeMean20 = previous.length === 20 ? previous.reduce((sum, value) => sum + value, 0) / 20 : null;
   return { candle, hit, values, priorVolumeMean20 };
@@ -1092,6 +1450,23 @@ function formatChartReference(selection, coin, interval, english = false) {
   if (values.length) lines.push(`${english ? "Displayed studies" : "\u5DF2\u663E\u793A\u6307\u6807"}\uFF1A${values.map(({ label, value }) => `${label}=${computed(value)}`).join("\uFF0C")}`);
   if (hit && hit !== "volume") lines.push(`${english ? "Selected study" : "\u70B9\u51FB\u6307\u6807"}\uFF1A${hitLabel[hit] ?? hit}`);
   return lines.join("\n");
+}
+var CHART_REFERENCE_SOURCE = "hyperliquid-chart";
+function chartReferenceLabel(selection, coin, interval) {
+  const d = new Date(selection.candle.t);
+  const pad = (n2) => String(n2).padStart(2, "0");
+  return `${coin} ${interval} ${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())} \xB7 C ${selection.candle.c}`;
+}
+function encodeChartReference(ref) {
+  return JSON.stringify(ref);
+}
+function decodeChartReference(raw) {
+  try {
+    const value = JSON.parse(raw);
+    return typeof value?.text === "string" && typeof value?.coin === "string" && Number.isFinite(value?.t) ? value : null;
+  } catch {
+    return null;
+  }
 }
 
 // src/client/data.ts
@@ -1127,12 +1502,14 @@ var ANONYMOUS_WORKSPACE = {
   tapeTab: "book",
   bottomTab: "positions",
   indicators: ["volume"],
+  maLines: [],
   priceScale: "normal",
   chartRanges: {},
   chartLayers: { orders: true, fills: true, drawings: true },
   layout: { sessionsWidth: 232, chatWidth: 480, sessionsCollapsed: false, deskCollapsed: false, chatCollapsed: false }
 };
 var workspaceLoadVersion = 0;
+var chartMarksLoadVersion = 0;
 async function openSession(sessionId, fallbackCoin = "BTC") {
   const loadVersion = ++workspaceLoadVersion;
   focusVersion += 1;
@@ -1338,9 +1715,9 @@ async function loadMarketDetail(coin) {
 async function loadSnapshot() {
   const { activeCoin: coin, interval, bookGrouping } = store.get();
   const epoch = networkEpoch;
-  const key = `${epoch}:${coin}:${interval}:${bookGrouping}`;
-  if (pendingSnapshots.has(key)) return;
-  pendingSnapshots.add(key);
+  const key2 = `${epoch}:${coin}:${interval}:${bookGrouping}`;
+  if (pendingSnapshots.has(key2)) return;
+  pendingSnapshots.add(key2);
   try {
     const snapshot = await hyperCall("snapshot", { coin, interval, bookGrouping });
     if (epoch !== networkEpoch || store.get().activeCoin !== coin || store.get().interval !== interval || store.get().bookGrouping !== bookGrouping) return;
@@ -1354,22 +1731,22 @@ async function loadSnapshot() {
   } catch (e) {
     if (epoch === networkEpoch && store.get().activeCoin === coin && store.get().interval === interval && store.get().bookGrouping === bookGrouping) store.patch({ snapshotError: String(e?.message ?? e) });
   } finally {
-    pendingSnapshots.delete(key);
+    pendingSnapshots.delete(key2);
   }
 }
 async function loadOlderCandles() {
   const { activeCoin: coin, interval, candles, candlesState, candlesOlder } = store.get();
   const first = candles[0];
   if (olderPending || !first || candlesState !== "ready" || candlesOlder === "done" || candles.length >= MAX_CANDLES) return;
-  const key = `${coin}:${interval}`;
-  if (candlesFor !== key) return;
+  const key2 = `${coin}:${interval}`;
+  if (candlesFor !== key2) return;
   olderPending = true;
   const epoch = networkEpoch;
   store.patch({ candlesOlder: "loading" });
   try {
     const endMs = first.t - 1;
     const res = await hyperCall("candles", { coin, interval, startMs: endMs - INTERVAL_MS[interval] * OLDER_PAGE_BARS, endMs });
-    if (epoch !== networkEpoch || candlesFor !== key) return;
+    if (epoch !== networkEpoch || candlesFor !== key2) return;
     const current2 = store.get().candles;
     const head = current2[0]?.t ?? Infinity;
     const older = (res.candles ?? []).filter((row) => row.t < head);
@@ -1377,7 +1754,7 @@ async function loadOlderCandles() {
     const next = older.slice(-room);
     store.patch({ candles: [...next, ...current2], candlesOlder: next.length === 0 || next.length === room ? "done" : "idle" });
   } catch {
-    if (epoch === networkEpoch && candlesFor === key) store.patch({ candlesOlder: "error" });
+    if (epoch === networkEpoch && candlesFor === key2) store.patch({ candlesOlder: "error" });
   } finally {
     olderPending = false;
   }
@@ -1390,13 +1767,13 @@ async function loadCandles() {
     const res = await hyperCall("candles", { coin, interval });
     if (epoch === networkEpoch && store.get().activeCoin === coin && store.get().interval === interval) {
       const fetched = res.candles ?? [];
-      const key = `${coin}:${interval}`;
+      const key2 = `${coin}:${interval}`;
       const prev = store.get().candles;
-      const same = candlesFor === key;
+      const same = candlesFor === key2;
       const older = same && fetched.length ? prev.filter((row) => row.t < fetched[0].t) : [];
       const rows = [...older, ...fetched];
       const lastLive = same ? prev.at(-1) : void 0;
-      candlesFor = key;
+      candlesFor = key2;
       store.patch({
         candles: lastLive && lastLive.t >= (rows.at(-1)?.t ?? 0) ? mergeCandle(rows.filter((row) => row.t < lastLive.t), lastLive) : rows,
         candlesState: "ready",
@@ -1408,17 +1785,18 @@ async function loadCandles() {
   }
 }
 async function loadChartMarks() {
-  const { activeSessionId: sessionId, activeCoin: coin, interval } = store.get();
-  const key = `${sessionId ?? ""}:${coin}:${interval}`;
+  const { activeSessionId: sessionId, activeCoin: coin } = store.get();
+  const key2 = `${sessionId ?? ""}:${coin}`;
+  const version = ++chartMarksLoadVersion;
   if (!sessionId) {
-    store.patch({ chartMarks: [], chartMarksKey: key });
+    store.patch({ chartMarks: [], chartMarksKey: key2 });
     return;
   }
   try {
-    const res = await hyperCall("chartMarks", { sessionId, coin, interval });
+    const res = await hyperCall("chartMarks", { sessionId, coin, allIntervals: true });
     const current2 = store.get();
-    if (`${current2.activeSessionId ?? ""}:${current2.activeCoin}:${current2.interval}` === key) {
-      store.patch({ chartMarks: res.marks ?? [], chartMarksKey: key });
+    if (version === chartMarksLoadVersion && `${current2.activeSessionId ?? ""}:${current2.activeCoin}` === key2) {
+      store.patch({ chartMarks: res.marks ?? [], chartMarksKey: key2 });
     }
   } catch {
   }
@@ -1473,6 +1851,14 @@ async function loadSessions() {
   } catch {
   }
 }
+async function reloadMaLines(sessionId) {
+  try {
+    const workspace = await hyperCall("sessionWorkspace", { sessionId });
+    const state = store.get();
+    if (state.workspaceSessionId === sessionId && state.workspace) store.patch({ workspace: { ...state.workspace, maLines: workspace.maLines ?? [] } });
+  } catch {
+  }
+}
 async function pollEvents() {
   if (eventsPending) return;
   eventsPending = true;
@@ -1482,11 +1868,17 @@ async function pollEvents() {
       for (const ev of res.events) {
         if (ev.kind === "network.changed" && (ev.data?.to === "mainnet" || ev.data?.to === "testnet") && ev.data.to !== store.get().status?.network) resetNetworkView(ev.data.to);
         if (ev.kind === "mode.changed" && (ev.data?.to === "live" || ev.data?.to === "paper") && ev.data.to !== store.get().status?.tradingMode) resetModeView(ev.data.to);
+        if (ev.kind === "risk.changed") void loadStatus();
         if (ev.kind === "paper.fill" || ev.kind?.startsWith("live.order.")) {
           void loadAccount();
           void loadTradeHistory(true);
         }
-        if (ev.kind === "chart.mark" && ev.data?.sessionId === store.get().activeSessionId) void loadChartMarks();
+        if (ev.kind === "chart.mark" && (ev.data?.sessionId === store.get().activeSessionId || ev.data?.shared && ev.data?.coin === store.get().activeCoin)) void loadChartMarks();
+        if (ev.kind === "chart.alert" && (ev.data?.sessionId === store.get().activeSessionId || ev.data?.shared)) {
+          notify(tr(`${ev.data.coin} \u4EF7\u683C${ev.data.direction === "up" ? "\u4E0A\u7A7F" : "\u4E0B\u7A7F"}\u300C${ev.data.label}\u300D\uFF1A${ev.data.price}`, `${ev.data.coin} crossed ${ev.data.direction === "up" ? "above" : "below"} "${ev.data.label}": ${ev.data.price}`));
+          if (ev.data.coin === store.get().activeCoin) void loadChartMarks();
+        }
+        if (ev.kind === "chart.ma" && ev.data?.sessionId === store.get().activeSessionId) void reloadMaLines(ev.data.sessionId);
         if (ev.data?.clientId === focusClientId) continue;
         if (ev.kind === "desk.state" && ev.data?.coin && (!ev.data.sessionId || ev.data.sessionId === store.get().activeSessionId) && ev.data.coin !== store.get().activeCoin) {
           focusVersion += 1;
@@ -1582,8 +1974,18 @@ function insertChartReference(selection, coin, interval) {
     return;
   }
   const text = formatChartReference(selection, coin, interval, tr("zh", "en") === "en");
-  store.patch((current2) => ({ chartReferences: [...current2.chartReferences, { id: Date.now() + Math.random(), sessionId, text }] }));
+  const quote = { id: Date.now() + Math.random(), sessionId, text, label: chartReferenceLabel(selection, coin, interval), coin, interval, t: selection.candle.t };
+  store.patch((current2) => ({ chartReferences: [...current2.chartReferences, quote] }));
   if (store.get().workspace?.layout?.chatCollapsed) notify(tr("\u70B9\u4F4D\u5DF2\u6682\u5B58\uFF0C\u5C55\u5F00\u5BF9\u8BDD\u680F\u540E\u53EF\u7F16\u8F91", "Chart point saved; open the chat panel to edit it"));
+}
+async function focusChartReference(ref) {
+  if (store.get().activeCoin !== ref.coin) await setDeskCoin(ref.coin);
+  if (store.get().interval !== ref.interval) {
+    store.patch({ interval: ref.interval });
+    pushDeskInterval(ref.interval);
+    void loadCandles();
+  }
+  store.patch({ chartFocus: { coin: ref.coin, interval: ref.interval, t: ref.t, at: Date.now() } });
 }
 function setDeskCoin(coin) {
   const version = ++focusVersion;
@@ -1682,7 +2084,7 @@ function BrandMark({ size: size3 = 18 }) {
 
 // src/client/components/divider.tsx
 var React3 = __toESM(require("react"), 1);
-function Divider({ side, onResize, onCommit, onReset }) {
+function Divider({ side: side2, onResize, onCommit, onReset }) {
   const [dragging, setDragging] = React3.useState(false);
   const node = React3.useRef(null);
   const drag = React3.useRef(null);
@@ -1732,7 +2134,7 @@ function Divider({ side, onResize, onCommit, onReset }) {
   const onPointerMove = (event) => {
     const active = drag.current;
     if (!active || event.pointerId !== active.pointerId) return;
-    const total = side === "left" ? event.clientX - active.startX : active.startX - event.clientX;
+    const total = side2 === "left" ? event.clientX - active.startX : active.startX - event.clientX;
     const delta = total - active.applied;
     if (delta !== 0) {
       active.applied = total;
@@ -1757,7 +2159,7 @@ function Divider({ side, onResize, onCommit, onReset }) {
       },
       onDoubleClick: onReset,
       role: "separator",
-      "aria-label": side === "left" ? tr("\u8C03\u6574\u4F1A\u8BDD\u680F\u5BBD\u5EA6", "Resize sessions") : tr("\u8C03\u6574\u5BF9\u8BDD\u680F\u5BBD\u5EA6", "Resize chat"),
+      "aria-label": side2 === "left" ? tr("\u8C03\u6574\u4F1A\u8BDD\u680F\u5BBD\u5EA6", "Resize sessions") : tr("\u8C03\u6574\u5BF9\u8BDD\u680F\u5BBD\u5EA6", "Resize chat"),
       "aria-orientation": "vertical"
     }
   );
@@ -1807,6 +2209,35 @@ function FoldIcon({ direction }) {
 }
 function SearchIcon() {
   return /* @__PURE__ */ React4.createElement("svg", { width: "18", height: "18", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.6", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, /* @__PURE__ */ React4.createElement("circle", { cx: "10.5", cy: "10.5", r: "6.5" }), /* @__PURE__ */ React4.createElement("path", { d: "m15.5 15.5 5 5" }));
+}
+function UiIcon({ name, size: size3 = 16, filled = false }) {
+  const paths2 = {
+    chevronDown: /* @__PURE__ */ React4.createElement("path", { d: "m6 9 6 6 6-6" }),
+    chevronRight: /* @__PURE__ */ React4.createElement("path", { d: "m9 6 6 6-6 6" }),
+    bell: /* @__PURE__ */ React4.createElement("path", { d: "M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0" }),
+    sync: /* @__PURE__ */ React4.createElement("path", { d: "M4 9h13l-3-3M20 15H7l3 3" }),
+    trash: /* @__PURE__ */ React4.createElement("path", { d: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6" }),
+    lock: /* @__PURE__ */ React4.createElement(React4.Fragment, null, /* @__PURE__ */ React4.createElement("rect", { x: "5", y: "11", width: "14", height: "9", rx: "2" }), /* @__PURE__ */ React4.createElement("path", { d: "M8 11V8a4 4 0 0 1 8 0v3" })),
+    unlock: /* @__PURE__ */ React4.createElement(React4.Fragment, null, /* @__PURE__ */ React4.createElement("rect", { x: "5", y: "11", width: "14", height: "9", rx: "2" }), /* @__PURE__ */ React4.createElement("path", { d: "M8 11V8a4 4 0 0 1 7.5-2" })),
+    eye: /* @__PURE__ */ React4.createElement(React4.Fragment, null, /* @__PURE__ */ React4.createElement("path", { d: "M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z" }), /* @__PURE__ */ React4.createElement("circle", { cx: "12", cy: "12", r: "2.5" })),
+    eyeOff: /* @__PURE__ */ React4.createElement("path", { d: "M3 3l18 18M10.6 6.1A9.7 9.7 0 0 1 12 6c6 0 9.5 6 9.5 6a16 16 0 0 1-3 3.6M6.3 7.6A16 16 0 0 0 2.5 12S6 18 12 18a9 9 0 0 0 4.3-1.1" }),
+    copy: /* @__PURE__ */ React4.createElement(React4.Fragment, null, /* @__PURE__ */ React4.createElement("rect", { x: "8", y: "8", width: "12", height: "12", rx: "2" }), /* @__PURE__ */ React4.createElement("path", { d: "M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" })),
+    save: /* @__PURE__ */ React4.createElement("path", { d: "M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6" }),
+    arrowDown: /* @__PURE__ */ React4.createElement("path", { d: "M12 4v16m-6-6 6 6 6-6" }),
+    arrowUp: /* @__PURE__ */ React4.createElement("path", { d: "M12 20V4m-6 6 6-6 6 6" }),
+    more: /* @__PURE__ */ React4.createElement(React4.Fragment, null, /* @__PURE__ */ React4.createElement("circle", { cx: "5", cy: "12", r: "1" }), /* @__PURE__ */ React4.createElement("circle", { cx: "12", cy: "12", r: "1" }), /* @__PURE__ */ React4.createElement("circle", { cx: "19", cy: "12", r: "1" })),
+    // Gear outline after Lucide's "settings" (ISC licence, see NOTICE): an even 8-tooth gear on the 24px grid.
+    settings: /* @__PURE__ */ React4.createElement(React4.Fragment, null, /* @__PURE__ */ React4.createElement("path", { d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" }), /* @__PURE__ */ React4.createElement("circle", { cx: "12", cy: "12", r: "3" })),
+    info: /* @__PURE__ */ React4.createElement(React4.Fragment, null, /* @__PURE__ */ React4.createElement("circle", { cx: "12", cy: "12", r: "10" }), /* @__PURE__ */ React4.createElement("path", { d: "M12 11v5M12 8h.01" })),
+    close: /* @__PURE__ */ React4.createElement("path", { d: "M18 6 6 18M6 6l12 12" }),
+    plus: /* @__PURE__ */ React4.createElement("path", { d: "M12 5v14M5 12h14" }),
+    check: /* @__PURE__ */ React4.createElement("path", { d: "m5 12 4 4L19 6" }),
+    star: /* @__PURE__ */ React4.createElement("path", { d: "m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2Z" }),
+    pencil: /* @__PURE__ */ React4.createElement(React4.Fragment, null, /* @__PURE__ */ React4.createElement("path", { d: "m15 5 4 4M4 20l4.5-1 10-10a2.83 2.83 0 0 0-4-4l-10 10L4 20Z" })),
+    archive: /* @__PURE__ */ React4.createElement(React4.Fragment, null, /* @__PURE__ */ React4.createElement("rect", { x: "3", y: "4", width: "18", height: "4", rx: "1" }), /* @__PURE__ */ React4.createElement("path", { d: "M5 8v12h14V8M10 12h4" })),
+    coin: /* @__PURE__ */ React4.createElement(React4.Fragment, null, /* @__PURE__ */ React4.createElement("circle", { cx: "12", cy: "12", r: "9" }), /* @__PURE__ */ React4.createElement("path", { d: "M15.5 8.5c-.7-.8-1.9-1.2-3.5-1.2-2.1 0-3.5.9-3.5 2.5 0 3.7 7 1.5 7 5.1 0 1.5-1.4 2.6-3.5 2.6-1.6 0-2.8-.4-3.7-1.3M12 5v14" }))
+  };
+  return /* @__PURE__ */ React4.createElement("svg", { width: size3, height: size3, viewBox: "0 0 24 24", fill: name === "star" && filled ? "currentColor" : "none", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", focusable: "false" }, paths2[name]);
 }
 
 // src/client/components/sessions-column.tsx
@@ -1881,7 +2312,7 @@ function SessionsColumn({ width, fill = false, onCollapse }) {
       notify(t("session.archiveFailed", "\u5F52\u6863\u4F1A\u8BDD\u5931\u8D25") + "\uFF1A" + String(error?.message ?? error));
     }
   }, []);
-  return /* @__PURE__ */ React5.createElement("div", { id: "dhl-panel-sessions", className: "dhl-col-sessions", style: fill ? { flex: "1 1 0", width: "auto" } : width ? { width } : void 0 }, /* @__PURE__ */ React5.createElement("div", { className: "dhl-col-head" }, t("sessions.title", "\u4EA4\u6613\u4F1A\u8BDD"), /* @__PURE__ */ React5.createElement("div", { className: "dhl-spacer" }), `${rows.length}`, /* @__PURE__ */ React5.createElement("button", { className: "dhl-panel-iconbtn", type: "button", onClick: onCollapse, "aria-label": tr("\u6536\u8D77\u4F1A\u8BDD\u680F", "Collapse sessions"), title: tr("\u6536\u8D77\u4F1A\u8BDD\u680F", "Collapse sessions") }, /* @__PURE__ */ React5.createElement(FoldIcon, { direction: "left" }))), /* @__PURE__ */ React5.createElement("button", { className: "dhl-newbtn", onClick: createSession }, "\uFF0B ", t("sessions.new", "\u65B0\u5EFA\u4EA4\u6613\u4F1A\u8BDD")), /* @__PURE__ */ React5.createElement("div", { style: { flex: "1", overflowY: "auto", minHeight: 0 } }, rows.length === 0 ? /* @__PURE__ */ React5.createElement("div", { className: "dhl-empty" }, t("sessions.empty", "\u8FD8\u6CA1\u6709\u4EA4\u6613\u4F1A\u8BDD\u3002\n\u70B9\u51FB\u4E0A\u65B9\u65B0\u5EFA\uFF0C\u5F00\u4E00\u4E2A\u4E13\u5C5E\u4EA4\u6613\u5BF9\u8BDD\u3002")) : rows.map((row) => /* @__PURE__ */ React5.createElement(
+  return /* @__PURE__ */ React5.createElement("div", { id: "dhl-panel-sessions", className: "dhl-col-sessions", style: fill ? { flex: "1 1 0", width: "auto" } : width ? { width } : void 0 }, /* @__PURE__ */ React5.createElement("div", { className: "dhl-col-head" }, t("sessions.title", "\u4EA4\u6613\u4F1A\u8BDD"), /* @__PURE__ */ React5.createElement("div", { className: "dhl-spacer" }), `${rows.length}`, /* @__PURE__ */ React5.createElement("button", { className: "dhl-panel-iconbtn", type: "button", onClick: onCollapse, "aria-label": tr("\u6536\u8D77\u4F1A\u8BDD\u680F", "Collapse sessions"), title: tr("\u6536\u8D77\u4F1A\u8BDD\u680F", "Collapse sessions") }, /* @__PURE__ */ React5.createElement(FoldIcon, { direction: "left" }))), /* @__PURE__ */ React5.createElement("button", { className: "dhl-newbtn", onClick: createSession }, /* @__PURE__ */ React5.createElement(UiIcon, { name: "plus", size: 16 }), t("sessions.new", "\u65B0\u5EFA\u4EA4\u6613\u4F1A\u8BDD")), /* @__PURE__ */ React5.createElement("div", { style: { flex: "1", overflowY: "auto", minHeight: 0 } }, rows.length === 0 ? /* @__PURE__ */ React5.createElement("div", { className: "dhl-empty" }, t("sessions.empty", "\u8FD8\u6CA1\u6709\u4EA4\u6613\u4F1A\u8BDD\u3002\n\u70B9\u51FB\u4E0A\u65B9\u65B0\u5EFA\uFF0C\u5F00\u4E00\u4E2A\u4E13\u5C5E\u4EA4\u6613\u5BF9\u8BDD\u3002")) : rows.map((row) => /* @__PURE__ */ React5.createElement(
     "div",
     {
       key: row.sessionId,
@@ -1896,13 +2327,13 @@ function SessionsColumn({ width, fill = false, onCollapse }) {
     /* @__PURE__ */ React5.createElement("span", { className: "dhl-srow-actions" }, /* @__PURE__ */ React5.createElement("button", { className: "dhl-srow-action", type: "button", title: t("session.rename", "\u91CD\u547D\u540D"), "aria-label": t("session.rename", "\u91CD\u547D\u540D"), onClick: (event) => {
       event.stopPropagation();
       setEditing({ id: row.sessionId, title: row.title ?? "" });
-    } }, "\u270E"), /* @__PURE__ */ React5.createElement("button", { className: "dhl-srow-action", type: "button", title: t("session.archive", "\u5F52\u6863"), "aria-label": t("session.archive", "\u5F52\u6863"), onClick: (event) => {
+    } }, /* @__PURE__ */ React5.createElement(UiIcon, { name: "pencil", size: 14 })), /* @__PURE__ */ React5.createElement("button", { className: "dhl-srow-action", type: "button", title: t("session.archive", "\u5F52\u6863"), "aria-label": t("session.archive", "\u5F52\u6863"), onClick: (event) => {
       event.stopPropagation();
       void archive(row.sessionId);
-    } }, "\u2311"))
-  ))), /* @__PURE__ */ React5.createElement(import_dsh_client_ui_primitives.Modal, { open: Boolean(editing), onClose: () => setEditing(null), title: t("session.rename", "\u91CD\u547D\u540D\u4F1A\u8BDD"), closeLabel: t("modal.close", "\u5173\u95ED"), className: "dhl-rename-modal", footer: /* @__PURE__ */ React5.createElement(React5.Fragment, null, /* @__PURE__ */ React5.createElement("button", { type: "button", className: "dhl-modal-secondary", onClick: () => setEditing(null) }, t("modal.cancel", "\u53D6\u6D88")), /* @__PURE__ */ React5.createElement("button", { type: "button", className: "dhl-modal-primary", disabled: !editing?.title.trim() || saving, onClick: () => {
+    } }, /* @__PURE__ */ React5.createElement(UiIcon, { name: "archive", size: 14 })))
+  ))), /* @__PURE__ */ React5.createElement(import_dsh_client_ui_primitives.Modal, { open: Boolean(editing), onClose: () => setEditing(null), title: t("session.rename", "\u91CD\u547D\u540D\u4F1A\u8BDD"), closeLabel: t("modal.close", "\u5173\u95ED"), className: "dhl-rename-modal", footer: /* @__PURE__ */ React5.createElement(React5.Fragment, null, /* @__PURE__ */ React5.createElement(import_dsh_client_ui_primitives.Button, { variant: "outline", onClick: () => setEditing(null) }, t("modal.cancel", "\u53D6\u6D88")), /* @__PURE__ */ React5.createElement(import_dsh_client_ui_primitives.Button, { variant: "primary", disabled: !editing?.title.trim() || saving, onClick: () => {
     void saveTitle();
-  } }, t("modal.save", "\u4FDD\u5B58"))) }, /* @__PURE__ */ React5.createElement("input", { "data-modal-autofocus": true, className: "dhl-rename-input", value: editing?.title ?? "", onChange: (event) => setEditing((prev) => prev ? { ...prev, title: event.target.value } : null), onKeyDown: (event) => {
+  } }, t("modal.save", "\u4FDD\u5B58"))) }, /* @__PURE__ */ React5.createElement(import_dsh_client_ui_primitives.Input, { "data-modal-autofocus": true, className: "dhl-rename-input", value: editing?.title ?? "", onChange: (event) => setEditing((prev) => prev ? { ...prev, title: event.target.value } : null), onKeyDown: (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
       void saveTitle();
@@ -1911,10 +2342,16 @@ function SessionsColumn({ width, fill = false, onCollapse }) {
 }
 
 // src/client/components/desk-column.tsx
-var React13 = __toESM(require("react"), 1);
+var React21 = __toESM(require("react"), 1);
+
+// src/client/components/select.tsx
+var React6 = __toESM(require("react"), 1);
+function Select({ className, children, ...props }) {
+  return /* @__PURE__ */ React6.createElement("span", { className: "dhl-select" + (className ? " " + className : "") }, /* @__PURE__ */ React6.createElement("select", { ...props }, children), /* @__PURE__ */ React6.createElement(UiIcon, { name: "chevronDown", size: 13 }));
+}
 
 // src/client/components/candle-chart.tsx
-var React6 = __toESM(require("react"), 1);
+var React9 = __toESM(require("react"), 1);
 
 // node_modules/fancy-canvas/size.mjs
 function size(_a) {
@@ -2172,13 +2609,13 @@ var DevicePixelContentBoxBinding = (
       if (win === null) {
         return;
       }
-      var ratio = (_b = (_a = this._devicePixelRatioObservable) === null || _a === void 0 ? void 0 : _a.value) !== null && _b !== void 0 ? _b : win.devicePixelRatio;
+      var ratio2 = (_b = (_a = this._devicePixelRatioObservable) === null || _a === void 0 ? void 0 : _a.value) !== null && _b !== void 0 ? _b : win.devicePixelRatio;
       var canvasRects = this._canvasElement.getClientRects();
       var newSize = (
         // eslint-disable-next-line no-negated-condition
-        canvasRects[0] !== void 0 ? predictedBitmapSize(canvasRects[0], ratio) : size({
-          width: this._canvasElementClientSize.width * ratio,
-          height: this._canvasElementClientSize.height * ratio
+        canvasRects[0] !== void 0 ? predictedBitmapSize(canvasRects[0], ratio2) : size({
+          width: this._canvasElementClientSize.width * ratio2,
+          height: this._canvasElementClientSize.height * ratio2
         })
       );
       this._suggestNewBitmapSize(newSize);
@@ -2229,10 +2666,10 @@ function isDevicePixelContentBoxSupported() {
     return false;
   });
 }
-function predictedBitmapSize(canvasRect, ratio) {
+function predictedBitmapSize(canvasRect, ratio2) {
   return size({
-    width: Math.round(canvasRect.left * ratio + canvasRect.width * ratio) - Math.round(canvasRect.left * ratio),
-    height: Math.round(canvasRect.top * ratio + canvasRect.height * ratio) - Math.round(canvasRect.top * ratio)
+    width: Math.round(canvasRect.left * ratio2 + canvasRect.width * ratio2) - Math.round(canvasRect.left * ratio2),
+    height: Math.round(canvasRect.top * ratio2 + canvasRect.height * ratio2) - Math.round(canvasRect.top * ratio2)
   });
 }
 
@@ -4530,8 +4967,8 @@ var DataConflater = class {
     if (barSpacing >= conflationThreshold) {
       return 1;
     }
-    const ratio = conflationThreshold / barSpacing;
-    const conflationLevel = Math.pow(2, Math.floor(Math.log2(ratio)));
+    const ratio2 = conflationThreshold / barSpacing;
+    const conflationLevel = Math.pow(2, Math.floor(Math.log2(ratio2)));
     return Math.min(conflationLevel, MAX_CONFLATION_LEVEL);
   }
   _internal_conflateByFactor(data, barsToMerge, customReducer, isCustomSeries = false, priceValueBuilder) {
@@ -6140,7 +6577,7 @@ var Magnet = class {
       }
       const firstPrice = ensure(series._internal_firstValue());
       const plotRowKeys = this._private__options.mode === 3 ? magnetOHLCPlotRowKeys : magnetPlotRowKeys;
-      return acc.concat(plotRowKeys.map((key) => ps._internal_priceToCoordinate(bar._internal_value[key], firstPrice._internal_value)));
+      return acc.concat(plotRowKeys.map((key2) => ps._internal_priceToCoordinate(bar._internal_value[key2], firstPrice._internal_value)));
     }, []);
     if (candidates.length === 0) {
       return res;
@@ -8518,8 +8955,8 @@ var TimeScale = class {
       this._private__conflationFactor = 1;
       return;
     }
-    const ratio = adjustedThreshold / this._private__barSpacing;
-    const conflationLevel = Math.pow(2, Math.floor(Math.log2(ratio)));
+    const ratio2 = adjustedThreshold / this._private__barSpacing;
+    const conflationLevel = Math.pow(2, Math.floor(Math.log2(ratio2)));
     this._private__conflationFactor = Math.min(conflationLevel, 512);
   }
   _private__correctOffset() {
@@ -8639,9 +9076,9 @@ var TimeScale = class {
     }
   }
 };
-function* testNearestIntegers(num) {
-  const rounded = Math.round(num);
-  const isRoundedDown = rounded < num;
+function* testNearestIntegers(num2) {
+  const rounded = Math.round(num2);
+  const isRoundedDown = rounded < num2;
   let offset = 1;
   while (true) {
     if (isRoundedDown) {
@@ -9278,10 +9715,10 @@ var ChartModel = class {
       series._internal_applyOptions(series._internal_options());
     }
   }
-  _private__getBackgroundColor(side) {
+  _private__getBackgroundColor(side2) {
     const layoutOptions = this._private__options["layout"];
     if (layoutOptions.background.type === "gradient") {
-      return side === 0 ? layoutOptions.background.topColor : layoutOptions.background.bottomColor;
+      return side2 === 0 ? layoutOptions.background.topColor : layoutOptions.background.bottomColor;
     }
     return layoutOptions.background.color;
   }
@@ -10762,7 +11199,7 @@ function priceScaleCrosshairLabelVisible(crosshair) {
   return crosshair.mode !== 2 && crosshair.horzLine.visible && crosshair.horzLine.labelVisible;
 }
 var PriceAxisWidget = class {
-  constructor(pane, options, rendererOptionsProvider, side) {
+  constructor(pane, options, rendererOptionsProvider, side2) {
     this._private__priceScale = null;
     this._private__size = null;
     this._private__mousedown = false;
@@ -10786,10 +11223,10 @@ var PriceAxisWidget = class {
     this._private__options = options;
     this._private__layoutOptions = options["layout"];
     this._private__rendererOptionsProvider = rendererOptionsProvider;
-    this._private__isLeft = side === "left";
-    this._private__sourcePaneViews = buildPriceAxisViewsGetter("normal", side);
-    this._private__sourceTopPaneViews = buildPriceAxisViewsGetter("top", side);
-    this._private__sourceBottomPaneViews = buildPriceAxisViewsGetter("bottom", side);
+    this._private__isLeft = side2 === "left";
+    this._private__sourcePaneViews = buildPriceAxisViewsGetter("normal", side2);
+    this._private__sourceTopPaneViews = buildPriceAxisViewsGetter("top", side2);
+    this._private__sourceBottomPaneViews = buildPriceAxisViewsGetter("bottom", side2);
     this._private__cell = document.createElement("div");
     this._private__cell.style.height = "100%";
     this._private__cell.style.overflow = "hidden";
@@ -11863,14 +12300,14 @@ var PaneWidget = class _PaneWidget {
   }
 };
 var PriceAxisStub = class {
-  constructor(side, options, params, borderVisible, bottomColor) {
+  constructor(side2, options, params, borderVisible, bottomColor) {
     this._private__invalidated = true;
     this._private__size = size({ width: 0, height: 0 });
     this._private__canvasSuggestedBitmapSizeChangedHandler = () => this._internal_paint(
       3
       /* InvalidationLevel.Full */
     );
-    this._private__isLeft = side === "left";
+    this._private__isLeft = side2 === "left";
     this._private__rendererOptionsProvider = params._internal_rendererOptionsProvider;
     this._private__options = options;
     this._private__borderVisible = borderVisible;
@@ -14202,9 +14639,9 @@ function checkBarItem(type, barItem) {
   if (!isFulfilledData(barItem)) {
     return;
   }
-  ["open", "high", "low", "close"].forEach((key) => {
-    assert(typeof barItem[key] === "number", `${type} series item data value of ${key} must be a number, got=${typeof barItem[key]}, value=${barItem[key]}`);
-    assert(isSafeValue(barItem[key]), `${type} series item data value of ${key} must be between ${MIN_SAFE_VALUE.toPrecision(16)} and ${MAX_SAFE_VALUE.toPrecision(16)}, got=${typeof barItem[key]}, value=${barItem[key]}`);
+  ["open", "high", "low", "close"].forEach((key2) => {
+    assert(typeof barItem[key2] === "number", `${type} series item data value of ${key2} must be a number, got=${typeof barItem[key2]}, value=${barItem[key2]}`);
+    assert(isSafeValue(barItem[key2]), `${type} series item data value of ${key2} must be between ${MIN_SAFE_VALUE.toPrecision(16)} and ${MAX_SAFE_VALUE.toPrecision(16)}, got=${typeof barItem[key2]}, value=${barItem[key2]}`);
   });
 }
 function checkLineItem(type, lineItem) {
@@ -16893,13 +17330,727 @@ var customSeriesDefaultOptions = {
   ...customStyleDefaults$1
 };
 
+// src/client/drawing-tools.tsx
+var React7 = __toESM(require("react"), 1);
+
+// lib/chart-drawings.js
+var DRAWING_POINTS = {
+  level: 1,
+  hray: 1,
+  vline: 1,
+  text: 1,
+  trend: 2,
+  ray: 2,
+  extended: 2,
+  fib: 2,
+  rect: 2,
+  measure: 2,
+  channel: 3,
+  // Positions store [entry, stop, target]; the desk creates them with 2 clicks (target defaults to 2R).
+  long: 3,
+  short: 3,
+  // Fibonacci family, Gann, pitchfork, regression.
+  fibext: 3,
+  fibchannel: 3,
+  fibtime: 2,
+  gannfan: 2,
+  pitchfork: 3,
+  regression: 2,
+  // Annotation and shapes. brush is freehand: 0 = variable (BRUSH_MIN..BRUSH_MAX points).
+  arrow: 2,
+  callout: 2,
+  circle: 2,
+  triangle: 3,
+  brush: 0,
+  // More lines and measures: cross line, price label, info line, trend angle, price-only and date-only ranges.
+  crossline: 1,
+  pricelabel: 1,
+  infoline: 2,
+  trendangle: 2,
+  pricerange: 2,
+  daterange: 2,
+  // Advanced: Elliott waves, harmonic / chart patterns, Gann box & square, pitchfork variants, icons.
+  elliott: 6,
+  elliottabc: 4,
+  xabcd: 5,
+  abcd: 4,
+  headshoulders: 7,
+  gannbox: 2,
+  gannsquare: 2,
+  schiff: 3,
+  modschiff: 3,
+  icon: 1
+};
+var ICON_NAMES = ["flag", "star", "up", "down", "warning", "check", "cross", "fire", "target", "bell", "pin", "clock", "dollar", "shield", "bolt", "heart", "question", "info"];
+var STICKERS = {
+  trading: ["\u{1F4C8}", "\u{1F4C9}", "\u{1F4B0}", "\u{1F4B8}", "\u{1F680}", "\u{1F3AF}", "\u{1F525}", "\u{1F48E}", "\u{1F402}", "\u{1F43B}", "\u{1F40B}", "\u{1F6A8}", "\u{1F514}", "\u23F0", "\u{1F4CC}", "\u{1F9ED}", "\u{1F6D1}", "\u{1F3E6}", "\u2696\uFE0F", "\u{1FA99}"],
+  faces: ["\u{1F600}", "\u{1F602}", "\u{1F60E}", "\u{1F914}", "\u{1F631}", "\u{1F62D}", "\u{1F621}", "\u{1F973}", "\u{1F92F}", "\u{1F64F}", "\u{1F44D}", "\u{1F44E}", "\u{1F440}", "\u{1F4AA}", "\u{1FAE1}", "\u{1F91D}"],
+  symbols: ["\u2B50", "\u2757", "\u2753", "\u{1F4A1}", "\u{1F512}", "\u{1F513}", "\u26D4", "\u{1F7E2}", "\u{1F534}", "\u{1F7E1}", "\u2B06\uFE0F", "\u2B07\uFE0F", "\u2197\uFE0F", "\u2198\uFE0F", "\u{1F3C1}", "\u{1F389}", "\u2705", "\u274C", "\u26A0\uFE0F", "\u267B\uFE0F", "\u23F8\uFE0F", "\u25B6\uFE0F"]
+};
+var STICKER_SET = new Set(Object.values(STICKERS).flat());
+function isSingleEmoji(value) {
+  if (typeof value !== "string" || !value || value.length > 32 || !/\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(value)) return false;
+  return [...new Intl.Segmenter(void 0, { granularity: "grapheme" }).segment(value)].length === 1;
+}
+var GANN_BOX_LEVELS = [0, 0.25, 0.382, 0.5, 0.618, 0.75, 1];
+var ALERT_KINDS = ["level", "hray", "trend", "ray", "extended"];
+var BRUSH_MAX = 500;
+var TEXT_KINDS = ["text", "callout"];
+var DRAWING_CLICKS = { ...Object.fromEntries(Object.entries(DRAWING_POINTS)), long: 2, short: 2 };
+var DRAWING_KINDS = Object.keys(DRAWING_POINTS);
+var FIB_LEVELS = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1];
+var FIB_EXT_LEVELS = [0, 0.382, 0.618, 1, 1.272, 1.618, 2, 2.618];
+var FIB_TIME_SERIES = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+var GANN_RATIOS = [[1, 8], [1, 4], [1, 3], [1, 2], [1, 1], [2, 1], [3, 1], [4, 1], [8, 1]];
+var OLDEST = Date.UTC(2015, 0, 1);
+
+// src/client/drawing-tools.tsx
+var isTextKind = (kind) => TEXT_KINDS.includes(kind);
+var DRAWING_TOOLS = [
+  { group: "lines", kind: "trend", zh: "\u8D8B\u52BF\u7EBF", en: "Trend line", hintZh: "\u4F9D\u6B21\u70B9\u51FB\u8D77\u70B9\u548C\u7EC8\u70B9", hintEn: "Click start and end points", icon: "M4 19 20 5" },
+  { group: "lines", kind: "ray", zh: "\u5C04\u7EBF", en: "Ray", hintZh: "\u70B9\u51FB\u8D77\u70B9\uFF0C\u518D\u70B9\u51FB\u65B9\u5411\u70B9\uFF0C\u5411\u524D\u65E0\u9650\u5EF6\u4F38", hintEn: "Click origin, then direction; extends forward", icon: "M4 19 20 5M4 19h.01" },
+  { group: "lines", kind: "extended", zh: "\u5EF6\u957F\u7EBF", en: "Extended line", hintZh: "\u70B9\u51FB\u4E24\u70B9\uFF0C\u4E24\u7AEF\u65E0\u9650\u5EF6\u4F38", hintEn: "Click two points; extends both ways", icon: "M2 21 22 3" },
+  { group: "lines", kind: "level", zh: "\u6C34\u5E73\u7EBF", en: "Horizontal line", hintZh: "\u5355\u51FB\u8BBE\u7F6E\u4EF7\u683C", hintEn: "Click to set the price", icon: "M3 12h18" },
+  { group: "lines", kind: "hray", zh: "\u6C34\u5E73\u5C04\u7EBF", en: "Horizontal ray", hintZh: "\u5355\u51FB\u8D77\u70B9\uFF0C\u5411\u53F3\u5EF6\u4F38", hintEn: "Click origin; extends right", icon: "M6 12h15M6 12h.01" },
+  { group: "lines", kind: "infoline", zh: "\u4FE1\u606F\u7EBF", en: "Info line", hintZh: "\u4E24\u70B9\u753B\u7EBF\uFF0C\u663E\u793A\u6DA8\u8DCC\u3001\u6839\u6570\u3001\u65F6\u957F\u548C\u89D2\u5EA6", hintEn: "Two points; shows change, bars, time and angle", icon: "M4 18 18 6M14 4h6v5" },
+  { group: "lines", kind: "trendangle", zh: "\u8D8B\u52BF\u89D2\u5EA6", en: "Trend angle", hintZh: "\u4E24\u70B9\u753B\u7EBF\uFF0C\u663E\u793A\u4E0E\u6C34\u5E73\u7EBF\u7684\u5939\u89D2", hintEn: "Two points; shows the angle to horizontal", icon: "M4 19 19 6M4 19h15M10 19a6 6 0 0 0-1.6-4" },
+  { group: "lines", kind: "crossline", zh: "\u5341\u5B57\u7EBF", en: "Cross line", hintZh: "\u5355\u51FB\u653E\u7F6E\u6C34\u5E73\u4E0E\u5782\u76F4\u4EA4\u53C9\u7EBF", hintEn: "Click to place a horizontal and vertical cross", icon: "M12 3v18M3 12h18" },
+  { group: "lines", kind: "vline", zh: "\u5782\u76F4\u7EBF", en: "Vertical line", hintZh: "\u5355\u51FB\u6807\u8BB0\u65F6\u95F4", hintEn: "Click to mark a time", icon: "M12 3v18" },
+  { group: "channels", kind: "channel", zh: "\u5E73\u884C\u901A\u9053", en: "Parallel channel", hintZh: "\u70B9\u51FB\u4E24\u70B9\u753B\u57FA\u7EBF\uFF0C\u7B2C\u4E09\u70B9\u8BBE\u7F6E\u901A\u9053\u5BBD\u5EA6", hintEn: "Two points for the base, a third for width", icon: "M3 15 15 5M9 19 21 9" },
+  { group: "channels", kind: "pitchfork", zh: "\u5B89\u5FB7\u9C81\u53C9\u5B50\u7EBF", en: "Pitchfork", hintZh: "\u70B9\u51FB\u67A2\u8F74\u70B9\uFF0C\u518D\u70B9\u51FB\u6CE2\u6BB5\u9AD8\u70B9\u4E0E\u4F4E\u70B9", hintEn: "Click the pivot, then the swing high and low", icon: "M4 20 12 4M12 4l8 8M12 4 4 12M8 16l12-4" },
+  { group: "channels", kind: "schiff", zh: "Schiff \u53C9\u5B50\u7EBF", en: "Schiff pitchfork", hintZh: "\u540C\u53C9\u5B50\u7EBF\uFF0C\u8D77\u70B9\u79FB\u5230 A\u3001B \u4EF7\u683C\u4E2D\u70B9", hintEn: "Pitchfork with the handle at A\u2013B price midpoint", icon: "M4 14 12 4M12 4l8 8M12 4 4 12M8 16l12-4" },
+  { group: "channels", kind: "modschiff", zh: "\u6539\u826F Schiff \u53C9\u5B50\u7EBF", en: "Modified Schiff pitchfork", hintZh: "\u540C\u53C9\u5B50\u7EBF\uFF0C\u8D77\u70B9\u79FB\u5230 A\u3001B \u65F6\u95F4\u4E0E\u4EF7\u683C\u4E2D\u70B9", hintEn: "Pitchfork with the handle at the A\u2013B midpoint", icon: "M6 12 12 4M12 4l8 8M12 4 4 12M8 16l12-4" },
+  { group: "channels", kind: "regression", zh: "\u56DE\u5F52\u8D8B\u52BF", en: "Regression trend", hintZh: "\u70B9\u51FB\u533A\u95F4\u8D77\u70B9\u548C\u7EC8\u70B9\uFF0C\u6309\u6536\u76D8\u4EF7\u62DF\u5408 \xB12\u03C3 \u901A\u9053", hintEn: "Click range start and end; fits closes with \xB12\u03C3", icon: "M3 17 21 7M3 13 21 3M3 21 21 11" },
+  { group: "fib", kind: "fib", zh: "\u6590\u6CE2\u90A3\u5951\u56DE\u64A4", en: "Fib retracement", hintZh: "\u4ECE\u6CE2\u6BB5\u8D77\u70B9\u70B9\u5230\u7EC8\u70B9\uFF08\u7EC8\u70B9\u4E3A 0\uFF09", hintEn: "Click swing start, then end (end = 0)", icon: "M3 5h18M3 9h18M3 13h18M3 19h18" },
+  { group: "fib", kind: "fibext", zh: "\u6590\u6CE2\u90A3\u5951\u6269\u5C55", en: "Trend-based fib extension", hintZh: "\u70B9\u51FB\u6CE2\u6BB5\u8D77\u70B9\u3001\u7EC8\u70B9\uFF0C\u518D\u70B9\u51FB\u56DE\u64A4\u70B9\uFF0C\u81EA\u56DE\u64A4\u70B9\u6295\u5C04", hintEn: "Swing start, swing end, then the retracement point", icon: "M3 20 9 6l6 9M15 4h7M15 8h7M15 12h7" },
+  { group: "fib", kind: "fibchannel", zh: "\u6590\u6CE2\u90A3\u5951\u901A\u9053", en: "Fib channel", hintZh: "\u4E24\u70B9\u753B\u57FA\u7EBF\uFF0C\u7B2C\u4E09\u70B9\u8BBE\u7F6E\u901A\u9053\u5BBD\u5EA6", hintEn: "Two points for the base, a third for width", icon: "M3 19 21 9M3 15 21 5M3 11 21 1" },
+  { group: "fib", kind: "fibtime", zh: "\u6590\u6CE2\u90A3\u5951\u65F6\u95F4\u5468\u671F", en: "Fib time zone", hintZh: "\u70B9\u51FB\u4E24\u70B9\u786E\u5B9A\u5355\u4F4D\u95F4\u9694", hintEn: "Click two points to set the unit spacing", icon: "M4 3v18M7 3v18M10 3v18M15 3v18M22 3v18" },
+  { group: "fib", kind: "gannbox", zh: "\u6C5F\u6069\u7BB1", en: "Gann box", hintZh: "\u70B9\u51FB\u4E24\u4E2A\u5BF9\u89D2\uFF0C\u6309 0.25/0.382/0.5/0.618/0.75 \u5206\u5272", hintEn: "Click two corners; divided at Gann levels", icon: "M4 4h16v16H4zM4 12h16M12 4v16M4 4l16 16" },
+  { group: "fib", kind: "gannsquare", zh: "\u6C5F\u6069\u65B9\u683C", en: "Gann square", hintZh: "\u70B9\u51FB\u4E24\u4E2A\u5BF9\u89D2\uFF0C\u753B\u56DB\u5206\u7F51\u683C\u3001\u5BF9\u89D2\u7EBF\u4E0E\u6247\u7EBF", hintEn: "Click two corners; quarters, diagonals and fans", icon: "M4 4h16v16H4zM4 4l16 16M20 4 4 20M4 12h16M12 4v16" },
+  { group: "fib", kind: "gannfan", zh: "\u6C5F\u6069\u6247\u5F62", en: "Gann fan", hintZh: "\u70B9\u51FB\u539F\u70B9\uFF0C\u518D\u70B9\u51FB\u786E\u5B9A 1\xD71 \u7EBF", hintEn: "Click the origin, then a point on the 1\xD71 line", icon: "M3 21 21 3M3 21 21 12M3 21 12 3M3 21h18" },
+  { group: "patterns", kind: "elliott", zh: "\u827E\u7565\u7279\u63A8\u52A8\u6D6A", en: "Elliott impulse wave", hintZh: "\u4F9D\u6B21\u70B9\u51FB 0\u30011\u30012\u30013\u30014\u30015 \u516D\u4E2A\u70B9", hintEn: "Click points 0 through 5", icon: "M2 18 6 10l3 4 5-10 3 6 5-6" },
+  { group: "patterns", kind: "elliottabc", zh: "\u827E\u7565\u7279\u8C03\u6574\u6D6A", en: "Elliott correction wave", hintZh: "\u4F9D\u6B21\u70B9\u51FB 0\u3001A\u3001B\u3001C \u56DB\u4E2A\u70B9", hintEn: "Click 0, A, B, C", icon: "M3 6l6 10 5-6 7 10" },
+  { group: "patterns", kind: "xabcd", zh: "XABCD \u8C10\u6CE2", en: "XABCD pattern", hintZh: "\u4F9D\u6B21\u70B9\u51FB X\u3001A\u3001B\u3001C\u3001D\uFF0C\u663E\u793A\u6590\u6CE2\u90A3\u5951\u6BD4\u503C", hintEn: "Click X, A, B, C, D; shows Fibonacci ratios", icon: "M2 18 7 5l4 9 5-7 6 12M2 18l9-4M11 14l11 5" },
+  { group: "patterns", kind: "abcd", zh: "ABCD \u5F62\u6001", en: "ABCD pattern", hintZh: "\u4F9D\u6B21\u70B9\u51FB A\u3001B\u3001C\u3001D", hintEn: "Click A, B, C, D", icon: "M3 19 9 6l5 8 7-10" },
+  { group: "patterns", kind: "headshoulders", zh: "\u5934\u80A9\u5F62\u6001", en: "Head and shoulders", hintZh: "\u4F9D\u6B21\u70B9\u51FB\u5DE6\u5E95\u3001\u5DE6\u80A9\u3001\u9888\u7EBF\u70B9\u3001\u5934\u3001\u9888\u7EBF\u70B9\u3001\u53F3\u80A9\u3001\u53F3\u5E95", hintEn: "Click 7 points from left base to right base", icon: "M2 18l3-6 3 3 4-10 4 10 3-3 3 6M5 15h14" },
+  { group: "shapes", kind: "rect", zh: "\u77E9\u5F62", en: "Rectangle", hintZh: "\u70B9\u51FB\u4E24\u4E2A\u5BF9\u89D2", hintEn: "Click two opposite corners", icon: "M4 6h16v12H4z" },
+  { group: "shapes", kind: "circle", zh: "\u5706\u5F62", en: "Circle", hintZh: "\u70B9\u51FB\u5706\u5FC3\uFF0C\u518D\u70B9\u51FB\u8FB9\u7F18", hintEn: "Click the center, then the edge", icon: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" },
+  { group: "shapes", kind: "triangle", zh: "\u4E09\u89D2\u5F62", en: "Triangle", hintZh: "\u4F9D\u6B21\u70B9\u51FB\u4E09\u4E2A\u9876\u70B9", hintEn: "Click three corners", icon: "M12 4 21 20H3z" },
+  { group: "shapes", kind: "brush", zh: "\u753B\u7B14", en: "Brush", hintZh: "\u6309\u4F4F\u9F20\u6807\u62D6\u52A8\u81EA\u7531\u7ED8\u5236", hintEn: "Press and drag to draw freehand", icon: "M3 17c3-6 5 2 8-3s4-6 7-4 3 4 3 4" },
+  { group: "annotation", kind: "text", zh: "\u6587\u672C", en: "Text", hintZh: "\u5355\u51FB\u4F4D\u7F6E\u540E\u8F93\u5165\u6587\u5B57", hintEn: "Click a spot, then type", icon: "M5 6h14M12 6v13M9 19h6" },
+  { group: "annotation", kind: "callout", zh: "\u6807\u6CE8\u6C14\u6CE1", en: "Callout", hintZh: "\u70B9\u51FB\u8981\u6807\u6CE8\u7684\u4F4D\u7F6E\uFF0C\u518D\u70B9\u51FB\u6587\u672C\u6846\u4F4D\u7F6E\uFF0C\u7136\u540E\u8F93\u5165\u6587\u5B57", hintEn: "Click the target, then the box, then type", icon: "M4 4h16v10H10l-4 5v-5H4z" },
+  { group: "annotation", kind: "pricelabel", zh: "\u4EF7\u683C\u6807\u7B7E", en: "Price label", hintZh: "\u5355\u51FB\u5728\u8BE5\u4EF7\u683C\u5904\u653E\u7F6E\u6807\u7B7E", hintEn: "Click to tag a price", icon: "M3 12l5-6h13v12H8z" },
+  { group: "annotation", kind: "icon", zh: "\u56FE\u6807", en: "Icon", hintZh: "\u5355\u51FB\u4F4D\u7F6E\u540E\u9009\u62E9\u56FE\u6807", hintEn: "Click a spot, then pick an icon", icon: "M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.6 6.7 19.4l1.2-6L3.4 9.3l6-.7z" },
+  { group: "annotation", kind: "arrow", zh: "\u7BAD\u5934", en: "Arrow", hintZh: "\u70B9\u51FB\u8D77\u70B9\u548C\u7BAD\u5934\u6307\u5411\u7684\u4F4D\u7F6E", hintEn: "Click tail, then head", icon: "M4 20 20 4M12 4h8v8" },
+  { group: "measure", kind: "pricerange", zh: "\u4EF7\u683C\u533A\u95F4", en: "Price range", hintZh: "\u70B9\u51FB\u4E24\u70B9\uFF0C\u6D4B\u91CF\u4EF7\u683C\u5DEE\u4E0E\u767E\u5206\u6BD4", hintEn: "Click two points to measure price change", icon: "M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4M5 3h14M5 21h14" },
+  { group: "measure", kind: "daterange", zh: "\u65E5\u671F\u533A\u95F4", en: "Date range", hintZh: "\u70B9\u51FB\u4E24\u70B9\uFF0C\u6D4B\u91CF K \u7EBF\u6839\u6570\u4E0E\u65F6\u957F", hintEn: "Click two points to measure bars and time", icon: "M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4M3 5v14M21 5v14" },
+  { group: "measure", kind: "measure", zh: "\u65E5\u671F\u4E0E\u4EF7\u683C\u533A\u95F4", en: "Date & price range", hintZh: "\u70B9\u51FB\u8D77\u70B9\u548C\u7EC8\u70B9\uFF0C\u663E\u793A\u6DA8\u8DCC\u3001\u6839\u6570\u4E0E\u65F6\u957F", hintEn: "Click two points to measure change, bars and time", icon: "M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4" },
+  { group: "measure", kind: "long", zh: "\u591A\u5934\u5934\u5BF8", en: "Long position", hintZh: "\u70B9\u51FB\u5165\u573A\u4EF7\uFF0C\u518D\u70B9\u51FB\u6B62\u635F\u4EF7\uFF08\u6B62\u76C8\u9ED8\u8BA4 2R\uFF0C\u53EF\u62D6\u52A8\uFF09", hintEn: "Click entry, then stop (target defaults to 2R)", icon: "M4 4h16v8H4zM4 12h16v8H4zM4 12h16" },
+  { group: "measure", kind: "short", zh: "\u7A7A\u5934\u5934\u5BF8", en: "Short position", hintZh: "\u70B9\u51FB\u5165\u573A\u4EF7\uFF0C\u518D\u70B9\u51FB\u6B62\u635F\u4EF7\uFF08\u6B62\u76C8\u9ED8\u8BA4 2R\uFF0C\u53EF\u62D6\u52A8\uFF09", hintEn: "Click entry, then stop (target defaults to 2R)", icon: "M4 4h16v8H4zM4 12h16v8H4zM4 12h16" }
+];
+var toolOf = (kind) => DRAWING_TOOLS.find((tool) => tool.kind === kind);
+var ICONS = {
+  flag: ["\u65D7\u5E1C", "Flag", "M6 3v18M6 4h11l-2 4 2 4H6"],
+  star: ["\u661F\u6807", "Star", "M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.6 6.7 19.4l1.2-6L3.4 9.3l6-.7z"],
+  up: ["\u770B\u6DA8", "Up", "M12 4l7 8h-4v8H9v-8H5z"],
+  down: ["\u770B\u8DCC", "Down", "M12 20l7-8h-4V4H9v8H5z"],
+  warning: ["\u8B66\u793A", "Warning", "M12 3 22 20H2zM12 9v5M12 17v.5"],
+  check: ["\u786E\u8BA4", "Check", "M5 12l5 5 9-10"],
+  cross: ["\u5426\u5B9A", "Cross", "M6 6l12 12M18 6 6 18"],
+  fire: ["\u70ED\u70B9", "Fire", "M12 3c1 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-4 2-6 2 1 3 3 3 3 0-3 1-6 1-8z"],
+  pin: ["\u56FE\u9489", "Pin", "M12 21s-6-5.6-6-10a6 6 0 0 1 12 0c0 4.4-6 10-6 10zM12 8.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"],
+  clock: ["\u65F6\u949F", "Clock", "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7v5l3 2"],
+  dollar: ["\u8D44\u91D1", "Dollar", "M12 3v18M16 7.5c-.8-1-2.2-1.5-4-1.5-2.2 0-3.8 1-3.8 2.7 0 4 7.8 1.8 7.8 5.6 0 1.7-1.6 2.7-4 2.7-1.8 0-3.2-.5-4-1.5"],
+  shield: ["\u9632\u5B88", "Shield", "M12 3l7 3v6c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6z"],
+  bolt: ["\u7A81\u53D1", "Bolt", "M13 2 4 14h7l-1 8 9-12h-7z"],
+  heart: ["\u5173\u6CE8", "Heart", "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"],
+  question: ["\u7591\u95EE", "Question", "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.4v.8M12 17v.5"],
+  info: ["\u8BF4\u660E", "Info", "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 11v5M12 8v.5"],
+  target: ["\u76EE\u6807", "Target", "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 11.5v1"],
+  bell: ["\u63D0\u9192", "Bell", "M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"]
+};
+var ICON_LIST = ICON_NAMES;
+var clicksNeeded = (kind) => DRAWING_CLICKS[kind];
+function ToolIcon({ kind, size: size3 = 16 }) {
+  return /* @__PURE__ */ React7.createElement("svg", { viewBox: "0 0 24 24", width: size3, height: size3, fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, /* @__PURE__ */ React7.createElement("path", { d: toolOf(kind).icon }));
+}
+function markPoints(mark) {
+  if (mark.kind === "level") return [{ time: mark.createdAt ?? Date.now(), price: Number(mark.price) }];
+  if (mark.kind === "trend") return [{ time: Number(mark.fromTime), price: Number(mark.fromPrice) }, { time: Number(mark.toTime), price: Number(mark.toPrice) }];
+  return (mark.points ?? []).map((point) => ({ time: Number(point.time), price: Number(point.price) }));
+}
+function geometryPatch(kind, points2) {
+  if (kind === "level") return { price: points2[0].price };
+  if (kind === "trend") {
+    const [a, b] = points2[0].time <= points2[1].time ? points2 : [points2[1], points2[0]];
+    return { fromTime: a.time, fromPrice: a.price, toTime: b.time, toPrice: b.price };
+  }
+  return { points: points2 };
+}
+function completePoints(kind, clicks) {
+  if (kind !== "long" && kind !== "short") return clicks;
+  const [entry, stopClick] = clicks;
+  const risk = entry.price - stopClick.price;
+  if (kind === "long" && risk <= 0 || kind === "short" && risk >= 0) return null;
+  const right = Math.max(stopClick.time, entry.time + 1);
+  return [entry, { time: right, price: stopClick.price }, { time: right, price: entry.price + 2 * risk }];
+}
+function constrainPoints(kind, points2) {
+  if (kind !== "long" && kind !== "short") return points2;
+  const [entry, stop, target] = points2;
+  const ok = kind === "long" ? stop.price < entry.price && entry.price < target.price : target.price < entry.price && entry.price < stop.price;
+  return ok && stop.time > entry.time ? points2 : null;
+}
+function drawingLabel(kind, points2, price) {
+  const name = tr(toolOf(kind).zh, toolOf(kind).en);
+  if (kind === "level") return `${name} ${fmtPrice(price)}`;
+  const first = points2[0];
+  if (!first) return name;
+  if (kind === "hray" || kind === "long" || kind === "short") return `${name} ${fmtPrice(first.price)}`;
+  const when = new Date(first.time).toLocaleString(tr("zh-CN", "en-US"), { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false });
+  return `${name} ${when}`;
+}
+function clipLine(a, b, w, h, from) {
+  const dx = b.x - a.x, dy = b.y - a.y;
+  let t0 = from, t1 = Infinity;
+  for (const [p, q] of [[-dx, a.x], [dx, w - a.x], [-dy, a.y], [dy, h - a.y]]) {
+    if (p === 0) {
+      if (q < 0) return null;
+      continue;
+    }
+    const r = q / p;
+    if (p < 0) {
+      if (r > t1) return null;
+      if (r > t0) t0 = r;
+    } else {
+      if (r < t0) return null;
+      if (r < t1) t1 = r;
+    }
+  }
+  if (!Number.isFinite(t0) || !Number.isFinite(t1)) return null;
+  return [{ x: a.x + t0 * dx, y: a.y + t0 * dy }, { x: a.x + t1 * dx, y: a.y + t1 * dy }];
+}
+function arrowHead(from, tip, size3 = 10) {
+  const angle = Math.atan2(tip.y - from.y, tip.x - from.x);
+  const left = { x: tip.x - size3 * Math.cos(angle - 0.45), y: tip.y - size3 * Math.sin(angle - 0.45) };
+  const right = { x: tip.x - size3 * Math.cos(angle + 0.45), y: tip.y - size3 * Math.sin(angle + 0.45) };
+  return `${tip.x},${tip.y} ${left.x},${left.y} ${right.x},${right.y}`;
+}
+function signed(value) {
+  return `${value >= 0 ? "+" : "-"}${fmtPrice(Math.abs(value))}`;
+}
+function duration(ms) {
+  const minutes2 = Math.round(Math.abs(ms) / 6e4);
+  if (minutes2 < 60) return `${minutes2}m`;
+  const hours2 = minutes2 / 60;
+  if (hours2 < 48) return `${Math.round(hours2 * 10) / 10}h`;
+  return `${Math.round(hours2 / 24 * 10) / 10}d`;
+}
+function regressionFit(bars) {
+  const n2 = bars.length;
+  if (n2 < 2) return null;
+  let sx = 0, sy = 0, sxx = 0, sxy = 0;
+  bars.forEach((bar, i) => {
+    sx += i;
+    sy += bar.price;
+    sxx += i * i;
+    sxy += i * bar.price;
+  });
+  const slope = (n2 * sxy - sx * sy) / (n2 * sxx - sx * sx);
+  const intercept = (sy - slope * sx) / n2;
+  const variance = bars.reduce((sum, bar, i) => sum + (bar.price - (intercept + slope * i)) ** 2, 0) / n2;
+  return { slope, intercept, sigma: Math.sqrt(variance) };
+}
+function wave(p, labels, text) {
+  return /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("polyline", { className: "dhl-pattern", points: p.map((point) => `${point.x},${point.y}`).join(" ") }), p.map((point, index) => {
+    const up = index === 0 ? p[1] ? p[1].y > point.y : true : point.y < p[index - 1].y;
+    return labels[index] ? /* @__PURE__ */ React7.createElement("g", { key: index }, text(point.x, point.y + (up ? -8 : 16), labels[index], "middle", "dhl-drawing-text dhl-wave-label")) : null;
+  }));
+}
+var ratio = (a, b) => b === 0 ? "\u2014" : (Math.abs(a) / Math.abs(b)).toFixed(3);
+function guide(a, b, value, key2, text) {
+  return /* @__PURE__ */ React7.createElement("g", { key: key2 }, /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: a.x, y1: a.y, x2: b.x, y2: b.y }), text((a.x + b.x) / 2, (a.y + b.y) / 2 - 4, value, "middle", "dhl-drawing-text dhl-ratio-label"));
+}
+var BADGE_PATHS = { alert: "M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0", shared: "M4 9h13l-3-3M20 15H7l3 3" };
+var DASH = { solid: void 0, dashed: "7 5", dotted: "1.5 4" };
+var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, badges }) {
+  const { width: w, height: h } = view;
+  const px = points2.map((point) => view.project(point.time, point.price));
+  if (!px.length || px.some((point) => point == null)) return null;
+  const p = px;
+  const text = (x, y, value, anchor = "start", cls = "dhl-drawing-text") => /* @__PURE__ */ React7.createElement("text", { className: cls, x, y, textAnchor: anchor }, value);
+  let body = null;
+  let handles = p;
+  switch (kind) {
+    case "level":
+      body = /* @__PURE__ */ React7.createElement("line", { x1: "0", x2: w, y1: p[0].y, y2: p[0].y });
+      handles = [{ x: Math.min(w - 24, Math.max(24, p[0].x)), y: p[0].y }];
+      break;
+    case "hray":
+      body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, x2: w, y1: p[0].y, y2: p[0].y });
+      break;
+    case "vline":
+      body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, x2: p[0].x, y1: "0", y2: h });
+      handles = [{ x: p[0].x, y: Math.min(h - 12, Math.max(12, p[0].y)) }];
+      break;
+    case "trend":
+      body = p[1] ? /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y }) : null;
+      break;
+    case "ray":
+    case "extended": {
+      if (!p[1]) break;
+      const seg = clipLine(p[0], p[1], w, h, kind === "ray" ? 0 : -Infinity);
+      body = seg ? /* @__PURE__ */ React7.createElement("line", { x1: seg[0].x, y1: seg[0].y, x2: seg[1].x, y2: seg[1].y }) : null;
+      break;
+    }
+    case "channel": {
+      if (!p[1]) break;
+      const base = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+      if (!p[2]) {
+        body = base;
+        break;
+      }
+      const k = points2[1].time === points2[0].time ? 0 : (points2[2].time - points2[0].time) / (points2[1].time - points2[0].time);
+      const offset = points2[2].price - (points2[0].price + (points2[1].price - points2[0].price) * k);
+      const a2 = view.project(points2[0].time, points2[0].price + offset), b2 = view.project(points2[1].time, points2[1].price + offset);
+      const am = view.project(points2[0].time, points2[0].price + offset / 2), bm = view.project(points2[1].time, points2[1].price + offset / 2);
+      if (!a2 || !b2 || !am || !bm) {
+        body = base;
+        break;
+      }
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-drawing-fill", points: `${p[0].x},${p[0].y} ${p[1].x},${p[1].y} ${b2.x},${b2.y} ${a2.x},${a2.y}` }), base, /* @__PURE__ */ React7.createElement("line", { x1: a2.x, y1: a2.y, x2: b2.x, y2: b2.y }), /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: am.x, y1: am.y, x2: bm.x, y2: bm.y }));
+      break;
+    }
+    case "fib": {
+      if (!p[1]) break;
+      const [start, end] = points2;
+      const x0 = Math.min(p[0].x, p[1].x), x1 = Math.max(p[0].x, p[1].x, x0 + 40);
+      const rows = FIB_LEVELS.map((level) => ({ level, price: end.price + (start.price - end.price) * level })).map((row) => ({ ...row, y: view.project(end.time, row.price)?.y })).filter((row) => row.y != null);
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, rows.slice(1).map((row, index) => /* @__PURE__ */ React7.createElement("rect", { key: `b${row.level}`, className: `dhl-fib-band band-${index % 3}`, x: x0, width: x1 - x0, y: Math.min(row.y, rows[index].y), height: Math.abs(row.y - rows[index].y) })), rows.map((row) => /* @__PURE__ */ React7.createElement("g", { key: row.level }, /* @__PURE__ */ React7.createElement("line", { className: row.level === 0.5 || row.level === 0.618 ? "dhl-fib-key" : void 0, x1: x0, x2: x1, y1: row.y, y2: row.y }), text(x0 + 4, row.y - 3, `${row.level} (${fmtPrice(row.price)})`))), /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y }));
+      break;
+    }
+    case "rect": {
+      if (!p[1]) break;
+      body = /* @__PURE__ */ React7.createElement("rect", { className: "dhl-drawing-fill", x: Math.min(p[0].x, p[1].x), y: Math.min(p[0].y, p[1].y), width: Math.abs(p[1].x - p[0].x), height: Math.abs(p[1].y - p[0].y) });
+      break;
+    }
+    case "crossline":
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { x1: "0", x2: w, y1: p[0].y, y2: p[0].y }), /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, x2: p[0].x, y1: "0", y2: h }));
+      break;
+    case "pricelabel": {
+      const value = fmtPrice(points2[0].price);
+      const width = 16 + value.length * 7;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-price-tag", points: `${p[0].x},${p[0].y} ${p[0].x + 8},${p[0].y - 11} ${p[0].x + 8 + width},${p[0].y - 11} ${p[0].x + 8 + width},${p[0].y + 11} ${p[0].x + 8},${p[0].y + 11}` }), text(p[0].x + 14, p[0].y + 4, value, "start", "dhl-drawing-text dhl-price-tag-text"));
+      break;
+    }
+    case "infoline":
+    case "trendangle": {
+      if (!p[1]) break;
+      const angle = Math.atan2(p[0].y - p[1].y, p[1].x - p[0].x) * 180 / Math.PI;
+      if (kind === "trendangle") {
+        const radius2 = 34, rad = angle * Math.PI / 180;
+        const arcEnd = { x: p[0].x + radius2 * Math.cos(rad), y: p[0].y - radius2 * Math.sin(rad) };
+        body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y }), /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, y1: p[0].y, x2: p[0].x + radius2 + 16, y2: p[0].y }), /* @__PURE__ */ React7.createElement("path", { className: "dhl-angle-arc", d: `M${p[0].x + radius2},${p[0].y} A${radius2},${radius2} 0 0 ${angle > 0 ? 0 : 1} ${arcEnd.x},${arcEnd.y}` }), text(p[0].x + radius2 + 20, p[0].y + (angle > 0 ? -6 : 14), `${angle.toFixed(1)}\xB0`));
+        break;
+      }
+      const [a, b] = points2;
+      const change = b.price - a.price, pct = a.price > 0 ? change / a.price * 100 : 0;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y }), /* @__PURE__ */ React7.createElement("rect", { className: "dhl-measure-box", x: p[1].x + 8, y: p[1].y - 30, width: "172", height: "52", rx: "4" }), text(p[1].x + 16, p[1].y - 14, `${signed(change)} (${change >= 0 ? "+" : ""}${pct.toFixed(2)}%)`), text(p[1].x + 16, p[1].y + 1, `${Math.round(view.bars(a.time, b.time))} ${tr("\u6839", "bars")} \xB7 ${duration(b.time - a.time)}`), text(p[1].x + 16, p[1].y + 16, `${tr("\u89D2\u5EA6", "Angle")} ${angle.toFixed(1)}\xB0`));
+      break;
+    }
+    case "pricerange":
+    case "daterange": {
+      if (!p[1]) break;
+      const [a, b] = points2;
+      const x0 = Math.min(p[0].x, p[1].x), x1 = Math.max(p[0].x, p[1].x), y0 = Math.min(p[0].y, p[1].y), y1 = Math.max(p[0].y, p[1].y);
+      if (kind === "pricerange") {
+        const change = b.price - a.price, pct = a.price > 0 ? change / a.price * 100 : 0, cx = (x0 + x1) / 2;
+        body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-drawing-fill", x: x0, y: y0, width: Math.max(2, x1 - x0), height: y1 - y0 }), /* @__PURE__ */ React7.createElement("line", { x1: cx, x2: cx, y1: p[0].y, y2: p[1].y }), /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-arrow-head", points: arrowHead(p[0].y < p[1].y ? { x: cx, y: y0 } : { x: cx, y: y1 }, { x: cx, y: p[1].y }) }), text(cx, change >= 0 ? y0 - 6 : y1 + 14, `${signed(change)} (${change >= 0 ? "+" : ""}${pct.toFixed(2)}%)`, "middle"));
+      } else {
+        const cy = (y0 + y1) / 2;
+        body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-drawing-fill", x: x0, y: y0, width: x1 - x0, height: Math.max(2, y1 - y0) }), /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, x2: p[1].x, y1: cy, y2: cy }), /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-arrow-head", points: arrowHead({ x: p[0].x, y: cy }, { x: p[1].x, y: cy }) }), text((x0 + x1) / 2, y1 + 14, `${Math.abs(Math.round(view.bars(a.time, b.time)))} ${tr("\u6839", "bars")} \xB7 ${duration(b.time - a.time)}`, "middle"));
+      }
+      break;
+    }
+    case "arrow": {
+      if (!p[1]) break;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y }), /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-arrow-head", points: arrowHead(p[0], p[1]) }));
+      break;
+    }
+    case "circle": {
+      if (!p[1]) break;
+      body = /* @__PURE__ */ React7.createElement("circle", { className: "dhl-drawing-fill", cx: p[0].x, cy: p[0].y, r: Math.hypot(p[1].x - p[0].x, p[1].y - p[0].y) });
+      break;
+    }
+    case "triangle": {
+      body = p.length === 2 ? /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y }) : p.length >= 3 ? /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-drawing-fill", points: p.slice(0, 3).map((point) => `${point.x},${point.y}`).join(" ") }) : null;
+      break;
+    }
+    case "brush": {
+      if (p.length < 2) break;
+      body = /* @__PURE__ */ React7.createElement("polyline", { className: "dhl-brush", points: p.map((point) => `${point.x},${point.y}`).join(" ") });
+      handles = [];
+      break;
+    }
+    case "callout": {
+      if (!p[1]) break;
+      const value = textValue || label || tr("\u6807\u6CE8", "Note");
+      const width = Math.min(280, 16 + [...value].reduce((sum, ch) => sum + (ch.charCodeAt(0) > 255 ? 12 : 6.6), 0));
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y + 12 }), /* @__PURE__ */ React7.createElement("circle", { className: "dhl-callout-dot", cx: p[0].x, cy: p[0].y, r: "3" }), /* @__PURE__ */ React7.createElement("rect", { className: "dhl-text-box", x: p[1].x, y: p[1].y, width, height: "26", rx: "6" }), text(p[1].x + 8, p[1].y + 17, value, "start", "dhl-drawing-text dhl-text-value"));
+      break;
+    }
+    case "fibext": {
+      if (!p[1]) break;
+      if (!p[2]) {
+        body = /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+        break;
+      }
+      const [a, b, c] = points2;
+      const x0 = p[2].x, x1 = Math.max(x0 + Math.abs(p[1].x - p[0].x), x0 + 60);
+      const rows = FIB_EXT_LEVELS.map((level) => ({ level, price: c.price + (b.price - a.price) * level })).map((row) => ({ ...row, y: view.project(c.time, row.price)?.y })).filter((row) => row.y != null);
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("polyline", { className: "dhl-drawing-mid", points: `${p[0].x},${p[0].y} ${p[1].x},${p[1].y} ${p[2].x},${p[2].y}` }), rows.map((row) => /* @__PURE__ */ React7.createElement("g", { key: row.level }, /* @__PURE__ */ React7.createElement("line", { className: row.level === 1 || row.level === 1.618 ? "dhl-fib-key" : void 0, x1: x0, x2: x1, y1: row.y, y2: row.y }), text(x0 + 4, row.y - 3, `${row.level} (${fmtPrice(row.price)})`))));
+      break;
+    }
+    case "fibchannel": {
+      if (!p[1]) break;
+      if (!p[2]) {
+        body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+        break;
+      }
+      const k = (points2[2].time - points2[0].time) / (points2[1].time - points2[0].time || 1);
+      const offset = points2[2].price - (points2[0].price + (points2[1].price - points2[0].price) * k);
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, FIB_LEVELS.map((level) => {
+        const a2 = view.project(points2[0].time, points2[0].price + offset * level), b2 = view.project(points2[1].time, points2[1].price + offset * level);
+        const seg = a2 && b2 ? clipLine(a2, b2, w, h, 0) : null;
+        return seg ? /* @__PURE__ */ React7.createElement("g", { key: level }, /* @__PURE__ */ React7.createElement("line", { className: level === 0.5 || level === 0.618 ? "dhl-fib-key" : void 0, x1: seg[0].x, y1: seg[0].y, x2: seg[1].x, y2: seg[1].y }), text(a2.x + 4, a2.y - 3, String(level))) : null;
+      }));
+      break;
+    }
+    case "fibtime": {
+      if (!p[1]) break;
+      const step = points2[1].time - points2[0].time;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, FIB_TIME_SERIES.map((n2) => {
+        const x = view.project(points2[0].time + step * n2, points2[0].price)?.x;
+        return x == null || x < -2 || x > w + 2 ? null : /* @__PURE__ */ React7.createElement("g", { key: n2 }, /* @__PURE__ */ React7.createElement("line", { className: n2 === 0 || n2 === 1 ? "dhl-fib-key" : void 0, x1: x, x2: x, y1: "0", y2: h }), text(x + 3, 12, String(n2)));
+      }));
+      break;
+    }
+    case "gannfan": {
+      if (!p[1]) break;
+      const dx = p[1].x - p[0].x, dy = p[1].y - p[0].y;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, GANN_RATIOS.map(([priceUnits, timeUnits]) => {
+        const end = { x: p[0].x + dx, y: p[0].y + dy * priceUnits / timeUnits };
+        const seg = clipLine(p[0], end, w, h, 0);
+        if (!seg) return null;
+        const one = priceUnits === 1 && timeUnits === 1;
+        return /* @__PURE__ */ React7.createElement("g", { key: `${priceUnits}x${timeUnits}` }, /* @__PURE__ */ React7.createElement("line", { className: one ? "dhl-fib-key" : void 0, x1: seg[0].x, y1: seg[0].y, x2: seg[1].x, y2: seg[1].y }), text(Math.min(seg[1].x - 4, w - 30), Math.max(12, Math.min(h - 4, seg[1].y)), `${priceUnits}\xD7${timeUnits}`, "end"));
+      }));
+      break;
+    }
+    case "pitchfork":
+    case "schiff":
+    case "modschiff": {
+      if (!p[1]) break;
+      if (!p[2]) {
+        body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+        break;
+      }
+      const mid = { x: (p[1].x + p[2].x) / 2, y: (p[1].y + p[2].y) / 2 };
+      const origin = kind === "schiff" ? { x: p[0].x, y: (p[0].y + p[1].y) / 2 } : kind === "modschiff" ? { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 } : p[0];
+      const dir = { x: mid.x - origin.x, y: mid.y - origin.y };
+      const median = clipLine(origin, mid, w, h, 0);
+      const prong = (from) => clipLine(from, { x: from.x + dir.x, y: from.y + dir.y }, w, h, 0);
+      const upper = prong(p[1]), lower = prong(p[2]);
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, upper && lower ? /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-drawing-fill", points: `${upper[0].x},${upper[0].y} ${upper[1].x},${upper[1].y} ${lower[1].x},${lower[1].y} ${lower[0].x},${lower[0].y}` }) : null, median ? /* @__PURE__ */ React7.createElement("line", { x1: median[0].x, y1: median[0].y, x2: median[1].x, y2: median[1].y }) : null, upper ? /* @__PURE__ */ React7.createElement("line", { x1: upper[0].x, y1: upper[0].y, x2: upper[1].x, y2: upper[1].y }) : null, lower ? /* @__PURE__ */ React7.createElement("line", { x1: lower[0].x, y1: lower[0].y, x2: lower[1].x, y2: lower[1].y }) : null, /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[1].x, y1: p[1].y, x2: p[2].x, y2: p[2].y }), origin !== p[0] ? /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, y1: p[0].y, x2: origin.x, y2: origin.y }) : null);
+      break;
+    }
+    case "elliott":
+      body = wave(p, ["0", "(1)", "(2)", "(3)", "(4)", "(5)"], text);
+      break;
+    case "elliottabc":
+      body = wave(p, ["0", "(A)", "(B)", "(C)"], text);
+      break;
+    case "abcd": {
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, wave(p, ["A", "B", "C", "D"], text), p[2] ? guide(p[0], p[2], ratio(points2[2].price - points2[1].price, points2[1].price - points2[0].price), "ac", text) : null, p[3] ? guide(p[1], p[3], ratio(points2[3].price - points2[2].price, points2[2].price - points2[1].price), "bd", text) : null);
+      break;
+    }
+    case "xabcd": {
+      const [X, A, B, C, D] = points2;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, p[2] ? /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-drawing-fill", points: `${p[0].x},${p[0].y} ${p[1].x},${p[1].y} ${p[2].x},${p[2].y}` }) : null, p[4] ? /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-drawing-fill", points: `${p[2].x},${p[2].y} ${p[3].x},${p[3].y} ${p[4].x},${p[4].y}` }) : null, wave(p, ["X", "A", "B", "C", "D"], text), p[2] ? guide(p[0], p[2], ratio(B.price - A.price, A.price - X.price), "xb", text) : null, p[3] ? guide(p[1], p[3], ratio(C.price - B.price, B.price - A.price), "ac", text) : null, p[4] ? guide(p[2], p[4], ratio(D.price - C.price, C.price - B.price), "bd", text) : null, p[4] ? guide(p[0], p[4], ratio(D.price - A.price, A.price - X.price), "xd", text) : null);
+      break;
+    }
+    case "headshoulders": {
+      const names = ["", tr("\u5DE6\u80A9", "LS"), "", tr("\u5934", "Head"), "", tr("\u53F3\u80A9", "RS"), ""];
+      const neck = p[4] ? clipLine(p[2], p[4], w, h, -Infinity) : null;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, p[4] ? /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-drawing-fill", points: `${p[2].x},${p[2].y} ${p[3].x},${p[3].y} ${p[4].x},${p[4].y}` }) : null, wave(p, names, text), neck ? /* @__PURE__ */ React7.createElement("line", { className: "dhl-neckline", x1: neck[0].x, y1: neck[0].y, x2: neck[1].x, y2: neck[1].y }) : null);
+      break;
+    }
+    case "gannbox":
+    case "gannsquare": {
+      if (!p[1]) break;
+      const x0 = Math.min(p[0].x, p[1].x), x1 = Math.max(p[0].x, p[1].x), y0 = Math.min(p[0].y, p[1].y), y1 = Math.max(p[0].y, p[1].y);
+      const levels = kind === "gannbox" ? GANN_BOX_LEVELS : [0, 0.25, 0.5, 0.75, 1];
+      const xs = levels.map((level) => x0 + (x1 - x0) * level), ys = levels.map((level) => y0 + (y1 - y0) * level);
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-drawing-fill", x: x0, y: y0, width: x1 - x0, height: y1 - y0 }), xs.slice(1, -1).map((x, i) => /* @__PURE__ */ React7.createElement("line", { key: `v${i}`, className: "dhl-drawing-mid", x1: x, x2: x, y1: y0, y2: y1 })), ys.slice(1, -1).map((y, i) => /* @__PURE__ */ React7.createElement("line", { key: `h${i}`, className: "dhl-drawing-mid", x1: x0, x2: x1, y1: y, y2: y })), /* @__PURE__ */ React7.createElement("line", { x1: x0, y1, x2: x1, y2: y0 }), /* @__PURE__ */ React7.createElement("line", { x1: x0, y1: y0, x2: x1, y2: y1 }), kind === "gannsquare" ? [[x0, y1, x1, (y0 + y1) / 2], [x0, y1, (x0 + x1) / 2, y0], [x0, y0, x1, (y0 + y1) / 2], [x0, y0, (x0 + x1) / 2, y1]].map(([ax, ay, bx, by], i) => /* @__PURE__ */ React7.createElement("line", { key: `f${i}`, className: "dhl-drawing-mid", x1: ax, y1: ay, x2: bx, y2: by })) : null, kind === "gannbox" ? levels.map((level, i) => /* @__PURE__ */ React7.createElement("g", { key: `l${level}` }, text(xs[i], y0 - 4, String(level), "middle"), text(x0 - 4, ys[i] + 3, String(level), "end"))) : null);
+      break;
+    }
+    case "icon": {
+      const name = textValue || label || "";
+      if (name.startsWith("emoji:")) {
+        body = /* @__PURE__ */ React7.createElement("text", { className: "dhl-sticker", x: p[0].x, y: p[0].y + 9, textAnchor: "middle" }, name.slice(6));
+        handles = [{ x: p[0].x, y: p[0].y }];
+        break;
+      }
+      const glyph = ICONS[name] ?? ICONS.star;
+      body = /* @__PURE__ */ React7.createElement("g", { className: "dhl-icon" }, /* @__PURE__ */ React7.createElement("circle", { className: "dhl-icon-bg", cx: p[0].x, cy: p[0].y, r: "13" }), /* @__PURE__ */ React7.createElement("path", { d: glyph[2], transform: `translate(${p[0].x - 9} ${p[0].y - 9}) scale(.75)` }));
+      break;
+    }
+    case "regression": {
+      if (!p[1]) break;
+      const [from, to] = points2[0].time <= points2[1].time ? points2 : [points2[1], points2[0]];
+      const bars = view.closes(from.time, to.time);
+      const fit = regressionFit(bars);
+      if (!fit) {
+        body = /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+        break;
+      }
+      const at = (offset, index) => view.project(bars[index].time, fit.intercept + fit.slope * index + offset);
+      const last = bars.length - 1;
+      const lines = [0, 2 * fit.sigma, -2 * fit.sigma].map((offset) => [at(offset, 0), at(offset, last)]);
+      if (lines.some(([a, b]) => !a || !b)) break;
+      const [[c0, c1], [u0, u1], [l0, l1]] = lines;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-drawing-fill", points: `${u0.x},${u0.y} ${u1.x},${u1.y} ${l1.x},${l1.y} ${l0.x},${l0.y}` }), /* @__PURE__ */ React7.createElement("line", { x1: c0.x, y1: c0.y, x2: c1.x, y2: c1.y }), /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: u0.x, y1: u0.y, x2: u1.x, y2: u1.y }), /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: l0.x, y1: l0.y, x2: l1.x, y2: l1.y }), text(c1.x + 4, c1.y - 4, `\u03C3 ${fmtPrice(fit.sigma)}`));
+      handles = [c0, c1];
+      break;
+    }
+    case "text": {
+      const value = textValue || label || tr("\u6587\u672C", "Text");
+      const width = Math.min(260, 14 + [...value].reduce((sum, ch) => sum + (ch.charCodeAt(0) > 255 ? 12 : 6.6), 0));
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-text-box", x: p[0].x, y: p[0].y - 20, width, height: "24", rx: "4" }), text(p[0].x + 7, p[0].y - 4, value, "start", "dhl-drawing-text dhl-text-value"));
+      break;
+    }
+    case "measure": {
+      if (!p[1]) break;
+      const [a, b] = points2;
+      const change = b.price - a.price, pct = a.price > 0 ? change / a.price * 100 : 0;
+      const bars = Math.round(view.bars(a.time, b.time));
+      const up = change >= 0;
+      const cx = (p[0].x + p[1].x) / 2;
+      const boxY = up ? Math.min(p[0].y, p[1].y) - 44 : Math.max(p[0].y, p[1].y) + 8;
+      body = /* @__PURE__ */ React7.createElement("g", { className: `dhl-measure ${up ? "up" : "down"}` }, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-drawing-fill", x: Math.min(p[0].x, p[1].x), y: Math.min(p[0].y, p[1].y), width: Math.abs(p[1].x - p[0].x), height: Math.abs(p[1].y - p[0].y) }), /* @__PURE__ */ React7.createElement("line", { x1: cx, x2: cx, y1: p[0].y, y2: p[1].y, markerEnd: "url(#dhl-arrow)" }), /* @__PURE__ */ React7.createElement("rect", { className: "dhl-measure-box", x: cx - 78, y: boxY, width: "156", height: "36", rx: "4" }), text(cx, boxY + 15, `${signed(change)} (${up ? "+" : ""}${pct.toFixed(2)}%)`, "middle"), text(cx, boxY + 29, `${Math.abs(bars)} ${tr("\u6839", "bars")} \xB7 ${duration(b.time - a.time)}`, "middle"));
+      break;
+    }
+    case "long":
+    case "short": {
+      const [entry, stop, target] = points2;
+      if (!p[1]) break;
+      const right = p[1].x, left = p[0].x;
+      const yEntry = p[0].y, yStop = p[1].y, yTarget = p[2]?.y;
+      const risk = Math.abs(entry.price - stop.price);
+      const reward = target ? Math.abs(target.price - entry.price) : 0;
+      const pct = (value) => entry.price > 0 ? (value / entry.price * 100).toFixed(2) : "0.00";
+      const x0 = Math.min(left, right), width = Math.max(2, Math.abs(right - left));
+      body = /* @__PURE__ */ React7.createElement("g", { className: "dhl-position" }, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-position-stop", x: x0, width, y: Math.min(yEntry, yStop), height: Math.abs(yStop - yEntry) }), yTarget != null ? /* @__PURE__ */ React7.createElement("rect", { className: "dhl-position-target", x: x0, width, y: Math.min(yEntry, yTarget), height: Math.abs(yTarget - yEntry) }) : null, /* @__PURE__ */ React7.createElement("line", { className: "dhl-position-entry", x1: x0, x2: x0 + width, y1: yEntry, y2: yEntry }), yTarget != null ? text(x0 + width / 2, yTarget + (kind === "long" ? 14 : -6), `${tr("\u6B62\u76C8", "Target")} ${fmtPrice(target.price)} (+${pct(reward)}%)`, "middle", "dhl-drawing-text dhl-position-text") : null, text(x0 + width / 2, yStop + (kind === "long" ? -6 : 14), `${tr("\u6B62\u635F", "Stop")} ${fmtPrice(stop.price)} (-${pct(risk)}%)`, "middle", "dhl-drawing-text dhl-position-text"), text(x0 + width / 2, yEntry + (kind === "long" ? 14 : -6), `${kind === "long" ? tr("\u591A", "Long") : tr("\u7A7A", "Short")} ${fmtPrice(entry.price)} \xB7 R:R ${risk > 0 ? (reward / risk).toFixed(2) : "\u2014"}`, "middle", "dhl-drawing-text dhl-position-text"));
+      handles = [p[0], p[1], ...p[2] ? [p[2]] : []];
+      break;
+    }
+  }
+  if (body == null) return null;
+  const style = { color, "--dhl-line-width": lineWidth ? String(lineWidth) : void 0, "--dhl-dash": lineStyle ? DASH[lineStyle] ?? "none" : void 0 };
+  return /* @__PURE__ */ React7.createElement("g", { className, style, "data-mark-id": id }, body, label && !isTextKind(kind) && kind !== "icon" && p[0] ? text(Math.min(Math.max(p[0].x + 6, 4), w - 120), p[0].y - 6, label) : null, badges?.length && p[0] ? badges.map((badge, index) => /* @__PURE__ */ React7.createElement("svg", { key: badge, className: "dhl-drawing-badge", x: Math.min(Math.max(p[0].x + 6, 4), w - 40) + index * 16, y: p[0].y + 5, width: "13", height: "13", viewBox: "0 0 24 24" }, /* @__PURE__ */ React7.createElement("path", { d: BADGE_PATHS[badge], fill: "none", stroke: "currentColor", strokeWidth: "2.2", strokeLinecap: "round", strokeLinejoin: "round" }))) : null, interactive ? /* @__PURE__ */ React7.createElement("g", { className: "dhl-drawing-hit", "data-mark-id": id, "data-hit": "body" }, body) : null, anchors ? handles.map((point, index) => /* @__PURE__ */ React7.createElement("circle", { key: index, className: "dhl-chart-anchor", "data-mark-id": id, "data-anchor": index, cx: point.x, cy: point.y, r: "5" })) : null);
+});
+
+// src/client/components/draw-toolbar.tsx
+var React8 = __toESM(require("react"), 1);
+
+// src/client/drawing-templates.ts
+var key = (kind) => `dsh-hyperliquid.draw.style.${kind}`;
+function loadStyleTemplate(kind) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key(kind)) ?? "null");
+    if (!value || typeof value !== "object") return {};
+    const out = {};
+    if (typeof value.color === "string" && /^#[0-9a-f]{6}$/i.test(value.color)) out.color = value.color;
+    if ([1, 2, 3, 4].includes(value.lineWidth)) out.lineWidth = value.lineWidth;
+    if (["solid", "dashed", "dotted"].includes(value.lineStyle)) out.lineStyle = value.lineStyle;
+    return out;
+  } catch {
+    return {};
+  }
+}
+function saveStyleTemplate(kind, style) {
+  const clean = Object.fromEntries(Object.entries(style).filter(([, value]) => value != null));
+  try {
+    localStorage.setItem(key(kind), JSON.stringify(clean));
+  } catch {
+  }
+}
+
+// src/client/components/draw-toolbar.tsx
+var COLORS = ["#4c82d8", "#2fd3a0", "#ef5f6c", "#e2a943", "#9b86db", "#26b5c8", "#8a8f98"];
+var STYLES = [["solid", "\u5B9E\u7EBF", "Solid"], ["dashed", "\u865A\u7EBF", "Dashed"], ["dotted", "\u70B9\u7EBF", "Dotted"]];
+function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone }) {
+  const [savedDefault, setSavedDefault] = React8.useState(false);
+  React8.useEffect(() => {
+    setSavedDefault(false);
+  }, [mark.id, mark.color, mark.lineWidth, mark.lineStyle]);
+  const [text, setText] = React8.useState(mark.label);
+  React8.useEffect(() => {
+    setText(mark.label);
+  }, [mark.id, mark.label]);
+  const locked = Boolean(mark.locked) || globallyLocked;
+  const width = mark.lineWidth ?? 2;
+  const style = mark.lineStyle ?? "solid";
+  const tool = toolOf(mark.kind);
+  const stop = (event) => event.stopPropagation();
+  return /* @__PURE__ */ React8.createElement("div", { className: "dhl-draw-toolbar", role: "toolbar", "aria-label": tr("\u753B\u7EBF\u6837\u5F0F", "Drawing style"), onPointerDown: stop, onClick: stop }, /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-name" }, tr(tool.zh, tool.en)), isTextKind(mark.kind) ? /* @__PURE__ */ React8.createElement(
+    "input",
+    {
+      className: "dhl-draw-toolbar-text",
+      value: text,
+      maxLength: 200,
+      disabled: locked,
+      "aria-label": tr("\u6587\u672C\u5185\u5BB9", "Text"),
+      onChange: (event) => setText(event.target.value),
+      onKeyDown: (event) => {
+        if (event.key === "Enter" && text.trim() && text !== mark.label) onEdit({ label: text.trim() });
+        if (event.key === "Escape") setText(mark.label);
+      },
+      onBlur: () => {
+        if (text.trim() && text !== mark.label) onEdit({ label: text.trim() });
+      }
+    }
+  ) : null, /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u989C\u8272", "Color") }, COLORS.map((color) => /* @__PURE__ */ React8.createElement(
+    "button",
+    {
+      type: "button",
+      key: color,
+      className: "dhl-swatch" + ((mark.color ?? "") === color ? " on" : ""),
+      style: { background: color },
+      disabled: locked,
+      "aria-label": `${tr("\u989C\u8272", "Color")} ${color}`,
+      "aria-pressed": (mark.color ?? "") === color,
+      onClick: () => onEdit({ color })
+    }
+  ))), mark.kind !== "text" ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u7EBF\u5BBD", "Line width") }, [1, 2, 3, 4].map((value) => /* @__PURE__ */ React8.createElement(
+    "button",
+    {
+      type: "button",
+      key: value,
+      className: width === value ? "on" : "",
+      disabled: locked,
+      "aria-pressed": width === value,
+      "aria-label": `${tr("\u7EBF\u5BBD", "Width")} ${value}`,
+      title: `${tr("\u7EBF\u5BBD", "Width")} ${value}`,
+      onClick: () => onEdit({ lineWidth: value })
+    },
+    /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 18 18", width: "16", height: "16", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("line", { x1: "2", x2: "16", y1: "9", y2: "9", stroke: "currentColor", strokeWidth: value }))
+  ))) : null, mark.kind !== "text" ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u7EBF\u578B", "Line style") }, STYLES.map(([value, zh, en]) => /* @__PURE__ */ React8.createElement(
+    "button",
+    {
+      type: "button",
+      key: value,
+      className: style === value ? "on" : "",
+      disabled: locked,
+      "aria-pressed": style === value,
+      "aria-label": tr(zh, en),
+      title: tr(zh, en),
+      onClick: () => onEdit({ lineStyle: value })
+    },
+    /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 18 18", width: "16", height: "16", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("line", { x1: "2", x2: "16", y1: "9", y2: "9", stroke: "currentColor", strokeWidth: "2", strokeDasharray: value === "dashed" ? "4 3" : value === "dotted" ? "1 3" : void 0, strokeLinecap: "round" }))
+  ))) : null, /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group" }, /* @__PURE__ */ React8.createElement(
+    "button",
+    {
+      type: "button",
+      className: savedDefault ? "on" : "",
+      title: tr(`\u8BBE\u4E3A${tool.zh}\u7684\u9ED8\u8BA4\u6837\u5F0F`, `Use as default ${tool.en} style`),
+      "aria-label": tr("\u8BBE\u4E3A\u9ED8\u8BA4\u6837\u5F0F", "Save as default style"),
+      onClick: () => {
+        saveStyleTemplate(mark.kind, { color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle });
+        setSavedDefault(true);
+      }
+    },
+    /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("path", { d: "M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6" }))
+  ), ALERT_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement(
+    "button",
+    {
+      type: "button",
+      className: mark.alert ? "on" : "",
+      "aria-pressed": Boolean(mark.alert),
+      disabled: locked,
+      title: mark.alert ? tr("\u5173\u95ED\u4EF7\u683C\u63D0\u9192", "Turn off price alert") : mark.alertTriggeredAt ? tr(`\u4E0A\u6B21\u89E6\u53D1\uFF1A${new Date(mark.alertTriggeredAt).toLocaleString()}\uFF0C\u70B9\u51FB\u91CD\u65B0\u5F00\u542F`, `Last fired ${new Date(mark.alertTriggeredAt).toLocaleString()}; click to re-arm`) : tr("\u4EF7\u683C\u7A7F\u8D8A\u65F6\u63D0\u9192\uFF08\u89E6\u53D1\u4E00\u6B21\uFF09", "Alert when price crosses (once)"),
+      "aria-label": mark.alert ? tr("\u5173\u95ED\u4EF7\u683C\u63D0\u9192", "Turn off price alert") : tr("\u5F00\u542F\u4EF7\u683C\u63D0\u9192", "Turn on price alert"),
+      onClick: () => onEdit({ alert: !mark.alert })
+    },
+    /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("path", { d: "M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0" }))
+  ) : null, /* @__PURE__ */ React8.createElement(
+    "button",
+    {
+      type: "button",
+      className: mark.shared ? "on" : "",
+      "aria-pressed": Boolean(mark.shared),
+      disabled: locked,
+      title: mark.shared ? tr("\u53D6\u6D88\u540C\u6B65\uFF08\u53EA\u4FDD\u7559\u5728\u5F53\u524D\u4F1A\u8BDD\uFF09", "Stop syncing (keep in this session)") : tr("\u540C\u6B65\u5230\u8BE5\u5E01\u79CD\u7684\u6240\u6709\u4EA4\u6613\u4F1A\u8BDD", "Sync to every session of this coin"),
+      "aria-label": mark.shared ? tr("\u53D6\u6D88\u540C\u6B65", "Stop syncing") : tr("\u540C\u6B65\u5230\u6240\u6709\u4F1A\u8BDD", "Sync to all sessions"),
+      onClick: () => onEdit({ shared: !mark.shared })
+    },
+    /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("path", { d: "M7 7h11l-3-3M17 17H6l3 3" }))
+  ), /* @__PURE__ */ React8.createElement("button", { type: "button", title: tr("\u590D\u5236\u4E00\u4EFD\uFF08Ctrl/Cmd+C\u3001V\uFF09", "Clone (Ctrl/Cmd+C, V)"), "aria-label": tr("\u590D\u5236\u753B\u7EBF", "Clone drawing"), onClick: onClone }, /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("rect", { x: "8", y: "8", width: "12", height: "12", rx: "2" }), /* @__PURE__ */ React8.createElement("path", { d: "M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" }))), /* @__PURE__ */ React8.createElement(
+    "button",
+    {
+      type: "button",
+      className: mark.locked ? "on" : "",
+      "aria-pressed": Boolean(mark.locked),
+      disabled: globallyLocked,
+      title: mark.locked ? tr("\u89E3\u9501", "Unlock") : tr("\u9501\u5B9A\uFF08\u9632\u6B62\u8BEF\u62D6\u52A8\uFF09", "Lock (prevent dragging)"),
+      "aria-label": mark.locked ? tr("\u89E3\u9501", "Unlock") : tr("\u9501\u5B9A", "Lock"),
+      onClick: () => onEdit({ locked: !mark.locked })
+    },
+    /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("rect", { x: "5", y: "11", width: "14", height: "9", rx: "2" }), /* @__PURE__ */ React8.createElement("path", { d: mark.locked ? "M8 11V8a4 4 0 0 1 8 0v3" : "M8 11V8a4 4 0 0 1 7.5-2" }))
+  ), /* @__PURE__ */ React8.createElement("button", { type: "button", disabled: locked, title: tr("\u5220\u9664\uFF08Delete\uFF09", "Delete (Del)"), "aria-label": tr("\u5220\u9664\u753B\u7EBF", "Delete drawing"), onClick: onRemove }, /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("path", { d: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" }))), /* @__PURE__ */ React8.createElement("button", { type: "button", title: tr("\u53D6\u6D88\u9009\u62E9\uFF08Esc\uFF09", "Deselect (Esc)"), "aria-label": tr("\u53D6\u6D88\u9009\u62E9", "Deselect"), onClick: onClose }, /* @__PURE__ */ React8.createElement(UiIcon, { name: "close", size: 14 }))));
+}
+
+// src/client/click-guard.ts
+var LIVE_SHIFT_BARS = 2;
+function legacyPressStillAClick(atPress, atRelease) {
+  if (!atPress || !atRelease) return true;
+  return !(Math.abs(atPress.from - atRelease.from) > 0.01 || Math.abs(atPress.to - atRelease.to) > 0.01);
+}
+function pressStillAClick(atPress, atRelease) {
+  if (globalThis.__dhlLegacyClickGuard) return legacyPressStillAClick(atPress, atRelease);
+  if (!atPress || !atRelease) return true;
+  const zoomed = Math.abs(atPress.to - atPress.from - (atRelease.to - atRelease.from)) > 0.01;
+  const panned = Math.abs(atPress.from - atRelease.from) > LIVE_SHIFT_BARS;
+  return !zoomed && !panned;
+}
+
 // src/client/components/candle-chart.tsx
+var MAGNET_PX = 14;
+var MA_PALETTE = ["#29b6f6", "#ff7eb6", "#c6e377", "#ffb74d", "#b39ddb", "#4dd0e1", "#f48fb1", "#aed581"];
+var maColor = (line, index) => line.color ?? MA_PALETTE[index % MA_PALETTE.length];
 var CHART_HEIGHT = 410;
 var OLDER_THRESHOLD_BARS = 30;
 var FALLBACK_UP = "#3b9c6d";
 var FALLBACK_DOWN = "#e24b4a";
+var SMA20_COLOR = "#269c89";
+var DRAW_COLOR = "#4c82d8";
 var FALLBACK_TEXT = "#888780";
 var FALLBACK_BORDER = "rgba(128,128,128,.25)";
+function completePreview(kind, points2) {
+  if ((kind === "long" || kind === "short") && points2.length === 2) return completePoints(kind, points2) ?? points2.slice(0, 1);
+  return points2;
+}
+function barAt(candles, time) {
+  const t2 = Math.floor(time / 1e3);
+  let lo = 0, hi = candles.length - 1;
+  while (lo <= hi) {
+    const mid = lo + hi >> 1, value = Math.floor(candles[mid].t / 1e3);
+    if (value === t2) return candles[mid];
+    if (value < t2) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return null;
+}
 function cssVar(el, name, fallback) {
   const v = getComputedStyle(el).getPropertyValue(name).trim();
   return v || fallback;
@@ -16907,36 +18058,80 @@ function cssVar(el, name, fallback) {
 function chartData(points2) {
   return points2.map((point) => ({ time: point.time, value: point.value }));
 }
-function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMode, onDraw, onSelect, priceScale, visibleRange, onVisibleRange, tradeEvents, onNeedOlder, olderState }) {
-  const boxRef = React6.useRef(null);
-  const refs = React6.useRef(null);
-  const priceLines = React6.useRef([]);
-  const trendSeries = React6.useRef([]);
-  const tradeMarkers = React6.useRef(null);
-  const fitted = React6.useRef(false);
-  const firstBarTime = React6.useRef(null);
-  const restoring = React6.useRef(false);
-  const initialRange = React6.useRef(visibleRange);
-  const drawModeRef = React6.useRef(drawMode);
-  const onDrawRef = React6.useRef(onDraw);
-  const onSelectRef = React6.useRef(onSelect);
-  const selectionData = React6.useRef({ candles, indicators });
-  const onRangeRef = React6.useRef(onVisibleRange);
-  const onNeedOlderRef = React6.useRef(onNeedOlder);
+function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMode, onDraw, onSelect, priceScale, visibleRange, onVisibleRange, tradeEvents, onNeedOlder, olderState, focus, maLines, magnet, drawingsLocked, onEditMark, onRemoveMark, showReasons, onAnalyzeFill, onCloneMark, selectRequest }) {
+  const boxRef = React9.useRef(null);
+  const refs = React9.useRef(null);
+  const priceLines = React9.useRef(/* @__PURE__ */ new Map());
+  const tradeMarkers = React9.useRef(null);
+  const fitted = React9.useRef(false);
+  const firstBarTime = React9.useRef(null);
+  const handledFocus = React9.useRef(0);
+  const maRefs = React9.useRef(/* @__PURE__ */ new Map());
+  const restoring = React9.useRef(false);
+  const initialRange = React9.useRef(visibleRange);
+  const drawModeRef = React9.useRef(drawMode);
+  const onDrawRef = React9.useRef(onDraw);
+  const onSelectRef = React9.useRef(onSelect);
+  const selectionData = React9.useRef({ candles, indicators, maLines });
+  const onRangeRef = React9.useRef(onVisibleRange);
+  const onNeedOlderRef = React9.useRef(onNeedOlder);
   onNeedOlderRef.current = onNeedOlder;
-  const firstPoint = React6.useRef(null);
-  const hoveredHit = React6.useRef(null);
+  const pending = React9.useRef([]);
+  const magnetRef = React9.useRef(magnet);
+  magnetRef.current = magnet;
+  const candlesRef = React9.useRef(candles);
+  candlesRef.current = candles;
+  const [selectedId, setSelectedId] = React9.useState(null);
+  const selectedRef = React9.useRef(null);
+  selectedRef.current = selectedId;
+  const [draft, setDraft] = React9.useState(null);
+  const [selectedFill, setSelectedFill] = React9.useState(null);
+  const selectedFillRef = React9.useRef(null);
+  selectedFillRef.current = selectedFill;
+  const snapRef = React9.useRef(null);
+  const hoveredHit = React9.useRef(null);
   drawModeRef.current = drawMode;
   onDrawRef.current = onDraw;
   onSelectRef.current = onSelect;
-  selectionData.current = { candles, indicators };
+  selectionData.current = { candles, indicators, maLines };
   onRangeRef.current = onVisibleRange;
-  const [crosshair, setCrosshair] = React6.useState(null);
-  const [selectedTime, setSelectedTime] = React6.useState(null);
-  const [themeVersion, setThemeVersion] = React6.useState(0);
+  const [crosshair, setCrosshair] = React9.useState(null);
+  const [selectedTime, setSelectedTime] = React9.useState(null);
+  const [themeVersion, setThemeVersion] = React9.useState(0);
+  const [viewportVersion, setViewportVersion] = React9.useState(0);
+  const [pendingPoints, setPendingPoints] = React9.useState([]);
+  const [drawingHover, setDrawingHover] = React9.useState(null);
   const showVolume = indicators.has("volume");
-  const studies = React6.useMemo(() => chartIndicators(candles), [candles]);
-  React6.useEffect(() => {
+  const studies = React9.useMemo(() => chartIndicators(candles), [candles]);
+  const maComputed = React9.useMemo(() => maLines.map((line, index) => ({ line, color: maColor(line, index), ...maSeries(candles, line) })), [candles, maLines]);
+  const timeline = React9.useMemo(() => {
+    const times = [...new Set(candles.map((candle) => Math.floor(candle.t / 1e3)))].sort((a, b) => a - b);
+    const step = times.length > 1 ? times[times.length - 1] - times[times.length - 2] : 60;
+    const toLogical = (ms) => {
+      const t2 = ms / 1e3;
+      if (!times.length) return 0;
+      if (t2 <= times[0]) return (t2 - times[0]) / step;
+      if (t2 >= times[times.length - 1]) return times.length - 1 + (t2 - times[times.length - 1]) / step;
+      let lo = 0, hi = times.length - 1;
+      while (hi - lo > 1) {
+        const mid = lo + hi >> 1;
+        if (times[mid] <= t2) lo = mid;
+        else hi = mid;
+      }
+      return lo + (t2 - times[lo]) / (times[hi] - times[lo]);
+    };
+    const toTime = (logical) => {
+      if (!times.length) return Date.now();
+      const i = Math.round(logical);
+      if (i < 0) return (times[0] + i * step) * 1e3;
+      if (i >= times.length) return (times[times.length - 1] + (i - times.length + 1) * step) * 1e3;
+      return times[i] * 1e3;
+    };
+    return { toLogical, toTime };
+  }, [candles]);
+  const timelineRef = React9.useRef(timeline);
+  timelineRef.current = timeline;
+  React9.useEffect(() => {
     const box = boxRef.current;
     if (!box) return void 0;
     const readTheme = () => ({
@@ -16970,7 +18165,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
       priceLineVisible: false
     });
     const smaSeries = chart.addSeries(lineSeries, {
-      color: cssVar(box, "--dsw-alias-brand-primary", "#54cbbb"),
+      color: SMA20_COLOR,
       lineWidth: 2,
       lastValueVisible: false,
       priceLineVisible: false
@@ -17007,36 +18202,117 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         setCrosshair({ t: Number(param.time ?? 0) * 1e3, o: point.open, h: point.high, l: point.low, c: point.close, v: 0 });
       } else setCrosshair(null);
     });
-    chart.subscribeClick((param) => {
-      const mode = drawModeRef.current;
-      if (!param.point || param.time == null) return;
-      if (!mode) return;
-      const price = candleSeries.coordinateToPrice(param.point.y);
-      const time = Number(param.time) * 1e3;
-      if (price == null || !Number.isFinite(Number(price)) || Number(price) <= 0 || !Number.isFinite(time)) return;
-      if (mode === "level") onDrawRef.current({ kind: "level", price: Number(price) });
-      else if (!firstPoint.current) firstPoint.current = { time, price: Number(price) };
-      else {
-        const a = firstPoint.current;
-        firstPoint.current = null;
-        if (a.time === time) return;
-        const [from, to] = a.time < time ? [a, { time, price: Number(price) }] : [{ time, price: Number(price) }, a];
-        onDrawRef.current({ kind: "trend", fromTime: from.time, fromPrice: from.price, toTime: to.time, toPrice: to.price });
+    let press = null;
+    const down = (event) => {
+      const range = chart.timeScale().getVisibleLogicalRange();
+      press = event.button === 0 && event.target instanceof HTMLCanvasElement ? {
+        id: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        dragged: false,
+        range: range ? { from: range.from, to: range.to } : null
+      } : null;
+    };
+    const move = (event) => {
+      if (press?.id === event.pointerId && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 5) press.dragged = true;
+      if (drawModeRef.current && event.target instanceof HTMLCanvasElement) {
+        const point = pointAt2(event, pending.current.at(-1));
+        if (point) setDrawingHover(point);
       }
-    });
-    const quoteClick = (event) => {
-      if (drawModeRef.current || !(event.target instanceof HTMLCanvasElement)) return;
-      const x = event.clientX - box.getBoundingClientRect().left;
-      const time = chart.timeScale().coordinateToTime(x);
-      if (typeof time !== "number") return;
-      const selection = selectChartCandle(selectionData.current.candles, time * 1e3, selectionData.current.indicators, hoveredHit.current);
+    };
+    const cancel = () => {
+      press = null;
+    };
+    const snapPoint = (event, previous, useMagnet = true) => {
+      const rect = box.getBoundingClientRect();
+      const y = event.clientY - rect.top;
+      const logical = chart.timeScale().coordinateToLogical(event.clientX - rect.left);
+      let price = Number(candleSeries.coordinateToPrice(y));
+      if (logical == null || !Number.isFinite(price) || price <= 0) return null;
+      const time = timelineRef.current.toTime(Number(logical));
+      const mode = magnetRef.current;
+      if (useMagnet && mode !== "off") {
+        const bar = barAt(candlesRef.current, time);
+        if (bar) {
+          let best = { price, distance: Infinity };
+          for (const value of [bar.o, bar.h, bar.l, bar.c]) {
+            const coordinate = candleSeries.priceToCoordinate(value);
+            if (coordinate != null && Math.abs(coordinate - y) < best.distance) best = { price: value, distance: Math.abs(coordinate - y) };
+          }
+          if (mode === "strong" || best.distance <= MAGNET_PX) price = best.price;
+        }
+      }
+      if (event.shiftKey && previous) price = previous.price;
+      return { time, price };
+    };
+    snapRef.current = snapPoint;
+    const pointAt2 = (event, previous) => snapPoint(event, previous);
+    box.addEventListener("pointerdown", down, true);
+    box.addEventListener("pointermove", move, true);
+    box.addEventListener("pointerup", move, true);
+    box.addEventListener("pointercancel", cancel, true);
+    const chartClick = (event) => {
+      const visible = chart.timeScale().getVisibleLogicalRange();
+      const panned = !pressStillAClick(press?.range ?? null, visible ? { from: visible.from, to: visible.to } : null);
+      const clicked = Boolean(press && !press.dragged && !panned && event.button === 0);
+      press = null;
+      if (!clicked) return;
+      if (!(event.target instanceof HTMLCanvasElement)) return;
+      const rect = box.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const barTime = chart.timeScale().coordinateToTime(x);
+      const mode = drawModeRef.current;
+      if (mode) {
+        void y;
+        const point = pointAt2(event, pending.current.at(-1));
+        if (!point) return;
+        if (mode === "level") {
+          onDrawRef.current({ kind: "level", price: point.price });
+          return;
+        }
+        const clicks = [...pending.current, point];
+        if (clicks.length < clicksNeeded(mode)) {
+          pending.current = clicks;
+          setPendingPoints(clicks);
+          return;
+        }
+        pending.current = [];
+        setPendingPoints([]);
+        const points2 = completePoints(mode, clicks);
+        if (!points2) return;
+        if (mode === "trend") {
+          if (points2[0].time === points2[1].time) return;
+          const [from, to] = points2[0].time < points2[1].time ? points2 : [points2[1], points2[0]];
+          onDrawRef.current({ kind: "trend", fromTime: from.time, fromPrice: from.price, toTime: to.time, toPrice: to.price });
+        } else onDrawRef.current({ kind: mode, points: points2 });
+        return;
+      }
+      if (selectedRef.current) {
+        setSelectedId(null);
+        return;
+      }
+      if (selectedFillRef.current) {
+        setSelectedFill(null);
+        return;
+      }
+      if (typeof barTime !== "number") return;
+      const selection = selectChartCandle(selectionData.current.candles, barTime * 1e3, selectionData.current.indicators, hoveredHit.current, selectionData.current.maLines);
       if (selection) {
         setSelectedTime(selection.candle.t);
         onSelectRef.current(selection);
       }
     };
-    box.addEventListener("click", quoteClick);
+    box.addEventListener("click", chartClick);
     let rangeTimer = null;
+    let viewportFrame = 0;
+    const refreshOverlay = () => {
+      if (viewportFrame) cancelAnimationFrame(viewportFrame);
+      viewportFrame = requestAnimationFrame(() => setViewportVersion((value) => value + 1));
+    };
+    chart.timeScale().subscribeVisibleLogicalRangeChange(refreshOverlay);
+    const sizeObserver = new ResizeObserver(refreshOverlay);
+    sizeObserver.observe(box);
     chart.timeScale().subscribeVisibleTimeRangeChange((range) => {
       if (!fitted.current || restoring.current || !range || typeof range.from !== "number" || typeof range.to !== "number") return;
       if (rangeTimer) clearTimeout(rangeTimer);
@@ -17062,24 +18338,31 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         rightPriceScale: { borderColor: th.border },
         timeScale: { borderColor: th.border }
       });
-      smaSeries.applyOptions({ color: cssVar(box, "--dsw-alias-brand-primary", "#54cbbb") });
+      smaSeries.applyOptions({ color: SMA20_COLOR });
       setThemeVersion((value) => value + 1);
     };
     const observer = new MutationObserver(applyTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme", "style"] });
     return () => {
       observer.disconnect();
-      box.removeEventListener("click", quoteClick);
+      box.removeEventListener("pointerdown", down, true);
+      box.removeEventListener("pointermove", move, true);
+      box.removeEventListener("pointerup", move, true);
+      box.removeEventListener("pointercancel", cancel, true);
+      box.removeEventListener("click", chartClick);
+      chart.timeScale().unsubscribeVisibleLogicalRangeChange(refreshOverlay);
+      sizeObserver.disconnect();
+      if (viewportFrame) cancelAnimationFrame(viewportFrame);
       if (rangeTimer) clearTimeout(rangeTimer);
       refs.current = null;
-      priceLines.current = [];
-      trendSeries.current = [];
+      maRefs.current.clear();
+      priceLines.current.clear();
       chart.remove();
       tradeMarkers.current = null;
     };
   }, []);
-  React6.useEffect(() => {
-    const markers = tradeEvents.map((event) => ({
+  React9.useEffect(() => {
+    const markers = tradeEvents.filter((event) => event.kind === "order").map((event) => ({
       time: Math.floor(event.candleTime / 1e3),
       position: event.isBuy ? "belowBar" : "aboveBar",
       color: event.kind === "order" ? "#dda64d" : event.isBuy ? FALLBACK_UP : FALLBACK_DOWN,
@@ -17096,7 +18379,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     markers.sort((a, b) => Number(a.time) - Number(b.time));
     tradeMarkers.current?.setMarkers(markers);
   }, [tradeEvents, selectedTime, candles]);
-  React6.useEffect(() => {
+  React9.useEffect(() => {
     const r = refs.current;
     if (!r) return;
     const rows = candles;
@@ -17176,6 +18459,41 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         restoring.current = false;
       }, 100);
     }
+    const live = new Set(maComputed.map((item) => item.line.id));
+    for (const [id, entry] of maRefs.current) {
+      if (live.has(id)) continue;
+      r.chart.removeSeries(entry.main);
+      if (entry.smooth) r.chart.removeSeries(entry.smooth);
+      maRefs.current.delete(id);
+    }
+    const toPoints = (values) => {
+      const seenMa = /* @__PURE__ */ new Set();
+      const out = [];
+      values.forEach((value, index) => {
+        const time = Math.floor(candles[index].t / 1e3);
+        if (value == null || seenMa.has(time)) return;
+        seenMa.add(time);
+        out.push({ time, value });
+      });
+      return out;
+    };
+    for (const item of maComputed) {
+      let entry = maRefs.current.get(item.line.id);
+      if (!entry) {
+        entry = { main: r.chart.addSeries(lineSeries, { lineWidth: 2, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false }) };
+        maRefs.current.set(item.line.id, entry);
+      }
+      entry.main.applyOptions({ color: item.color });
+      entry.main.setData(toPoints(item.values));
+      if (item.smoothed) {
+        entry.smooth ??= r.chart.addSeries(lineSeries, { lineWidth: 1, lineStyle: LineStyle.Dashed, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false });
+        entry.smooth.applyOptions({ color: item.color });
+        entry.smooth.setData(toPoints(item.smoothed));
+      } else if (entry.smooth) {
+        r.chart.removeSeries(entry.smooth);
+        entry.smooth = void 0;
+      }
+    }
     if (!fitted.current) {
       restoring.current = true;
       r.chart.timeScale().fitContent();
@@ -17191,49 +18509,593 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         restoring.current = false;
       }, 100);
     }
-  }, [candles, studies, indicators, showVolume]);
-  React6.useEffect(() => {
+  }, [candles, studies, indicators, showVolume, maComputed]);
+  React9.useEffect(() => {
+    const r = refs.current;
+    if (!r || !focus || focus.at === handledFocus.current || candles.length < 2) return;
+    if (focus.t < candles[0].t) {
+      if (olderState === "done" || olderState === "error") handledFocus.current = focus.at;
+      else if (olderState === "idle") onNeedOlderRef.current();
+      return;
+    }
+    const index = candles.findIndex((candle) => candle.t >= focus.t);
+    if (index < 0) return;
+    handledFocus.current = focus.at;
+    const view2 = r.chart.timeScale().getVisibleLogicalRange();
+    const half = view2 ? (view2.to - view2.from) / 2 : 40;
+    restoring.current = true;
+    r.chart.timeScale().setVisibleLogicalRange({ from: index - half, to: index + half });
+    setTimeout(() => {
+      restoring.current = false;
+    }, 100);
+    setSelectedTime(candles[index].t);
+  }, [focus, candles, olderState]);
+  React9.useEffect(() => {
     refs.current?.chart.priceScale("right").applyOptions({ mode: priceScale === "log" ? PriceScaleMode.Logarithmic : priceScale === "percentage" ? PriceScaleMode.Percentage : PriceScaleMode.Normal });
+    setViewportVersion((value) => value + 1);
   }, [priceScale]);
-  React6.useEffect(() => {
-    firstPoint.current = null;
+  React9.useEffect(() => {
+    pending.current = [];
+    setPendingPoints([]);
+    setDrawingHover(null);
   }, [drawMode]);
-  React6.useEffect(() => {
+  React9.useEffect(() => {
     if (resetToken > 0) refs.current?.chart.timeScale().fitContent();
   }, [resetToken]);
-  React6.useEffect(() => {
+  React9.useEffect(() => {
     const r = refs.current;
     const box = boxRef.current;
     if (!r || !box) return;
-    for (const line of priceLines.current) r.candles.removePriceLine(line);
-    for (const series of trendSeries.current) r.chart.removeSeries(series);
-    priceLines.current = [];
-    trendSeries.current = [];
-    const colorOf = (role) => role === "support" ? cssVar(box, "--dsw-alias-state-success-primary", FALLBACK_UP) : role === "resistance" ? cssVar(box, "--dsw-alias-state-error-primary", FALLBACK_DOWN) : cssVar(box, "--dsw-alias-brand-primary", "#54cbbb");
+    for (const line of priceLines.current.values()) r.candles.removePriceLine(line);
+    priceLines.current.clear();
+    const colorOf = (mark) => mark.color ?? (mark.source === "user" ? DRAW_COLOR : mark.role === "support" ? cssVar(box, "--dsw-alias-state-success-primary", FALLBACK_UP) : mark.role === "resistance" ? cssVar(box, "--dsw-alias-state-error-primary", FALLBACK_DOWN) : DRAW_COLOR);
+    const styleOf = (mark) => mark.lineStyle === "dotted" ? LineStyle.Dotted : mark.lineStyle === "dashed" || !mark.lineStyle && mark.source !== "user" ? LineStyle.Dashed : LineStyle.Solid;
     for (const mark of marks) {
-      const color = colorOf(mark.role);
-      if (mark.kind === "level" && Number.isFinite(mark.price) && Number(mark.price) > 0) {
-        priceLines.current.push(r.candles.createPriceLine({ price: Number(mark.price), color, lineWidth: 1, lineStyle: LineStyle.Dashed, axisLabelVisible: true, title: mark.label }));
-      }
-      if (mark.kind === "trend" && Number.isFinite(mark.fromTime) && Number.isFinite(mark.toTime) && Number.isFinite(mark.fromPrice) && Number.isFinite(mark.toPrice)) {
-        const series = r.chart.addSeries(lineSeries, { color, lineWidth: 2, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false });
-        series.setData([
-          { time: Math.floor(Number(mark.fromTime) / 1e3), value: Number(mark.fromPrice) },
-          { time: Math.floor(Number(mark.toTime) / 1e3), value: Number(mark.toPrice) }
-        ]);
-        trendSeries.current.push(series);
-      }
+      if (mark.kind !== "level" || mark.hidden || !Number.isFinite(mark.price) || Number(mark.price) <= 0) continue;
+      priceLines.current.set(mark.id, r.candles.createPriceLine({
+        price: Number(mark.price),
+        color: colorOf(mark),
+        lineWidth: mark.lineWidth ?? (mark.source === "user" ? 2 : 1),
+        lineStyle: styleOf(mark),
+        axisLabelVisible: true,
+        title: mark.label
+      }));
     }
   }, [marks, themeVersion]);
   const warming = candles.length < 2;
-  return /* @__PURE__ */ React6.createElement("div", { className: "dhl-chartbox", ref: boxRef, style: { height: expanded ? "calc(100dvh - 160px)" : CHART_HEIGHT + Number(indicators.has("rsi14")) * 125 + Number(indicators.has("macd")) * 125 } }, !warming && /* @__PURE__ */ React6.createElement("div", { className: "dhl-chart-ohlc", "aria-live": "off" }, /* @__PURE__ */ React6.createElement("span", null, crosshair ? new Date(crosshair.t).toLocaleString(tr("zh-CN", "en-US"), { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }) : tr("\u6700\u65B0 K \u7EBF", "Latest candle")), ["o", "h", "l", "c"].map((key) => /* @__PURE__ */ React6.createElement("span", { key }, key.toUpperCase(), " ", /* @__PURE__ */ React6.createElement("b", { className: crosshair && crosshair.c < crosshair.o ? "dhl-down" : "dhl-up" }, fmtPrice((crosshair ?? candles.at(-1))?.[key]))))), !warming && olderState === "loading" ? /* @__PURE__ */ React6.createElement("div", { className: "dhl-chart-older", role: "status" }, tr("\u6B63\u5728\u52A0\u8F7D\u66F4\u65E9\u7684 K \u7EBF\u2026", "Loading earlier candles\u2026")) : null, !warming && olderState === "error" ? /* @__PURE__ */ React6.createElement("div", { className: "dhl-chart-older", role: "status" }, tr("\u66F4\u65E9\u7684 K \u7EBF\u52A0\u8F7D\u5931\u8D25\uFF0C\u7EE7\u7EED\u5411\u5DE6\u62D6\u52A8\u53EF\u91CD\u8BD5", "Could not load earlier candles; drag left again to retry")) : null, marks.length > 0 ? /* @__PURE__ */ React6.createElement("div", { className: "dhl-chart-annotations", "aria-label": tr("\u4F1A\u8BDD\u56FE\u8868\u6807\u6CE8", "Session chart annotations") }, marks.slice(-4).map((mark) => /* @__PURE__ */ React6.createElement("span", { key: mark.id, className: `role-${mark.role}`, title: `${mark.label} \xB7 ${mark.kind === "level" ? fmtPrice(mark.price) : tr("\u8D8B\u52BF\u7EBF", "Trend line")}` }, mark.label)), marks.length > 4 ? /* @__PURE__ */ React6.createElement("span", null, "+", marks.length - 4) : null) : null, crosshair && tradeEvents.some((event) => event.candleTime === crosshair.t) ? /* @__PURE__ */ React6.createElement("div", { className: "dhl-chart-trade-detail", "aria-live": "off" }, tradeEvents.filter((event) => event.candleTime === crosshair.t).slice(0, 4).map((event) => /* @__PURE__ */ React6.createElement("div", { key: event.id }, /* @__PURE__ */ React6.createElement("strong", null, event.kind === "order" ? tr("\u59D4\u6258", "Order") : tr("\u6210\u4EA4", "Fill"), " \xB7 ", event.isBuy ? tr("\u4E70\u5165", "Buy") : tr("\u5356\u51FA", "Sell")), /* @__PURE__ */ React6.createElement("span", null, Number.isFinite(event.sz) ? event.sz : "\u2014", " @ ", fmtPrice(event.px), " \xB7 ", new Date(event.time).toLocaleString()), event.reason ? /* @__PURE__ */ React6.createElement("span", { title: event.reason }, tr("\u539F\u56E0", "Reason"), "\uFF1A", event.reason) : null))) : null, indicators.has("rsi14") || indicators.has("macd") ? /* @__PURE__ */ React6.createElement("div", { className: "dhl-chart-study-legend", "aria-label": tr("\u526F\u56FE\u6307\u6807\u6570\u503C", "Study values") }, indicators.has("rsi14") ? /* @__PURE__ */ React6.createElement("span", null, "RSI 14 ", /* @__PURE__ */ React6.createElement("b", null, studies.rsi14.at(-1)?.value.toFixed(1) ?? "\u2014")) : null, indicators.has("macd") ? /* @__PURE__ */ React6.createElement("span", null, "MACD ", /* @__PURE__ */ React6.createElement("b", null, studies.macd.at(-1)?.value.toFixed(4) ?? "\u2014"), " / ", studies.signal.at(-1)?.value.toFixed(4) ?? "\u2014") : null) : null, warming ? /* @__PURE__ */ React6.createElement("div", { className: "dhl-empty", style: { height: CHART_HEIGHT } }, t("chart.loading", "K \u7EBF\u52A0\u8F7D\u4E2D\u2026")) : null);
+  const markById = React9.useMemo(() => new Map(marks.map((mark) => [mark.id, mark])), [marks]);
+  const markByIdRef = React9.useRef(markById);
+  markByIdRef.current = markById;
+  const lockedRef = React9.useRef(drawingsLocked);
+  lockedRef.current = drawingsLocked;
+  const onEditRef = React9.useRef(onEditMark);
+  onEditRef.current = onEditMark;
+  const onRemoveRef = React9.useRef(onRemoveMark);
+  onRemoveRef.current = onRemoveMark;
+  const shapes = React9.useMemo(() => marks.filter((mark) => !mark.hidden).map((mark) => ({ mark, points: markPoints(mark) })), [marks]);
+  const lastTime = candles.at(-1)?.t ?? Date.now();
+  const view = React9.useMemo(() => {
+    const chartApi = refs.current, box = boxRef.current;
+    if (!chartApi || !box) return null;
+    return {
+      project: (time, price) => {
+        const x = chartApi.chart.timeScale().logicalToCoordinate(timeline.toLogical(time));
+        const y = chartApi.candles.priceToCoordinate(price);
+        return x == null || y == null || !Number.isFinite(x) || !Number.isFinite(y) ? null : { x, y };
+      },
+      width: Math.max(0, box.clientWidth - chartApi.chart.priceScale("right").width()),
+      height: chartApi.chart.panes()[0]?.getHeight() ?? box.clientHeight,
+      bars: (from, to) => timeline.toLogical(to) - timeline.toLogical(from),
+      closes: (from, to) => candles.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, price: candle.c }))
+    };
+  }, [viewportVersion, timeline, themeVersion, expanded, indicators]);
+  React9.useEffect(() => {
+    if (selectedId && !markById.has(selectedId)) setSelectedId(null);
+  }, [markById, selectedId]);
+  React9.useEffect(() => {
+    if (drawMode) setSelectedId(null);
+  }, [drawMode]);
+  React9.useEffect(() => {
+    if (!draft) return;
+    const mark = markById.get(draft.id);
+    if (mark?.kind === "level") priceLines.current.get(draft.id)?.applyOptions({ price: draft.points[0].price });
+  }, [draft, markById]);
+  React9.useEffect(() => {
+    if (!selectedId) return void 0;
+    const onKey = (event) => {
+      const element = event.target;
+      if (element?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element?.tagName ?? "")) return;
+      if (event.key === "Escape") {
+        setSelectedId(null);
+        return;
+      }
+      if (event.key !== "Delete" && event.key !== "Backspace") return;
+      const mark = markByIdRef.current.get(selectedId);
+      if (!mark || mark.locked || lockedRef.current) return;
+      event.preventDefault();
+      onRemoveRef.current(selectedId);
+      setSelectedId(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selectedId]);
+  const [brushPoints, setBrushPoints] = React9.useState([]);
+  const beginBrush = (event) => {
+    const snap = snapRef.current;
+    const first = snap?.(event.nativeEvent, void 0, false);
+    if (!snap || !first) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const collected = [first];
+    let lastXY = { x: event.clientX, y: event.clientY }, frame = 0;
+    setBrushPoints(collected);
+    const move = (ev) => {
+      if (Math.hypot(ev.clientX - lastXY.x, ev.clientY - lastXY.y) < 4) return;
+      const point = snap(ev, void 0, false);
+      if (!point) return;
+      lastXY = { x: ev.clientX, y: ev.clientY };
+      collected.push(point);
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => setBrushPoints([...collected]));
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+      cancelAnimationFrame(frame);
+      setBrushPoints([]);
+      if (collected.length < 2) return;
+      const stride = Math.ceil(collected.length / BRUSH_MAX);
+      const points2 = collected.filter((_, index) => index % stride === 0 || index === collected.length - 1).slice(-BRUSH_MAX);
+      onDrawRef.current({ kind: "brush", points: points2 });
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+  };
+  const cloneOf = React9.useCallback((mark) => {
+    const line = timelineRef.current;
+    const shifted = markPoints(mark).map((point) => ({ time: line.toTime(line.toLogical(point.time) + 5), price: point.price }));
+    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle }).filter(([, value]) => value != null));
+    return { kind: mark.kind, geometry: geometryPatch(mark.kind, shifted), style, label: mark.label };
+  }, []);
+  const clipboard = React9.useRef(null);
+  const onCloneRef = React9.useRef(onCloneMark);
+  onCloneRef.current = onCloneMark;
+  React9.useEffect(() => {
+    const onKey = (event) => {
+      if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
+      const element = event.target;
+      if (element?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element?.tagName ?? "")) return;
+      const key2 = event.key.toLowerCase();
+      if (key2 === "c" && selectedRef.current) {
+        clipboard.current = markByIdRef.current.get(selectedRef.current) ?? null;
+        if (clipboard.current) event.preventDefault();
+      }
+      if (key2 === "v" && clipboard.current) {
+        event.preventDefault();
+        const copy = cloneOf(clipboard.current);
+        onCloneRef.current(copy);
+        clipboard.current = { ...clipboard.current, ...copy.geometry };
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [cloneOf]);
+  const handledSelect = React9.useRef(0);
+  React9.useEffect(() => {
+    const r = refs.current;
+    if (!selectRequest || selectRequest.at === handledSelect.current || !r) return;
+    const mark = markById.get(selectRequest.id);
+    if (!mark) return;
+    handledSelect.current = selectRequest.at;
+    setSelectedId(mark.id);
+    const first = mark.kind === "level" ? null : markPoints(mark)[0];
+    if (first) {
+      const view2 = r.chart.timeScale().getVisibleLogicalRange();
+      const half = view2 ? (view2.to - view2.from) / 2 : 40;
+      const center = timeline.toLogical(first.time);
+      restoring.current = true;
+      r.chart.timeScale().setVisibleLogicalRange({ from: center - half, to: center + half });
+      setTimeout(() => {
+        restoring.current = false;
+      }, 100);
+    }
+  }, [selectRequest, markById, timeline]);
+  const beginDrag = React9.useCallback((event) => {
+    if (drawModeRef.current === "brush" && event.button === 0) {
+      beginBrush(event);
+      return;
+    }
+    if (drawModeRef.current || event.button !== 0) return;
+    const target = event.target;
+    const fillId = target.closest("[data-fill-id]")?.getAttribute("data-fill-id");
+    if (fillId) {
+      event.preventDefault();
+      event.stopPropagation();
+      setSelectedId(null);
+      setSelectedFill((current2) => current2 === fillId ? null : fillId);
+      return;
+    }
+    const id = target.closest("[data-mark-id]")?.getAttribute("data-mark-id");
+    const mark = id ? markByIdRef.current.get(id) : void 0;
+    if (!id || !mark) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setSelectedId(id);
+    const snap = snapRef.current;
+    if (mark.locked || lockedRef.current || !snap) return;
+    const anchorAttr = target.getAttribute("data-anchor");
+    const anchor = anchorAttr == null ? null : Number(anchorAttr);
+    const startPoint = snap(event.nativeEvent, void 0, false);
+    if (!startPoint) return;
+    const line = timelineRef.current;
+    const startLogical = line.toLogical(startPoint.time);
+    const original = markPoints(mark);
+    const origin = { x: event.clientX, y: event.clientY };
+    let moved = false, frame = 0, last = null, latest = null;
+    const compute = (ev) => {
+      let next;
+      if (anchor != null) {
+        const point = snap(ev, original[anchor === 0 ? 1 : 0]);
+        if (!point) return;
+        next = original.map((item) => ({ ...item }));
+        if (mark.kind === "level") next[0] = { ...next[0], price: point.price };
+        else if (mark.kind === "vline") next[0] = { time: point.time, price: next[0].price };
+        else if ((mark.kind === "long" || mark.kind === "short") && anchor > 0) {
+          next[anchor] = point;
+          next[1] = { ...next[1], time: point.time };
+          next[2] = { ...next[2], time: point.time };
+        } else next[anchor] = point;
+        next = constrainPoints(mark.kind, next);
+      } else {
+        const point = snap(ev, void 0, false);
+        if (!point) return;
+        const shift = Math.round(line.toLogical(point.time) - startLogical), delta = point.price - startPoint.price;
+        next = original.map((item) => ({ time: line.toTime(line.toLogical(item.time) + shift), price: item.price + delta }));
+        if (next.some((item) => item.price <= 0)) next = null;
+      }
+      if (next) {
+        latest = next;
+        setDraft({ id, points: next });
+      }
+    };
+    const move = (ev) => {
+      if (!moved && Math.hypot(ev.clientX - origin.x, ev.clientY - origin.y) < 3) return;
+      moved = true;
+      last = ev;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => compute(ev));
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+      cancelAnimationFrame(frame);
+      if (moved && last) compute(last);
+      if (moved && latest) onEditRef.current(id, geometryPatch(mark.kind, latest));
+      setDraft(null);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+  }, []);
+  const fills = React9.useMemo(() => tradeEvents.filter((event) => event.kind === "fill"), [tradeEvents]);
+  const fillCard = selectedFill ? fills.find((event) => event.id === selectedFill) ?? null : null;
+  React9.useEffect(() => {
+    if (selectedFill && !fills.some((event) => event.id === selectedFill)) setSelectedFill(null);
+  }, [fills, selectedFill]);
+  React9.useEffect(() => {
+    if (!selectedFill) return void 0;
+    const onKey = (event) => {
+      if (event.key === "Escape") setSelectedFill(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selectedFill]);
+  const fillAt = fillCard && view ? view.project(fillCard.time, fillCard.px) : null;
+  const previewPoints = drawMode && drawingHover ? [...pendingPoints, drawingHover] : pendingPoints;
+  const roleClass = (mark) => mark.source === "user" ? "role-user" : `role-${mark.role}`;
+  const selectedMark = selectedId ? markById.get(selectedId) ?? null : null;
+  return /* @__PURE__ */ React9.createElement("div", { className: "dhl-chartbox", ref: boxRef, style: { height: expanded ? "calc(100dvh - 160px)" : CHART_HEIGHT + Number(indicators.has("rsi14")) * 125 + Number(indicators.has("macd")) * 125 } }, view ? /* @__PURE__ */ React9.createElement("svg", { className: "dhl-chart-drawing-overlay" + (drawMode ? " drawing" : "") + (drawMode === "brush" ? " brushing" : ""), "aria-hidden": "true", onPointerDown: beginDrag }, /* @__PURE__ */ React9.createElement("defs", null, /* @__PURE__ */ React9.createElement("clipPath", { id: "dhl-plot-clip" }, /* @__PURE__ */ React9.createElement("rect", { x: "0", y: "0", width: view.width, height: view.height })), /* @__PURE__ */ React9.createElement("marker", { id: "dhl-arrow", viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "7", markerHeight: "7", orient: "auto-start-reverse" }, /* @__PURE__ */ React9.createElement("path", { d: "M0 0 10 5 0 10z", fill: "currentColor" }))), /* @__PURE__ */ React9.createElement("g", { clipPath: "url(#dhl-plot-clip)" }, shapes.map(({ mark, points: points2 }) => {
+    const live = draft?.id === mark.id ? draft.points : points2;
+    const shown = mark.kind === "level" ? [{ time: lastTime, price: live[0].price }] : live;
+    const selected = selectedId === mark.id;
+    return /* @__PURE__ */ React9.createElement(
+      DrawingShape,
+      {
+        key: mark.id,
+        id: mark.id,
+        kind: mark.kind,
+        points: shown,
+        view,
+        text: mark.label,
+        className: `dhl-drawing ${roleClass(mark)}${mark.kind === "level" ? " is-level" : ""}${selected ? " selected" : ""}${mark.locked || drawingsLocked ? " locked" : ""}`,
+        label: mark.source === "user" || mark.kind === "level" ? void 0 : mark.label,
+        anchors: selected,
+        interactive: !drawMode,
+        color: mark.color,
+        lineWidth: mark.lineWidth,
+        lineStyle: mark.lineStyle,
+        badges: [...mark.alert ? ["alert"] : [], ...mark.shared ? ["shared"] : []]
+      }
+    );
+  }), /* @__PURE__ */ React9.createElement("g", { className: "dhl-fills" }, fills.map((event) => {
+    const point = view.project(event.time, event.px);
+    if (!point) return null;
+    const short = event.reason.length > 18 ? event.reason.slice(0, 17) + "\u2026" : event.reason;
+    return /* @__PURE__ */ React9.createElement("g", { key: event.id, className: `dhl-fill ${event.isBuy ? "buy" : "sell"}${event.reason ? " has-reason" : ""}${selectedFill === event.id ? " selected" : ""}`, "data-fill-id": event.id }, event.reason ? /* @__PURE__ */ React9.createElement("circle", { className: "dhl-fill-ring", cx: point.x, cy: point.y, r: "9" }) : null, /* @__PURE__ */ React9.createElement("circle", { className: "dhl-fill-dot", cx: point.x, cy: point.y, r: "5" }), showReasons && short ? /* @__PURE__ */ React9.createElement("text", { className: "dhl-fill-reason", x: point.x + 12, y: point.y + 4 }, short) : null);
+  })), brushPoints.length > 1 ? /* @__PURE__ */ React9.createElement(DrawingShape, { kind: "brush", points: brushPoints, view, className: "dhl-drawing dhl-drawing-preview role-user" }) : null, drawMode && drawMode !== "brush" && previewPoints.length ? /* @__PURE__ */ React9.createElement(DrawingShape, { kind: drawMode, points: completePreview(drawMode, previewPoints), view, className: "dhl-drawing dhl-drawing-preview role-user", anchors: true }) : null)) : null, fillCard && fillAt && view ? /* @__PURE__ */ React9.createElement(
+    "div",
+    {
+      className: "dhl-fill-card",
+      role: "dialog",
+      "aria-label": tr("\u6210\u4EA4\u8BE6\u60C5", "Fill details"),
+      style: { left: Math.max(8, Math.min(fillAt.x + 14, view.width - 300)), top: Math.max(8, Math.min(fillAt.y - 20, view.height - 190)) },
+      onPointerDown: (event) => event.stopPropagation(),
+      onClick: (event) => event.stopPropagation()
+    },
+    /* @__PURE__ */ React9.createElement("header", null, /* @__PURE__ */ React9.createElement("b", { className: fillCard.isBuy ? "dhl-up" : "dhl-down" }, fillCard.isBuy ? tr("\u4E70\u5165", "Buy") : tr("\u5356\u51FA", "Sell"), " ", Number.isFinite(fillCard.sz) ? fillCard.sz : "\u2014", " ", fillCard.coin, " @ ", fmtPrice(fillCard.px)), /* @__PURE__ */ React9.createElement("button", { type: "button", "aria-label": tr("\u5173\u95ED", "Close"), onClick: () => setSelectedFill(null) }, /* @__PURE__ */ React9.createElement(UiIcon, { name: "close", size: 14 }))),
+    /* @__PURE__ */ React9.createElement("time", null, new Date(fillCard.time).toLocaleString(tr("zh-CN", "en-US"), { hour12: false })),
+    /* @__PURE__ */ React9.createElement("strong", null, tr("AI \u4EA4\u6613\u51B3\u7B56\u539F\u56E0", "AI decision rationale")),
+    fillCard.reason ? /* @__PURE__ */ React9.createElement("p", null, fillCard.reason) : /* @__PURE__ */ React9.createElement("p", { className: "muted" }, tr("\u8FD9\u7B14\u6210\u4EA4\u6CA1\u6709\u8BB0\u5F55\u539F\u56E0\uFF08\u65E7\u8BA2\u5355\uFF0C\u6216\u5728\u5176\u4ED6\u5BA2\u6237\u7AEF\u4E0B\u5355\uFF09\u3002", "No rationale recorded (older order or placed elsewhere).")),
+    /* @__PURE__ */ React9.createElement("footer", null, /* @__PURE__ */ React9.createElement("button", { type: "button", className: "dhl-fill-analyze", onClick: () => {
+      onAnalyzeFill(fillCard);
+      setSelectedFill(null);
+    } }, fillCard.sessionId ? tr("\u56DE\u5230\u51B3\u7B56\u4F1A\u8BDD\u5206\u6790", "Analyze in its session") : tr("\u5728\u5F53\u524D\u4F1A\u8BDD\u5206\u6790", "Analyze in this session")))
+  ) : null, selectedMark && !drawMode ? /* @__PURE__ */ React9.createElement(
+    DrawToolbar,
+    {
+      mark: selectedMark,
+      globallyLocked: drawingsLocked,
+      onEdit: (patch) => onEditMark(selectedMark.id, patch),
+      onClone: () => onCloneMark(cloneOf(selectedMark)),
+      onRemove: () => {
+        onRemoveMark(selectedMark.id);
+        setSelectedId(null);
+      },
+      onClose: () => setSelectedId(null)
+    }
+  ) : null, !warming && /* @__PURE__ */ React9.createElement("div", { className: "dhl-chart-ohlc", "aria-live": "off" }, /* @__PURE__ */ React9.createElement("span", null, crosshair ? new Date(crosshair.t).toLocaleString(tr("zh-CN", "en-US"), { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }) : tr("\u6700\u65B0 K \u7EBF", "Latest candle")), ["o", "h", "l", "c"].map((key2) => /* @__PURE__ */ React9.createElement("span", { key: key2 }, key2.toUpperCase(), " ", /* @__PURE__ */ React9.createElement("b", { className: crosshair && crosshair.c < crosshair.o ? "dhl-down" : "dhl-up" }, fmtPrice((crosshair ?? candles.at(-1))?.[key2]))))), !warming && olderState === "loading" ? /* @__PURE__ */ React9.createElement("div", { className: "dhl-chart-older", role: "status" }, tr("\u6B63\u5728\u52A0\u8F7D\u66F4\u65E9\u7684 K \u7EBF\u2026", "Loading earlier candles\u2026")) : null, !warming && olderState === "error" ? /* @__PURE__ */ React9.createElement("div", { className: "dhl-chart-older", role: "status" }, tr("\u66F4\u65E9\u7684 K \u7EBF\u52A0\u8F7D\u5931\u8D25\uFF0C\u7EE7\u7EED\u5411\u5DE6\u62D6\u52A8\u53EF\u91CD\u8BD5", "Could not load earlier candles; drag left again to retry")) : null, !warming && maComputed.length > 0 ? /* @__PURE__ */ React9.createElement("div", { className: "dhl-chart-ma-legend", "aria-label": tr("\u5747\u7EBF\u6570\u503C", "Moving average values") }, maComputed.map((item) => {
+    const index = crosshair ? candles.findIndex((candle) => Math.floor(candle.t / 1e3) === Math.floor(crosshair.t / 1e3)) : candles.length - 1;
+    const at = (series) => series && index >= 0 ? series[index] : null;
+    return /* @__PURE__ */ React9.createElement("span", { key: item.line.id, style: { color: item.color } }, maLabel(item.line), " ", /* @__PURE__ */ React9.createElement("b", null, fmtPrice(at(item.values))), item.smoothed ? /* @__PURE__ */ React9.createElement(React9.Fragment, null, " / ", /* @__PURE__ */ React9.createElement("b", null, fmtPrice(at(item.smoothed)))) : null);
+  })) : null, marks.length > 0 ? /* @__PURE__ */ React9.createElement("div", { className: "dhl-chart-annotations", "aria-label": tr("\u4F1A\u8BDD\u56FE\u8868\u6807\u6CE8", "Session chart annotations") }, marks.slice(-4).map((mark) => /* @__PURE__ */ React9.createElement("span", { key: mark.id, className: `role-${mark.role}`, title: `${mark.label} \xB7 ${mark.kind === "level" ? fmtPrice(mark.price) : tr("\u8D8B\u52BF\u7EBF", "Trend line")}` }, mark.label)), marks.length > 4 ? /* @__PURE__ */ React9.createElement("span", null, "+", marks.length - 4) : null) : null, crosshair && tradeEvents.some((event) => event.candleTime === crosshair.t) ? /* @__PURE__ */ React9.createElement("div", { className: "dhl-chart-trade-detail", "aria-live": "off" }, tradeEvents.filter((event) => event.candleTime === crosshair.t).slice(0, 4).map((event) => /* @__PURE__ */ React9.createElement("div", { key: event.id }, /* @__PURE__ */ React9.createElement("strong", null, event.kind === "order" ? tr("\u59D4\u6258", "Order") : tr("\u6210\u4EA4", "Fill"), " \xB7 ", event.isBuy ? tr("\u4E70\u5165", "Buy") : tr("\u5356\u51FA", "Sell")), /* @__PURE__ */ React9.createElement("span", null, Number.isFinite(event.sz) ? event.sz : "\u2014", " @ ", fmtPrice(event.px), " \xB7 ", new Date(event.time).toLocaleString()), event.reason ? /* @__PURE__ */ React9.createElement("span", { title: event.reason }, tr("\u539F\u56E0", "Reason"), "\uFF1A", event.reason) : null))) : null, indicators.has("rsi14") || indicators.has("macd") ? /* @__PURE__ */ React9.createElement("div", { className: "dhl-chart-study-legend", "aria-label": tr("\u526F\u56FE\u6307\u6807\u6570\u503C", "Study values") }, indicators.has("rsi14") ? /* @__PURE__ */ React9.createElement("span", null, "RSI 14 ", /* @__PURE__ */ React9.createElement("b", null, studies.rsi14.at(-1)?.value.toFixed(1) ?? "\u2014")) : null, indicators.has("macd") ? /* @__PURE__ */ React9.createElement("span", null, "MACD ", /* @__PURE__ */ React9.createElement("b", null, studies.macd.at(-1)?.value.toFixed(4) ?? "\u2014"), " / ", studies.signal.at(-1)?.value.toFixed(4) ?? "\u2014") : null) : null, warming ? /* @__PURE__ */ React9.createElement("div", { className: "dhl-empty", style: { height: CHART_HEIGHT } }, t("chart.loading", "K \u7EBF\u52A0\u8F7D\u4E2D\u2026")) : null);
+}
+
+// src/client/drawing-history.ts
+var React10 = __toESM(require("react"), 1);
+var HISTORY_LIMIT = 100;
+var GEOMETRY = ["price", "fromTime", "fromPrice", "toTime", "toPrice", "points"];
+var STYLE = ["color", "lineWidth", "lineStyle", "locked", "hidden"];
+function recreateRequest(mark) {
+  const out = { kind: mark.kind, label: mark.label, role: mark.role, coin: mark.coin, interval: mark.interval };
+  for (const key2 of [...GEOMETRY, ...STYLE]) if (mark[key2] != null) out[key2] = mark[key2];
+  return out;
+}
+function remap(ops, from, to) {
+  for (const op of ops) {
+    if (op.type === "batch") remap(op.ops, from, to);
+    else if (op.type === "edit") {
+      if (op.id === from) op.id = to;
+    } else if (op.mark.id === from) op.mark = { ...op.mark, id: to };
+  }
+}
+function useDrawingHistory(scope) {
+  const undoStack = React10.useRef([]);
+  const redoStack = React10.useRef([]);
+  const [, setVersion] = React10.useState(0);
+  const bump = () => setVersion((value) => value + 1);
+  React10.useEffect(() => {
+    undoStack.current = [];
+    redoStack.current = [];
+    bump();
+  }, [scope]);
+  const session = () => store.get().activeSessionId;
+  const fail = (what, error) => {
+    notify(`${what}\uFF1A${String(error?.message ?? error)}`);
+    void loadChartMarks();
+  };
+  const apiCreate = async (request) => {
+    const sessionId = session();
+    if (!sessionId) {
+      notify(tr("\u8BF7\u5148\u9009\u62E9\u4EA4\u6613\u4F1A\u8BDD", "Choose a trading session first"));
+      return null;
+    }
+    const { activeCoin, interval } = store.get();
+    try {
+      const saved = await hyperCall("drawChartMark", { coin: activeCoin, interval, role: "neutral", ...request, sessionId });
+      store.patch((current3) => ({ chartMarks: [...current3.chartMarks.filter((item) => item.id !== saved.id), saved] }));
+      return saved;
+    } catch (error) {
+      fail(tr("\u753B\u7EBF\u5931\u8D25", "Could not draw"), error);
+      return null;
+    }
+  };
+  const apiDelete = async (id) => {
+    const sessionId = session();
+    if (!sessionId) return;
+    store.patch((current3) => ({ chartMarks: current3.chartMarks.filter((item) => item.id !== id) }));
+    try {
+      await hyperCall("eraseChartMark", { sessionId, id });
+    } catch (error) {
+      fail(tr("\u5220\u9664\u753B\u7EBF\u5931\u8D25", "Could not remove drawing"), error);
+    }
+  };
+  const apiEdit = async (id, patch) => {
+    const sessionId = session();
+    if (!sessionId) return;
+    store.patch((current3) => ({ chartMarks: current3.chartMarks.map((item) => {
+      if (item.id !== id) return item;
+      const next = { ...item, ...patch };
+      for (const [key2, value] of Object.entries(patch)) if (value === null) delete next[key2];
+      return next;
+    }) }));
+    try {
+      await hyperCall("updateChartMark", { sessionId, id, patch });
+    } catch (error) {
+      fail(tr("\u4FEE\u6539\u753B\u7EBF\u5931\u8D25", "Could not edit drawing"), error);
+    }
+  };
+  const record = (op) => {
+    undoStack.current.push(op);
+    if (undoStack.current.length > HISTORY_LIMIT) undoStack.current.shift();
+    redoStack.current = [];
+    bump();
+  };
+  const current2 = (id) => store.get().chartMarks.find((item) => item.id === id);
+  const apply2 = async (op, forward) => {
+    if (op.type === "batch") {
+      for (const inner of forward ? op.ops : [...op.ops].reverse()) await apply2(inner, forward);
+      return;
+    }
+    if (op.type === "edit") {
+      await apiEdit(op.id, forward ? op.after : op.before);
+      return;
+    }
+    const shouldExist = op.type === "create" === forward;
+    if (shouldExist) {
+      const saved = await apiCreate(recreateRequest(op.mark));
+      if (saved) {
+        const old = op.mark.id;
+        remap(undoStack.current, old, saved.id);
+        remap(redoStack.current, old, saved.id);
+        op.mark = { ...op.mark, id: saved.id };
+      }
+    } else await apiDelete(op.mark.id);
+  };
+  return {
+    async create(request) {
+      const saved = await apiCreate(request);
+      if (saved) record({ type: "create", mark: saved });
+      return saved;
+    },
+    async edit(id, patch) {
+      const mark = current2(id);
+      if (!mark) return;
+      const before = Object.fromEntries(Object.keys(patch).map((key2) => [key2, mark[key2] ?? null]));
+      record({ type: "edit", id, before, after: patch });
+      await apiEdit(id, patch);
+    },
+    async remove(id) {
+      const mark = current2(id);
+      if (!mark) return;
+      record({ type: "delete", mark });
+      await apiDelete(id);
+    },
+    async removeMany(ids) {
+      const marks = ids.map(current2).filter((mark) => Boolean(mark));
+      if (!marks.length) return;
+      record({ type: "batch", ops: marks.map((mark) => ({ type: "delete", mark })) });
+      for (const mark of marks) await apiDelete(mark.id);
+    },
+    async undo() {
+      const op = undoStack.current.pop();
+      if (!op) return;
+      redoStack.current.push(op);
+      bump();
+      await apply2(op, false);
+    },
+    async redo() {
+      const op = redoStack.current.pop();
+      if (!op) return;
+      undoStack.current.push(op);
+      bump();
+      await apply2(op, true);
+    },
+    canUndo: undoStack.current.length > 0,
+    canRedo: redoStack.current.length > 0
+  };
+}
+
+// src/client/components/drawing-list.tsx
+var React11 = __toESM(require("react"), 1);
+var OPEN_KEY = "dsh-hyperliquid.draw.listOpen";
+function DrawingList({ marks, locked, onSelect, onEdit, onRemove }) {
+  const [open, setOpen] = React11.useState(() => {
+    try {
+      return localStorage.getItem(OPEN_KEY) !== "0";
+    } catch {
+      return true;
+    }
+  });
+  const toggle = () => setOpen((value) => {
+    try {
+      localStorage.setItem(OPEN_KEY, value ? "0" : "1");
+    } catch {
+    }
+    return !value;
+  });
+  const hidden = marks.filter((mark) => mark.hidden).length;
+  return /* @__PURE__ */ React11.createElement("section", { className: "dhl-drawing-list", "aria-label": tr("\u753B\u7EBF\u5217\u8868", "Drawings") }, /* @__PURE__ */ React11.createElement("button", { type: "button", className: "dhl-drawing-list-head", "aria-expanded": open, onClick: toggle }, /* @__PURE__ */ React11.createElement("span", null, tr("\u753B\u7EBF", "Drawings"), " ", marks.length, hidden ? tr(` \xB7 \u9690\u85CF ${hidden}`, ` \xB7 ${hidden} hidden`) : ""), /* @__PURE__ */ React11.createElement(UiIcon, { name: open ? "chevronDown" : "chevronRight", size: 14 })), open ? /* @__PURE__ */ React11.createElement("ul", null, marks.map((mark) => {
+    const tool = toolOf(mark.kind);
+    return /* @__PURE__ */ React11.createElement("li", { key: mark.id, className: mark.hidden ? "is-hidden" : "" }, /* @__PURE__ */ React11.createElement("button", { type: "button", className: "dhl-drawing-list-name", title: tr("\u5728\u56FE\u4E0A\u5B9A\u4F4D\u5E76\u9009\u4E2D", "Find and select on the chart"), onClick: () => onSelect(mark.id), disabled: mark.hidden }, /* @__PURE__ */ React11.createElement("span", { style: { color: mark.color } }, /* @__PURE__ */ React11.createElement(ToolIcon, { kind: mark.kind, size: 14 })), /* @__PURE__ */ React11.createElement("b", null, mark.label), /* @__PURE__ */ React11.createElement("small", null, mark.alert ? /* @__PURE__ */ React11.createElement("span", { className: "dhl-list-flag", title: tr("\u4EF7\u683C\u63D0\u9192\u5DF2\u5F00\u542F", "Price alert armed") }, /* @__PURE__ */ React11.createElement(UiIcon, { name: "bell", size: 12 })) : null, mark.shared ? /* @__PURE__ */ React11.createElement("span", { className: "dhl-list-flag", title: tr("\u5DF2\u540C\u6B65\u5230\u6240\u6709\u4F1A\u8BDD", "Synced to all sessions") }, /* @__PURE__ */ React11.createElement(UiIcon, { name: "sync", size: 12 })) : null, tr(tool.zh, tool.en), " \xB7 ", mark.interval, mark.source === "agent" ? " \xB7 agent" : "")), /* @__PURE__ */ React11.createElement("button", { type: "button", "aria-pressed": !mark.hidden, title: mark.hidden ? tr("\u663E\u793A", "Show") : tr("\u9690\u85CF", "Hide"), "aria-label": `${mark.hidden ? tr("\u663E\u793A", "Show") : tr("\u9690\u85CF", "Hide")} ${mark.label}`, onClick: () => onEdit(mark.id, { hidden: !mark.hidden }) }, /* @__PURE__ */ React11.createElement(UiIcon, { name: mark.hidden ? "eyeOff" : "eye", size: 14 })), /* @__PURE__ */ React11.createElement("button", { type: "button", className: mark.locked ? "on" : "", "aria-pressed": Boolean(mark.locked), disabled: locked, title: mark.locked ? tr("\u89E3\u9501", "Unlock") : tr("\u9501\u5B9A", "Lock"), "aria-label": `${mark.locked ? tr("\u89E3\u9501", "Unlock") : tr("\u9501\u5B9A", "Lock")} ${mark.label}`, onClick: () => onEdit(mark.id, { locked: !mark.locked }) }, /* @__PURE__ */ React11.createElement(UiIcon, { name: mark.locked ? "lock" : "unlock", size: 14 })), /* @__PURE__ */ React11.createElement("button", { type: "button", disabled: locked || mark.locked, title: tr("\u5220\u9664", "Delete"), "aria-label": `${tr("\u5220\u9664\u753B\u7EBF", "Remove line")} ${mark.label}`, onClick: () => onRemove(mark.id) }, /* @__PURE__ */ React11.createElement(UiIcon, { name: "trash", size: 14 })));
+  })) : null);
+}
+
+// src/client/components/sticker-picker.tsx
+var React12 = __toESM(require("react"), 1);
+var TABS = [["icons", "\u56FE\u6807", "Icons"], ["trading", "\u4EA4\u6613", "Trading"], ["faces", "\u8868\u60C5", "Faces"], ["symbols", "\u7B26\u53F7", "Symbols"]];
+function StickerPicker({ onPick }) {
+  const [tab, setTab] = React12.useState("icons");
+  const [custom, setCustom] = React12.useState("");
+  const value = custom.trim();
+  const valid = isSingleEmoji(value);
+  return /* @__PURE__ */ React12.createElement("div", { className: "dhl-sticker-picker" }, /* @__PURE__ */ React12.createElement("form", { className: "dhl-sticker-custom", onSubmit: (event) => {
+    event.preventDefault();
+    if (valid) onPick(`emoji:${value}`);
+  } }, /* @__PURE__ */ React12.createElement("input", { value: custom, onChange: (event) => setCustom(event.target.value), placeholder: tr("\u8F93\u5165\u6216\u7C98\u8D34\u4EFB\u610F emoji\uFF0C\u4F8B\u5982 \u{1F984}", "Type or paste any emoji, e.g. \u{1F984}"), "aria-label": tr("\u81EA\u5B9A\u4E49 emoji \u8D34\u7EB8", "Custom emoji sticker"), maxLength: 16 }), /* @__PURE__ */ React12.createElement("button", { type: "submit", disabled: !valid }, tr("\u653E\u7F6E", "Place"))), /* @__PURE__ */ React12.createElement("div", { className: "dhl-sticker-tabs", role: "tablist" }, TABS.map(([id, zh, en]) => /* @__PURE__ */ React12.createElement("button", { type: "button", role: "tab", key: id, "aria-selected": tab === id, className: tab === id ? "on" : "", onClick: () => setTab(id) }, tr(zh, en)))), tab === "icons" ? /* @__PURE__ */ React12.createElement("div", { className: "dhl-icon-grid", role: "group", "aria-label": tr("\u56FE\u6807", "Icons") }, ICON_LIST.map((name) => /* @__PURE__ */ React12.createElement("button", { type: "button", key: name, "aria-label": tr(ICONS[name][0], ICONS[name][1]), title: tr(ICONS[name][0], ICONS[name][1]), onClick: () => onPick(name) }, /* @__PURE__ */ React12.createElement("svg", { viewBox: "0 0 24 24", width: "22", height: "22", fill: "none", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, /* @__PURE__ */ React12.createElement("path", { d: ICONS[name][2] })), /* @__PURE__ */ React12.createElement("span", null, tr(ICONS[name][0], ICONS[name][1]))))) : /* @__PURE__ */ React12.createElement("div", { className: "dhl-sticker-grid", role: "group", "aria-label": tr("\u8D34\u7EB8", "Stickers") }, STICKERS[tab].map((emoji) => /* @__PURE__ */ React12.createElement("button", { type: "button", key: emoji, "aria-label": `${tr("\u8D34\u7EB8", "Sticker")} ${emoji}`, onClick: () => onPick(`emoji:${emoji}`) }, emoji))));
+}
+
+// src/client/components/desk-column.tsx
+var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
+
+// src/client/components/ma-editor.tsx
+var React13 = __toESM(require("react"), 1);
+var KIND_NAMES = {
+  sma: ["SMA", "SMA"],
+  ema: ["EMA", "EMA"],
+  smma: ["SMMA \u5E73\u6ED1", "SMMA (RMA)"],
+  wma: ["WMA", "WMA"]
+};
+var PRESETS = [
+  { kind: "smma", period: 7 },
+  { kind: "smma", period: 21 },
+  { kind: "smma", period: 50 },
+  { kind: "ema", period: 200 }
+];
+function MaEditor({ lines, onChange }) {
+  const [kind, setKind] = React13.useState("smma");
+  const [period, setPeriod] = React13.useState("21");
+  const [source, setSource] = React13.useState("close");
+  const [smoothKind, setSmoothKind] = React13.useState("");
+  const [smoothPeriod, setSmoothPeriod] = React13.useState("9");
+  const add2 = (input) => {
+    let line;
+    try {
+      line = normalizeMaLine(input);
+    } catch (error) {
+      notify(String(error?.message ?? error));
+      return;
+    }
+    const rest = lines.filter((item) => item.id !== line.id);
+    if (rest.length >= MA_MAX_LINES) {
+      notify(tr(`\u6700\u591A\u540C\u65F6\u663E\u793A ${MA_MAX_LINES} \u6761\u5747\u7EBF`, `At most ${MA_MAX_LINES} moving averages`));
+      return;
+    }
+    onChange([...rest, line]);
+  };
+  return /* @__PURE__ */ React13.createElement("div", { className: "dhl-ma-editor" }, /* @__PURE__ */ React13.createElement("strong", null, tr("\u5747\u7EBF", "Moving averages")), lines.length ? /* @__PURE__ */ React13.createElement("ul", { className: "dhl-ma-list" }, lines.map((line, index) => /* @__PURE__ */ React13.createElement("li", { key: line.id }, /* @__PURE__ */ React13.createElement("i", { style: { background: maColor(line, index) }, "aria-hidden": "true" }), /* @__PURE__ */ React13.createElement("span", null, maLabel(line)), /* @__PURE__ */ React13.createElement("button", { type: "button", "aria-label": `${tr("\u79FB\u9664", "Remove")} ${maLabel(line)}`, onClick: () => onChange(lines.filter((item) => item.id !== line.id)) }, /* @__PURE__ */ React13.createElement(UiIcon, { name: "close", size: 12 }))))) : null, /* @__PURE__ */ React13.createElement("div", { className: "dhl-ma-presets" }, PRESETS.map((preset) => {
+    const id = `${preset.kind}${preset.period}`;
+    return /* @__PURE__ */ React13.createElement("button", { type: "button", key: id, disabled: lines.some((line) => line.id === id), onClick: () => add2(preset) }, `${preset.kind.toUpperCase()} ${preset.period}`);
+  })), /* @__PURE__ */ React13.createElement("div", { className: "dhl-ma-form" }, /* @__PURE__ */ React13.createElement(Select, { "aria-label": tr("\u5747\u7EBF\u7C7B\u578B", "MA type"), value: kind, onChange: (event) => setKind(event.target.value) }, MA_KINDS.map((item) => /* @__PURE__ */ React13.createElement("option", { key: item, value: item }, tr(KIND_NAMES[item][0], KIND_NAMES[item][1])))), /* @__PURE__ */ React13.createElement("input", { "aria-label": tr("\u5468\u671F", "Length"), type: "number", min: 1, max: 500, value: period, onChange: (event) => setPeriod(event.target.value) }), /* @__PURE__ */ React13.createElement(Select, { "aria-label": tr("\u4EF7\u683C\u6E90", "Source"), value: source, onChange: (event) => setSource(event.target.value) }, MA_SOURCES.map((item) => /* @__PURE__ */ React13.createElement("option", { key: item, value: item }, item)))), /* @__PURE__ */ React13.createElement("div", { className: "dhl-ma-form" }, /* @__PURE__ */ React13.createElement(Select, { "aria-label": tr("\u5E73\u6ED1", "Smoothing"), value: smoothKind, onChange: (event) => setSmoothKind(event.target.value) }, /* @__PURE__ */ React13.createElement("option", { value: "" }, tr("\u4E0D\u5E73\u6ED1", "No smoothing")), MA_KINDS.map((item) => /* @__PURE__ */ React13.createElement("option", { key: item, value: item }, tr("\u5E73\u6ED1\uFF1A", "Smooth: ") + item.toUpperCase()))), /* @__PURE__ */ React13.createElement("input", { "aria-label": tr("\u5E73\u6ED1\u5468\u671F", "Smoothing length"), type: "number", min: 1, max: 500, value: smoothPeriod, disabled: !smoothKind, onChange: (event) => setSmoothPeriod(event.target.value) }), /* @__PURE__ */ React13.createElement("button", { type: "button", className: "dhl-ma-add", onClick: () => add2({ kind, period: Number(period), source, smoothing: smoothKind ? { kind: smoothKind, period: Number(smoothPeriod) } : null }) }, tr("\u6DFB\u52A0", "Add"))));
 }
 
 // src/client/components/market-tape.tsx
-var React9 = __toESM(require("react"), 1);
+var React16 = __toESM(require("react"), 1);
 
 // src/client/components/book-card.tsx
-var React7 = __toESM(require("react"), 1);
+var React14 = __toESM(require("react"), 1);
 var GROUPINGS = [
   ["full", null],
   ["5", 1],
@@ -17262,8 +19124,8 @@ function BookCard({ snapshot }) {
   const reference = rawBid > 0 && rawAsk > 0 ? (rawBid + rawAsk) / 2 : rawBid || rawAsk || 1;
   const baseStep = 10 ** (Math.floor(Math.log10(reference)) - 4);
   const selectedBook = grouping === "full" ? rawBook : snapshot?.coin === coin && snapshot?.bookGrouping === grouping && Date.now() - Number(snapshot?.observedAt?.groupedBook) < 1e4 ? snapshot.groupedBook : null;
-  const levels = (side) => {
-    const entries = selectedBook?.levels?.[side] ?? [];
+  const levels = (side2) => {
+    const entries = selectedBook?.levels?.[side2] ?? [];
     let total = 0;
     return entries.slice(0, 10).flatMap((entry) => {
       const px = Number(entry.px);
@@ -17284,45 +19146,45 @@ function BookCard({ snapshot }) {
     saveSessionWorkspace({ bookGrouping: next });
     void loadSnapshot();
   };
-  const row = (level, side) => /* @__PURE__ */ React7.createElement("div", { className: "dhl-lvl", key: `${side}:${level.px}` }, /* @__PURE__ */ React7.createElement("div", { className: "bar " + side, style: { width: `${level.total / maxTotal * 100}%` } }), /* @__PURE__ */ React7.createElement(
+  const row = (level, side2) => /* @__PURE__ */ React14.createElement("div", { className: "dhl-lvl", key: `${side2}:${level.px}` }, /* @__PURE__ */ React14.createElement("div", { className: "bar " + side2, style: { width: `${level.total / maxTotal * 100}%` } }), /* @__PURE__ */ React14.createElement(
     "button",
     {
       type: "button",
       className: "px",
-      style: { color: side === "bid" ? "var(--dsw-alias-state-success-primary)" : "var(--dsw-alias-state-error-primary)" },
+      style: { color: side2 === "bid" ? "var(--dsw-alias-state-success-primary)" : "var(--dsw-alias-state-error-primary)" },
       title: t("book.clickHint", "\u586B\u5165\u53F3\u4FA7\u9650\u4EF7\u5355\u7968\u636E"),
-      onClick: () => store.patch({ ticketDraft: { coin, isBuy: side === "bid", px: level.px, at: Date.now() } })
+      onClick: () => store.patch({ ticketDraft: { coin, isBuy: side2 === "bid", px: level.px, at: Date.now() } })
     },
     exchangePrice(level.px)
-  ), /* @__PURE__ */ React7.createElement("span", null, fmt(level.sz, 4)), /* @__PURE__ */ React7.createElement("span", { style: { color: "var(--dsw-alias-label-secondary)" } }, fmt(level.total, 3)));
-  return /* @__PURE__ */ React7.createElement("div", { className: "dhl-card" }, /* @__PURE__ */ React7.createElement("h4", null, t("book.title", "\u76D8\u53E3")), /* @__PURE__ */ React7.createElement("div", { className: "dhl-book-options" }, /* @__PURE__ */ React7.createElement("label", null, tr("\u4EF7\u683C\u6863\u4F4D", "Price grouping"), " ", /* @__PURE__ */ React7.createElement("select", { "aria-label": tr("\u76D8\u53E3\u4EF7\u683C\u6863\u4F4D", "Order book price grouping"), value: grouping, onChange: (event) => chooseGrouping(event.target.value) }, GROUPINGS.map(([key, factor]) => /* @__PURE__ */ React7.createElement("option", { key, value: key }, factor == null ? tr("\u539F\u59CB", "Full") : stepLabel(baseStep * factor))))), /* @__PURE__ */ React7.createElement("span", null, coin)), asks.length === 0 && bids.length === 0 ? /* @__PURE__ */ React7.createElement("div", { className: "dhl-book-wait" }, grouping === "full" ? t("book.waiting", "\u7B49\u5F85\u4E0A\u6E38\u884C\u60C5\u2026") : tr("\u6B63\u5728\u8BFB\u53D6\u4EA4\u6613\u6240\u805A\u5408\u76D8\u53E3\u2026", "Loading grouped order book\u2026")) : /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("div", { className: "dhl-lvl dhl-bookhead" }, /* @__PURE__ */ React7.createElement("span", null, t("book.price", "\u4EF7\u683C")), /* @__PURE__ */ React7.createElement("span", null, t("book.size", "\u6570\u91CF")), /* @__PURE__ */ React7.createElement("span", null, t("book.total", "\u7D2F\u8BA1"))), asks.slice().reverse().map((level) => row(level, "ask")), /* @__PURE__ */ React7.createElement("div", { className: "dhl-spread-row" }, /* @__PURE__ */ React7.createElement("span", null, t("book.spread", "\u4EF7\u5DEE")), /* @__PURE__ */ React7.createElement("strong", null, spread != null ? fmtPrice(spread) : "\u2014"), /* @__PURE__ */ React7.createElement("span", null, spread != null && mid ? `${(spread / mid * 100).toFixed(3)}%` : "\u2014")), bids.map((level) => row(level, "bid"))));
+  ), /* @__PURE__ */ React14.createElement("span", null, fmt(level.sz, 4)), /* @__PURE__ */ React14.createElement("span", { style: { color: "var(--dsw-alias-label-secondary)" } }, fmt(level.total, 3)));
+  return /* @__PURE__ */ React14.createElement("div", { className: "dhl-card" }, /* @__PURE__ */ React14.createElement("h4", null, t("book.title", "\u76D8\u53E3")), /* @__PURE__ */ React14.createElement("div", { className: "dhl-book-options" }, /* @__PURE__ */ React14.createElement("label", null, tr("\u4EF7\u683C\u6863\u4F4D", "Price grouping"), " ", /* @__PURE__ */ React14.createElement(Select, { "aria-label": tr("\u76D8\u53E3\u4EF7\u683C\u6863\u4F4D", "Order book price grouping"), value: grouping, onChange: (event) => chooseGrouping(event.target.value) }, GROUPINGS.map(([key2, factor]) => /* @__PURE__ */ React14.createElement("option", { key: key2, value: key2 }, factor == null ? tr("\u539F\u59CB", "Full") : stepLabel(baseStep * factor))))), /* @__PURE__ */ React14.createElement("span", null, coin)), asks.length === 0 && bids.length === 0 ? /* @__PURE__ */ React14.createElement("div", { className: "dhl-book-wait" }, grouping === "full" ? t("book.waiting", "\u7B49\u5F85\u4E0A\u6E38\u884C\u60C5\u2026") : tr("\u6B63\u5728\u8BFB\u53D6\u4EA4\u6613\u6240\u805A\u5408\u76D8\u53E3\u2026", "Loading grouped order book\u2026")) : /* @__PURE__ */ React14.createElement(React14.Fragment, null, /* @__PURE__ */ React14.createElement("div", { className: "dhl-lvl dhl-bookhead" }, /* @__PURE__ */ React14.createElement("span", null, t("book.price", "\u4EF7\u683C")), /* @__PURE__ */ React14.createElement("span", null, t("book.size", "\u6570\u91CF")), /* @__PURE__ */ React14.createElement("span", null, t("book.total", "\u7D2F\u8BA1"))), asks.slice().reverse().map((level) => row(level, "ask")), /* @__PURE__ */ React14.createElement("div", { className: "dhl-spread-row" }, /* @__PURE__ */ React14.createElement("span", null, t("book.spread", "\u4EF7\u5DEE")), /* @__PURE__ */ React14.createElement("strong", null, spread != null ? fmtPrice(spread) : "\u2014"), /* @__PURE__ */ React14.createElement("span", null, spread != null && mid ? `${(spread / mid * 100).toFixed(3)}%` : "\u2014")), bids.map((level) => row(level, "bid"))));
 }
 
 // src/client/components/trades-card.tsx
-var React8 = __toESM(require("react"), 1);
+var React15 = __toESM(require("react"), 1);
 function TradesCard({ snapshot }) {
   const trades = (Array.isArray(snapshot?.trades) ? snapshot.trades : []).slice(0, 24);
-  return /* @__PURE__ */ React8.createElement("div", { className: "dhl-card" }, /* @__PURE__ */ React8.createElement("h4", null, t("trades.title", "\u6700\u8FD1\u6210\u4EA4")), /* @__PURE__ */ React8.createElement("div", { className: "dhl-lvl dhl-bookhead" }, /* @__PURE__ */ React8.createElement("span", null, t("book.price", "\u4EF7\u683C")), /* @__PURE__ */ React8.createElement("span", null, t("book.size", "\u6570\u91CF")), /* @__PURE__ */ React8.createElement("span", null, tr("\u65F6\u95F4", "Time"))), trades.length === 0 ? /* @__PURE__ */ React8.createElement("div", { style: { color: "var(--dsw-alias-label-secondary)", fontSize: 11 } }, "\u2014") : trades.map((tr2, i) => /* @__PURE__ */ React8.createElement("div", { className: "dhl-lvl", key: i, style: { position: "relative" } }, /* @__PURE__ */ React8.createElement("span", { style: { color: tr2.side === "B" ? "var(--dsw-alias-state-success-primary)" : "var(--dsw-alias-state-error-primary)" } }, fmtPrice(tr2.px)), /* @__PURE__ */ React8.createElement("span", { style: { color: "var(--dsw-alias-label-secondary)" } }, fmt(tr2.sz, 4)), /* @__PURE__ */ React8.createElement("span", { style: { color: "var(--dsw-alias-label-secondary)" } }, Number.isFinite(Number(tr2.time)) ? new Date(Number(tr2.time)).toLocaleTimeString(tr("zh-CN", "en-US"), { hour12: false }) : "\u2014"))));
+  return /* @__PURE__ */ React15.createElement("div", { className: "dhl-card" }, /* @__PURE__ */ React15.createElement("h4", null, t("trades.title", "\u6700\u8FD1\u6210\u4EA4")), /* @__PURE__ */ React15.createElement("div", { className: "dhl-lvl dhl-bookhead" }, /* @__PURE__ */ React15.createElement("span", null, t("book.price", "\u4EF7\u683C")), /* @__PURE__ */ React15.createElement("span", null, t("book.size", "\u6570\u91CF")), /* @__PURE__ */ React15.createElement("span", null, tr("\u65F6\u95F4", "Time"))), trades.length === 0 ? /* @__PURE__ */ React15.createElement("div", { style: { color: "var(--dsw-alias-label-secondary)", fontSize: 11 } }, "\u2014") : trades.map((tr2, i) => /* @__PURE__ */ React15.createElement("div", { className: "dhl-lvl", key: i, style: { position: "relative" } }, /* @__PURE__ */ React15.createElement("span", { style: { color: tr2.side === "B" ? "var(--dsw-alias-state-success-primary)" : "var(--dsw-alias-state-error-primary)" } }, fmtPrice(tr2.px)), /* @__PURE__ */ React15.createElement("span", { style: { color: "var(--dsw-alias-label-secondary)" } }, fmt(tr2.sz, 4)), /* @__PURE__ */ React15.createElement("span", { style: { color: "var(--dsw-alias-label-secondary)" } }, Number.isFinite(Number(tr2.time)) ? new Date(Number(tr2.time)).toLocaleTimeString(tr("zh-CN", "en-US"), { hour12: false }) : "\u2014"))));
 }
 
 // src/client/components/market-tape.tsx
 function MarketTape({ snapshot }) {
   const s = useStore();
   const tab = s.workspaceSessionId === s.activeSessionId ? s.workspace?.tapeTab ?? "book" : "book";
-  return /* @__PURE__ */ React9.createElement("aside", { className: "dhl-tape", "aria-label": tr("\u76D8\u53E3\u4E0E\u6210\u4EA4", "Order book and trades") }, /* @__PURE__ */ React9.createElement("div", { className: "dhl-tape-tabs", role: "tablist", "aria-label": tr("\u5E02\u573A\u6570\u636E", "Market data") }, /* @__PURE__ */ React9.createElement("button", { type: "button", role: "tab", "aria-selected": tab === "book", className: tab === "book" ? "on" : "", onClick: () => saveSessionWorkspace({ tapeTab: "book" }) }, tr("\u76D8\u53E3", "Order book")), /* @__PURE__ */ React9.createElement("button", { type: "button", role: "tab", "aria-selected": tab === "trades", className: tab === "trades" ? "on" : "", onClick: () => saveSessionWorkspace({ tapeTab: "trades" }) }, tr("\u6210\u4EA4", "Trades"))), /* @__PURE__ */ React9.createElement("div", { className: "dhl-tape-content", role: "tabpanel" }, tab === "book" ? /* @__PURE__ */ React9.createElement(BookCard, { snapshot }) : /* @__PURE__ */ React9.createElement(TradesCard, { snapshot })));
+  return /* @__PURE__ */ React16.createElement("aside", { className: "dhl-tape", "aria-label": tr("\u76D8\u53E3\u4E0E\u6210\u4EA4", "Order book and trades") }, /* @__PURE__ */ React16.createElement("div", { className: "dhl-tape-tabs", role: "tablist", "aria-label": tr("\u5E02\u573A\u6570\u636E", "Market data") }, /* @__PURE__ */ React16.createElement("button", { type: "button", role: "tab", "aria-selected": tab === "book", className: tab === "book" ? "on" : "", onClick: () => saveSessionWorkspace({ tapeTab: "book" }) }, tr("\u76D8\u53E3", "Order book")), /* @__PURE__ */ React16.createElement("button", { type: "button", role: "tab", "aria-selected": tab === "trades", className: tab === "trades" ? "on" : "", onClick: () => saveSessionWorkspace({ tapeTab: "trades" }) }, tr("\u6210\u4EA4", "Trades"))), /* @__PURE__ */ React16.createElement("div", { className: "dhl-tape-content", role: "tabpanel" }, tab === "book" ? /* @__PURE__ */ React16.createElement(BookCard, { snapshot }) : /* @__PURE__ */ React16.createElement(TradesCard, { snapshot })));
 }
 
 // src/client/components/bottom-table.tsx
-var React10 = __toESM(require("react"), 1);
+var React17 = __toESM(require("react"), 1);
 function BottomTable({ account, accountError }) {
   const s = useStore();
   const tab = s.workspaceSessionId === s.activeSessionId ? s.workspace?.bottomTab ?? "positions" : "positions";
-  const [orderView, setOrderView] = React10.useState("open");
-  const [historyLimit, setHistoryLimit] = React10.useState(100);
+  const [orderView, setOrderView] = React17.useState("open");
+  const [historyLimit, setHistoryLimit] = React17.useState(100);
   const positions = account?.positions ?? [];
   const orders = account?.openOrders ?? [];
   const history = s.tradeHistory;
-  React10.useEffect(() => {
+  React17.useEffect(() => {
     if (tab === "orders") void loadTradeHistory();
   }, [tab, account?.address, s.status?.network]);
   const requestCancel = (coin, oid) => {
@@ -17336,56 +19198,56 @@ function BottomTable({ account, accountError }) {
     ["orders", t("tab.orders", "\u59D4\u6258\u4E0E\u6210\u4EA4")],
     ["account", t("tab.account", "\u8D26\u6237")]
   ];
-  const head = (...cells) => /* @__PURE__ */ React10.createElement("div", { className: "dhl-posrow dhl-poshead" }, cells.map((c) => /* @__PURE__ */ React10.createElement("span", { key: c }, c)));
+  const head = (...cells) => /* @__PURE__ */ React17.createElement("div", { className: "dhl-posrow dhl-poshead" }, cells.map((c) => /* @__PURE__ */ React17.createElement("span", { key: c }, c)));
   let body = null;
   if (tab === "positions") {
-    body = /* @__PURE__ */ React10.createElement("div", { className: "dhl-positions-table" }, /* @__PURE__ */ React10.createElement("div", { className: "dhl-posrow dhl-posrow-position dhl-poshead" }, [t("positions.coin", "\u5408\u7EA6"), t("positions.size", "\u6570\u91CF"), t("positions.entry", "\u5F00\u4ED3\u4EF7"), t("positions.mark", "\u6807\u8BB0"), t("positions.upnl", "\u672A\u5B9E\u73B0"), "ROE", tr("\u6E05\u7B97\u4EF7", "Liquidation")].map((label) => /* @__PURE__ */ React10.createElement("span", { key: label }, label))), positions.length === 0 ? /* @__PURE__ */ React10.createElement("div", { className: "dhl-posrow" }, /* @__PURE__ */ React10.createElement("span", { style: { color: "var(--dsw-alias-label-secondary)" } }, t("positions.none", "\uFF08\u65E0\u6301\u4ED3\uFF09"))) : positions.map((p, i) => {
+    body = /* @__PURE__ */ React17.createElement("div", { className: "dhl-positions-table" }, /* @__PURE__ */ React17.createElement("div", { className: "dhl-posrow dhl-posrow-position dhl-poshead" }, [t("positions.coin", "\u5408\u7EA6"), t("positions.size", "\u6570\u91CF"), t("positions.entry", "\u5F00\u4ED3\u4EF7"), t("positions.mark", "\u6807\u8BB0"), t("positions.upnl", "\u672A\u5B9E\u73B0"), "ROE", tr("\u6E05\u7B97\u4EF7", "Liquidation")].map((label) => /* @__PURE__ */ React17.createElement("span", { key: label }, label))), positions.length === 0 ? /* @__PURE__ */ React17.createElement("div", { className: "dhl-posrow" }, /* @__PURE__ */ React17.createElement("span", { style: { color: "var(--dsw-alias-label-secondary)" } }, t("positions.none", "\uFF08\u65E0\u6301\u4ED3\uFF09"))) : positions.map((p, i) => {
       const roe = p.returnOnEquity == null ? null : Number(p.returnOnEquity) * 100;
       const leverage = typeof p.leverage === "number" ? p.leverage : Number(p.leverage?.value);
-      return /* @__PURE__ */ React10.createElement("div", { key: `${p.coin}:${i}` }, /* @__PURE__ */ React10.createElement("div", { className: "dhl-posrow dhl-posrow-position" }, /* @__PURE__ */ React10.createElement("span", null, p.coin), /* @__PURE__ */ React10.createElement("span", null, `${p.size > 0 ? "+" : ""}${fmt(p.size, 4)}`), /* @__PURE__ */ React10.createElement("span", null, fmtPrice(p.entryPx)), /* @__PURE__ */ React10.createElement("span", null, p.markPx == null ? "\u2014" : fmtPrice(p.markPx)), /* @__PURE__ */ React10.createElement("span", { className: p.uPnl >= 0 ? "dhl-up" : "dhl-down" }, fmt(p.uPnl)), /* @__PURE__ */ React10.createElement("span", { className: roe == null ? "" : roe >= 0 ? "dhl-up" : "dhl-down" }, roe == null ? "\u2014" : `${fmt(roe)}%`), /* @__PURE__ */ React10.createElement("span", null, p.liquidationPx == null ? "\u2014" : fmtPrice(p.liquidationPx))), account?.mode === "live" ? /* @__PURE__ */ React10.createElement("div", { className: "dhl-position-extra" }, /* @__PURE__ */ React10.createElement("span", null, tr("\u4FDD\u8BC1\u91D1", "Margin"), " ", p.marginUsed == null ? "\u2014" : `${fmt(p.marginUsed)} USDC`), /* @__PURE__ */ React10.createElement("span", null, tr("\u6760\u6746", "Leverage"), " ", Number.isFinite(leverage) && leverage > 0 ? `${leverage}x` : "\u2014"), /* @__PURE__ */ React10.createElement("span", null, tr("\u5F00\u4ED3\u4EE5\u6765\u8D44\u91D1\u8D39", "Funding since open"), " ", p.cumFunding?.sinceOpen == null ? "\u2014" : `${fmt(p.cumFunding.sinceOpen)} USDC`)) : null);
+      return /* @__PURE__ */ React17.createElement("div", { key: `${p.coin}:${i}` }, /* @__PURE__ */ React17.createElement("div", { className: "dhl-posrow dhl-posrow-position" }, /* @__PURE__ */ React17.createElement("span", null, p.coin), /* @__PURE__ */ React17.createElement("span", null, `${p.size > 0 ? "+" : ""}${fmt(p.size, 4)}`), /* @__PURE__ */ React17.createElement("span", null, fmtPrice(p.entryPx)), /* @__PURE__ */ React17.createElement("span", null, p.markPx == null ? "\u2014" : fmtPrice(p.markPx)), /* @__PURE__ */ React17.createElement("span", { className: p.uPnl >= 0 ? "dhl-up" : "dhl-down" }, fmt(p.uPnl)), /* @__PURE__ */ React17.createElement("span", { className: roe == null ? "" : roe >= 0 ? "dhl-up" : "dhl-down" }, roe == null ? "\u2014" : `${fmt(roe)}%`), /* @__PURE__ */ React17.createElement("span", null, p.liquidationPx == null ? "\u2014" : fmtPrice(p.liquidationPx))), account?.mode === "live" ? /* @__PURE__ */ React17.createElement("div", { className: "dhl-position-extra" }, /* @__PURE__ */ React17.createElement("span", null, tr("\u4FDD\u8BC1\u91D1", "Margin"), " ", p.marginUsed == null ? "\u2014" : `${fmt(p.marginUsed)} USDC`), /* @__PURE__ */ React17.createElement("span", null, tr("\u6760\u6746", "Leverage"), " ", Number.isFinite(leverage) && leverage > 0 ? `${leverage}x` : "\u2014"), /* @__PURE__ */ React17.createElement("span", null, tr("\u5F00\u4ED3\u4EE5\u6765\u8D44\u91D1\u8D39", "Funding since open"), " ", p.cumFunding?.sinceOpen == null ? "\u2014" : `${fmt(p.cumFunding.sinceOpen)} USDC`)) : null);
     }));
   } else if (tab === "orders") {
     const rows = orderView === "open" ? orders : orderView === "history" ? history?.orders ?? [] : history?.fills ?? [];
-    body = /* @__PURE__ */ React10.createElement("div", null, /* @__PURE__ */ React10.createElement("div", { className: "dhl-history-controls" }, [["open", tr("\u5F53\u524D\u6302\u5355", "Open")], ["history", tr("\u5386\u53F2\u59D4\u6258", "Order history")], ["fills", tr("\u6210\u4EA4\u8BB0\u5F55", "Fills")]].map(([id, label]) => /* @__PURE__ */ React10.createElement("button", { type: "button", key: id, className: orderView === id ? "on" : "", onClick: () => {
+    body = /* @__PURE__ */ React17.createElement("div", null, /* @__PURE__ */ React17.createElement("div", { className: "dhl-history-controls" }, [["open", tr("\u5F53\u524D\u6302\u5355", "Open")], ["history", tr("\u5386\u53F2\u59D4\u6258", "Order history")], ["fills", tr("\u6210\u4EA4\u8BB0\u5F55", "Fills")]].map(([id, label]) => /* @__PURE__ */ React17.createElement("button", { type: "button", key: id, className: orderView === id ? "on" : "", onClick: () => {
       setOrderView(id);
       setHistoryLimit(100);
-    } }, label)), /* @__PURE__ */ React10.createElement("button", { type: "button", className: "dhl-history-refresh", onClick: () => void loadTradeHistory(true) }, tr("\u5237\u65B0", "Refresh"))), orderView !== "open" && s.tradeHistoryError ? /* @__PURE__ */ React10.createElement("div", { className: "dhl-inline-error", role: "status" }, s.tradeHistoryError) : null, head(
+    } }, label)), /* @__PURE__ */ React17.createElement("button", { type: "button", className: "dhl-history-refresh", onClick: () => void loadTradeHistory(true) }, tr("\u5237\u65B0", "Refresh"))), orderView !== "open" && s.tradeHistoryError ? /* @__PURE__ */ React17.createElement("div", { className: "dhl-inline-error", role: "status" }, s.tradeHistoryError) : null, head(
       t("orders.coin", "\u5408\u7EA6"),
       t("orders.side", "\u65B9\u5411"),
       t("orders.px", "\u4EF7\u683C"),
       t("orders.sz", "\u6570\u91CF"),
       t("orders.status", "\u72B6\u6001")
-    ), rows.length === 0 ? /* @__PURE__ */ React10.createElement("div", { className: "dhl-posrow" }, /* @__PURE__ */ React10.createElement("span", { style: { color: "var(--dsw-alias-label-secondary)" } }, orderView !== "open" && !s.tradeHistoryAt && !s.tradeHistoryError ? tr("\u6B63\u5728\u8BFB\u53D6\u5386\u53F2\u2026", "Loading history\u2026") : accountError && orderView === "open" ? tr("\u6302\u5355\u72B6\u6001\u672A\u786E\u8BA4", "Order status unconfirmed") : tr("\u6682\u65E0\u8BB0\u5F55", "No records"))) : null, rows.slice(0, orderView === "open" ? 30 : historyLimit).map((row, index) => {
+    ), rows.length === 0 ? /* @__PURE__ */ React17.createElement("div", { className: "dhl-posrow" }, /* @__PURE__ */ React17.createElement("span", { style: { color: "var(--dsw-alias-label-secondary)" } }, orderView !== "open" && !s.tradeHistoryAt && !s.tradeHistoryError ? tr("\u6B63\u5728\u8BFB\u53D6\u5386\u53F2\u2026", "Loading history\u2026") : accountError && orderView === "open" ? tr("\u6302\u5355\u72B6\u6001\u672A\u786E\u8BA4", "Order status unconfirmed") : tr("\u6682\u65E0\u8BB0\u5F55", "No records"))) : null, rows.slice(0, orderView === "open" ? 30 : historyLimit).map((row, index) => {
       const buy = row.isBuy ?? row.side === "B";
       const time = Number(row.timestamp ?? row.time ?? row.statusTimestamp);
       const reason = orderView === "fills" ? row.reason || history?.orders.find((order) => order.oid != null && order.oid === row.oid)?.reason : row.reason;
       const displayReason = typeof reason === "string" && !reason.startsWith("session:") && !["tool", "chat", "order"].includes(reason) ? reason : "";
-      return /* @__PURE__ */ React10.createElement("div", { key: `${orderView}:${row.oid ?? row.tid ?? index}:${time}` }, /* @__PURE__ */ React10.createElement("div", { className: "dhl-posrow" }, /* @__PURE__ */ React10.createElement("span", null, row.coin ?? "\u2014"), /* @__PURE__ */ React10.createElement("span", { className: buy ? "dhl-up" : "dhl-down" }, buy ? t("side.buy", "\u4E70") : t("side.sell", "\u5356")), /* @__PURE__ */ React10.createElement("span", null, fmtPrice(row.limitPx ?? row.px)), /* @__PURE__ */ React10.createElement("span", null, fmt(row.origSz ?? row.sz, 4)), /* @__PURE__ */ React10.createElement("span", { className: "dhl-order-action" }, /* @__PURE__ */ React10.createElement("span", null, orderView === "open" ? t("orders.open", "\u6302\u5355\u4E2D") : orderView === "fills" ? tr("\u5DF2\u6210\u4EA4", "Filled") : String(row.status ?? "\u2014")), orderView === "open" && Number.isInteger(Number(row.oid)) && Number(row.oid) > 0 ? /* @__PURE__ */ React10.createElement("button", { type: "button", className: "dhl-ghost", onClick: () => requestCancel(String(row.coin), Number(row.oid)) }, tr("\u64A4\u5355", "Cancel")) : null)), orderView !== "open" ? /* @__PURE__ */ React10.createElement("div", { className: "dhl-history-detail" }, /* @__PURE__ */ React10.createElement("span", null, Number.isFinite(time) && time > 0 ? new Date(time).toLocaleString() : "\u2014"), orderView === "fills" && row.closedPnl != null ? /* @__PURE__ */ React10.createElement("span", null, "P&L ", fmt(row.closedPnl), " \xB7 ", tr("\u624B\u7EED\u8D39", "Fee"), " ", fmt(row.fee)) : null, displayReason ? /* @__PURE__ */ React10.createElement("span", { title: displayReason }, tr("\u4E0B\u5355\u539F\u56E0", "Order reason"), "\uFF1A", displayReason) : null) : null);
-    }), orderView !== "open" && rows.length > historyLimit ? /* @__PURE__ */ React10.createElement("button", { type: "button", className: "dhl-history-more", onClick: () => setHistoryLimit((limit) => limit + 100) }, tr("\u663E\u793A\u66F4\u591A", "Show more"), " \xB7 ", Math.min(historyLimit, rows.length), "/", rows.length) : null);
+      return /* @__PURE__ */ React17.createElement("div", { key: `${orderView}:${row.oid ?? row.tid ?? index}:${time}` }, /* @__PURE__ */ React17.createElement("div", { className: "dhl-posrow" }, /* @__PURE__ */ React17.createElement("span", null, row.coin ?? "\u2014"), /* @__PURE__ */ React17.createElement("span", { className: buy ? "dhl-up" : "dhl-down" }, buy ? t("side.buy", "\u4E70") : t("side.sell", "\u5356")), /* @__PURE__ */ React17.createElement("span", null, fmtPrice(row.limitPx ?? row.px)), /* @__PURE__ */ React17.createElement("span", null, fmt(row.origSz ?? row.sz, 4)), /* @__PURE__ */ React17.createElement("span", { className: "dhl-order-action" }, /* @__PURE__ */ React17.createElement("span", null, orderView === "open" ? t("orders.open", "\u6302\u5355\u4E2D") : orderView === "fills" ? tr("\u5DF2\u6210\u4EA4", "Filled") : String(row.status ?? "\u2014")), orderView === "open" && Number.isInteger(Number(row.oid)) && Number(row.oid) > 0 ? /* @__PURE__ */ React17.createElement("button", { type: "button", className: "dhl-ghost", onClick: () => requestCancel(String(row.coin), Number(row.oid)) }, tr("\u64A4\u5355", "Cancel")) : null)), orderView !== "open" ? /* @__PURE__ */ React17.createElement("div", { className: "dhl-history-detail" }, /* @__PURE__ */ React17.createElement("span", null, Number.isFinite(time) && time > 0 ? new Date(time).toLocaleString() : "\u2014"), orderView === "fills" && row.closedPnl != null ? /* @__PURE__ */ React17.createElement("span", null, "P&L ", fmt(row.closedPnl), " \xB7 ", tr("\u624B\u7EED\u8D39", "Fee"), " ", fmt(row.fee)) : null, displayReason ? /* @__PURE__ */ React17.createElement("span", { title: displayReason }, tr("\u4E0B\u5355\u539F\u56E0", "Order reason"), "\uFF1A", displayReason) : null) : null);
+    }), orderView !== "open" && rows.length > historyLimit ? /* @__PURE__ */ React17.createElement("button", { type: "button", className: "dhl-history-more", onClick: () => setHistoryLimit((limit) => limit + 100) }, tr("\u663E\u793A\u66F4\u591A", "Show more"), " \xB7 ", Math.min(historyLimit, rows.length), "/", rows.length) : null);
   } else {
-    body = /* @__PURE__ */ React10.createElement("div", { style: { display: "flex", gap: 14, flexWrap: "wrap", fontSize: 11.5, fontVariantNumeric: "tabular-nums", padding: "4px 0" } }, account?.mode === "paper" ? [
-      /* @__PURE__ */ React10.createElement("span", { key: "c" }, `${t("account.cash", "\u73B0\u91D1")}: ${fmt(account.usd)}`),
-      /* @__PURE__ */ React10.createElement("span", { key: "e" }, `${t("account.equity", "\u6743\u76CA")}: ${fmt(account.equity)}`),
-      /* @__PURE__ */ React10.createElement("span", { key: "m" }, `${tr("\u5DF2\u7528\u4FDD\u8BC1\u91D1", "Margin used")}: ${fmt(account.marginUsed)}`),
-      /* @__PURE__ */ React10.createElement("span", { key: "a" }, `${tr("\u53EF\u7528\u4FDD\u8BC1\u91D1", "Available margin")}: ${fmt(account.availableMargin)}`),
-      /* @__PURE__ */ React10.createElement("span", { key: "u", style: { color: account.uPnl >= 0 ? "var(--dsw-alias-state-success-primary)" : "var(--dsw-alias-state-error-primary)" } }, `uPnL: ${fmt(account.uPnl)}`)
+    body = /* @__PURE__ */ React17.createElement("div", { style: { display: "flex", gap: 14, flexWrap: "wrap", fontSize: 11.5, fontVariantNumeric: "tabular-nums", padding: "4px 0" } }, account?.mode === "paper" ? [
+      /* @__PURE__ */ React17.createElement("span", { key: "c" }, `${t("account.cash", "\u73B0\u91D1")}: ${fmt(account.usd)}`),
+      /* @__PURE__ */ React17.createElement("span", { key: "e" }, `${t("account.equity", "\u6743\u76CA")}: ${fmt(account.equity)}`),
+      /* @__PURE__ */ React17.createElement("span", { key: "m" }, `${tr("\u5DF2\u7528\u4FDD\u8BC1\u91D1", "Margin used")}: ${fmt(account.marginUsed)}`),
+      /* @__PURE__ */ React17.createElement("span", { key: "a" }, `${tr("\u53EF\u7528\u4FDD\u8BC1\u91D1", "Available margin")}: ${fmt(account.availableMargin)}`),
+      /* @__PURE__ */ React17.createElement("span", { key: "u", style: { color: account.uPnl >= 0 ? "var(--dsw-alias-state-success-primary)" : "var(--dsw-alias-state-error-primary)" } }, `uPnL: ${fmt(account.uPnl)}`)
     ] : [
-      account?.accountMode ? /* @__PURE__ */ React10.createElement("span", { key: "mode" }, `${tr("\u8D26\u6237\u6A21\u5F0F", "Account mode")}: ${{ unifiedAccount: "Unified", portfolioMargin: "Portfolio", disabled: "Standard", default: "Standard", dexAbstraction: "DEX abstraction" }[account.accountMode] ?? account.accountMode}`) : null,
-      account?.accountDex ? /* @__PURE__ */ React10.createElement("span", { key: "dex" }, `${tr("\u6C38\u7EED DEX", "Perp DEX")}: ${account.accountDex}`) : null,
-      account?.marginSummary ? /* @__PURE__ */ React10.createElement("span", { key: "v" }, `${account.accountDex ? tr("DEX \u62B5\u62BC\u8D26\u6237\u4EF7\u503C", "DEX collateral value") : t("account.value", "\u8D26\u6237\u4EF7\u503C")}: ${fmt(account.marginSummary.accountValue)}`) : null,
-      account?.balanceSource === "spot" ? /* @__PURE__ */ React10.createElement("span", { key: "usdc" }, `${tr("USDC \u4F59\u989D", "USDC balance")}: ${fmt(account.usdcBalance)} \xB7 ${tr("\u672A\u5360\u7528", "Unheld")}: ${fmt(account.unheldUsdc)}`) : account ? /* @__PURE__ */ React10.createElement("span", { key: "a" }, `${account.accountDex ? tr("DEX \u53EF\u7528", "DEX available") : t("account.available", "\u53EF\u7528")}: ${fmt(account.withdrawable)}`) : null,
-      account?.address ? /* @__PURE__ */ React10.createElement("span", { key: "addr", style: { color: "var(--dsw-alias-label-secondary)" } }, account.address.slice(0, 6) + "\u2026" + account.address.slice(-4)) : null
+      account?.accountMode ? /* @__PURE__ */ React17.createElement("span", { key: "mode" }, `${tr("\u8D26\u6237\u6A21\u5F0F", "Account mode")}: ${{ unifiedAccount: "Unified", portfolioMargin: "Portfolio", disabled: "Standard", default: "Standard", dexAbstraction: "DEX abstraction" }[account.accountMode] ?? account.accountMode}`) : null,
+      account?.accountDex ? /* @__PURE__ */ React17.createElement("span", { key: "dex" }, `${tr("\u6C38\u7EED DEX", "Perp DEX")}: ${account.accountDex}`) : null,
+      account?.marginSummary ? /* @__PURE__ */ React17.createElement("span", { key: "v" }, `${account.accountDex ? tr("DEX \u62B5\u62BC\u8D26\u6237\u4EF7\u503C", "DEX collateral value") : t("account.value", "\u8D26\u6237\u4EF7\u503C")}: ${fmt(account.marginSummary.accountValue)}`) : null,
+      account?.balanceSource === "spot" ? /* @__PURE__ */ React17.createElement("span", { key: "usdc" }, `${tr("USDC \u4F59\u989D", "USDC balance")}: ${fmt(account.usdcBalance)} \xB7 ${tr("\u672A\u5360\u7528", "Unheld")}: ${fmt(account.unheldUsdc)}`) : account ? /* @__PURE__ */ React17.createElement("span", { key: "a" }, `${account.accountDex ? tr("DEX \u53EF\u7528", "DEX available") : t("account.available", "\u53EF\u7528")}: ${fmt(account.withdrawable)}`) : null,
+      account?.address ? /* @__PURE__ */ React17.createElement("span", { key: "addr", style: { color: "var(--dsw-alias-label-secondary)" } }, account.address.slice(0, 6) + "\u2026" + account.address.slice(-4)) : null
     ]);
   }
-  return /* @__PURE__ */ React10.createElement("div", { className: "dhl-card", style: { margin: "0 14px 12px", flex: "none" } }, accountError ? /* @__PURE__ */ React10.createElement("div", { className: "dhl-account-warning", role: "status" }, tr("\u8D26\u6237\u4E0E\u6302\u5355\u72B6\u6001\u672A\u786E\u8BA4", "Account and order status unconfirmed"), "\uFF1A", accountError) : null, /* @__PURE__ */ React10.createElement("div", { style: { display: "flex", gap: 2, marginBottom: 6 } }, tabs.map(([id, label]) => /* @__PURE__ */ React10.createElement("button", { key: id, className: "dhl-tab" + (tab === id ? " on" : ""), onClick: () => saveSessionWorkspace({ bottomTab: id }) }, label))), body, account?.mode === "paper" ? /* @__PURE__ */ React10.createElement("p", { className: "dhl-ticket-note" }, tr(account.simulation, "Fixed slippage; order book depth, fees, funding and liquidation are not simulated.")) : null);
+  return /* @__PURE__ */ React17.createElement("div", { className: "dhl-card", style: { margin: "0 14px 12px", flex: "none" } }, accountError ? /* @__PURE__ */ React17.createElement("div", { className: "dhl-account-warning", role: "status" }, tr("\u8D26\u6237\u4E0E\u6302\u5355\u72B6\u6001\u672A\u786E\u8BA4", "Account and order status unconfirmed"), "\uFF1A", accountError) : null, /* @__PURE__ */ React17.createElement("div", { style: { display: "flex", gap: 2, marginBottom: 6 } }, tabs.map(([id, label]) => /* @__PURE__ */ React17.createElement("button", { key: id, className: "dhl-tab" + (tab === id ? " on" : ""), onClick: () => saveSessionWorkspace({ bottomTab: id }) }, label))), body, account?.mode === "paper" ? /* @__PURE__ */ React17.createElement("p", { className: "dhl-ticket-note" }, tr(account.simulation, "Fixed slippage; order book depth, fees, funding and liquidation are not simulated.")) : null);
 }
 
 // src/client/components/market-picker.tsx
-var React12 = __toESM(require("react"), 1);
+var React19 = __toESM(require("react"), 1);
 var import_dsh_client_ui_primitives2 = require("@deepseek-ai/dsh-client-ui-primitives");
 
 // src/client/components/market-icon.tsx
-var React11 = __toESM(require("react"), 1);
+var React18 = __toESM(require("react"), 1);
 var ICON_ROOT = "https://app.hyperliquid.xyz/coins/";
 function iconNames(market) {
   if (market.kind === "outcome") return [];
@@ -17397,11 +19259,10 @@ function iconNames(market) {
 function MarketIcon({ market, small = false }) {
   const names = iconNames(market);
   const identity = `${market.kind}:${market.name}:${names.join(",")}`;
-  const [state, setState] = React11.useState({ identity, index: 0, loaded: false });
+  const [state, setState] = React18.useState({ identity, index: 0, loaded: false });
   const current2 = state.identity === identity ? state : { identity, index: 0, loaded: false };
   const name = names[current2.index];
-  const fallback = (market.kind === "spot" ? market.label.split("/")[0] : market.name.split(":").pop() || market.name).replace(/^k(?=[A-Z])/, "").slice(0, 2).toUpperCase();
-  return /* @__PURE__ */ React11.createElement("span", { className: "dhl-market-icon" + (small ? " dhl-market-icon-small" : ""), "aria-hidden": "true" }, /* @__PURE__ */ React11.createElement("span", { className: "dhl-market-icon-fallback" }, fallback || "\xB7"), name ? /* @__PURE__ */ React11.createElement(
+  return /* @__PURE__ */ React18.createElement("span", { className: "dhl-market-icon" + (small ? " dhl-market-icon-small" : ""), "aria-hidden": "true" }, name ? /* @__PURE__ */ React18.createElement(
     "img",
     {
       key: `${identity}:${current2.index}`,
@@ -17452,19 +19313,19 @@ function interestOf(row) {
 }
 function MarketPicker({ activeCoin, onClose }) {
   const s = useStore();
-  const [query, setQuery] = React12.useState("");
-  const [category, setCategory] = React12.useState("all");
-  const [strict, setStrict] = React12.useState(true);
-  const [sort, setSort] = React12.useState("volume");
-  const [descending, setDescending] = React12.useState(true);
-  const [favorites, setFavorites] = React12.useState(readFavorites);
-  const [cursor, setCursor] = React12.useState(0);
-  const [loading, setLoading] = React12.useState(false);
-  const [renderCount, setRenderCount] = React12.useState(150);
-  const searchRef = React12.useRef(null);
-  const listRef = React12.useRef(null);
-  const keyboardScroll = React12.useRef(false);
-  React12.useEffect(() => {
+  const [query, setQuery] = React19.useState("");
+  const [category, setCategory] = React19.useState("all");
+  const [strict, setStrict] = React19.useState(true);
+  const [sort, setSort] = React19.useState("volume");
+  const [descending, setDescending] = React19.useState(true);
+  const [favorites, setFavorites] = React19.useState(readFavorites);
+  const [cursor, setCursor] = React19.useState(0);
+  const [loading, setLoading] = React19.useState(false);
+  const [renderCount, setRenderCount] = React19.useState(150);
+  const searchRef = React19.useRef(null);
+  const listRef = React19.useRef(null);
+  const keyboardScroll = React19.useRef(false);
+  React19.useEffect(() => {
     searchRef.current?.focus();
     setLoading(true);
     void loadMarketCatalog().catch((error) => notify(tr("\u5E02\u573A\u76EE\u5F55\u52A0\u8F7D\u5931\u8D25", "Market catalog load failed") + "\uFF1A" + String(error))).finally(() => setLoading(false));
@@ -17474,7 +19335,7 @@ function MarketPicker({ activeCoin, onClose }) {
     }, 5e3);
     return () => window.clearInterval(timer);
   }, []);
-  const marketRows = React12.useMemo(() => {
+  const marketRows = React19.useMemo(() => {
     const livePerps = new Map(s.markets.map((market) => [market.name, market]));
     const catalog = s.marketCatalog.length ? s.marketCatalog.map((row) => {
       const latest = row.tradable ? livePerps.get(row.name) : null;
@@ -17529,20 +19390,20 @@ function MarketPicker({ activeCoin, onClose }) {
     if (category === "trending" && !needle) rows.sort((a, b) => n(b.ctx?.dayNtlVlm) - n(a.ctx?.dayNtlVlm));
     return rows;
   }, [s.marketCatalog, s.markets, query, category, strict, sort, descending, favorites]);
-  React12.useEffect(() => {
+  React19.useEffect(() => {
     setCursor(0);
     setRenderCount(150);
     listRef.current?.scrollTo({ top: 0 });
   }, [query, category, strict, sort, descending]);
-  React12.useEffect(() => {
+  React19.useEffect(() => {
     if (cursor >= renderCount) setRenderCount(Math.ceil((cursor + 1) / 150) * 150);
   }, [cursor, renderCount]);
-  React12.useLayoutEffect(() => {
+  React19.useLayoutEffect(() => {
     if (!keyboardScroll.current || cursor >= renderCount) return;
     listRef.current?.querySelector(`[data-market-index="${cursor}"]`)?.scrollIntoView({ block: "nearest" });
     keyboardScroll.current = false;
   }, [cursor, renderCount]);
-  const choose = React12.useCallback((row) => {
+  const choose = React19.useCallback((row) => {
     onClose();
     void setDeskCoin(row.name).catch(() => {
     });
@@ -17557,11 +19418,11 @@ function MarketPicker({ activeCoin, onClose }) {
       return next;
     });
   };
-  const sortBy = (key) => {
-    if (key === sort) setDescending((value) => !value);
+  const sortBy = (key2) => {
+    if (key2 === sort) setDescending((value) => !value);
     else {
-      setSort(key);
-      setDescending(key !== "name");
+      setSort(key2);
+      setDescending(key2 !== "name");
     }
   };
   const onKeyDown = (event) => {
@@ -17590,17 +19451,187 @@ function MarketPicker({ activeCoin, onClose }) {
       choose(marketRows[cursor]);
     }
   };
-  const header = (label, key) => /* @__PURE__ */ React12.createElement("button", { type: "button", onClick: () => sortBy(key), "aria-label": tr(`\u6309${label}\u6392\u5E8F`, `Sort by ${label}`) }, label, sort === key ? /* @__PURE__ */ React12.createElement("span", { "aria-hidden": "true" }, descending ? " \u2193" : " \u2191") : null);
-  return /* @__PURE__ */ React12.createElement(import_dsh_client_ui_primitives2.Modal, { open: true, onClose, title: t("market.choose", "\u9009\u62E9\u5E02\u573A"), headless: true, className: "dhl-picker-modal", backdropBlur: true, onKeyDownCapture: onKeyDown }, /* @__PURE__ */ React12.createElement("section", { className: "dhl-picker" }, /* @__PURE__ */ React12.createElement("div", { className: "dhl-picker-top" }, /* @__PURE__ */ React12.createElement("div", { className: "dhl-picker-search" }, /* @__PURE__ */ React12.createElement(SearchIcon, null), /* @__PURE__ */ React12.createElement("input", { ref: searchRef, "data-modal-autofocus": true, value: query, onChange: (event) => setQuery(event.target.value), placeholder: t("market.search", "\u641C\u7D22\u5E02\u573A"), "aria-label": t("market.search", "\u641C\u7D22\u5E02\u573A") }), /* @__PURE__ */ React12.createElement("kbd", null, "/")), /* @__PURE__ */ React12.createElement("div", { className: "dhl-picker-mode", role: "group", "aria-label": tr("\u5E02\u573A\u8303\u56F4", "Market scope") }, /* @__PURE__ */ React12.createElement("button", { type: "button", className: strict ? "on" : "", "aria-pressed": strict, onClick: () => setStrict(true) }, t("market.tradable", "\u53EF\u4EA4\u6613")), /* @__PURE__ */ React12.createElement("button", { type: "button", className: !strict ? "on" : "", "aria-pressed": !strict, onClick: () => setStrict(false) }, t("market.all", "\u5168\u90E8"))), /* @__PURE__ */ React12.createElement("button", { type: "button", className: "dhl-picker-close", onClick: onClose, "aria-label": t("modal.close", "\u5173\u95ED") }, "\xD7")), !strict ? /* @__PURE__ */ React12.createElement("p", { className: "dhl-picker-readonly-note" }, tr("\u201C\u53EA\u8BFB\u201D\u8868\u793A\u672C\u63D2\u4EF6\u4EC5\u63D0\u4F9B\u884C\u60C5\uFF0C\u5C1A\u672A\u63A5\u5165\u8BE5\u5E02\u573A\u7684\u4E0B\u5355\u4E0E\u98CE\u63A7\uFF1BHIP-3 \u548C\u73B0\u8D27\u5728 Hyperliquid \u672C\u8EAB\u53EF\u4EA4\u6613\u3002", "\u201CView only\u201D means this plugin has market data but no order and risk support for that market. Hyperliquid itself supports HIP-3 and spot trading.")) : null, /* @__PURE__ */ React12.createElement("nav", { className: "dhl-picker-tabs", "aria-label": tr("\u5E02\u573A\u5206\u7C7B", "Market categories") }, CATEGORIES.map(([key, label]) => /* @__PURE__ */ React12.createElement("button", { type: "button", key, className: category === key ? "on" : "", "aria-current": category === key ? "page" : void 0, onClick: () => {
-    setCategory(key);
-    if (["spot", "hip3", "outcome", "crypto", "tradfi", "preipo"].includes(key)) setStrict(false);
-  } }, t(`market.category.${key}`, label)))), /* @__PURE__ */ React12.createElement("div", { className: "dhl-picker-tablehead" }, /* @__PURE__ */ React12.createElement("span", { "aria-hidden": "true" }, "\u2606"), header(t("market.name", "\u5E02\u573A"), "name"), header(t("market.price", "\u6700\u65B0\u4EF7"), "price"), header(t("market.change", "24h \u6DA8\u8DCC"), "change"), header(t("market.funding", "\u8D44\u91D1\u8D39"), "funding"), header(t("market.volume", "24h \u6210\u4EA4\u989D"), "volume"), header(t("market.openInterest", "\u672A\u5E73\u4ED3\u91CF"), "openInterest")), /* @__PURE__ */ React12.createElement("div", { className: "dhl-picker-list", role: "listbox", "aria-label": tr("\u5E02\u573A\u5217\u8868", "Market list"), ref: listRef, onScroll: (event) => {
+  const header = (label, key2) => /* @__PURE__ */ React19.createElement("button", { type: "button", onClick: () => sortBy(key2), "aria-label": tr(`\u6309${label}\u6392\u5E8F`, `Sort by ${label}`) }, label, sort === key2 ? /* @__PURE__ */ React19.createElement(UiIcon, { name: descending ? "arrowDown" : "arrowUp", size: 12 }) : null);
+  return /* @__PURE__ */ React19.createElement(import_dsh_client_ui_primitives2.Modal, { open: true, onClose, title: t("market.choose", "\u9009\u62E9\u5E02\u573A"), headless: true, className: "dhl-picker-modal", backdropBlur: true, onKeyDownCapture: onKeyDown }, /* @__PURE__ */ React19.createElement("section", { className: "dhl-picker" }, /* @__PURE__ */ React19.createElement("div", { className: "dhl-picker-top" }, /* @__PURE__ */ React19.createElement("div", { className: "dhl-picker-search" }, /* @__PURE__ */ React19.createElement(SearchIcon, null), /* @__PURE__ */ React19.createElement("input", { ref: searchRef, "data-modal-autofocus": true, value: query, onChange: (event) => setQuery(event.target.value), placeholder: t("market.search", "\u641C\u7D22\u5E02\u573A"), "aria-label": t("market.search", "\u641C\u7D22\u5E02\u573A") }), /* @__PURE__ */ React19.createElement("kbd", null, "/")), /* @__PURE__ */ React19.createElement("div", { className: "dhl-picker-mode", role: "group", "aria-label": tr("\u5E02\u573A\u8303\u56F4", "Market scope") }, /* @__PURE__ */ React19.createElement("button", { type: "button", className: strict ? "on" : "", "aria-pressed": strict, onClick: () => setStrict(true) }, t("market.tradable", "\u53EF\u4EA4\u6613")), /* @__PURE__ */ React19.createElement("button", { type: "button", className: !strict ? "on" : "", "aria-pressed": !strict, onClick: () => setStrict(false) }, t("market.all", "\u5168\u90E8"))), /* @__PURE__ */ React19.createElement("button", { type: "button", className: "dhl-picker-close", onClick: onClose, "aria-label": t("modal.close", "\u5173\u95ED") }, /* @__PURE__ */ React19.createElement(UiIcon, { name: "close", size: 18 }))), !strict ? /* @__PURE__ */ React19.createElement("p", { className: "dhl-picker-readonly-note" }, tr("\u201C\u53EA\u8BFB\u201D\u8868\u793A\u672C\u63D2\u4EF6\u4EC5\u63D0\u4F9B\u884C\u60C5\uFF0C\u5C1A\u672A\u63A5\u5165\u8BE5\u5E02\u573A\u7684\u4E0B\u5355\u4E0E\u98CE\u63A7\uFF1BHIP-3 \u548C\u73B0\u8D27\u5728 Hyperliquid \u672C\u8EAB\u53EF\u4EA4\u6613\u3002", "\u201CView only\u201D means this plugin has market data but no order and risk support for that market. Hyperliquid itself supports HIP-3 and spot trading.")) : null, /* @__PURE__ */ React19.createElement("nav", { className: "dhl-picker-tabs", "aria-label": tr("\u5E02\u573A\u5206\u7C7B", "Market categories") }, CATEGORIES.map(([key2, label]) => /* @__PURE__ */ React19.createElement("button", { type: "button", key: key2, className: category === key2 ? "on" : "", "aria-current": category === key2 ? "page" : void 0, onClick: () => {
+    setCategory(key2);
+    if (["spot", "hip3", "outcome", "crypto", "tradfi", "preipo"].includes(key2)) setStrict(false);
+  } }, t(`market.category.${key2}`, label)))), /* @__PURE__ */ React19.createElement("div", { className: "dhl-picker-tablehead" }, /* @__PURE__ */ React19.createElement(UiIcon, { name: "star", size: 15 }), header(t("market.name", "\u5E02\u573A"), "name"), header(t("market.price", "\u6700\u65B0\u4EF7"), "price"), header(t("market.change", "24h \u6DA8\u8DCC"), "change"), header(t("market.funding", "\u8D44\u91D1\u8D39"), "funding"), header(t("market.volume", "24h \u6210\u4EA4\u989D"), "volume"), header(t("market.openInterest", "\u672A\u5E73\u4ED3\u91CF"), "openInterest")), /* @__PURE__ */ React19.createElement("div", { className: "dhl-picker-list", role: "listbox", "aria-label": tr("\u5E02\u573A\u5217\u8868", "Market list"), ref: listRef, onScroll: (event) => {
     const element = event.currentTarget;
     if (element.scrollTop + element.clientHeight >= element.scrollHeight - 200) setRenderCount((count) => Math.min(marketRows.length, count + 150));
   } }, marketRows.slice(0, renderCount).map((row, index) => {
     const change = changeOf(row);
-    return /* @__PURE__ */ React12.createElement("div", { className: "dhl-picker-row" + (row.name === activeCoin ? " active" : "") + (cursor === index ? " cursor" : ""), role: "option", "aria-selected": row.name === activeCoin, key: `${row.kind}:${row.name}`, "data-market-index": index, onMouseEnter: () => setCursor(index) }, /* @__PURE__ */ React12.createElement("button", { type: "button", className: "dhl-picker-star" + (favorites.includes(row.name) ? " on" : ""), "aria-label": `${favorites.includes(row.name) ? tr("\u53D6\u6D88\u81EA\u9009", "Remove favorite") : tr("\u52A0\u5165\u81EA\u9009", "Add favorite")} ${row.label}`, onClick: () => toggleFavorite(row.name) }, favorites.includes(row.name) ? "\u2605" : "\u2606"), /* @__PURE__ */ React12.createElement("button", { type: "button", className: "dhl-picker-market", onClick: () => choose(row), title: `${row.label} \xB7 ${row.name} \xB7 ${row.venue}${row.category ? ` \xB7 ${row.category}` : ""}` }, /* @__PURE__ */ React12.createElement(MarketIcon, { market: row, small: true }), /* @__PURE__ */ React12.createElement("strong", null, row.label), /* @__PURE__ */ React12.createElement("small", null, row.kind === "perp" ? "PERP" : row.kind === "hip3" ? "HIP-3" : row.kind === "outcome" ? "OUTCOME" : "SPOT", row.name.startsWith("@") ? ` ${row.name}` : "", row.category ? ` \xB7 ${row.category}` : "", row.tradable ? "" : ` \xB7 ${tr("\u53EA\u8BFB", "View only")}`)), /* @__PURE__ */ React12.createElement("span", null, n(row.ctx?.markPx) > 0 ? fmtPrice(row.ctx.markPx) : "\u2014"), /* @__PURE__ */ React12.createElement("span", { className: change > 0 ? "dhl-up" : change < 0 ? "dhl-down" : "" }, n(row.ctx?.prevDayPx) > 0 ? `${change >= 0 ? "+" : ""}${change.toFixed(2)}%` : "\u2014"), /* @__PURE__ */ React12.createElement("span", null, row.ctx?.funding != null ? `${(n(row.ctx.funding) * 100).toFixed(4)}%` : "\u2014"), /* @__PURE__ */ React12.createElement("span", null, row.ctx?.dayNtlVlm != null ? "$" + fmt(row.ctx.dayNtlVlm, 0) : "\u2014"), /* @__PURE__ */ React12.createElement("span", null, row.ctx?.openInterest != null ? "$" + fmt(interestOf(row), 0) : "\u2014"));
-  }), !loading && marketRows.length === 0 ? /* @__PURE__ */ React12.createElement("div", { className: "dhl-picker-empty" }, category === "outcome" && s.status?.network === "mainnet" ? t("market.outcomeTestnet", "Outcome \u76EE\u5F55\u76EE\u524D\u4EC5\u5728 testnet \u63D0\u4F9B\u3002") : t("market.empty", "\u6CA1\u6709\u5339\u914D\u7684\u5E02\u573A")) : null, loading && !s.marketCatalog.length ? /* @__PURE__ */ React12.createElement("div", { className: "dhl-picker-empty" }, t("market.loading", "\u6B63\u5728\u8BFB\u53D6\u5E02\u573A\u76EE\u5F55\u2026")) : null), /* @__PURE__ */ React12.createElement("footer", { className: "dhl-picker-foot" }, /* @__PURE__ */ React12.createElement("span", null, t("market.shortcuts", "\u2191\u2193 \u9009\u62E9\u3000Enter \u6253\u5F00\u3000\u2318/Ctrl+S \u81EA\u9009\u3000Esc \u5173\u95ED")), /* @__PURE__ */ React12.createElement("span", null, marketRows.length, " ", t("market.count", "\u4E2A\u5E02\u573A"), " \xB7 Hyperliquid \xB7 ", s.status?.network ?? "Hyperliquid"))));
+    return /* @__PURE__ */ React19.createElement("div", { className: "dhl-picker-row" + (row.name === activeCoin ? " active" : "") + (cursor === index ? " cursor" : ""), role: "option", "aria-selected": row.name === activeCoin, key: `${row.kind}:${row.name}`, "data-market-index": index, onMouseEnter: () => setCursor(index) }, /* @__PURE__ */ React19.createElement("button", { type: "button", className: "dhl-picker-star" + (favorites.includes(row.name) ? " on" : ""), "aria-label": `${favorites.includes(row.name) ? tr("\u53D6\u6D88\u81EA\u9009", "Remove favorite") : tr("\u52A0\u5165\u81EA\u9009", "Add favorite")} ${row.label}`, onClick: () => toggleFavorite(row.name) }, /* @__PURE__ */ React19.createElement(UiIcon, { name: "star", size: 17, filled: favorites.includes(row.name) })), /* @__PURE__ */ React19.createElement("button", { type: "button", className: "dhl-picker-market", onClick: () => choose(row), title: `${row.label} \xB7 ${row.name} \xB7 ${row.venue}${row.category ? ` \xB7 ${row.category}` : ""}` }, /* @__PURE__ */ React19.createElement(MarketIcon, { market: row, small: true }), /* @__PURE__ */ React19.createElement("strong", null, row.label), /* @__PURE__ */ React19.createElement("small", null, row.kind === "perp" ? "PERP" : row.kind === "hip3" ? "HIP-3" : row.kind === "outcome" ? "OUTCOME" : "SPOT", row.name.startsWith("@") ? ` ${row.name}` : "", row.category ? ` \xB7 ${row.category}` : "", row.tradable ? "" : ` \xB7 ${tr("\u53EA\u8BFB", "View only")}`)), /* @__PURE__ */ React19.createElement("span", null, n(row.ctx?.markPx) > 0 ? fmtPrice(row.ctx.markPx) : "\u2014"), /* @__PURE__ */ React19.createElement("span", { className: change > 0 ? "dhl-up" : change < 0 ? "dhl-down" : "" }, n(row.ctx?.prevDayPx) > 0 ? `${change >= 0 ? "+" : ""}${change.toFixed(2)}%` : "\u2014"), /* @__PURE__ */ React19.createElement("span", null, row.ctx?.funding != null ? `${(n(row.ctx.funding) * 100).toFixed(4)}%` : "\u2014"), /* @__PURE__ */ React19.createElement("span", null, row.ctx?.dayNtlVlm != null ? "$" + fmt(row.ctx.dayNtlVlm, 0) : "\u2014"), /* @__PURE__ */ React19.createElement("span", null, row.ctx?.openInterest != null ? "$" + fmt(interestOf(row), 0) : "\u2014"));
+  }), !loading && marketRows.length === 0 ? /* @__PURE__ */ React19.createElement("div", { className: "dhl-picker-empty" }, category === "outcome" && s.status?.network === "mainnet" ? t("market.outcomeTestnet", "Outcome \u76EE\u5F55\u76EE\u524D\u4EC5\u5728 testnet \u63D0\u4F9B\u3002") : t("market.empty", "\u6CA1\u6709\u5339\u914D\u7684\u5E02\u573A")) : null, loading && !s.marketCatalog.length ? /* @__PURE__ */ React19.createElement("div", { className: "dhl-picker-empty" }, t("market.loading", "\u6B63\u5728\u8BFB\u53D6\u5E02\u573A\u76EE\u5F55\u2026")) : null), /* @__PURE__ */ React19.createElement("footer", { className: "dhl-picker-foot" }, /* @__PURE__ */ React19.createElement("span", null, t("market.shortcuts", "\u2191\u2193 \u9009\u62E9\u3000Enter \u6253\u5F00\u3000\u2318/Ctrl+S \u81EA\u9009\u3000Esc \u5173\u95ED")), /* @__PURE__ */ React19.createElement("span", null, marketRows.length, " ", t("market.count", "\u4E2A\u5E02\u573A"), " \xB7 Hyperliquid \xB7 ", s.status?.network ?? "Hyperliquid"))));
+}
+
+// src/client/components/strategy-menu.tsx
+var React20 = __toESM(require("react"), 1);
+
+// src/client/strategy-theories.ts
+var MINUTES = {
+  "1m": 1,
+  "3m": 3,
+  "5m": 5,
+  "15m": 15,
+  "30m": 30,
+  "1h": 60,
+  "2h": 120,
+  "4h": 240,
+  "8h": 480,
+  "12h": 720,
+  "1d": 1440,
+  "3d": 4320,
+  "1w": 10080
+};
+var SOURCES = {
+  trend: "https://doi.org/10.1016/j.jfineco.2011.11.003",
+  breakout: "https://www.bollingerbands.com/bollinger-band-rules",
+  reentry: "https://www.bollingerbands.com/bollinger-band-rules"
+};
+var higher = {
+  "1m": "15m",
+  "3m": "15m",
+  "5m": "1h",
+  "15m": "1h",
+  "30m": "4h",
+  "1h": "4h",
+  "2h": "8h",
+  "4h": "1d",
+  "8h": "1d",
+  "12h": "1d",
+  "1d": "1w",
+  "3d": "1w",
+  "1w": "1M"
+};
+function closedAt(candle, interval) {
+  if (interval === "1M") {
+    const d = new Date(candle.t);
+    return Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1);
+  }
+  return candle.t + MINUTES[interval] * 6e4;
+}
+function num(value, decimals = 4) {
+  return value == null || !Number.isFinite(value) ? "\u2014" : Number(value.toFixed(decimals)).toString();
+}
+function pointAt(points2, candle) {
+  return candle ? points2.find((point) => point.time === Math.floor(candle.t / 1e3))?.value : void 0;
+}
+function atr14(rows) {
+  if (rows.length < 15) return void 0;
+  const ranges = rows.slice(1).map((candle, index) => Math.max(
+    candle.h - candle.l,
+    Math.abs(candle.h - rows[index].c),
+    Math.abs(candle.l - rows[index].c)
+  ));
+  let value = ranges.slice(0, 14).reduce((sum, item) => sum + item, 0) / 14;
+  for (const item of ranges.slice(14)) value = (value * 13 + item) / 14;
+  return value;
+}
+function evaluateStrategyStudies(candles, coin, interval, now = Date.now(), english = false) {
+  const say = (zh, en) => english ? en : zh;
+  const valid = candles.filter((row) => Number.isFinite(row.t) && Number.isFinite(row.c) && row.c > 0 && Number.isFinite(row.h) && Number.isFinite(row.l) && row.h >= row.l && Number.isFinite(row.v));
+  const rows = [...new Map(valid.map((row) => [row.t, row])).values()].sort((a, b) => a.t - b.t).filter((row) => closedAt(row, interval) <= now);
+  const latest = rows.at(-1);
+  const previous = rows.at(-2);
+  const periodMs = interval === "1M" ? 31 * 864e5 : MINUTES[interval] * 6e4;
+  const dataState = rows.length < 60 ? "insufficient" : latest && now - closedAt(latest, interval) > periodMs * 3 ? "stale" : null;
+  const stateSummary = dataState === "insufficient" ? say(`\u4EC5\u6709 ${rows.length} \u6839\u5DF2\u6536\u76D8 K \u7EBF\uFF1B\u81F3\u5C11\u9700\u8981 60 \u6839\u3002`, `Only ${rows.length} closed candles; at least 60 are required.`) : dataState === "stale" ? say("\u6700\u65B0\u5DF2\u6536\u76D8 K \u7EBF\u8FC7\u671F\uFF0C\u7B49\u5F85\u884C\u60C5\u6062\u590D\u3002", "The latest closed candle is stale; wait for market data.") : "";
+  const studies = chartIndicators(rows);
+  const close = latest?.c;
+  const ema20 = pointAt(studies.ema20, latest);
+  const ema50 = pointAt(studies.ema50, latest);
+  const ema20Prior = pointAt(studies.ema20, rows.at(-6));
+  const rsi = pointAt(studies.rsi14, latest);
+  const upper = pointAt(studies.upper, latest);
+  const lower = pointAt(studies.lower, latest);
+  const previousUpper = pointAt(studies.upper, previous);
+  const previousLower = pointAt(studies.lower, previous);
+  const range = rows.slice(-21, -1);
+  const high20 = range.length === 20 ? Math.max(...range.map((row) => row.h)) : void 0;
+  const low20 = range.length === 20 ? Math.min(...range.map((row) => row.l)) : void 0;
+  const volumeMean = range.length === 20 ? range.reduce((sum, row) => sum + row.v, 0) / 20 : void 0;
+  const volumeRatio = latest && volumeMean && volumeMean > 0 ? latest.v / volumeMean : void 0;
+  const atr = atr14(rows);
+  const stamp = latest ? new Date(closedAt(latest, interval)).toISOString() : "\u2014";
+  const risk = say(
+    `ATR14=${num(atr)}\uFF1B\u8FD8\u9700\u6838\u5BF9\u76D8\u53E3\u6ED1\u70B9\u3001\u624B\u7EED\u8D39\u3001\u8D44\u91D1\u8D39\u3001\u4ED3\u4F4D\u4E0E\u6B62\u635F\u8DDD\u79BB\u3002`,
+    `ATR14=${num(atr)}; also check book slippage, fees, funding, positions and stop distance.`
+  );
+  const prompt = (title, evidence, invalidation) => say(
+    `\u8BF7\u4EC5\u5206\u6790\uFF0C\u4E0D\u8981\u4E0B\u5355\u3002\u7528\u201C${title}\u201D\u6846\u67B6\u6838\u5BF9 ${coin} ${interval}\uFF1A${evidence.join("\uFF1B")}\uFF1B${risk}\u3002\u6700\u65B0\u5DF2\u6536\u76D8\u65F6\u95F4 ${stamp}\u3002\u8BF7\u8C03\u7528 hyper_context \u548C hyper_market indicators\uFF0C\u6838\u5BF9\u5F53\u524D\u5468\u671F\u53CA ${higher[interval] ?? interval} \u9AD8\u4E00\u7EA7\u5468\u671F\u3001\u76D8\u53E3\u3001\u8D44\u91D1\u8D39\u3001\u8D26\u6237\u98CE\u9669\u4E0E\u6570\u636E\u65F6\u95F4\uFF1B\u8BF4\u660E\u5165\u573A\u6761\u4EF6\u3001\u5931\u6548\u6761\u4EF6\uFF08${invalidation}\uFF09\u3001\u9000\u51FA\u548C\u4E0D\u4EA4\u6613\u6761\u4EF6\u3002\u4E0D\u8981\u628A\u5386\u53F2\u7406\u8BBA\u5F53\u4F5C\u672C\u5E02\u573A\u7684\u6536\u76CA\u4FDD\u8BC1\u3002`,
+    `Analysis only; do not place an order. Evaluate ${coin} ${interval} with the ${title} framework: ${evidence.join("; ")}; ${risk}. Latest closed candle ${stamp}. Use hyper_context and hyper_market indicators to verify this and the ${higher[interval] ?? interval} higher interval, order book, funding, account risk and freshness. State entry, invalidation (${invalidation}), exit and no-trade conditions. Do not treat historical research as a profit guarantee.`
+  );
+  const make = (id, title, candidate, summary, evidence, invalidation) => ({
+    id,
+    title,
+    state: dataState ?? (candidate ? "candidate" : "watch"),
+    summary: dataState ? stateSummary : summary,
+    evidence: dataState ? [] : evidence,
+    invalidation,
+    source: SOURCES[id],
+    prompt: prompt(title, evidence, invalidation)
+  });
+  const trendUp = close != null && ema20 != null && ema50 != null && ema20Prior != null && close > ema20 && ema20 > ema50 && ema20 > ema20Prior;
+  const trendDown = close != null && ema20 != null && ema50 != null && ema20Prior != null && close < ema20 && ema20 < ema50 && ema20 < ema20Prior;
+  const trendEvidence = [say(`\u6536\u76D8 ${num(close)}\uFF0CEMA20 ${num(ema20)}\uFF0CEMA50 ${num(ema50)}`, `Close ${num(close)}, EMA20 ${num(ema20)}, EMA50 ${num(ema50)}`)];
+  const breakoutUp = close != null && high20 != null && close > high20 && volumeRatio != null && volumeRatio >= 1.5;
+  const breakoutDown = close != null && low20 != null && close < low20 && volumeRatio != null && volumeRatio >= 1.5;
+  const breakoutEvidence = [say(
+    `\u524D 20 \u6839\u9AD8/\u4F4E ${num(high20)} / ${num(low20)}\uFF0C\u91CF\u6BD4 ${num(volumeRatio, 2)}\xD7`,
+    `Prior 20-bar high/low ${num(high20)} / ${num(low20)}, volume ratio ${num(volumeRatio, 2)}x`
+  )];
+  const flat = close != null && ema20 != null && ema50 != null && Math.abs(ema20 - ema50) / close < 0.02;
+  const reentryUp = flat && previous != null && previousLower != null && lower != null && rsi != null && previous.c < previousLower && close > lower && rsi < 45;
+  const reentryDown = flat && previous != null && previousUpper != null && upper != null && rsi != null && previous.c > previousUpper && close < upper && rsi > 55;
+  const reentryEvidence = [say(
+    `\u5E03\u6797\u4E0A\u4E0B\u8F68 ${num(lower)} / ${num(upper)}\uFF0CRSI14 ${num(rsi, 1)}\uFF0CEMA20/50 \u5DEE\u8DDD ${close ? num(Math.abs((ema20 ?? 0) - (ema50 ?? 0)) / close * 100, 2) : "\u2014"}%`,
+    `Bollinger lower/upper ${num(lower)} / ${num(upper)}, RSI14 ${num(rsi, 1)}, EMA20/50 gap ${close ? num(Math.abs((ema20 ?? 0) - (ema50 ?? 0)) / close * 100, 2) : "\u2014"}%`
+  )];
+  return [
+    make(
+      "trend",
+      say("\u8D8B\u52BF\u8DDF\u968F", "Trend following"),
+      Boolean(trendUp || trendDown),
+      trendUp ? say("\u4E0A\u884C\u6392\u5217\uFF1B\u7B49\u5F85\u56DE\u64A4\u4E0E\u98CE\u9669\u6838\u5BF9\u3002", "Uptrend alignment; check pullback and risk.") : trendDown ? say("\u4E0B\u884C\u6392\u5217\uFF1B\u7B49\u5F85\u53CD\u5F39\u4E0E\u98CE\u9669\u6838\u5BF9\u3002", "Downtrend alignment; check rebound and risk.") : say("\u5747\u7EBF\u4E0E\u4EF7\u683C\u5C1A\u672A\u540C\u5411\u6392\u5217\u3002", "Price and moving averages are not aligned."),
+      trendEvidence,
+      say("\u6536\u76D8\u91CD\u65B0\u7A7F\u8D8A EMA20 \u6216\u66F4\u9AD8\u5468\u671F\u8D8B\u52BF\u6539\u53D8", "a close across EMA20 or a higher-timeframe trend change")
+    ),
+    make(
+      "breakout",
+      say("\u533A\u95F4\u7A81\u7834", "Range breakout"),
+      Boolean(breakoutUp || breakoutDown),
+      breakoutUp ? say("\u6536\u76D8\u7A81\u7834\u524D 20 \u6839\u9AD8\u70B9\u4E14\u91CF\u6BD4\u8FBE\u5230 1.5 \u500D\u3002", "Close above the prior 20-bar high with 1.5x volume.") : breakoutDown ? say("\u6536\u76D8\u8DCC\u7834\u524D 20 \u6839\u4F4E\u70B9\u4E14\u91CF\u6BD4\u8FBE\u5230 1.5 \u500D\u3002", "Close below the prior 20-bar low with 1.5x volume.") : say("\u6536\u76D8\u7A81\u7834\u4E0E\u91CF\u80FD\u5C1A\u672A\u540C\u65F6\u6EE1\u8DB3\u3002", "Close breakout and volume confirmation are not both present."),
+      breakoutEvidence,
+      say("\u6536\u76D8\u91CD\u65B0\u56DE\u5230\u7A81\u7834\u524D\u533A\u95F4", "a close back inside the prior range")
+    ),
+    make(
+      "reentry",
+      say("\u6CE2\u52A8\u5E26\u56DE\u5F52", "Band re-entry"),
+      Boolean(reentryUp || reentryDown),
+      reentryUp ? say("\u524D\u6839\u8DCC\u51FA\u4E0B\u8F68\uFF0C\u672C\u6839\u6536\u56DE\u8F68\u5185\uFF1B\u9700\u6392\u9664\u5355\u8FB9\u4E0B\u8DCC\u3002", "Prior close below lower band, now back inside; rule out a strong downtrend.") : reentryDown ? say("\u524D\u6839\u6DA8\u51FA\u4E0A\u8F68\uFF0C\u672C\u6839\u6536\u56DE\u8F68\u5185\uFF1B\u9700\u6392\u9664\u5355\u8FB9\u4E0A\u6DA8\u3002", "Prior close above upper band, now back inside; rule out a strong uptrend.") : say("\u672A\u51FA\u73B0\u5E73\u7F13\u8D8B\u52BF\u4E2D\u7684\u8F68\u5916\u56DE\u5F52\u786E\u8BA4\u3002", "No band re-entry confirmation in a mild trend."),
+      reentryEvidence,
+      say("\u518D\u6B21\u6536\u76D8\u4E8E\u8F68\u5916\u6216\u8D8B\u52BF\u660E\u663E\u52A0\u901F", "another close outside the band or accelerating trend")
+    )
+  ];
+}
+
+// src/client/components/strategy-menu.tsx
+var STATE_LABELS = {
+  candidate: ["\u6761\u4EF6\u51FA\u73B0", "Conditions met"],
+  watch: ["\u5F85\u89C2\u5BDF", "Watch"],
+  stale: ["\u6570\u636E\u8FC7\u671F", "Stale data"],
+  insufficient: ["\u6570\u636E\u4E0D\u8DB3", "Insufficient data"]
+};
+function StrategyMenu({ candles, coin, interval }) {
+  const menu = React20.useRef(null);
+  const english = tr("zh", "en") === "en";
+  const studies = React20.useMemo(() => evaluateStrategyStudies(candles, coin, interval, Date.now(), english), [candles, coin, interval, english]);
+  return /* @__PURE__ */ React20.createElement("details", { className: "dhl-strategy-menu", ref: menu }, /* @__PURE__ */ React20.createElement("summary", null, tr("\u7B56\u7565\u6846\u67B6", "Strategies"), /* @__PURE__ */ React20.createElement(UiIcon, { name: "chevronDown", size: 12 })), /* @__PURE__ */ React20.createElement("div", { className: "dhl-strategy-popover", role: "group", "aria-label": tr("\u4EA4\u6613\u7B56\u7565\u7814\u7A76", "Trading strategy studies") }, /* @__PURE__ */ React20.createElement("header", null, /* @__PURE__ */ React20.createElement("strong", null, tr("\u7B56\u7565\u7814\u7A76 \xB7 \u5DF2\u6536\u76D8 K \u7EBF", "Strategy studies \xB7 closed candles")), /* @__PURE__ */ React20.createElement("small", null, coin, " \xB7 ", interval)), /* @__PURE__ */ React20.createElement("p", { className: "dhl-strategy-caveat" }, tr(
+    "\u8FD9\u4E9B\u6761\u4EF6\u7528\u4E8E\u7EC4\u7EC7\u5206\u6790\uFF0C\u672A\u5728\u672C\u5E02\u573A\u548C\u5468\u671F\u9A8C\u8BC1\u6536\u76CA\uFF1B\u9700\u8981\u6838\u5BF9\u66F4\u9AD8\u5468\u671F\u3001\u76D8\u53E3\u3001\u8D44\u91D1\u8D39\u548C\u4EA4\u6613\u6210\u672C\u3002",
+    "These conditions structure analysis; returns are unverified for this market and interval. Check higher timeframe, book, funding and costs."
+  )), studies.map((study) => /* @__PURE__ */ React20.createElement("section", { className: "dhl-strategy-card", key: study.id }, /* @__PURE__ */ React20.createElement("div", { className: "dhl-strategy-card-head" }, /* @__PURE__ */ React20.createElement("b", null, study.title), /* @__PURE__ */ React20.createElement("span", { className: `state-${study.state}` }, tr(...STATE_LABELS[study.state]))), /* @__PURE__ */ React20.createElement("p", null, study.summary), study.evidence.map((item) => /* @__PURE__ */ React20.createElement("small", { key: item }, item)), study.evidence.length ? /* @__PURE__ */ React20.createElement("small", null, tr("\u5931\u6548\uFF1A", "Invalidation: "), study.invalidation) : null, /* @__PURE__ */ React20.createElement("div", { className: "dhl-strategy-card-actions" }, /* @__PURE__ */ React20.createElement("a", { href: study.source, target: "_blank", rel: "noopener noreferrer" }, tr("\u7406\u8BBA\u6765\u6E90", "Source")), /* @__PURE__ */ React20.createElement("button", { type: "button", disabled: study.state === "stale" || study.state === "insufficient", onClick: () => {
+    if (queueToAgent(study.prompt)) menu.current?.removeAttribute("open");
+  } }, tr("\u8BF7 Agent \u6838\u5BF9", "Ask agent to verify")))))));
 }
 
 // src/client/trade-events.ts
@@ -17608,7 +19639,7 @@ function chartTradeEvents(candles, coin, orders, fills) {
   if (!candles.length) return [];
   const times = candles.map((candle) => candle.t);
   const interval = candles.length > 1 ? Math.max(1, candles[1].t - candles[0].t) : 6e4;
-  const barAt = (time) => {
+  const barAt2 = (time) => {
     if (!Number.isFinite(time) || time < times[0] || time >= times[times.length - 1] + interval) return null;
     let lo = 0;
     let hi = times.length - 1;
@@ -17621,11 +19652,12 @@ function chartTradeEvents(candles, coin, orders, fills) {
   };
   const cleanReason = (value) => typeof value === "string" && !value.startsWith("session:") && !["tool", "chat", "order"].includes(value) ? value : "";
   const reasonByOid = new Map(orders.filter((row) => row?.oid != null && row.reason).map((row) => [String(row.oid), cleanReason(row.reason)]));
+  const sessionByOid = new Map(orders.filter((row) => row?.oid != null && row.sessionId).map((row) => [String(row.oid), String(row.sessionId)]));
   const out = [];
   for (const [index, row] of orders.entries()) {
     if (row?.coin !== coin) continue;
     const time = Number(row.timestamp ?? row.time ?? row.statusTimestamp);
-    const candleTime = barAt(time);
+    const candleTime = barAt2(time);
     if (candleTime == null) continue;
     out.push({
       kind: "order",
@@ -17637,13 +19669,14 @@ function chartTradeEvents(candles, coin, orders, fills) {
       sz: Number(row.origSz ?? row.sz),
       status: String(row.status ?? ""),
       reason: cleanReason(row.reason),
+      sessionId: row.sessionId ?? null,
       id: `order:${row.oid ?? row.cloid ?? index}:${time}`
     });
   }
   for (const [index, row] of fills.entries()) {
     if (row?.coin !== coin) continue;
     const time = Number(row.time ?? row.filledTime);
-    const candleTime = barAt(time);
+    const candleTime = barAt2(time);
     if (candleTime == null) continue;
     out.push({
       kind: "fill",
@@ -17655,6 +19688,7 @@ function chartTradeEvents(candles, coin, orders, fills) {
       sz: Number(row.sz ?? row.filledSz),
       status: "filled",
       reason: cleanReason(row.reason) || reasonByOid.get(String(row.oid)) || "",
+      sessionId: row.sessionId ?? sessionByOid.get(String(row.oid)) ?? null,
       id: `fill:${row.tid ?? row.hash ?? index}:${time}`
     });
   }
@@ -17682,6 +19716,25 @@ var INDICATOR_EN = {
   rsi14: ["RSI 14", "Relative strength index"],
   macd: ["MACD", "12 / 26 / 9 momentum panel"]
 };
+function usePreference(name, fallback, parse) {
+  const key2 = `dsh-hyperliquid.draw.${name}`;
+  const [value, setValue] = React21.useState(() => {
+    try {
+      const raw = localStorage.getItem(key2);
+      return raw == null ? fallback : parse(JSON.parse(raw));
+    } catch {
+      return fallback;
+    }
+  });
+  const update = React21.useCallback((next) => {
+    setValue(next);
+    try {
+      localStorage.setItem(key2, JSON.stringify(next));
+    } catch {
+    }
+  }, [key2]);
+  return [value, update];
+}
 function finite(value) {
   if (value == null || value === "") return null;
   const number = Number(value);
@@ -17704,24 +19757,34 @@ function DeskColumn({ onCollapse }) {
   const funding = finite(ctx?.funding);
   const change = mark != null && mark > 0 && prev != null && prev > 0 ? (mark / prev - 1) * 100 : null;
   const chartTab = s.workspaceSessionId === s.activeSessionId ? s.workspace?.chartTab ?? "chart" : "chart";
-  const indicators = React13.useMemo(() => new Set(s.workspaceSessionId === s.activeSessionId ? s.workspace?.indicators ?? ["volume"] : ["volume"]), [s.workspace, s.workspaceSessionId, s.activeSessionId]);
-  const [drawMode, setDrawMode] = React13.useState(null);
-  const [pickerOpen, setPickerOpen] = React13.useState(false);
-  const [chartExpanded, setChartExpanded] = React13.useState(false);
-  const [chartResetToken, setChartResetToken] = React13.useState(0);
+  const indicators = React21.useMemo(() => new Set(s.workspaceSessionId === s.activeSessionId ? s.workspace?.indicators ?? ["volume"] : ["volume"]), [s.workspace, s.workspaceSessionId, s.activeSessionId]);
+  const [drawMode, setDrawMode] = React21.useState(null);
+  const drawMenu = React21.useRef(null);
+  const [magnet, setMagnet] = usePreference("magnet", "off", (value) => value === "weak" || value === "strong" ? value : "off");
+  const [stayDrawing, setStayDrawing] = usePreference("stayDrawing", false, (value) => value === true);
+  const [drawingsLocked, setDrawingsLocked] = usePreference("drawingsLocked", false, (value) => value === true);
+  const [textAt, setTextAt] = React21.useState(null);
+  const [selectRequest, setSelectRequest] = React21.useState(null);
+  const [textValue, setTextValue] = React21.useState("");
+  const [confirmClear, setConfirmClear] = React21.useState(false);
+  const [pickerOpen, setPickerOpen] = React21.useState(false);
+  const [chartExpanded, setChartExpanded] = React21.useState(false);
+  const [chartResetToken, setChartResetToken] = React21.useState(0);
+  const sessionMaLines = s.workspaceSessionId === s.activeSessionId ? s.workspace?.maLines : void 0;
+  const maLines = React21.useMemo(() => sessionMaLines ?? [], [sessionMaLines]);
   const toggleIndicator = (id) => {
     const next = new Set(indicators);
     if (next.has(id)) next.delete(id);
     else next.add(id);
     saveSessionWorkspace({ indicators: [...next] });
   };
-  React13.useEffect(() => {
+  React21.useEffect(() => {
     setDrawMode(null);
     setChartExpanded(false);
   }, [s.activeSessionId]);
-  const marks = s.chartMarksKey === `${s.activeSessionId ?? ""}:${coin}:${s.interval}` ? s.chartMarks : [];
-  const layers = { orders: true, fills: true, drawings: true, ...s.workspace?.chartLayers };
-  const tradeEvents = React13.useMemo(
+  const marks = s.chartMarksKey === `${s.activeSessionId ?? ""}:${coin}` ? s.chartMarks : [];
+  const layers = { orders: true, fills: true, drawings: true, reasons: false, ...s.workspace?.chartLayers };
+  const tradeEvents = React21.useMemo(
     () => chartTradeEvents(
       s.candles,
       coin,
@@ -17730,39 +19793,75 @@ function DeskColumn({ onCollapse }) {
     ),
     [s.candles, coin, s.tradeHistory, layers.orders, layers.fills]
   );
-  const draw = React13.useCallback(async (mark2) => {
-    const sessionId = store.get().activeSessionId;
-    if (!sessionId) {
+  const stayRef = React21.useRef(stayDrawing);
+  stayRef.current = stayDrawing;
+  const history = useDrawingHistory(`${s.activeSessionId ?? ""}:${coin}`);
+  const historyRef = React21.useRef(history);
+  historyRef.current = history;
+  const save = React21.useCallback((mark2, label) => {
+    void historyRef.current.create({ ...loadStyleTemplate(mark2.kind), ...mark2, label });
+  }, []);
+  const draw = React21.useCallback((mark2) => {
+    if (!stayRef.current) setDrawMode(null);
+    if ((isTextKind(mark2.kind) || mark2.kind === "icon") && "points" in mark2) {
+      setTextValue("");
+      setTextAt({ kind: mark2.kind, points: mark2.points });
+      return;
+    }
+    void save(mark2, mark2.kind === "level" ? drawingLabel("level", [], mark2.price) : mark2.kind === "trend" ? drawingLabel("trend", [{ time: mark2.fromTime, price: mark2.fromPrice }]) : drawingLabel(mark2.kind, mark2.points));
+  }, [save]);
+  const analyzeFill = React21.useCallback((event) => {
+    const state = store.get();
+    const known = (id) => Boolean(id && state.sessions.some((row2) => row2.sessionId === id) && !state.archivedSessionIds.includes(id));
+    const target = known(event.sessionId) ? event.sessionId : state.activeSessionId;
+    if (!target) {
       notify(tr("\u8BF7\u5148\u9009\u62E9\u4EA4\u6613\u4F1A\u8BDD", "Choose a trading session first"));
       return;
     }
-    const { activeCoin, interval } = store.get();
-    try {
-      await hyperCall("drawChartMark", {
-        ...mark2,
-        sessionId,
-        coin: activeCoin,
-        interval,
-        role: "neutral",
-        label: mark2.kind === "level" ? tr("\u6C34\u5E73\u7EBF", "Horizontal line") : tr("\u8D8B\u52BF\u7EBF", "Trend line")
-      });
-      if (store.get().activeSessionId === sessionId) void loadChartMarks();
-    } catch (error) {
-      notify(tr("\u753B\u7EBF\u5931\u8D25", "Could not draw line") + "\uFF1A" + String(error?.message ?? error));
-    }
-    setDrawMode(null);
-  }, []);
-  const erase = React13.useCallback(async (id) => {
-    const sessionId = store.get().activeSessionId;
-    if (!sessionId) return;
-    try {
-      await hyperCall("eraseChartMark", { sessionId, id });
-      if (store.get().activeSessionId === sessionId) void loadChartMarks();
-    } catch (error) {
-      notify(tr("\u5220\u9664\u753B\u7EBF\u5931\u8D25", "Could not remove line") + "\uFF1A" + String(error?.message ?? error));
+    const side2 = event.isBuy ? tr("\u4E70\u5165", "Buy") : tr("\u5356\u51FA", "Sell");
+    const when = new Date(event.time).toISOString().replace("T", " ").replace(/\.\d+Z$/, " UTC");
+    const text = [
+      tr(`\u3010\u6210\u4EA4\u590D\u76D8\u3011${event.coin} ${side2} ${event.sz} @ ${event.px}\uFF08${when}\uFF0C\u56FE\u8868\u5468\u671F ${state.interval}\uFF09`, `[Fill review] ${event.coin} ${side2} ${event.sz} @ ${event.px} (${when}, chart ${state.interval})`),
+      event.reason ? tr(`\u5F53\u65F6\u7684\u51B3\u7B56\u539F\u56E0\uFF1A${event.reason}`, `Rationale at the time: ${event.reason}`) : tr("\u8FD9\u7B14\u6210\u4EA4\u6CA1\u6709\u8BB0\u5F55\u51B3\u7B56\u539F\u56E0\u3002", "No rationale was recorded for this fill."),
+      tr("\u8BF7\u7ED3\u5408\u6210\u4EA4\u4E4B\u540E\u7684\u8D70\u52BF\u590D\u76D8\uFF1A\u4F9D\u636E\u662F\u5426\u4ECD\u7136\u6210\u7ACB\u3001\u6267\u884C\u662F\u5426\u5230\u4F4D\u3001\u63A5\u4E0B\u6765\u5982\u4F55\u7BA1\u7406\u8FD9\u7B14\u4ED3\u4F4D\u3002", "Review it against what happened since: does the thesis still hold, was execution sound, and how should the position be managed now?")
+    ].join("\n");
+    store.patch((current2) => ({ chartReferences: [...current2.chartReferences, {
+      id: Date.now() + Math.random(),
+      sessionId: target,
+      text,
+      label: `${tr("\u6210\u4EA4", "Fill")} ${side2} ${event.sz} ${event.coin} @ ${fmtPrice(event.px)}`,
+      coin: event.coin,
+      interval: state.interval,
+      t: event.candleTime
+    }] }));
+    if (target !== state.activeSessionId) {
+      void openSession(target, event.coin);
+      notify(tr("\u5DF2\u5207\u6362\u5230\u505A\u51FA\u8FD9\u7B14\u51B3\u7B56\u7684\u4F1A\u8BDD\uFF0C\u590D\u76D8\u5F15\u7528\u5DF2\u653E\u5165\u8F93\u5165\u6846", "Switched to the session that made this decision; the review is in the composer"));
     }
   }, []);
-  React13.useEffect(() => {
+  const editMark = React21.useCallback((id, patch) => historyRef.current.edit(id, patch), []);
+  const erase = React21.useCallback((id) => historyRef.current.remove(id), []);
+  const cloneMark = React21.useCallback((copy) => {
+    void historyRef.current.create({ kind: copy.kind, label: copy.label, ...copy.geometry, ...copy.style });
+  }, []);
+  React21.useEffect(() => {
+    const onKey = (event) => {
+      if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
+      const element = event.target;
+      if (element?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element?.tagName ?? "")) return;
+      const key2 = event.key.toLowerCase();
+      if (key2 === "z" && !event.shiftKey) {
+        event.preventDefault();
+        void historyRef.current.undo();
+      } else if (key2 === "z" && event.shiftKey || key2 === "y") {
+        event.preventDefault();
+        void historyRef.current.redo();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+  React21.useEffect(() => {
     const onKey = (event) => {
       if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey || pickerOpen) return;
       const element = event.target;
@@ -17773,7 +19872,7 @@ function DeskColumn({ onCollapse }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [pickerOpen]);
-  React13.useEffect(() => {
+  React21.useEffect(() => {
     if (!chartExpanded) return void 0;
     const onEscape = (event) => {
       if (event.key === "Escape" && !pickerOpen) {
@@ -17784,7 +19883,7 @@ function DeskColumn({ onCollapse }) {
     window.addEventListener("keydown", onEscape);
     return () => window.removeEventListener("keydown", onEscape);
   }, [chartExpanded, pickerOpen]);
-  React13.useEffect(() => {
+  React21.useEffect(() => {
     if (!drawMode) return void 0;
     const cancel = (event) => {
       if (event.key === "Escape") setDrawMode(null);
@@ -17792,17 +19891,17 @@ function DeskColumn({ onCollapse }) {
     window.addEventListener("keydown", cancel);
     return () => window.removeEventListener("keydown", cancel);
   }, [drawMode]);
-  React13.useEffect(() => {
+  React21.useEffect(() => {
     if (chartTab === "funding" && row?.kind !== "spot" && row?.kind !== "outcome" && store.get().fundingCoin !== coin) void loadFunding();
     if (chartTab === "funding" && (row?.kind === "spot" || row?.kind === "outcome")) saveSessionWorkspace({ chartTab: "chart" });
   }, [chartTab, coin, row?.kind]);
-  React13.useEffect(() => {
+  React21.useEffect(() => {
     void loadChartMarks();
   }, [s.activeSessionId, coin, s.interval]);
-  React13.useEffect(() => {
+  React21.useEffect(() => {
     void loadTradeHistory();
   }, [s.status?.network, s.status?.tradingMode]);
-  const changeInterval = React13.useCallback((next) => {
+  const changeInterval = React21.useCallback((next) => {
     store.patch({ interval: next });
     pushDeskInterval(next);
     void loadCandles();
@@ -17815,10 +19914,75 @@ function DeskColumn({ onCollapse }) {
     [tr("\u672A\u5E73\u4ED3\u91CF", "Open interest"), openInterest == null || mark == null ? "\u2014" : `$${fmt(openInterest * mark, 0)}`],
     [tr("\u8D44\u91D1\u8D39 / h", "Funding / h"), funding == null ? "\u2014" : `${(funding * 100).toFixed(4)}%`]
   ];
-  return /* @__PURE__ */ React13.createElement("main", { id: "dhl-panel-desk", className: "dhl-col-desk" }, /* @__PURE__ */ React13.createElement("header", { className: "dhl-market-strip" }, /* @__PURE__ */ React13.createElement("div", { className: "dhl-market-name" }, /* @__PURE__ */ React13.createElement("button", { type: "button", className: "dhl-market-trigger", "aria-haspopup": "dialog", "aria-expanded": pickerOpen, onClick: () => setPickerOpen(true) }, /* @__PURE__ */ React13.createElement(MarketIcon, { market: row ?? { name: coin, label: `${coin}-USDC`, kind: "perp" } }), /* @__PURE__ */ React13.createElement("strong", null, row?.label ?? `${coin}-USDC`), /* @__PURE__ */ React13.createElement("span", { className: "dhl-market-chevron", "aria-hidden": "true" }, "\u2304")), /* @__PURE__ */ React13.createElement("span", { className: "dhl-market-kind" }, row?.kind === "spot" ? "SPOT" : row?.kind === "hip3" ? "HIP-3" : row?.kind === "outcome" ? "OUTCOME" : "PERP"), row?.maxLeverage ? /* @__PURE__ */ React13.createElement("span", { className: "dhl-market-tag" }, row.maxLeverage, "x") : null, row?.tradable === false ? /* @__PURE__ */ React13.createElement("span", { className: "dhl-market-readonly" }, tr("\u53EA\u8BFB", "View only")) : null), /* @__PURE__ */ React13.createElement("div", { className: "dhl-market-stats" }, stats.map(([label, value, tone]) => /* @__PURE__ */ React13.createElement("div", { className: "dhl-market-stat", key: label }, /* @__PURE__ */ React13.createElement("span", null, label), /* @__PURE__ */ React13.createElement("strong", { className: tone ?? "" }, value)))), /* @__PURE__ */ React13.createElement("button", { className: "dhl-panel-iconbtn", type: "button", onClick: onCollapse, "aria-label": tr("\u6536\u8D77\u884C\u60C5\u533A", "Collapse market panel"), title: tr("\u6536\u8D77\u884C\u60C5\u533A", "Collapse market panel") }, /* @__PURE__ */ React13.createElement(FoldIcon, { direction: "right" }))), pickerOpen ? /* @__PURE__ */ React13.createElement(MarketPicker, { activeCoin: coin, onClose: () => setPickerOpen(false) }) : null, /* @__PURE__ */ React13.createElement("div", { className: "dhl-market-workspace" + (s.tapePlacement === "below" ? " dhl-tape-below" : "") }, /* @__PURE__ */ React13.createElement("section", { className: "dhl-chart-panel" + (chartExpanded ? " dhl-chart-panel-expanded" : ""), "aria-label": tr("\u884C\u60C5\u56FE\u8868", "Market chart") }, /* @__PURE__ */ React13.createElement("div", { className: "dhl-chart-tabs", role: "tablist", "aria-label": tr("\u56FE\u8868\u5185\u5BB9", "Chart content") }, /* @__PURE__ */ React13.createElement("button", { type: "button", role: "tab", "aria-selected": chartTab === "chart", className: chartTab === "chart" ? "on" : "", onClick: () => saveSessionWorkspace({ chartTab: "chart" }) }, tr("K \u7EBF", "Chart")), row?.kind !== "spot" && row?.kind !== "outcome" ? /* @__PURE__ */ React13.createElement("button", { type: "button", role: "tab", "aria-selected": chartTab === "funding", className: chartTab === "funding" ? "on" : "", onClick: () => saveSessionWorkspace({ chartTab: "funding" }) }, tr("\u8D44\u91D1\u8D39\u5386\u53F2", "Funding history")) : null), chartTab === "chart" ? /* @__PURE__ */ React13.createElement("div", { role: "tabpanel" }, /* @__PURE__ */ React13.createElement("div", { className: "dhl-chart-tools" }, /* @__PURE__ */ React13.createElement("div", { className: "dhl-intervals", "aria-label": tr("K \u7EBF\u5468\u671F", "Chart interval") }, INTERVALS.map((iv) => /* @__PURE__ */ React13.createElement("button", { key: iv, type: "button", className: s.interval === iv ? "on" : "", onClick: () => changeInterval(iv) }, iv)), /* @__PURE__ */ React13.createElement("select", { className: "dhl-interval-more", "aria-label": tr("\u66F4\u591A K \u7EBF\u5468\u671F", "More chart intervals"), value: MORE_INTERVALS.includes(s.interval) ? s.interval : "", onChange: (event) => changeInterval(event.target.value) }, /* @__PURE__ */ React13.createElement("option", { value: "", disabled: true }, tr("\u66F4\u591A", "More")), MORE_INTERVALS.map((iv) => /* @__PURE__ */ React13.createElement("option", { key: iv, value: iv }, iv)))), /* @__PURE__ */ React13.createElement("div", { className: "dhl-chart-actions" }, /* @__PURE__ */ React13.createElement("details", { className: "dhl-layer-menu" }, /* @__PURE__ */ React13.createElement("summary", null, tr("\u663E\u793A", "Show")), /* @__PURE__ */ React13.createElement("div", { className: "dhl-layer-popover" }, [["orders", tr("\u59D4\u6258", "Orders")], ["fills", tr("\u6210\u4EA4", "Fills")], ["drawings", tr("\u753B\u7EBF", "Drawings")]].map(([id, label]) => /* @__PURE__ */ React13.createElement("label", { key: id }, /* @__PURE__ */ React13.createElement("input", { type: "checkbox", checked: layers[id], onChange: (event) => saveSessionWorkspace({ chartLayers: { ...layers, [id]: event.target.checked } }) }), label)))), /* @__PURE__ */ React13.createElement("details", { className: "dhl-indicator-menu" }, /* @__PURE__ */ React13.createElement("summary", { "aria-label": tr("\u9009\u62E9\u56FE\u8868\u6307\u6807", "Choose chart indicators") }, tr("\u6307\u6807", "Indicators"), " ", /* @__PURE__ */ React13.createElement("span", { className: "dhl-indicator-count" }, indicators.size)), /* @__PURE__ */ React13.createElement("div", { className: "dhl-indicator-popover", role: "group", "aria-label": tr("\u56FE\u8868\u6307\u6807", "Chart indicators") }, /* @__PURE__ */ React13.createElement("strong", null, tr("\u56FE\u8868\u6307\u6807", "Chart indicators")), INDICATOR_CHOICES.map(([id, label, description]) => /* @__PURE__ */ React13.createElement("button", { type: "button", key: id, className: indicators.has(id) ? "on" : "", "aria-pressed": indicators.has(id), onClick: () => toggleIndicator(id) }, /* @__PURE__ */ React13.createElement("span", { className: "dhl-indicator-check", "aria-hidden": "true" }, indicators.has(id) ? "\u2713" : ""), /* @__PURE__ */ React13.createElement("span", null, /* @__PURE__ */ React13.createElement("b", null, tr(label, INDICATOR_EN[id]?.[0] ?? label)), /* @__PURE__ */ React13.createElement("small", null, tr(description, INDICATOR_EN[id]?.[1] ?? description))))))), /* @__PURE__ */ React13.createElement("button", { type: "button", className: drawMode === "level" ? "on" : "", "aria-pressed": drawMode === "level", onClick: () => setDrawMode(drawMode === "level" ? null : "level"), title: tr("\u5355\u51FB\u56FE\u8868\u6DFB\u52A0\u6C34\u5E73\u7EBF", "Click chart to add a horizontal line") }, tr("\u6C34\u5E73\u7EBF", "H Line")), /* @__PURE__ */ React13.createElement("button", { type: "button", className: drawMode === "trend" ? "on" : "", "aria-pressed": drawMode === "trend", onClick: () => setDrawMode(drawMode === "trend" ? null : "trend"), title: tr("\u5355\u51FB\u56FE\u8868\u4E24\u6B21\u6DFB\u52A0\u8D8B\u52BF\u7EBF", "Click chart twice to add a trend line") }, tr("\u8D8B\u52BF\u7EBF", "Trend")), /* @__PURE__ */ React13.createElement("button", { type: "button", disabled: !marks.some((item) => item.source === "user"), title: tr("\u64A4\u9500\u6700\u8FD1\u4E00\u6761\u624B\u52A8\u753B\u7EBF", "Undo last drawing"), onClick: () => {
-    const last = [...marks].reverse().find((item) => item.source === "user");
-    if (last) void erase(last.id);
-  } }, tr("\u64A4\u9500", "Undo")), /* @__PURE__ */ React13.createElement("select", { className: "dhl-interval-more", "aria-label": tr("\u4EF7\u683C\u523B\u5EA6", "Price scale"), value: s.workspace?.priceScale ?? "normal", onChange: (event) => saveSessionWorkspace({ priceScale: event.target.value }) }, /* @__PURE__ */ React13.createElement("option", { value: "normal" }, tr("\u7EBF\u6027", "Linear")), /* @__PURE__ */ React13.createElement("option", { value: "log" }, tr("\u5BF9\u6570", "Log")), /* @__PURE__ */ React13.createElement("option", { value: "percentage" }, "%")), /* @__PURE__ */ React13.createElement("span", { className: "dhl-chart-action-separator", "aria-hidden": "true" }), /* @__PURE__ */ React13.createElement("button", { type: "button", className: "dhl-chart-iconbtn", "aria-label": tr("\u590D\u4F4D\u56FE\u8868\u89C6\u56FE", "Reset chart view"), title: tr("\u590D\u4F4D\u56FE\u8868\u89C6\u56FE", "Reset chart view"), onClick: () => setChartResetToken((value) => value + 1) }, /* @__PURE__ */ React13.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React13.createElement("path", { d: "M3 11a9 9 0 1 0 2.6-6.4M3 4v6h6" }), /* @__PURE__ */ React13.createElement("path", { d: "M12 7v5l3 2" }))), /* @__PURE__ */ React13.createElement("button", { type: "button", className: "dhl-chart-iconbtn", "aria-label": chartExpanded ? tr("\u9000\u51FA\u653E\u5927\u56FE\u8868", "Exit expanded chart") : tr("\u653E\u5927\u56FE\u8868", "Expand chart"), "aria-pressed": chartExpanded, title: chartExpanded ? tr("\u9000\u51FA\u653E\u5927\u56FE\u8868 (Esc)", "Exit expanded chart (Esc)") : tr("\u653E\u5927\u56FE\u8868", "Expand chart"), onClick: () => setChartExpanded((value) => !value) }, chartExpanded ? /* @__PURE__ */ React13.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React13.createElement("path", { d: "M9 3v6H3m18 6h-6v6M3 9h6V3m12 12h-6v6" })) : /* @__PURE__ */ React13.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React13.createElement("path", { d: "M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6" }))))), /* @__PURE__ */ React13.createElement("div", { className: "dhl-chart" }, /* @__PURE__ */ React13.createElement(
+  return /* @__PURE__ */ React21.createElement("main", { id: "dhl-panel-desk", className: "dhl-col-desk" }, /* @__PURE__ */ React21.createElement("header", { className: "dhl-market-strip" }, /* @__PURE__ */ React21.createElement("div", { className: "dhl-market-name" }, /* @__PURE__ */ React21.createElement("button", { type: "button", className: "dhl-market-trigger", "aria-haspopup": "dialog", "aria-expanded": pickerOpen, onClick: () => setPickerOpen(true) }, /* @__PURE__ */ React21.createElement(MarketIcon, { market: row ?? { name: coin, label: `${coin}-USDC`, kind: "perp" } }), /* @__PURE__ */ React21.createElement("strong", null, row?.label ?? `${coin}-USDC`), /* @__PURE__ */ React21.createElement("span", { className: "dhl-market-chevron" }, /* @__PURE__ */ React21.createElement(UiIcon, { name: "chevronDown", size: 16 }))), /* @__PURE__ */ React21.createElement("span", { className: "dhl-market-kind" }, row?.kind === "spot" ? "SPOT" : row?.kind === "hip3" ? "HIP-3" : row?.kind === "outcome" ? "OUTCOME" : "PERP"), row?.maxLeverage ? /* @__PURE__ */ React21.createElement("span", { className: "dhl-market-tag" }, row.maxLeverage, "x") : null, row?.tradable === false ? /* @__PURE__ */ React21.createElement("span", { className: "dhl-market-readonly" }, tr("\u53EA\u8BFB", "View only")) : null), /* @__PURE__ */ React21.createElement("div", { className: "dhl-market-stats" }, stats.map(([label, value, tone]) => /* @__PURE__ */ React21.createElement("div", { className: "dhl-market-stat", key: label }, /* @__PURE__ */ React21.createElement("span", null, label), /* @__PURE__ */ React21.createElement("strong", { className: tone ?? "" }, value)))), /* @__PURE__ */ React21.createElement("button", { className: "dhl-panel-iconbtn", type: "button", onClick: onCollapse, "aria-label": tr("\u6536\u8D77\u884C\u60C5\u533A", "Collapse market panel"), title: tr("\u6536\u8D77\u884C\u60C5\u533A", "Collapse market panel") }, /* @__PURE__ */ React21.createElement(FoldIcon, { direction: "right" }))), /* @__PURE__ */ React21.createElement(
+    import_dsh_client_ui_primitives3.Modal,
+    {
+      open: Boolean(textAt),
+      onClose: () => setTextAt(null),
+      title: textAt?.kind === "icon" ? tr("\u9009\u62E9\u56FE\u6807", "Pick an icon") : textAt?.kind === "callout" ? tr("\u6DFB\u52A0\u6807\u6CE8", "Add callout") : tr("\u6DFB\u52A0\u6587\u672C", "Add text"),
+      closeLabel: tr("\u5173\u95ED", "Close"),
+      className: "dhl-rename-modal",
+      footer: /* @__PURE__ */ React21.createElement(React21.Fragment, null, /* @__PURE__ */ React21.createElement(import_dsh_client_ui_primitives3.Button, { variant: "outline", onClick: () => setTextAt(null) }, tr("\u53D6\u6D88", "Cancel")), /* @__PURE__ */ React21.createElement(import_dsh_client_ui_primitives3.Button, { variant: "primary", disabled: !textValue.trim(), onClick: () => {
+        if (textAt && textValue.trim()) void save({ kind: textAt.kind, points: textAt.points }, textValue.trim());
+        setTextAt(null);
+      } }, tr("\u6DFB\u52A0", "Add")))
+    },
+    textAt?.kind === "icon" ? /* @__PURE__ */ React21.createElement(StickerPicker, { onPick: (name) => {
+      if (textAt) void save({ kind: "icon", points: textAt.points }, name);
+      setTextAt(null);
+    } }) : /* @__PURE__ */ React21.createElement(
+      import_dsh_client_ui_primitives3.Input,
+      {
+        "data-modal-autofocus": true,
+        className: "dhl-rename-input",
+        value: textValue,
+        maxLength: 200,
+        placeholder: tr("\u8F93\u5165\u8981\u6807\u5728\u56FE\u4E0A\u7684\u6587\u5B57", "Text to place on the chart"),
+        "aria-label": tr("\u6587\u672C\u5185\u5BB9", "Text"),
+        onChange: (event) => setTextValue(event.target.value),
+        onKeyDown: (event) => {
+          if (event.key === "Enter" && textAt && textValue.trim()) {
+            event.preventDefault();
+            void save({ kind: textAt.kind, points: textAt.points }, textValue.trim());
+            setTextAt(null);
+          }
+        }
+      }
+    )
+  ), pickerOpen ? /* @__PURE__ */ React21.createElement(MarketPicker, { activeCoin: coin, onClose: () => setPickerOpen(false) }) : null, /* @__PURE__ */ React21.createElement("div", { className: "dhl-market-workspace" + (s.tapePlacement === "below" ? " dhl-tape-below" : "") }, /* @__PURE__ */ React21.createElement("section", { className: "dhl-chart-panel" + (chartExpanded ? " dhl-chart-panel-expanded" : ""), "aria-label": tr("\u884C\u60C5\u56FE\u8868", "Market chart") }, /* @__PURE__ */ React21.createElement("div", { className: "dhl-chart-tabs", role: "tablist", "aria-label": tr("\u56FE\u8868\u5185\u5BB9", "Chart content") }, /* @__PURE__ */ React21.createElement("button", { type: "button", role: "tab", "aria-selected": chartTab === "chart", className: chartTab === "chart" ? "on" : "", onClick: () => saveSessionWorkspace({ chartTab: "chart" }) }, tr("K \u7EBF", "Chart")), row?.kind !== "spot" && row?.kind !== "outcome" ? /* @__PURE__ */ React21.createElement("button", { type: "button", role: "tab", "aria-selected": chartTab === "funding", className: chartTab === "funding" ? "on" : "", onClick: () => saveSessionWorkspace({ chartTab: "funding" }) }, tr("\u8D44\u91D1\u8D39\u5386\u53F2", "Funding history")) : null), chartTab === "chart" ? /* @__PURE__ */ React21.createElement("div", { role: "tabpanel" }, /* @__PURE__ */ React21.createElement("div", { className: "dhl-chart-tools" }, /* @__PURE__ */ React21.createElement("div", { className: "dhl-intervals", "aria-label": tr("K \u7EBF\u5468\u671F", "Chart interval") }, INTERVALS.map((iv) => /* @__PURE__ */ React21.createElement("button", { key: iv, type: "button", className: s.interval === iv ? "on" : "", onClick: () => changeInterval(iv) }, iv)), /* @__PURE__ */ React21.createElement(Select, { "aria-label": tr("\u66F4\u591A K \u7EBF\u5468\u671F", "More chart intervals"), value: MORE_INTERVALS.includes(s.interval) ? s.interval : "", onChange: (event) => changeInterval(event.target.value) }, /* @__PURE__ */ React21.createElement("option", { value: "", disabled: true }, tr("\u66F4\u591A", "More")), MORE_INTERVALS.map((iv) => /* @__PURE__ */ React21.createElement("option", { key: iv, value: iv }, iv)))), /* @__PURE__ */ React21.createElement("div", { className: "dhl-chart-actions" }, /* @__PURE__ */ React21.createElement("details", { className: "dhl-layer-menu" }, /* @__PURE__ */ React21.createElement("summary", null, tr("\u663E\u793A", "Show"), /* @__PURE__ */ React21.createElement(UiIcon, { name: "chevronDown", size: 12 })), /* @__PURE__ */ React21.createElement("div", { className: "dhl-layer-popover" }, [["orders", tr("\u59D4\u6258", "Orders")], ["fills", tr("\u6210\u4EA4", "Fills")], ["reasons", tr("\u6210\u4EA4\u539F\u56E0", "Fill reasons")], ["drawings", tr("\u753B\u7EBF", "Drawings")]].map(([id, label]) => /* @__PURE__ */ React21.createElement("label", { key: id }, /* @__PURE__ */ React21.createElement("input", { type: "checkbox", checked: layers[id], onChange: (event) => saveSessionWorkspace({ chartLayers: { ...layers, [id]: event.target.checked } }) }), label)))), /* @__PURE__ */ React21.createElement("details", { className: "dhl-indicator-menu" }, /* @__PURE__ */ React21.createElement("summary", { "aria-label": tr("\u9009\u62E9\u56FE\u8868\u6307\u6807", "Choose chart indicators") }, tr("\u6307\u6807", "Indicators"), " ", /* @__PURE__ */ React21.createElement("span", { className: "dhl-indicator-count" }, indicators.size + maLines.length)), /* @__PURE__ */ React21.createElement("div", { className: "dhl-indicator-popover", role: "group", "aria-label": tr("\u56FE\u8868\u6307\u6807", "Chart indicators") }, /* @__PURE__ */ React21.createElement("strong", null, tr("\u56FE\u8868\u6307\u6807", "Chart indicators")), INDICATOR_CHOICES.map(([id, label, description]) => /* @__PURE__ */ React21.createElement("button", { type: "button", key: id, className: indicators.has(id) ? "on" : "", "aria-pressed": indicators.has(id), onClick: () => toggleIndicator(id) }, /* @__PURE__ */ React21.createElement("span", { className: "dhl-indicator-check", "aria-hidden": "true" }, indicators.has(id) ? /* @__PURE__ */ React21.createElement(UiIcon, { name: "check", size: 13 }) : null), /* @__PURE__ */ React21.createElement("span", null, /* @__PURE__ */ React21.createElement("b", null, tr(label, INDICATOR_EN[id]?.[0] ?? label)), /* @__PURE__ */ React21.createElement("small", null, tr(description, INDICATOR_EN[id]?.[1] ?? description))))), /* @__PURE__ */ React21.createElement(MaEditor, { lines: maLines, onChange: (next) => saveSessionWorkspace({ maLines: next }) }))), /* @__PURE__ */ React21.createElement(StrategyMenu, { candles: s.candles, coin, interval: s.interval }), /* @__PURE__ */ React21.createElement("details", { className: "dhl-draw-menu" + (drawMode ? " active" : ""), ref: drawMenu }, /* @__PURE__ */ React21.createElement("summary", { "aria-label": tr("\u753B\u7EBF\u5DE5\u5177", "Drawing tools") }, drawMode ? /* @__PURE__ */ React21.createElement(React21.Fragment, null, /* @__PURE__ */ React21.createElement(ToolIcon, { kind: drawMode, size: 14 }), tr(toolOf(drawMode).zh, toolOf(drawMode).en)) : tr("\u753B\u7EBF", "Draw"), /* @__PURE__ */ React21.createElement(UiIcon, { name: "chevronDown", size: 12 })), /* @__PURE__ */ React21.createElement("div", { className: "dhl-draw-popover", role: "menu", "aria-label": tr("\u753B\u7EBF\u5DE5\u5177", "Drawing tools") }, DRAWING_TOOLS.map((tool, index) => /* @__PURE__ */ React21.createElement(React21.Fragment, { key: tool.kind }, index > 0 && DRAWING_TOOLS[index - 1].group !== tool.group ? /* @__PURE__ */ React21.createElement("hr", null) : null, /* @__PURE__ */ React21.createElement(
+    "button",
+    {
+      type: "button",
+      role: "menuitemradio",
+      key: tool.kind,
+      "aria-checked": drawMode === tool.kind,
+      className: drawMode === tool.kind ? "on" : "",
+      onClick: () => {
+        setDrawMode(drawMode === tool.kind ? null : tool.kind);
+        drawMenu.current?.removeAttribute("open");
+      }
+    },
+    /* @__PURE__ */ React21.createElement(ToolIcon, { kind: tool.kind }),
+    /* @__PURE__ */ React21.createElement("span", null, /* @__PURE__ */ React21.createElement("b", null, tr(tool.zh, tool.en)), /* @__PURE__ */ React21.createElement("small", null, tr(tool.hintZh, tool.hintEn)))
+  ))), /* @__PURE__ */ React21.createElement("div", { className: "dhl-draw-settings" }, /* @__PURE__ */ React21.createElement("div", { className: "dhl-draw-setting" }, /* @__PURE__ */ React21.createElement("span", null, tr("\u78C1\u5438", "Magnet")), /* @__PURE__ */ React21.createElement("span", { className: "dhl-draw-seg", role: "radiogroup", "aria-label": tr("\u78C1\u5438", "Magnet") }, [["off", "\u5173", "Off"], ["weak", "\u5F31", "Weak"], ["strong", "\u5F3A", "Strong"]].map(([value, zh, en]) => /* @__PURE__ */ React21.createElement("button", { type: "button", role: "radio", key: value, "aria-checked": magnet === value, className: magnet === value ? "on" : "", onClick: () => setMagnet(value) }, tr(zh, en))))), /* @__PURE__ */ React21.createElement("label", { className: "dhl-draw-setting" }, /* @__PURE__ */ React21.createElement("span", null, tr("\u8FDE\u7EED\u7ED8\u5236", "Stay in drawing mode")), /* @__PURE__ */ React21.createElement("input", { type: "checkbox", checked: stayDrawing, onChange: (event) => setStayDrawing(event.target.checked) })), /* @__PURE__ */ React21.createElement("label", { className: "dhl-draw-setting" }, /* @__PURE__ */ React21.createElement("span", null, tr("\u9501\u5B9A\u6240\u6709\u753B\u7EBF", "Lock all drawings")), /* @__PURE__ */ React21.createElement("input", { type: "checkbox", checked: drawingsLocked, onChange: (event) => setDrawingsLocked(event.target.checked) })), /* @__PURE__ */ React21.createElement(
+    "button",
+    {
+      type: "button",
+      className: "dhl-draw-clear" + (confirmClear ? " confirm" : ""),
+      disabled: !marks.length || drawingsLocked,
+      onClick: () => {
+        if (!confirmClear) {
+          setConfirmClear(true);
+          return;
+        }
+        setConfirmClear(false);
+        drawMenu.current?.removeAttribute("open");
+        void history.removeMany(marks.filter((item) => !item.locked).map((item) => item.id));
+      },
+      onBlur: () => setConfirmClear(false)
+    },
+    confirmClear ? tr(`\u786E\u8BA4\u5220\u9664 ${marks.filter((item) => !item.locked).length} \u6761\u753B\u7EBF`, `Delete ${marks.filter((item) => !item.locked).length} drawings`) : tr("\u5220\u9664\u6240\u6709\u753B\u7EBF", "Remove all drawings")
+  )))), /* @__PURE__ */ React21.createElement("button", { type: "button", className: "dhl-chart-iconbtn", disabled: !history.canUndo, "aria-label": tr("\u64A4\u9500", "Undo"), title: tr("\u64A4\u9500\u753B\u7EBF\u64CD\u4F5C\uFF08Ctrl/Cmd+Z\uFF09", "Undo drawing change (Ctrl/Cmd+Z)"), onClick: () => void history.undo() }, /* @__PURE__ */ React21.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React21.createElement("path", { d: "M9 14 4 9l5-5" }), /* @__PURE__ */ React21.createElement("path", { d: "M4 9h10a6 6 0 0 1 0 12h-3" }))), /* @__PURE__ */ React21.createElement("button", { type: "button", className: "dhl-chart-iconbtn", disabled: !history.canRedo, "aria-label": tr("\u91CD\u505A", "Redo"), title: tr("\u91CD\u505A\uFF08Shift+Ctrl/Cmd+Z\uFF09", "Redo (Shift+Ctrl/Cmd+Z)"), onClick: () => void history.redo() }, /* @__PURE__ */ React21.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React21.createElement("path", { d: "m15 14 5-5-5-5" }), /* @__PURE__ */ React21.createElement("path", { d: "M20 9H10a6 6 0 0 0 0 12h3" }))), /* @__PURE__ */ React21.createElement(Select, { "aria-label": tr("\u4EF7\u683C\u523B\u5EA6", "Price scale"), value: s.workspace?.priceScale ?? "normal", onChange: (event) => saveSessionWorkspace({ priceScale: event.target.value }) }, /* @__PURE__ */ React21.createElement("option", { value: "normal" }, tr("\u7EBF\u6027", "Linear")), /* @__PURE__ */ React21.createElement("option", { value: "log" }, tr("\u5BF9\u6570", "Log")), /* @__PURE__ */ React21.createElement("option", { value: "percentage" }, "%")), /* @__PURE__ */ React21.createElement("span", { className: "dhl-chart-action-separator", "aria-hidden": "true" }), /* @__PURE__ */ React21.createElement("button", { type: "button", className: "dhl-chart-iconbtn", "aria-label": tr("\u590D\u4F4D\u56FE\u8868\u89C6\u56FE", "Reset chart view"), title: tr("\u590D\u4F4D\u56FE\u8868\u89C6\u56FE", "Reset chart view"), onClick: () => setChartResetToken((value) => value + 1) }, /* @__PURE__ */ React21.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React21.createElement("path", { d: "M3 11a9 9 0 1 0 2.6-6.4M3 4v6h6" }), /* @__PURE__ */ React21.createElement("path", { d: "M12 7v5l3 2" }))), /* @__PURE__ */ React21.createElement("button", { type: "button", className: "dhl-chart-iconbtn", "aria-label": chartExpanded ? tr("\u9000\u51FA\u653E\u5927\u56FE\u8868", "Exit expanded chart") : tr("\u653E\u5927\u56FE\u8868", "Expand chart"), "aria-pressed": chartExpanded, title: chartExpanded ? tr("\u9000\u51FA\u653E\u5927\u56FE\u8868 (Esc)", "Exit expanded chart (Esc)") : tr("\u653E\u5927\u56FE\u8868", "Expand chart"), onClick: () => setChartExpanded((value) => !value) }, chartExpanded ? /* @__PURE__ */ React21.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React21.createElement("path", { d: "M9 3v6H3m18 6h-6v6M3 9h6V3m12 12h-6v6" })) : /* @__PURE__ */ React21.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React21.createElement("path", { d: "M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6" }))))), /* @__PURE__ */ React21.createElement("div", { className: "dhl-chart" }, /* @__PURE__ */ React21.createElement(
     CandleChart,
     {
       candles: s.candles,
@@ -17832,22 +19996,233 @@ function DeskColumn({ onCollapse }) {
       onSelect: (selection) => insertChartReference(selection, coin, s.interval),
       onNeedOlder: loadOlderCandles,
       olderState: s.candlesOlder,
+      showReasons: layers.fills && layers.reasons,
+      onAnalyzeFill: analyzeFill,
+      onCloneMark: cloneMark,
+      selectRequest,
+      magnet,
+      drawingsLocked,
+      onEditMark: (id, patch) => void editMark(id, patch),
+      onRemoveMark: (id) => void erase(id),
+      focus: s.chartFocus && s.chartFocus.coin === coin && s.chartFocus.interval === s.interval ? s.chartFocus : null,
+      maLines,
       priceScale: s.workspace?.priceScale ?? "normal",
       visibleRange: s.workspace?.chartRanges?.[`${coin}:${s.interval}`] ?? null,
       onVisibleRange: (range) => saveSessionWorkspace({ chartRanges: { [`${coin}:${s.interval}`]: range } }),
       key: `${s.activeSessionId ?? ""}:${s.workspaceSessionId === s.activeSessionId ? "ready" : "pending"}:${coin}:${s.interval}`
     }
-  ), /* @__PURE__ */ React13.createElement("div", { className: "dhl-chart-click-hint" }, drawMode ? drawMode === "level" ? tr("\u5355\u51FB K \u7EBF\u56FE\u8BBE\u7F6E\u6C34\u5E73\u7EBF \xB7 Esc \u53D6\u6D88", "Click chart to place line \xB7 Esc to cancel") : tr("\u5728 K \u7EBF\u56FE\u4E0A\u4F9D\u6B21\u9009\u62E9\u8D77\u70B9\u548C\u7EC8\u70B9 \xB7 Esc \u53D6\u6D88", "Click start and end points \xB7 Esc to cancel") : tr("\u70B9\u51FB K \u7EBF\u3001\u6210\u4EA4\u91CF\u67F1\u6216\u6307\u6807\u7EBF\uFF0C\u5C06\u8BE5\u70B9\u6570\u636E\u52A0\u5165\u804A\u5929\u8F93\u5165\u6846", "Click a candle, volume bar or study line to add its data to the chat draft")), marks.length > 0 ? /* @__PURE__ */ React13.createElement("div", { className: "dhl-chart-mark-list", "aria-label": tr("\u672C\u4F1A\u8BDD\u753B\u7EBF", "This session\u2019s lines") }, marks.map((item) => /* @__PURE__ */ React13.createElement("span", { key: item.id }, item.label, /* @__PURE__ */ React13.createElement("button", { type: "button", "aria-label": `${tr("\u5220\u9664\u753B\u7EBF", "Remove line")} ${item.label}`, onClick: () => void erase(item.id) }, "\xD7")))) : null, s.candlesState === "error" ? /* @__PURE__ */ React13.createElement("div", { className: "dhl-inline-error" }, tr("K \u7EBF\u6682\u65F6\u4E0D\u53EF\u7528\u3002\u5207\u6362\u5468\u671F\u53EF\u91CD\u8BD5\u3002", "Chart data is unavailable. Change interval to retry.")) : null)) : /* @__PURE__ */ React13.createElement("div", { className: "dhl-funding-panel", role: "tabpanel" }, /* @__PURE__ */ React13.createElement("div", { className: "dhl-funding-summary" }, /* @__PURE__ */ React13.createElement("span", null, tr("\u5F53\u524D\u5C0F\u65F6\u8D44\u91D1\u8D39", "Current hourly funding")), /* @__PURE__ */ React13.createElement("strong", null, funding == null ? "\u2014" : `${(funding * 100).toFixed(4)}%`), /* @__PURE__ */ React13.createElement("span", null, tr("\u6700\u8FD1 7 \u5929 \xB7 \u6309\u5C0F\u65F6\u7ED3\u7B97", "Last 7 days \xB7 hourly settlement"))), s.fundingState === "loading" ? /* @__PURE__ */ React13.createElement("div", { className: "dhl-empty" }, tr("\u6B63\u5728\u8BFB\u53D6\u8D44\u91D1\u8D39\u5386\u53F2\u2026", "Loading funding history\u2026")) : null, s.fundingState === "error" ? /* @__PURE__ */ React13.createElement("button", { type: "button", className: "dhl-ghost", onClick: () => void loadFunding() }, tr("\u52A0\u8F7D\u5931\u8D25\uFF0C\u91CD\u8BD5", "Load failed, retry")) : null, s.fundingState === "ready" && s.fundingRows.length === 0 ? /* @__PURE__ */ React13.createElement("div", { className: "dhl-empty" }, tr("\u6682\u65E0\u8D44\u91D1\u8D39\u8BB0\u5F55", "No funding records")) : null, /* @__PURE__ */ React13.createElement("div", { className: "dhl-funding-list" }, s.fundingRows.slice(-30).reverse().map((item) => {
+  ), /* @__PURE__ */ React21.createElement("div", { className: "dhl-chart-click-hint" }, drawMode ? `${tr(toolOf(drawMode).zh, toolOf(drawMode).en)}\uFF1A${tr(toolOf(drawMode).hintZh, toolOf(drawMode).hintEn)} \xB7 ${tr("Esc \u53D6\u6D88", "Esc to cancel")}` : tr("\u70B9\u51FB K \u7EBF\u3001\u6210\u4EA4\u91CF\u67F1\u6216\u6307\u6807\u7EBF\uFF0C\u5C06\u8BE5\u70B9\u6570\u636E\u52A0\u5165\u804A\u5929\u8F93\u5165\u6846", "Click a candle, volume bar or study line to add its data to the chat draft")), marks.length > 0 ? /* @__PURE__ */ React21.createElement(
+    DrawingList,
+    {
+      marks,
+      locked: drawingsLocked,
+      onSelect: (id) => setSelectRequest({ id, at: Date.now() }),
+      onEdit: (id, patch) => void editMark(id, patch),
+      onRemove: (id) => void erase(id)
+    }
+  ) : null, s.candlesState === "error" ? /* @__PURE__ */ React21.createElement("div", { className: "dhl-inline-error" }, tr("K \u7EBF\u6682\u65F6\u4E0D\u53EF\u7528\u3002\u5207\u6362\u5468\u671F\u53EF\u91CD\u8BD5\u3002", "Chart data is unavailable. Change interval to retry.")) : null)) : /* @__PURE__ */ React21.createElement("div", { className: "dhl-funding-panel", role: "tabpanel" }, /* @__PURE__ */ React21.createElement("div", { className: "dhl-funding-summary" }, /* @__PURE__ */ React21.createElement("span", null, tr("\u5F53\u524D\u5C0F\u65F6\u8D44\u91D1\u8D39", "Current hourly funding")), /* @__PURE__ */ React21.createElement("strong", null, funding == null ? "\u2014" : `${(funding * 100).toFixed(4)}%`), /* @__PURE__ */ React21.createElement("span", null, tr("\u6700\u8FD1 7 \u5929 \xB7 \u6309\u5C0F\u65F6\u7ED3\u7B97", "Last 7 days \xB7 hourly settlement"))), s.fundingState === "loading" ? /* @__PURE__ */ React21.createElement("div", { className: "dhl-empty" }, tr("\u6B63\u5728\u8BFB\u53D6\u8D44\u91D1\u8D39\u5386\u53F2\u2026", "Loading funding history\u2026")) : null, s.fundingState === "error" ? /* @__PURE__ */ React21.createElement("button", { type: "button", className: "dhl-ghost", onClick: () => void loadFunding() }, tr("\u52A0\u8F7D\u5931\u8D25\uFF0C\u91CD\u8BD5", "Load failed, retry")) : null, s.fundingState === "ready" && s.fundingRows.length === 0 ? /* @__PURE__ */ React21.createElement("div", { className: "dhl-empty" }, tr("\u6682\u65E0\u8D44\u91D1\u8D39\u8BB0\u5F55", "No funding records")) : null, /* @__PURE__ */ React21.createElement("div", { className: "dhl-funding-list" }, s.fundingRows.slice(-30).reverse().map((item) => {
     const rate = Number(item.fundingRate) * 100;
-    return /* @__PURE__ */ React13.createElement("div", { className: "dhl-funding-row", key: item.time }, /* @__PURE__ */ React13.createElement("time", null, new Date(item.time).toLocaleString(tr("zh-CN", "en-US"), { hour12: false })), /* @__PURE__ */ React13.createElement("span", { className: rate >= 0 ? "dhl-up" : "dhl-down" }, `${rate >= 0 ? "+" : ""}${rate.toFixed(5)}%`));
-  })))), /* @__PURE__ */ React13.createElement(MarketTape, { snapshot: s.snapshot })), /* @__PURE__ */ React13.createElement("div", { className: "dhl-desk-foot" }, /* @__PURE__ */ React13.createElement("div", { className: "dhl-banner" }, /* @__PURE__ */ React13.createElement("span", { className: "dhl-banner-signal", "aria-hidden": "true" }), /* @__PURE__ */ React13.createElement("span", null, /* @__PURE__ */ React13.createElement("b", null, t("banner.title", "\u4F1A\u8BDD\u9A71\u52A8\u4EA4\u6613")), " \xB7 ", t("banner.body", "\u5728\u53F3\u4FA7\u4F1A\u8BDD\u4E2D\u8BA8\u8BBA\u884C\u60C5\u3001\u98CE\u9669\u4E0E\u4EA4\u6613\u51B3\u7B56\uFF1B\u76D8\u53E3\u4EF7\u683C\u53EF\u7528\u4E8E\u8F85\u52A9\u586B\u5199\u7968\u636E\u3002"))), /* @__PURE__ */ React13.createElement(BottomTable, { account: s.account, accountError: s.accountError })));
+    return /* @__PURE__ */ React21.createElement("div", { className: "dhl-funding-row", key: item.time }, /* @__PURE__ */ React21.createElement("time", null, new Date(item.time).toLocaleString(tr("zh-CN", "en-US"), { hour12: false })), /* @__PURE__ */ React21.createElement("span", { className: rate >= 0 ? "dhl-up" : "dhl-down" }, `${rate >= 0 ? "+" : ""}${rate.toFixed(5)}%`));
+  })))), /* @__PURE__ */ React21.createElement(MarketTape, { snapshot: s.snapshot })), /* @__PURE__ */ React21.createElement("div", { className: "dhl-desk-foot" }, /* @__PURE__ */ React21.createElement("div", { className: "dhl-banner" }, /* @__PURE__ */ React21.createElement("span", { className: "dhl-banner-signal", "aria-hidden": "true" }), /* @__PURE__ */ React21.createElement("span", null, /* @__PURE__ */ React21.createElement("b", null, t("banner.title", "\u4F1A\u8BDD\u9A71\u52A8\u4EA4\u6613")), " \xB7 ", t("banner.body", "\u5728\u53F3\u4FA7\u4F1A\u8BDD\u4E2D\u8BA8\u8BBA\u884C\u60C5\u3001\u98CE\u9669\u4E0E\u4EA4\u6613\u51B3\u7B56\uFF1B\u76D8\u53E3\u4EF7\u683C\u53EF\u7528\u4E8E\u8F85\u52A9\u586B\u5199\u7968\u636E\u3002"))), /* @__PURE__ */ React21.createElement(BottomTable, { account: s.account, accountError: s.accountError })));
 }
 
 // src/client/components/chat-column.tsx
-var React15 = __toESM(require("react"), 1);
+var React24 = __toESM(require("react"), 1);
+
+// src/client/dsh-extensions.tsx
+var React22 = __toESM(require("react"), 1);
+var import_dsh_client_ui_primitives4 = require("@deepseek-ai/dsh-client-ui-primitives");
+var HYPER_TOOLS = ["hyper_context", "hyper_market", "hyper_chart", "hyper_account", "hyper_decide", "hyper_order", "hyper_session"];
+var chartSourceReady = false;
+function chartReferenceChipsReady() {
+  return chartSourceReady;
+}
+function registerDshExtensions(ctx, slots) {
+  const source = {
+    trigger: "@",
+    name: CHART_REFERENCE_SOURCE,
+    order: 1e3,
+    showGroupTitle: false,
+    // Chips are inserted from the chart, never picked from the @ menu.
+    async candidates() {
+      return [];
+    },
+    onPick() {
+      return void 0;
+    },
+    openReference(_session, reference) {
+      const ref = decodeChartReference(reference.ref);
+      if (!ref) return false;
+      void focusChartReference(ref);
+      return true;
+    },
+    codec: {
+      clipboardText: (ref) => decodeChartReference(ref)?.text ?? ref,
+      serialize: (ref) => Promise.resolve(decodeChartReference(ref)?.text ?? ref)
+    }
+  };
+  if (typeof ctx.inject === "function") {
+    ctx.inject(["inputTriggers"], (sub) => {
+      sub.effect(() => {
+        const off = sub.get("inputTriggers").registerSource(source);
+        chartSourceReady = true;
+        return () => {
+          chartSourceReady = false;
+          off();
+        };
+      }, "dsh-hyperliquid: chart reference source");
+    });
+  }
+  if (!slots) return;
+  for (const key2 of HYPER_TOOLS) {
+    ctx.effect(() => slots.inject("tool.call.toolview", () => slots.register(
+      { name: "tool.call.toolview", key: key2, registrant: "dsh-hyperliquid" },
+      HyperToolRow
+    )), `dsh-hyperliquid: ${key2} row`);
+  }
+  ctx.effect(() => slots.inject("conversation.approval.detail", () => slots.register(
+    { name: "conversation.approval.detail", priority: -1, registrant: "dsh-hyperliquid" },
+    ApprovalDetail
+  )), "dsh-hyperliquid: approval detail");
+}
+function parseArgs(raw) {
+  if (typeof raw !== "string") return {};
+  try {
+    const value = JSON.parse(raw);
+    return value && typeof value === "object" ? value : {};
+  } catch {
+    return {};
+  }
+}
+function exact(value) {
+  const n2 = Number(value);
+  return Number.isFinite(n2) ? n2.toLocaleString("en-US", { maximumFractionDigits: 10 }) : "\u2014";
+}
+function side(args) {
+  return args.isBuy === true ? tr("\u4E70\u5165", "Buy") : args.isBuy === false ? tr("\u5356\u51FA", "Sell") : "";
+}
+function priceOf(args) {
+  return args.type === "limit" && args.px != null ? `@ ${exact(args.px)}` : tr("\u5E02\u4EF7", "market");
+}
+function describeHyperCall(name, args) {
+  const coin = typeof args.coin === "string" ? args.coin : "";
+  switch (name) {
+    case "hyper_context":
+      return { title: tr("\u8BFB\u53D6\u4EA4\u6613\u4E0A\u4E0B\u6587", "Read trading context"), summary: tr("\u884C\u60C5 \xB7 \u76D8\u53E3 \xB7 \u8D26\u6237 \xB7 \u98CE\u9669\u9650\u989D", "market \xB7 book \xB7 account \xB7 limits") };
+    case "hyper_market": {
+      const action = { overview: tr("\u5E02\u573A\u6982\u89C8", "overview"), catalog: tr("\u641C\u7D22\u5E02\u573A", "catalog"), book: tr("\u76D8\u53E3", "order book"), candles: tr("K \u7EBF", "candles"), indicators: tr("\u6280\u672F\u6307\u6807", "indicators"), trades: tr("\u6700\u8FD1\u6210\u4EA4", "trades") }[args.action] ?? args.action ?? "";
+      return { title: tr("\u67E5\u8BE2\u884C\u60C5", "Market data"), summary: [action, coin, args.interval].filter(Boolean).join(" \xB7 ") };
+    }
+    case "hyper_chart": {
+      if (args.action === "remove") return { title: tr("\u56FE\u8868\u6807\u6CE8", "Chart marks"), summary: tr("\u5220\u9664\u6807\u6CE8", "remove mark") };
+      if (args.action === "list") return { title: tr("\u56FE\u8868\u6807\u6CE8", "Chart marks"), summary: [tr("\u5217\u51FA\u6807\u6CE8", "list marks"), coin].filter(Boolean).join(" \xB7 ") };
+      const what = args.kind === "trend" ? tr("\u8D8B\u52BF\u7EBF", "trend line") : `${tr("\u6C34\u5E73\u7EBF", "level")}${args.price != null ? " " + exact(args.price) : ""}`;
+      return { title: tr("\u56FE\u8868\u6807\u6CE8", "Chart marks"), summary: [args.label || what, coin].filter(Boolean).join(" \xB7 ") };
+    }
+    case "hyper_account": {
+      const action = { state: tr("\u6743\u76CA\u4E0E\u6301\u4ED3", "equity & positions"), orders: tr("\u6302\u5355", "open orders"), fills: tr("\u6210\u4EA4", "fills"), orderStatus: tr("\u8BA2\u5355\u72B6\u6001", "order status") }[args.action] ?? args.action ?? "";
+      return { title: tr("\u67E5\u8BE2\u8D26\u6237", "Account"), summary: [action, args.oid].filter(Boolean).join(" \xB7 ") };
+    }
+    case "hyper_decide":
+      return { title: tr("\u4EA4\u6613\u9884\u68C0", "Trade pre-check"), summary: [side(args), args.sz, coin, priceOf(args)].filter(Boolean).join(" ") };
+    case "hyper_order": {
+      if (args.action === "cancel") return { title: tr("\u64A4\u5355", "Cancel order"), summary: [coin, args.oid != null ? `oid ${args.oid}` : ""].filter(Boolean).join(" \xB7 ") };
+      if (args.action === "leverage") return { title: tr("\u8C03\u6574\u6760\u6746", "Set leverage"), summary: [coin, args.leverage != null ? `${args.leverage}x` : "", args.marginMode].filter(Boolean).join(" \xB7 ") };
+      return { title: tr("\u4E0B\u5355", "Place order"), summary: [side(args), args.sz, coin, priceOf(args), args.reduceOnly ? tr("\u53EA\u51CF\u4ED3", "reduce-only") : ""].filter(Boolean).join(" ") };
+    }
+    case "hyper_session":
+      return { title: tr("\u4EA4\u6613\u4F1A\u8BDD", "Trading session"), summary: args.action === "bind" ? [tr("\u5207\u6362\u5E01\u79CD", "bind"), coin].filter(Boolean).join(" \xB7 ") : tr("\u8BFB\u53D6\u7126\u70B9", "status") };
+    default:
+      return { title: name, summary: "" };
+  }
+}
+function resultText(block) {
+  return (block?.content ?? []).filter((item) => item?.type === "text").map((item) => String(item.text ?? "")).join("\n").trim();
+}
+function verdictOf(text) {
+  const line = text.split("\n")[0] ?? "";
+  return line.length > 72 ? line.slice(0, 71) + "\u2026" : line;
+}
+function Mark() {
+  return /* @__PURE__ */ React22.createElement("svg", { viewBox: "0 0 200 200", width: "14", height: "14", "aria-hidden": "true" }, /* @__PURE__ */ React22.createElement("path", { d: HL_MARK_PATH, fill: "currentColor" }));
+}
+function HyperToolRow(props) {
+  const { phase, block, toolName } = props;
+  const disclosure = props.useDisclosure();
+  const args = parseArgs(phase === "result" ? block?.call?.argsRaw : block?.argsRaw);
+  const { title, summary } = describeHyperCall(toolName, args);
+  const text = phase === "result" ? resultText(block) : "";
+  const failed = phase === "result" && block?.isError === true;
+  const verdict = phase === "result" ? verdictOf(text) : "";
+  const heading = [title, summary].filter(Boolean).join(" \xB7 ");
+  return /* @__PURE__ */ React22.createElement(
+    import_dsh_client_ui_primitives4.DisclosureRow,
+    {
+      icon: /* @__PURE__ */ React22.createElement(Mark, null),
+      title: heading,
+      open: disclosure.expanded,
+      expandable: phase === "result" && text.length > 0,
+      onToggle: disclosure.toggle,
+      running: phase !== "result",
+      expandOnRowClick: true,
+      collapsedContent: verdict ? /* @__PURE__ */ React22.createElement("span", { className: "dhl-tool-verdict" + (failed ? " err" : "") }, verdict) : null
+    },
+    phase === "result" ? /* @__PURE__ */ React22.createElement("pre", { className: "dhl-tool-output" }, text) : null
+  );
+}
+function ApprovalDetail({ callId, useChat }) {
+  const call = useChat((snapshot) => {
+    for (const node of snapshot.nodes.values()) {
+      const root = node.kind === "tool-call" ? node.data.root : void 0;
+      if (root !== void 0 && root.callId === callId && !("kind" in root) && root.phase === "start") return root;
+    }
+    return void 0;
+  });
+  if (!call) return null;
+  const args = parseArgs(call.argsRaw);
+  if (typeof call.name === "string" && call.name.startsWith("hyper_")) return /* @__PURE__ */ React22.createElement(HyperApprovalCard, { name: call.name, args });
+  return typeof args.command === "string" ? args.command : null;
+}
+function HyperApprovalCard({ name, args }) {
+  const [status, setStatus] = React22.useState(null);
+  React22.useEffect(() => {
+    let live = true;
+    void hyperCall("status").then((value) => {
+      if (live) setStatus(value);
+    }).catch(() => {
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+  const { title } = describeHyperCall(name, args);
+  const coin = String(args.coin ?? "");
+  const rows = [];
+  if (name === "hyper_order" && args.action === "cancel") {
+    rows.push([tr("\u5408\u7EA6", "Market"), coin], [tr("\u8BA2\u5355", "Order"), `oid ${args.oid ?? "\u2014"}`]);
+  } else if (name === "hyper_order" && args.action === "leverage") {
+    rows.push([tr("\u5408\u7EA6", "Market"), coin], [tr("\u6760\u6746", "Leverage"), `${args.leverage ?? "\u2014"}x`, Number(args.leverage) > Number(status?.riskLimits?.maxLeverage ?? Infinity) ? "warn" : ""]);
+    if (args.marginMode) rows.push([tr("\u4FDD\u8BC1\u91D1\u6A21\u5F0F", "Margin"), args.marginMode === "isolated" ? tr("\u9010\u4ED3", "Isolated") : tr("\u5168\u4ED3", "Cross")]);
+  } else {
+    const px = args.type === "limit" ? Number(args.px) : NaN;
+    const notional = Number.isFinite(px) ? px * Number(args.sz) : NaN;
+    rows.push(
+      [tr("\u65B9\u5411", "Side"), side(args) || "\u2014", args.isBuy ? "up" : "down"],
+      [tr("\u5408\u7EA6", "Market"), coin],
+      [tr("\u6570\u91CF", "Size"), String(args.sz ?? "\u2014")],
+      [tr("\u4EF7\u683C", "Price"), args.type === "limit" ? exact(px) : tr("\u5E02\u4EF7\uFF08IOC\uFF09", "Market (IOC)")]
+    );
+    if (Number.isFinite(notional)) rows.push([tr("\u9884\u4F30\u540D\u4E49\u4EF7\u503C", "Est. notional"), `${fmt(notional)} USD`]);
+    if (args.takeProfitPx != null) rows.push([tr("\u6B62\u76C8", "Take profit"), exact(args.takeProfitPx)]);
+    if (args.stopLossPx != null) rows.push([tr("\u6B62\u635F", "Stop loss"), exact(args.stopLossPx)]);
+    if (args.reduceOnly) rows.push([tr("\u53EA\u51CF\u4ED3", "Reduce-only"), tr("\u662F", "Yes")]);
+  }
+  const limits = status?.riskLimits;
+  return /* @__PURE__ */ React22.createElement("div", { className: "dhl-approval-card" }, /* @__PURE__ */ React22.createElement("div", { className: "dhl-approval-head" }, /* @__PURE__ */ React22.createElement(Mark, null), /* @__PURE__ */ React22.createElement("strong", null, title), status ? /* @__PURE__ */ React22.createElement("span", { className: "dhl-approval-env" }, status.network === "mainnet" ? tr("\u4E3B\u7F51", "Mainnet") : tr("\u6D4B\u8BD5\u7F51", "Testnet"), " \xB7 ", status.tradingMode === "paper" ? tr("\u6A21\u62DF\u76D8", "Paper") : tr("\u5B9E\u76D8", "Live")) : null), /* @__PURE__ */ React22.createElement("dl", { className: "dhl-approval-rows" }, rows.map(([label, value, tone]) => /* @__PURE__ */ React22.createElement("div", { key: label }, /* @__PURE__ */ React22.createElement("dt", null, label), /* @__PURE__ */ React22.createElement("dd", { className: tone === "up" ? "dhl-up" : tone === "down" ? "dhl-down" : tone === "warn" ? "dhl-warn" : "" }, value)))), limits ? /* @__PURE__ */ React22.createElement("div", { className: "dhl-approval-limits" }, tr("\u4EA4\u6613\u9650\u989D", "Limits"), "\uFF1A", tr("\u5355\u7B14", "per order"), " \u2264 ", fmt(limits.maxOrderUsd), " USD \xB7 ", tr("\u4ECA\u65E5", "today"), " ", fmt(limits.usedTodayUsd ?? 0), " / ", fmt(limits.maxDailyUsd), " USD \xB7 ", tr("\u6760\u6746", "leverage"), " \u2264 ", fmt(limits.maxLeverage, 0), "x") : null, typeof args.reason === "string" && args.reason ? /* @__PURE__ */ React22.createElement("p", { className: "dhl-approval-reason" }, args.reason) : null);
+}
 
 // src/client/components/trade-ticket.tsx
-var React14 = __toESM(require("react"), 1);
+var React23 = __toESM(require("react"), 1);
 function TradeTicket({ onSubmitted }) {
   const s = useStore();
   const coin = s.activeCoin;
@@ -17859,21 +20234,21 @@ function TradeTicket({ onSubmitted }) {
   const sharedBalance = s.account?.balanceSource === "spot";
   const capacity = s.account?.tradeCapacity?.coin === coin ? s.account.tradeCapacity : null;
   const available = Number(s.account?.mode === "paper" ? s.account?.availableMargin : sharedBalance ? capacity?.availableToTrade?.length === 2 ? Math.min(...capacity.availableToTrade.map(Number)) : NaN : s.account?.withdrawable);
-  const [isBuy, setIsBuy] = React14.useState(true);
-  const [kind, setKind] = React14.useState("market");
-  const [margin, setMargin] = React14.useState("cross");
-  const [leverage, setLeverage] = React14.useState(2);
-  const [size3, setSize] = React14.useState("");
-  const [price, setPrice] = React14.useState("");
-  const [pct, setPct] = React14.useState(0);
-  const [reduceOnly, setReduceOnly] = React14.useState(false);
-  const [withTargets, setWithTargets] = React14.useState(false);
-  const [tp, setTp] = React14.useState("");
-  const [sl, setSl] = React14.useState("");
-  const [reason, setReason] = React14.useState("");
-  const [enabled, setEnabled] = React14.useState(false);
+  const [isBuy, setIsBuy] = React23.useState(true);
+  const [kind, setKind] = React23.useState("market");
+  const [margin, setMargin] = React23.useState("cross");
+  const [leverage, setLeverage] = React23.useState(2);
+  const [size3, setSize] = React23.useState("");
+  const [price, setPrice] = React23.useState("");
+  const [pct, setPct] = React23.useState(0);
+  const [reduceOnly, setReduceOnly] = React23.useState(false);
+  const [withTargets, setWithTargets] = React23.useState(false);
+  const [tp, setTp] = React23.useState("");
+  const [sl, setSl] = React23.useState("");
+  const [reason, setReason] = React23.useState("");
+  const [enabled, setEnabled] = React23.useState(false);
   const decimals = Number(market?.szDecimals ?? 5);
-  const maxLeverage = Math.max(1, Math.min(50, Number(market?.maxLeverage ?? 2), s.status?.tradingMode === "live" ? Number(s.status?.riskLimits?.maxLeverage ?? 2) : 50));
+  const maxLeverage = Math.max(1, Math.min(50, Number(market?.maxLeverage ?? 2), Number(s.status?.riskLimits?.maxLeverage ?? 2)));
   const priceNum = kind === "limit" ? Number(price) : mark;
   const sizeNum = Number(size3);
   const orderValue = Number.isFinite(priceNum * sizeNum) ? priceNum * sizeNum : 0;
@@ -17883,20 +20258,20 @@ function TradeTicket({ onSubmitted }) {
   const bid = Number(s.snapshot?.book?.levels?.[0]?.[0]?.px);
   const ask = Number(s.snapshot?.book?.levels?.[1]?.[0]?.px);
   const spreadPct = bid > 0 && ask > bid ? (ask / bid - 1) * 100 : null;
-  React14.useEffect(() => {
+  React23.useEffect(() => {
     setSize("");
     setPrice("");
     setPct(0);
     setEnabled(false);
   }, [coin]);
-  React14.useEffect(() => {
+  React23.useEffect(() => {
     const draft = s.ticketDraft;
     if (!draft || draft.coin !== coin) return;
     setIsBuy(draft.isBuy);
     setKind("limit");
     setPrice(draft.px);
   }, [s.ticketDraft?.at, coin]);
-  React14.useEffect(() => {
+  React23.useEffect(() => {
     if (leverage > maxLeverage) setLeverage(maxLeverage);
   }, [maxLeverage, leverage]);
   const setPercent = (next) => {
@@ -17969,31 +20344,31 @@ function TradeTicket({ onSubmitted }) {
     ];
     if (queueToAgent(parts.filter(Boolean).join("\n"))) onSubmitted?.();
   };
-  return /* @__PURE__ */ React14.createElement("section", { className: "dhl-ticket", "aria-label": tr("\u4EA4\u6613\u7968\u636E", "Trade ticket") }, /* @__PURE__ */ React14.createElement("div", { className: "dhl-ticket-mode" }, /* @__PURE__ */ React14.createElement("label", null, tr("\u4FDD\u8BC1\u91D1\u6A21\u5F0F", "Margin mode"), /* @__PURE__ */ React14.createElement("select", { value: margin, onChange: (e) => setMargin(e.target.value) }, /* @__PURE__ */ React14.createElement("option", { value: "cross" }, tr("\u5168\u4ED3", "Cross")), /* @__PURE__ */ React14.createElement("option", { value: "isolated" }, tr("\u9010\u4ED3", "Isolated")))), /* @__PURE__ */ React14.createElement("label", null, tr("\u6760\u6746", "Leverage"), /* @__PURE__ */ React14.createElement("select", { value: leverage, onChange: (e) => setLeverage(Number(e.target.value)) }, Array.from({ length: maxLeverage }, (_, i) => i + 1).map((v) => /* @__PURE__ */ React14.createElement("option", { key: v, value: v }, v, "x"))))), /* @__PURE__ */ React14.createElement("div", { className: "dhl-ticket-tabs", role: "tablist", "aria-label": tr("\u8BA2\u5355\u7C7B\u578B", "Order type") }, /* @__PURE__ */ React14.createElement("button", { type: "button", role: "tab", "aria-selected": kind === "market", className: kind === "market" ? "on" : "", onClick: () => setKind("market") }, tr("\u5E02\u4EF7", "Market")), /* @__PURE__ */ React14.createElement("button", { type: "button", role: "tab", "aria-selected": kind === "limit", className: kind === "limit" ? "on" : "", onClick: () => setKind("limit") }, tr("\u9650\u4EF7", "Limit"))), /* @__PURE__ */ React14.createElement("div", { className: "dhl-ticket-sides", role: "group", "aria-label": tr("\u4EA4\u6613\u65B9\u5411", "Trade side") }, /* @__PURE__ */ React14.createElement("button", { type: "button", className: isBuy ? "buy on" : "buy", "aria-pressed": isBuy, onClick: () => setIsBuy(true) }, tr("\u4E70\u5165 / \u505A\u591A", "Buy / Long")), /* @__PURE__ */ React14.createElement("button", { type: "button", className: !isBuy ? "sell on" : "sell", "aria-pressed": !isBuy, onClick: () => setIsBuy(false) }, tr("\u5356\u51FA / \u505A\u7A7A", "Sell / Short"))), /* @__PURE__ */ React14.createElement("div", { className: "dhl-ticket-balance" }, /* @__PURE__ */ React14.createElement("span", null, tr("\u53EF\u7528\u8D44\u91D1", "Available")), /* @__PURE__ */ React14.createElement("strong", null, Number.isFinite(available) ? fmt(available) : "\u2014", " USDC")), /* @__PURE__ */ React14.createElement("div", { className: "dhl-ticket-balance" }, /* @__PURE__ */ React14.createElement("span", null, tr("\u5F53\u524D\u4ED3\u4F4D", "Current position")), /* @__PURE__ */ React14.createElement("strong", null, position ? fmt(position.size, decimals) : fmt(0, decimals), " ", coin)), kind === "limit" ? /* @__PURE__ */ React14.createElement("label", { className: "dhl-ticket-field" }, /* @__PURE__ */ React14.createElement("span", null, tr("\u9650\u4EF7", "Limit price")), /* @__PURE__ */ React14.createElement("div", null, /* @__PURE__ */ React14.createElement("input", { type: "number", min: "0", value: price, onChange: (e) => setPrice(e.target.value), placeholder: fmtPrice(mark) }), /* @__PURE__ */ React14.createElement("small", null, "USDC"))) : null, /* @__PURE__ */ React14.createElement("label", { className: "dhl-ticket-field" }, /* @__PURE__ */ React14.createElement("span", null, tr("\u6570\u91CF", "Size")), /* @__PURE__ */ React14.createElement("div", null, /* @__PURE__ */ React14.createElement("input", { type: "number", min: "0", step: 10 ** -decimals, value: size3, onChange: (e) => {
+  return /* @__PURE__ */ React23.createElement("section", { className: "dhl-ticket", "aria-label": tr("\u4EA4\u6613\u7968\u636E", "Trade ticket") }, /* @__PURE__ */ React23.createElement("div", { className: "dhl-ticket-mode" }, /* @__PURE__ */ React23.createElement("label", null, tr("\u4FDD\u8BC1\u91D1\u6A21\u5F0F", "Margin mode"), /* @__PURE__ */ React23.createElement(Select, { value: margin, onChange: (e) => setMargin(e.target.value) }, /* @__PURE__ */ React23.createElement("option", { value: "cross" }, tr("\u5168\u4ED3", "Cross")), /* @__PURE__ */ React23.createElement("option", { value: "isolated" }, tr("\u9010\u4ED3", "Isolated")))), /* @__PURE__ */ React23.createElement("label", null, tr("\u6760\u6746", "Leverage"), /* @__PURE__ */ React23.createElement(Select, { value: leverage, onChange: (e) => setLeverage(Number(e.target.value)) }, Array.from({ length: maxLeverage }, (_, i) => i + 1).map((v) => /* @__PURE__ */ React23.createElement("option", { key: v, value: v }, v, "x"))))), /* @__PURE__ */ React23.createElement("div", { className: "dhl-ticket-tabs", role: "tablist", "aria-label": tr("\u8BA2\u5355\u7C7B\u578B", "Order type") }, /* @__PURE__ */ React23.createElement("button", { type: "button", role: "tab", "aria-selected": kind === "market", className: kind === "market" ? "on" : "", onClick: () => setKind("market") }, tr("\u5E02\u4EF7", "Market")), /* @__PURE__ */ React23.createElement("button", { type: "button", role: "tab", "aria-selected": kind === "limit", className: kind === "limit" ? "on" : "", onClick: () => setKind("limit") }, tr("\u9650\u4EF7", "Limit"))), /* @__PURE__ */ React23.createElement("div", { className: "dhl-ticket-sides", role: "group", "aria-label": tr("\u4EA4\u6613\u65B9\u5411", "Trade side") }, /* @__PURE__ */ React23.createElement("button", { type: "button", className: isBuy ? "buy on" : "buy", "aria-pressed": isBuy, onClick: () => setIsBuy(true) }, tr("\u4E70\u5165 / \u505A\u591A", "Buy / Long")), /* @__PURE__ */ React23.createElement("button", { type: "button", className: !isBuy ? "sell on" : "sell", "aria-pressed": !isBuy, onClick: () => setIsBuy(false) }, tr("\u5356\u51FA / \u505A\u7A7A", "Sell / Short"))), /* @__PURE__ */ React23.createElement("div", { className: "dhl-ticket-balance" }, /* @__PURE__ */ React23.createElement("span", null, tr("\u53EF\u7528\u8D44\u91D1", "Available")), /* @__PURE__ */ React23.createElement("strong", null, Number.isFinite(available) ? fmt(available) : "\u2014", " USDC")), /* @__PURE__ */ React23.createElement("div", { className: "dhl-ticket-balance" }, /* @__PURE__ */ React23.createElement("span", null, tr("\u5F53\u524D\u4ED3\u4F4D", "Current position")), /* @__PURE__ */ React23.createElement("strong", null, position ? fmt(position.size, decimals) : fmt(0, decimals), " ", coin)), kind === "limit" ? /* @__PURE__ */ React23.createElement("label", { className: "dhl-ticket-field" }, /* @__PURE__ */ React23.createElement("span", null, tr("\u9650\u4EF7", "Limit price")), /* @__PURE__ */ React23.createElement("div", null, /* @__PURE__ */ React23.createElement("input", { type: "number", min: "0", value: price, onChange: (e) => setPrice(e.target.value), placeholder: fmtPrice(mark) }), /* @__PURE__ */ React23.createElement("small", null, "USDC"))) : null, /* @__PURE__ */ React23.createElement("label", { className: "dhl-ticket-field" }, /* @__PURE__ */ React23.createElement("span", null, tr("\u6570\u91CF", "Size")), /* @__PURE__ */ React23.createElement("div", null, /* @__PURE__ */ React23.createElement("input", { type: "number", min: "0", step: 10 ** -decimals, value: size3, onChange: (e) => {
     setSize(e.target.value);
     setPct(0);
-  }, placeholder: "0" }), /* @__PURE__ */ React14.createElement("small", null, coin))), /* @__PURE__ */ React14.createElement("label", { className: "dhl-ticket-reason" }, /* @__PURE__ */ React14.createElement("span", null, tr("\u4E0B\u5355\u539F\u56E0", "Order reason")), /* @__PURE__ */ React14.createElement("textarea", { value: reason, maxLength: 1e3, onChange: (e) => setReason(e.target.value), placeholder: tr("\u5199\u4E0B\u4EA4\u6613\u4F9D\u636E\u3001\u5931\u6548\u6761\u4EF6\u4E0E\u98CE\u9669", "Record the thesis, invalidation and risk"), rows: 3 })), /* @__PURE__ */ React14.createElement("div", { className: "dhl-ticket-range" }, /* @__PURE__ */ React14.createElement("input", { type: "range", min: "0", max: "100", step: "25", value: pct, onChange: (e) => setPercent(Number(e.target.value)), "aria-label": tr("\u4F7F\u7528\u53EF\u7528\u989D\u5EA6\u767E\u5206\u6BD4", "Percent of available capacity") }), /* @__PURE__ */ React14.createElement("output", null, pct, "%")), /* @__PURE__ */ React14.createElement("label", { className: "dhl-ticket-check" }, /* @__PURE__ */ React14.createElement("input", { type: "checkbox", checked: reduceOnly, onChange: (e) => setReduceOnly(e.target.checked) }), tr("\u53EA\u51CF\u4ED3", "Reduce only")), /* @__PURE__ */ React14.createElement("label", { className: "dhl-ticket-check" }, /* @__PURE__ */ React14.createElement("input", { type: "checkbox", checked: withTargets, onChange: (e) => setWithTargets(e.target.checked) }), tr("\u6B62\u76C8 / \u6B62\u635F", "Take profit / Stop loss")), withTargets ? /* @__PURE__ */ React14.createElement("div", { className: "dhl-ticket-targets" }, /* @__PURE__ */ React14.createElement("label", null, tr("\u6B62\u76C8\u4EF7", "Take profit"), /* @__PURE__ */ React14.createElement("input", { type: "number", min: "0", value: tp, onChange: (e) => setTp(e.target.value), placeholder: tr("\u53EF\u9009", "Optional") })), /* @__PURE__ */ React14.createElement("label", null, tr("\u6B62\u635F\u4EF7", "Stop loss"), /* @__PURE__ */ React14.createElement("input", { type: "number", min: "0", value: sl, onChange: (e) => setSl(e.target.value), placeholder: tr("\u53EF\u9009", "Optional") })), /* @__PURE__ */ React14.createElement("p", { className: "dhl-ticket-validation" }, tr("\u7236\u5355\u672A\u5B8C\u5168\u6210\u4EA4\u65F6\uFF0C\u6B62\u76C8\u6B62\u635F\u5C1A\u672A\u751F\u6548\uFF1B\u90E8\u5206\u6210\u4EA4\u540E\u64A4\u9500\u7236\u5355\u4F1A\u64A4\u9500\u5B50\u5355\u3002\u63D0\u4EA4\u540E\u8BF7\u6838\u5BF9\u4ED3\u4F4D\u4E0E\u5B9E\u9645\u4FDD\u62A4\u6302\u5355\u3002\u6A21\u62DF\u76D8\u6682\u4E0D\u652F\u6301\u89E6\u53D1\u5355\u3002", "Targets are inactive until the parent fully fills. Cancelling a partially filled parent cancels its children. Verify the final position and protection orders. Paper mode does not simulate triggers."))) : null, !enabled ? /* @__PURE__ */ React14.createElement("button", { type: "button", className: "dhl-ticket-enable", onClick: () => setEnabled(true) }, tr("\u542F\u7528\u4EA4\u6613\u7968\u636E", "Enable trade ticket")) : /* @__PURE__ */ React14.createElement("button", { type: "button", className: "dhl-ticket-submit", onClick: submit, disabled: errors.length > 0 }, tr("\u63D0\u4EA4\u5230\u4EA4\u6613\u4F1A\u8BDD", "Send to trading chat")), enabled && errors.length > 0 ? /* @__PURE__ */ React14.createElement("div", { className: "dhl-ticket-validation", role: "status" }, errors[0]) : null, s.accountError ? /* @__PURE__ */ React14.createElement("div", { className: "dhl-ticket-validation", role: "status" }, tr("\u8D26\u6237\u8BFB\u53D6\u5931\u8D25", "Account read failed"), "\uFF1A", s.accountError) : null, /* @__PURE__ */ React14.createElement("div", { className: "dhl-ticket-summary" }, /* @__PURE__ */ React14.createElement("div", null, /* @__PURE__ */ React14.createElement("span", null, tr("\u8BA2\u5355\u4EF7\u503C", "Order value")), /* @__PURE__ */ React14.createElement("strong", null, orderValue > 0 ? `${fmt(orderValue)} USDC` : "\u2014")), /* @__PURE__ */ React14.createElement("div", null, /* @__PURE__ */ React14.createElement("span", null, tr("\u9884\u4F30\u4FDD\u8BC1\u91D1", "Estimated margin")), /* @__PURE__ */ React14.createElement("strong", null, orderValue > 0 ? `${fmt(orderValue / leverage)} USDC` : "\u2014")), /* @__PURE__ */ React14.createElement("div", null, /* @__PURE__ */ React14.createElement("span", null, tr("\u53C2\u8003\u4EF7\u5DEE", "Reference spread")), /* @__PURE__ */ React14.createElement("strong", null, spreadPct == null ? "\u2014" : `${spreadPct.toFixed(3)}%`)), /* @__PURE__ */ React14.createElement("div", null, /* @__PURE__ */ React14.createElement("span", null, tr("\u624B\u7EED\u8D39", "Fees")), /* @__PURE__ */ React14.createElement("strong", null, tr("\u4EA4\u6613\u6240\u7ED3\u7B97", "Charged by exchange")))), /* @__PURE__ */ React14.createElement("p", { className: "dhl-ticket-note" }, tr("\u7968\u636E\u53EA\u63D0\u4EA4\u4EA4\u6613\u610F\u56FE\u3002\u5B9E\u9645\u4EF7\u683C\u3001\u6760\u6746\u4E0E\u8D26\u6237\u98CE\u9669\u7531\u4F1A\u8BDD\u5728\u6267\u884C\u524D\u91CD\u65B0\u6838\u5BF9\u3002", "The ticket submits a trade intent. The chat rechecks price, leverage, and account risk before execution.")), s.account?.mode === "paper" ? /* @__PURE__ */ React14.createElement("p", { className: "dhl-ticket-note" }, tr(s.account.simulation, "Fixed slippage; order book depth, fees, funding and liquidation are not simulated.")) : null);
+  }, placeholder: "0" }), /* @__PURE__ */ React23.createElement("small", null, coin))), /* @__PURE__ */ React23.createElement("label", { className: "dhl-ticket-reason" }, /* @__PURE__ */ React23.createElement("span", null, tr("\u4E0B\u5355\u539F\u56E0", "Order reason")), /* @__PURE__ */ React23.createElement("textarea", { value: reason, maxLength: 1e3, onChange: (e) => setReason(e.target.value), placeholder: tr("\u5199\u4E0B\u4EA4\u6613\u4F9D\u636E\u3001\u5931\u6548\u6761\u4EF6\u4E0E\u98CE\u9669", "Record the thesis, invalidation and risk"), rows: 3 })), /* @__PURE__ */ React23.createElement("div", { className: "dhl-ticket-range" }, /* @__PURE__ */ React23.createElement("input", { type: "range", min: "0", max: "100", step: "25", value: pct, onChange: (e) => setPercent(Number(e.target.value)), "aria-label": tr("\u4F7F\u7528\u53EF\u7528\u989D\u5EA6\u767E\u5206\u6BD4", "Percent of available capacity") }), /* @__PURE__ */ React23.createElement("output", null, pct, "%")), /* @__PURE__ */ React23.createElement("label", { className: "dhl-ticket-check" }, /* @__PURE__ */ React23.createElement("input", { type: "checkbox", checked: reduceOnly, onChange: (e) => setReduceOnly(e.target.checked) }), tr("\u53EA\u51CF\u4ED3", "Reduce only")), /* @__PURE__ */ React23.createElement("label", { className: "dhl-ticket-check" }, /* @__PURE__ */ React23.createElement("input", { type: "checkbox", checked: withTargets, onChange: (e) => setWithTargets(e.target.checked) }), tr("\u6B62\u76C8 / \u6B62\u635F", "Take profit / Stop loss")), withTargets ? /* @__PURE__ */ React23.createElement("div", { className: "dhl-ticket-targets" }, /* @__PURE__ */ React23.createElement("label", null, tr("\u6B62\u76C8\u4EF7", "Take profit"), /* @__PURE__ */ React23.createElement("input", { type: "number", min: "0", value: tp, onChange: (e) => setTp(e.target.value), placeholder: tr("\u53EF\u9009", "Optional") })), /* @__PURE__ */ React23.createElement("label", null, tr("\u6B62\u635F\u4EF7", "Stop loss"), /* @__PURE__ */ React23.createElement("input", { type: "number", min: "0", value: sl, onChange: (e) => setSl(e.target.value), placeholder: tr("\u53EF\u9009", "Optional") })), /* @__PURE__ */ React23.createElement("p", { className: "dhl-ticket-validation" }, tr("\u7236\u5355\u672A\u5B8C\u5168\u6210\u4EA4\u65F6\uFF0C\u6B62\u76C8\u6B62\u635F\u5C1A\u672A\u751F\u6548\uFF1B\u90E8\u5206\u6210\u4EA4\u540E\u64A4\u9500\u7236\u5355\u4F1A\u64A4\u9500\u5B50\u5355\u3002\u63D0\u4EA4\u540E\u8BF7\u6838\u5BF9\u4ED3\u4F4D\u4E0E\u5B9E\u9645\u4FDD\u62A4\u6302\u5355\u3002\u6A21\u62DF\u76D8\u6682\u4E0D\u652F\u6301\u89E6\u53D1\u5355\u3002", "Targets are inactive until the parent fully fills. Cancelling a partially filled parent cancels its children. Verify the final position and protection orders. Paper mode does not simulate triggers."))) : null, !enabled ? /* @__PURE__ */ React23.createElement("button", { type: "button", className: "dhl-ticket-enable", onClick: () => setEnabled(true) }, tr("\u542F\u7528\u4EA4\u6613\u7968\u636E", "Enable trade ticket")) : /* @__PURE__ */ React23.createElement("button", { type: "button", className: "dhl-ticket-submit", onClick: submit, disabled: errors.length > 0 }, tr("\u63D0\u4EA4\u5230\u4EA4\u6613\u4F1A\u8BDD", "Send to trading chat")), enabled && errors.length > 0 ? /* @__PURE__ */ React23.createElement("div", { className: "dhl-ticket-validation", role: "status" }, errors[0]) : null, s.accountError ? /* @__PURE__ */ React23.createElement("div", { className: "dhl-ticket-validation", role: "status" }, tr("\u8D26\u6237\u8BFB\u53D6\u5931\u8D25", "Account read failed"), "\uFF1A", s.accountError) : null, /* @__PURE__ */ React23.createElement("div", { className: "dhl-ticket-summary" }, /* @__PURE__ */ React23.createElement("div", null, /* @__PURE__ */ React23.createElement("span", null, tr("\u8BA2\u5355\u4EF7\u503C", "Order value")), /* @__PURE__ */ React23.createElement("strong", null, orderValue > 0 ? `${fmt(orderValue)} USDC` : "\u2014")), /* @__PURE__ */ React23.createElement("div", null, /* @__PURE__ */ React23.createElement("span", null, tr("\u9884\u4F30\u4FDD\u8BC1\u91D1", "Estimated margin")), /* @__PURE__ */ React23.createElement("strong", null, orderValue > 0 ? `${fmt(orderValue / leverage)} USDC` : "\u2014")), /* @__PURE__ */ React23.createElement("div", null, /* @__PURE__ */ React23.createElement("span", null, tr("\u53C2\u8003\u4EF7\u5DEE", "Reference spread")), /* @__PURE__ */ React23.createElement("strong", null, spreadPct == null ? "\u2014" : `${spreadPct.toFixed(3)}%`)), /* @__PURE__ */ React23.createElement("div", null, /* @__PURE__ */ React23.createElement("span", null, tr("\u624B\u7EED\u8D39", "Fees")), /* @__PURE__ */ React23.createElement("strong", null, tr("\u4EA4\u6613\u6240\u7ED3\u7B97", "Charged by exchange")))), /* @__PURE__ */ React23.createElement("p", { className: "dhl-ticket-note" }, tr("\u7968\u636E\u53EA\u63D0\u4EA4\u4EA4\u6613\u610F\u56FE\u3002\u5B9E\u9645\u4EF7\u683C\u3001\u6760\u6746\u4E0E\u8D26\u6237\u98CE\u9669\u7531\u4F1A\u8BDD\u5728\u6267\u884C\u524D\u91CD\u65B0\u6838\u5BF9\u3002", "The ticket submits a trade intent. The chat rechecks price, leverage, and account risk before execution.")), s.account?.mode === "paper" ? /* @__PURE__ */ React23.createElement("p", { className: "dhl-ticket-note" }, tr(s.account.simulation, "Fixed slippage; order book depth, fees, funding and liquidation are not simulated.")) : null);
 }
 
 // src/client/components/chat-column.tsx
 function FixedChatView({ renderSlot }) {
-  return /* @__PURE__ */ React15.createElement(React15.Fragment, null, renderSlot("conversation.session", { view: "chat" }));
+  return /* @__PURE__ */ React24.createElement(React24.Fragment, null, renderSlot("conversation.session", { view: "chat" }));
 }
 function ChatColumn({ width, fill = false, onCollapse, SessionProvider, renderFactorySlot }) {
   const s = useStore();
   const activeId = s.activeSessionId;
   const nativeKnown = Boolean(activeId && s.nativeSessionIds.includes(activeId));
-  const [bindError, setBindError] = React15.useState(null);
-  const [ref, setRef] = React15.useState(null);
-  const [legacy, setLegacy] = React15.useState(false);
-  const [showTicket, setShowTicket] = React15.useState(false);
-  React15.useEffect(() => {
+  const [bindError, setBindError] = React24.useState(null);
+  const [ref, setRef] = React24.useState(null);
+  const [legacy, setLegacy] = React24.useState(false);
+  const [showTicket, setShowTicket] = React24.useState(false);
+  React24.useEffect(() => {
     if (s.ticketDraft) setShowTicket(true);
   }, [s.ticketDraft?.at]);
-  React15.useEffect(() => {
+  React24.useEffect(() => {
     setShowTicket(false);
   }, [s.activeSessionId]);
-  React15.useEffect(() => {
+  React24.useEffect(() => {
     setActiveRef(null);
     setRef(null);
     setLegacy(false);
@@ -18042,17 +20417,17 @@ function ChatColumn({ width, fill = false, onCollapse, SessionProvider, renderFa
       }
     };
   }, [activeId, nativeKnown, s.nativeSessionsReady]);
-  const title = React15.useMemo(() => {
+  const title = React24.useMemo(() => {
     if (!activeId) return "";
     const row = getContext()?.get("sessions")?.list?.get?.()?.byId?.[activeId];
     return s.sessionTitles?.[activeId] ?? row?.displayTitle ?? s.sessions.find((r) => r.sessionId === activeId)?.title ?? t("session.defaultTitle", "Hyperliquid \u4EA4\u6613\u4F1A\u8BDD");
   }, [activeId, s.sessions, s.sessionTitles, s.localeRevision]);
   const readyRef = ref?.sessionId === activeId ? ref : null;
   const pendingQuotes = s.chartReferences.filter((item) => item.sessionId === activeId);
-  React15.useEffect(() => {
+  React24.useEffect(() => {
     if (pendingQuotes.length && showTicket) setShowTicket(false);
   }, [pendingQuotes.length, showTicket]);
-  React15.useEffect(() => {
+  React24.useEffect(() => {
     if (!pendingQuotes.length || !readyRef || showTicket) return;
     const sessionCtx = readyRef.binding?.ctx;
     const input = sessionCtx ? getContext()?.get("conversation")?.input?.for?.(sessionCtx) : null;
@@ -18063,12 +20438,18 @@ function ChatColumn({ width, fill = false, onCollapse, SessionProvider, renderFa
       return;
     }
     const inserted = [];
+    const chips = chartReferenceChipsReady() && typeof input.insertReference === "function";
     for (const quote of pendingQuotes) {
       const draft = String(input.state.getSnapshot().draft ?? "");
       const captured = actions.captureInsertion();
       const span = { ...captured, start: captured.end };
-      const text = `${draft ? "\n\n" : ""}${quote.text}`;
-      if (!actions.insertText(text, span)) break;
+      const ok = chips ? input.insertReference({
+        source: CHART_REFERENCE_SOURCE,
+        label: quote.label,
+        clipboardText: quote.text,
+        ref: encodeChartReference({ coin: quote.coin, interval: quote.interval, t: quote.t, text: quote.text })
+      }, span) : actions.insertText(`${draft ? "\n\n" : ""}${quote.text}`, span);
+      if (!ok) break;
       inserted.push(quote.id);
     }
     if (inserted.length) {
@@ -18076,25 +20457,25 @@ function ChatColumn({ width, fill = false, onCollapse, SessionProvider, renderFa
       requestAnimationFrame(() => input.focus?.());
     }
   }, [activeId, readyRef, showTicket, s.chartReferences]);
-  const askMarket = React15.useCallback(() => {
+  const askMarket = React24.useCallback(() => {
     queueToAgent(tr(
       `\u8BF7\u8C03\u7528 hyper_context \u8BFB\u53D6\u5F53\u524D\u4EA4\u6613\u53F0\u7684 ${s.activeCoin} \u5B9E\u65F6\u884C\u60C5\u3001\u76D8\u53E3\u548C\u8D26\u6237\u4FE1\u606F\uFF0C\u6982\u62EC\u5E02\u573A\u72B6\u6001\u3001\u5173\u952E\u98CE\u9669\u4E0E\u53EF\u80FD\u7684\u4EA4\u6613\u6761\u4EF6\u3002\u4EC5\u5206\u6790\uFF0C\u4E0D\u8981\u4E0B\u5355\u3002`,
       `Use hyper_context to read live ${s.activeCoin} market data, order book and account state. Summarize conditions, key risks and possible trade criteria. Analysis only; do not place an order.`
     ));
   }, [s.activeCoin]);
-  const askRisk = React15.useCallback(() => {
+  const askRisk = React24.useCallback(() => {
     queueToAgent(tr(
       `\u8BF7\u8C03\u7528 hyper_context \u68C0\u67E5\u5F53\u524D\u4EA4\u6613\u4F1A\u8BDD\u7684\u8D26\u6237\u3001${s.activeCoin} \u4ED3\u4F4D\u3001\u6760\u6746\u3001\u6302\u5355\u548C\u98CE\u9669\u9650\u989D\uFF0C\u6307\u51FA\u9700\u8981\u6CE8\u610F\u7684\u98CE\u9669\u4E0E\u53EF\u91C7\u53D6\u7684\u7BA1\u7406\u52A8\u4F5C\u3002\u4EC5\u5206\u6790\uFF0C\u4E0D\u8981\u4E0B\u5355\u6216\u64A4\u5355\u3002`,
       `Use hyper_context to review the account, ${s.activeCoin} position, leverage, open orders and risk limits. Identify risks and possible management actions. Analysis only; do not place or cancel orders.`
     ));
   }, [s.activeCoin]);
-  const content = !activeId ? /* @__PURE__ */ React15.createElement("div", { className: "dhl-empty" }, t("chat.noSession", "\u9009\u62E9\u5DE6\u4FA7\u4EA4\u6613\u4F1A\u8BDD\uFF0C\u5728\u8FD9\u91CC\u76F4\u63A5\u4E0E\u4EA4\u6613 agent \u5BF9\u8BDD\u3002")) : bindError ? /* @__PURE__ */ React15.createElement("div", { className: "dhl-inline-error", role: "alert" }, t("chat.bindError", "\u4F1A\u8BDD\u7ED1\u5B9A\u5931\u8D25\uFF1A") + bindError) : legacy ? /* @__PURE__ */ React15.createElement("div", { className: "dhl-chat-unavailable", role: "alert" }, t("chat.upgrade", "\u5F53\u524D DSH \u7248\u672C\u4E0D\u652F\u6301\u5D4C\u5165\u539F\u751F\u4F1A\u8BDD\uFF1B\u8BF7\u4F7F\u7528 DSH 0.2 \u6216\u66F4\u65B0\u7248\u672C\u3002")) : !readyRef ? /* @__PURE__ */ React15.createElement("div", { className: "dhl-empty" }, t("chat.linking", "\u6B63\u5728\u63A5\u5165\u4F1A\u8BDD\u2026")) : !SessionProvider || !renderFactorySlot ? /* @__PURE__ */ React15.createElement("div", { className: "dhl-inline-error", role: "alert" }, t("chat.noFactory", "DSH \u539F\u751F\u4F1A\u8BDD\u7EC4\u4EF6\u4E0D\u53EF\u7528\u3002")) : /* @__PURE__ */ React15.createElement("div", { className: "dhl-chatmount", "data-trading-session": activeId }, /* @__PURE__ */ React15.createElement(SessionProvider, { session: readyRef }, renderFactorySlot("conversation.content", { variant: "embedded", phase: "active", hero: false }, { slots: { views: FixedChatView } })));
-  return /* @__PURE__ */ React15.createElement("div", { id: "dhl-panel-chat", className: "dhl-col-chat", style: fill ? { flex: "1 1 0", width: "auto" } : width ? { width } : void 0 }, /* @__PURE__ */ React15.createElement("div", { className: "dhl-chat-header" }, /* @__PURE__ */ React15.createElement("div", { className: "dhl-chat-heading" }, /* @__PURE__ */ React15.createElement("strong", null, t("chat.title", "\u4EA4\u6613\u4F1A\u8BDD")), activeId ? /* @__PURE__ */ React15.createElement("span", { title }, title) : null), /* @__PURE__ */ React15.createElement("button", { type: "button", className: "dhl-chat-ticket-toggle", "aria-expanded": showTicket, onClick: () => setShowTicket((value) => !value) }, showTicket ? t("chat.back", "\u8FD4\u56DE\u4F1A\u8BDD") : t("chat.ticket", "\u4EA4\u6613\u7968\u636E")), /* @__PURE__ */ React15.createElement("button", { className: "dhl-panel-iconbtn", type: "button", onClick: onCollapse, "aria-label": tr("\u6536\u8D77\u5BF9\u8BDD\u680F", "Collapse chat"), title: tr("\u6536\u8D77\u5BF9\u8BDD\u680F", "Collapse chat") }, /* @__PURE__ */ React15.createElement(FoldIcon, { direction: "right" }))), activeId && !showTicket && !legacy ? /* @__PURE__ */ React15.createElement("div", { className: "dhl-chat-prompts", role: "group", "aria-label": t("chat.prompts", "\u5FEB\u6377\u63D0\u95EE") }, /* @__PURE__ */ React15.createElement("button", { type: "button", onClick: askMarket }, t("chat.analyze", "\u5206\u6790\u884C\u60C5")), /* @__PURE__ */ React15.createElement("button", { type: "button", onClick: askRisk }, t("chat.risk", "\u68C0\u67E5\u98CE\u9669"))) : null, showTicket ? /* @__PURE__ */ React15.createElement(TradeTicket, { key: activeId ?? "anonymous", onSubmitted: () => setShowTicket(false) }) : content);
+  const content = !activeId ? /* @__PURE__ */ React24.createElement("div", { className: "dhl-empty" }, t("chat.noSession", "\u9009\u62E9\u5DE6\u4FA7\u4EA4\u6613\u4F1A\u8BDD\uFF0C\u5728\u8FD9\u91CC\u76F4\u63A5\u4E0E\u4EA4\u6613 agent \u5BF9\u8BDD\u3002")) : bindError ? /* @__PURE__ */ React24.createElement("div", { className: "dhl-inline-error", role: "alert" }, t("chat.bindError", "\u4F1A\u8BDD\u7ED1\u5B9A\u5931\u8D25\uFF1A") + bindError) : legacy ? /* @__PURE__ */ React24.createElement("div", { className: "dhl-chat-unavailable", role: "alert" }, t("chat.upgrade", "\u5F53\u524D DSH \u7248\u672C\u4E0D\u652F\u6301\u5D4C\u5165\u539F\u751F\u4F1A\u8BDD\uFF1B\u8BF7\u4F7F\u7528 DSH 0.2 \u6216\u66F4\u65B0\u7248\u672C\u3002")) : !readyRef ? /* @__PURE__ */ React24.createElement("div", { className: "dhl-empty" }, t("chat.linking", "\u6B63\u5728\u63A5\u5165\u4F1A\u8BDD\u2026")) : !SessionProvider || !renderFactorySlot ? /* @__PURE__ */ React24.createElement("div", { className: "dhl-inline-error", role: "alert" }, t("chat.noFactory", "DSH \u539F\u751F\u4F1A\u8BDD\u7EC4\u4EF6\u4E0D\u53EF\u7528\u3002")) : /* @__PURE__ */ React24.createElement("div", { className: "dhl-chatmount", "data-trading-session": activeId }, /* @__PURE__ */ React24.createElement(SessionProvider, { session: readyRef }, renderFactorySlot("conversation.content", { variant: "embedded", phase: "active", hero: false }, { slots: { views: FixedChatView } })));
+  return /* @__PURE__ */ React24.createElement("div", { id: "dhl-panel-chat", className: "dhl-col-chat", style: fill ? { flex: "1 1 0", width: "auto" } : width ? { width } : void 0 }, /* @__PURE__ */ React24.createElement("div", { className: "dhl-chat-header" }, /* @__PURE__ */ React24.createElement("div", { className: "dhl-chat-heading" }, /* @__PURE__ */ React24.createElement("strong", null, t("chat.title", "\u4EA4\u6613\u4F1A\u8BDD")), activeId ? /* @__PURE__ */ React24.createElement("span", { title }, title) : null), /* @__PURE__ */ React24.createElement("button", { type: "button", className: "dhl-chat-ticket-toggle", "aria-expanded": showTicket, onClick: () => setShowTicket((value) => !value) }, showTicket ? t("chat.back", "\u8FD4\u56DE\u4F1A\u8BDD") : t("chat.ticket", "\u4EA4\u6613\u7968\u636E")), /* @__PURE__ */ React24.createElement("button", { className: "dhl-panel-iconbtn", type: "button", onClick: onCollapse, "aria-label": tr("\u6536\u8D77\u5BF9\u8BDD\u680F", "Collapse chat"), title: tr("\u6536\u8D77\u5BF9\u8BDD\u680F", "Collapse chat") }, /* @__PURE__ */ React24.createElement(FoldIcon, { direction: "right" }))), activeId && !showTicket && !legacy ? /* @__PURE__ */ React24.createElement("div", { className: "dhl-chat-prompts", role: "group", "aria-label": t("chat.prompts", "\u5FEB\u6377\u63D0\u95EE") }, /* @__PURE__ */ React24.createElement("button", { type: "button", onClick: askMarket }, t("chat.analyze", "\u5206\u6790\u884C\u60C5")), /* @__PURE__ */ React24.createElement("button", { type: "button", onClick: askRisk }, t("chat.risk", "\u68C0\u67E5\u98CE\u9669"))) : null, showTicket ? /* @__PURE__ */ React24.createElement(TradeTicket, { key: activeId ?? "anonymous", onSubmitted: () => setShowTicket(false) }) : content);
 }
 
 // src/client/components/wallet-details.tsx
-var React16 = __toESM(require("react"), 1);
-var import_dsh_client_ui_primitives3 = require("@deepseek-ai/dsh-client-ui-primitives");
+var React25 = __toESM(require("react"), 1);
+var import_dsh_client_ui_primitives5 = require("@deepseek-ai/dsh-client-ui-primitives");
 var PERIODS = [
   ["day", "24 \u5C0F\u65F6", "24h"],
   ["week", "7 \u5929", "7d"],
@@ -18107,15 +20488,15 @@ function ProfitLine({ points: points2 }) {
   const min2 = Math.min(...values);
   const span = Math.max(...values) - min2 || 1;
   const path = values.map((value, index) => `${index ? "L" : "M"}${(index / (values.length - 1) * 100).toFixed(2)},${(40 - (value - min2) / span * 36).toFixed(2)}`).join(" ");
-  return /* @__PURE__ */ React16.createElement("svg", { className: "dhl-wallet-graph", viewBox: "0 0 100 44", preserveAspectRatio: "none", role: "img", "aria-label": tr("\u6536\u76CA\u8D70\u52BF", "P&L trend") }, /* @__PURE__ */ React16.createElement("path", { d: path, fill: "none", stroke: "currentColor", strokeWidth: "1.5", vectorEffect: "non-scaling-stroke" }));
+  return /* @__PURE__ */ React25.createElement("svg", { className: "dhl-wallet-graph", viewBox: "0 0 100 44", preserveAspectRatio: "none", role: "img", "aria-label": tr("\u6536\u76CA\u8D70\u52BF", "P&L trend") }, /* @__PURE__ */ React25.createElement("path", { d: path, fill: "none", stroke: "currentColor", strokeWidth: "1.5", vectorEffect: "non-scaling-stroke" }));
 }
 function WalletDetails({ open, onClose }) {
   const s = useStore();
-  const [period, setPeriod] = React16.useState("day");
-  const [portfolio, setPortfolio] = React16.useState(null);
-  const [error, setError] = React16.useState(null);
-  const [loading, setLoading] = React16.useState(false);
-  React16.useEffect(() => {
+  const [period, setPeriod] = React25.useState("day");
+  const [portfolio, setPortfolio] = React25.useState(null);
+  const [error, setError] = React25.useState(null);
+  const [loading, setLoading] = React25.useState(false);
+  React25.useEffect(() => {
     if (!open) return void 0;
     let active = true;
     setPortfolio(null);
@@ -18148,32 +20529,82 @@ function WalletDetails({ open, onClose }) {
     [tr("\u5F53\u524D\u4ED3\u4F4D\u672A\u5B9E\u73B0\u6536\u76CA", "Open position P&L"), `${fmt((account?.positions ?? []).reduce((sum, p) => sum + Number(p.uPnl ?? 0), 0))} USDC`],
     [tr("\u4EA4\u6613\u6240\u7EC4\u5408\u8D26\u6237\u4EF7\u503C", "Exchange portfolio value"), Number.isFinite(value) ? `${fmt(value)} USDC` : "\u2014"]
   ];
-  return /* @__PURE__ */ React16.createElement(import_dsh_client_ui_primitives3.Modal, { open, onClose, title: tr("\u94B1\u5305\u8BE6\u60C5\u4E0E\u6536\u76CA", "Wallet and P&L"), closeLabel: tr("\u5173\u95ED", "Close"), className: "dhl-wallet-modal" }, /* @__PURE__ */ React16.createElement("div", { className: "dhl-wallet-address" }, s.status?.address ?? tr("\u6A21\u62DF\u8D26\u6237 \xB7 \u672C\u5730\u8D26\u672C", "Paper account \xB7 local ledger")), /* @__PURE__ */ React16.createElement("div", { className: "dhl-wallet-stats" }, stats.map(([label, amount]) => /* @__PURE__ */ React16.createElement("div", { key: label }, /* @__PURE__ */ React16.createElement("span", null, label), /* @__PURE__ */ React16.createElement("strong", null, amount)))), account?.mode === "live" ? /* @__PURE__ */ React16.createElement(React16.Fragment, null, /* @__PURE__ */ React16.createElement("div", { className: "dhl-wallet-periods" }, PERIODS.map(([id, zh, en]) => /* @__PURE__ */ React16.createElement("button", { type: "button", key: id, className: period === id ? "on" : "", onClick: () => setPeriod(id) }, tr(zh, en)))), /* @__PURE__ */ React16.createElement("div", { className: "dhl-wallet-pnl" }, /* @__PURE__ */ React16.createElement("span", null, tr("\u671F\u95F4\u6536\u76CA", "Period P&L")), /* @__PURE__ */ React16.createElement("strong", { className: pnl >= 0 ? "dhl-up" : "dhl-down" }, Number.isFinite(pnl) ? `${pnl >= 0 ? "+" : ""}${fmt(pnl)} USDC` : "\u2014")), /* @__PURE__ */ React16.createElement(ProfitLine, { points: sample?.pnlHistory ?? [] }), /* @__PURE__ */ React16.createElement("p", { className: "dhl-ticket-note" }, tr("\u6536\u76CA\u66F2\u7EBF\u4F7F\u7528 Hyperliquid \u7EC4\u5408\u8D26\u6237\u6837\u672C\uFF08\u542B\u5165\u51FA\u91D1\u8C03\u6574\uFF09\uFF1B\u4E0E\u5F53\u524D\u53EF\u4EA4\u6613\u4F59\u989D\u53E3\u5F84\u4E0D\u540C\u3002", "P&L uses Hyperliquid portfolio samples adjusted for deposits and withdrawals; it differs from tradable balance."))) : /* @__PURE__ */ React16.createElement("p", { className: "dhl-ticket-note" }, tr("\u6A21\u62DF\u76D8\u6536\u76CA\u6309\u672C\u5730\u6210\u4EA4\u4E0E\u5F53\u524D\u6807\u8BB0\u4EF7\u683C\u8BA1\u7B97\uFF0C\u672A\u8BA1\u624B\u7EED\u8D39\u3001\u8D44\u91D1\u8D39\u53CA\u5F3A\u5E73\u3002", "Paper P&L uses local fills and current marks, excluding fees, funding and liquidation.")), loading ? /* @__PURE__ */ React16.createElement("div", { className: "dhl-empty" }, tr("\u6B63\u5728\u8BFB\u53D6\u6536\u76CA\u2026", "Loading P&L\u2026")) : null, error ? /* @__PURE__ */ React16.createElement("div", { className: "dhl-inline-error", role: "status" }, error) : null);
+  return /* @__PURE__ */ React25.createElement(import_dsh_client_ui_primitives5.Modal, { open, onClose, title: tr("\u94B1\u5305\u8BE6\u60C5\u4E0E\u6536\u76CA", "Wallet and P&L"), closeLabel: tr("\u5173\u95ED", "Close"), className: "dhl-wallet-modal" }, /* @__PURE__ */ React25.createElement("div", { className: "dhl-wallet-address" }, s.status?.address ?? tr("\u6A21\u62DF\u8D26\u6237 \xB7 \u672C\u5730\u8D26\u672C", "Paper account \xB7 local ledger")), /* @__PURE__ */ React25.createElement("div", { className: "dhl-wallet-stats" }, stats.map(([label, amount]) => /* @__PURE__ */ React25.createElement("div", { key: label }, /* @__PURE__ */ React25.createElement("span", null, label), /* @__PURE__ */ React25.createElement("strong", null, amount)))), account?.mode === "live" ? /* @__PURE__ */ React25.createElement(React25.Fragment, null, /* @__PURE__ */ React25.createElement("div", { className: "dhl-wallet-periods" }, PERIODS.map(([id, zh, en]) => /* @__PURE__ */ React25.createElement("button", { type: "button", key: id, className: period === id ? "on" : "", onClick: () => setPeriod(id) }, tr(zh, en)))), /* @__PURE__ */ React25.createElement("div", { className: "dhl-wallet-pnl" }, /* @__PURE__ */ React25.createElement("span", null, tr("\u671F\u95F4\u6536\u76CA", "Period P&L")), /* @__PURE__ */ React25.createElement("strong", { className: pnl >= 0 ? "dhl-up" : "dhl-down" }, Number.isFinite(pnl) ? `${pnl >= 0 ? "+" : ""}${fmt(pnl)} USDC` : "\u2014")), /* @__PURE__ */ React25.createElement(ProfitLine, { points: sample?.pnlHistory ?? [] }), /* @__PURE__ */ React25.createElement("p", { className: "dhl-ticket-note" }, tr("\u6536\u76CA\u66F2\u7EBF\u4F7F\u7528 Hyperliquid \u7EC4\u5408\u8D26\u6237\u6837\u672C\uFF08\u542B\u5165\u51FA\u91D1\u8C03\u6574\uFF09\uFF1B\u4E0E\u5F53\u524D\u53EF\u4EA4\u6613\u4F59\u989D\u53E3\u5F84\u4E0D\u540C\u3002", "P&L uses Hyperliquid portfolio samples adjusted for deposits and withdrawals; it differs from tradable balance."))) : /* @__PURE__ */ React25.createElement("p", { className: "dhl-ticket-note" }, tr("\u6A21\u62DF\u76D8\u6536\u76CA\u6309\u672C\u5730\u6210\u4EA4\u4E0E\u5F53\u524D\u6807\u8BB0\u4EF7\u683C\u8BA1\u7B97\uFF0C\u672A\u8BA1\u624B\u7EED\u8D39\u3001\u8D44\u91D1\u8D39\u53CA\u5F3A\u5E73\u3002", "Paper P&L uses local fills and current marks, excluding fees, funding and liquidation.")), loading ? /* @__PURE__ */ React25.createElement("div", { className: "dhl-empty" }, tr("\u6B63\u5728\u8BFB\u53D6\u6536\u76CA\u2026", "Loading P&L\u2026")) : null, error ? /* @__PURE__ */ React25.createElement("div", { className: "dhl-inline-error", role: "status" }, error) : null);
 }
 
 // src/client/components/trading-limits.tsx
-var React17 = __toESM(require("react"), 1);
-var import_dsh_client_ui_primitives4 = require("@deepseek-ai/dsh-client-ui-primitives");
+var React26 = __toESM(require("react"), 1);
+var import_dsh_client_ui_primitives6 = require("@deepseek-ai/dsh-client-ui-primitives");
+var EMPTY = { allowedCoins: "", maxOrderUsd: "", maxDailyUsd: "", maxPositionUsd: "", maxLeverage: "" };
+function fromLimits(limits) {
+  return {
+    allowedCoins: (limits?.allowedCoins ?? []).join(", "),
+    maxOrderUsd: String(limits?.maxOrderUsd ?? ""),
+    maxDailyUsd: String(limits?.maxDailyUsd ?? ""),
+    maxPositionUsd: String(limits?.maxPositionUsd ?? ""),
+    maxLeverage: String(limits?.maxLeverage ?? "")
+  };
+}
 function TradingLimits({ open, onClose }) {
   const st = useStore().status;
   const limits = st?.riskLimits;
   const paper = st?.tradingMode === "paper";
-  const used = Number(limits?.usedTodayUsd ?? 0);
-  const daily = Number(limits?.maxDailyUsd ?? 0);
-  const rows = limits ? [
-    [tr("\u5141\u8BB8\u5F00\u4ED3\u5E01\u5BF9", "Coins allowed to open"), (limits.allowedCoins ?? []).join(", ") || "\u2014"],
-    [tr("\u5355\u7B14\u540D\u4E49\u4EF7\u503C\u4E0A\u9650", "Max per order"), `${fmt(limits.maxOrderUsd)} USD`],
-    [tr("\u4ECA\u65E5\u5F00\u4ED3\u989D\u5EA6\uFF08UTC\uFF09", "Daily opening budget (UTC)"), `${fmt(used)} / ${fmt(daily)} USD`],
-    [tr("\u5355\u5E01\u4ED3\u4F4D\u4E0A\u9650", "Max position per coin"), `${fmt(limits.maxPositionUsd)} USD`],
-    [tr("\u6760\u6746\u4E0A\u9650", "Max leverage"), `${fmt(limits.maxLeverage, 0)}x`]
-  ] : [];
-  return /* @__PURE__ */ React17.createElement(import_dsh_client_ui_primitives4.Modal, { open, onClose, title: tr("\u4EA4\u6613\u9650\u989D\u4E0E\u7B7E\u540D\u89C4\u5219", "Trading limits & signing rules"), closeLabel: tr("\u5173\u95ED", "Close"), className: "dhl-limits-modal" }, /* @__PURE__ */ React17.createElement("section", { className: "dhl-limits-section" }, /* @__PURE__ */ React17.createElement("h3", null, tr("\u4EA4\u6613\u9650\u989D \xB7 \u4EA4\u6613\u53F0", "Trading limits \xB7 desk"), /* @__PURE__ */ React17.createElement("span", { className: "dhl-badge" }, paper ? tr("\u6A21\u62DF\u76D8\u8D26\u672C", "Paper ledger") : tr("\u5B9E\u76D8\u8D26\u672C", "Live ledger"))), rows.length ? /* @__PURE__ */ React17.createElement("div", { className: "dhl-wallet-stats" }, rows.map(([label, value]) => /* @__PURE__ */ React17.createElement("div", { key: label }, /* @__PURE__ */ React17.createElement("span", null, label), /* @__PURE__ */ React17.createElement("strong", null, value)))) : /* @__PURE__ */ React17.createElement("div", { className: "dhl-empty" }, tr("\u6B63\u5728\u8BFB\u53D6\u2026", "Loading\u2026")), /* @__PURE__ */ React17.createElement("p", { className: "dhl-ticket-note" }, tr(
-    "\u7531 dsh-hyperliquid \u63D2\u4EF6\u914D\u7F6E\u51B3\u5B9A\uFF0C\u6A21\u62DF\u76D8\u548C\u5B9E\u76D8\u90FD\u4F1A\u68C0\u67E5\uFF0C\u6BCF\u65E5\u989D\u5EA6\u4E24\u8FB9\u5206\u5F00\u8BB0\u8D26\uFF1B\u51CF\u4ED3\u4E0E\u5E73\u4ED3\u4E0D\u53D7\u9650\u3002agent \u81EA\u4E3B\u4E0B\u5355\u4E0E\u4F60\u586B\u5199\u7684\u7968\u636E\u90FD\u53D7\u540C\u4E00\u5957\u9650\u989D\u7EA6\u675F\u3002\u4FEE\u6539\u65B9\u5F0F\uFF1ADSH \u8BBE\u7F6E\u4E2D\u7684 hyperliquid \u63D2\u4EF6\u914D\u7F6E\uFF0C\u6216 profile \u7684 cordis.patch.yml \u91CC id: hyperliquid \u4E0B\u7684 allowedCoins / maxOrderUsd / maxDailyUsd / maxPositionUsd / maxLeverage\uFF0C\u91CD\u542F\u540E\u751F\u6548\u3002",
-    "Set by the dsh-hyperliquid plugin config and checked in both paper and live, with separate daily budgets; reducing or closing is never blocked. Agent orders and your tickets share these limits. Change them in the hyperliquid plugin config in DSH Settings, or allowedCoins / maxOrderUsd / maxDailyUsd / maxPositionUsd / maxLeverage under id: hyperliquid in the profile cordis.patch.yml; restart to apply."
-  ))), /* @__PURE__ */ React17.createElement("section", { className: "dhl-limits-section" }, /* @__PURE__ */ React17.createElement("h3", null, tr("\u94B1\u5305\u7B7E\u540D \xB7 \u4E0E\u4EA4\u6613\u9650\u989D\u65E0\u5173", "Wallet signing \xB7 separate from limits")), /* @__PURE__ */ React17.createElement("p", { className: "dhl-ticket-note" }, paper ? tr("\u6A21\u62DF\u76D8\u5728\u672C\u5730\u64AE\u5408\uFF0C\u4E0D\u7B7E\u540D\uFF0C\u4E5F\u4E0D\u7ECF\u8FC7\u4EFB\u4F55\u94B1\u5305\u89C4\u5219\u3002", "Paper orders fill locally; nothing is signed and no wallet rules apply.") : st?.signer === "web3" ? tr(
-    "\u5B9E\u76D8\u8BA2\u5355\u901A\u8FC7\u9650\u989D\u68C0\u67E5\u540E\uFF0C\u8FD8\u8981\u4EA4\u7ED9 dsh-web3 \u94B1\u5305\u7B7E\u540D\u3002\u94B1\u5305\u6309\u81EA\u5DF1\u7684\u7B7E\u540D\u7B56\u7565\u51B3\u5B9A\u8FD9\u6B21\u7B7E\u540D\u662F\u81EA\u52A8\u901A\u8FC7\u3001\u9700\u8981\u4F60\u786E\u8BA4\u8FD8\u662F\u62D2\u7EDD\uFF1B\u5B83\u4E0D\u77E5\u9053\u4E5F\u4E0D\u68C0\u67E5\u4E0A\u9762\u7684\u4EA4\u6613\u9650\u989D\u3002\u7B7E\u540D\u7B56\u7565\u5728 DSH \u8BBE\u7F6E \u2192 Web3 \u94B1\u5305\u4E2D\u7BA1\u7406\u3002",
-    "After passing the limits above, a live order is signed by the dsh-web3 wallet. Its signing policy decides whether that signature is automatic, needs your approval or is refused; it neither knows nor checks the trading limits. Manage it in DSH Settings \u2192 Web3 wallet."
-  ) : tr("\u5B9E\u76D8\u4F7F\u7528\u63D2\u4EF6\u914D\u7F6E\u4E2D\u7684\u79C1\u94A5\u76F4\u63A5\u7B7E\u540D\uFF0C\u6CA1\u6709\u989D\u5916\u7684\u94B1\u5305\u5BA1\u6279\uFF1B\u53EA\u6709\u4E0A\u9762\u7684\u4EA4\u6613\u9650\u989D\u5728\u628A\u5173\u3002", "Live orders are signed with the configured private key; there is no separate wallet approval, only the trading limits above.")), !paper && !st?.autonomousLive ? /* @__PURE__ */ React17.createElement("p", { className: "dhl-ticket-note" }, tr("autonomousLive \u5173\u95ED\uFF1Aagent \u6BCF\u7B14\u5B9E\u76D8\u4E0B\u5355\u3001\u6539\u6760\u6746\u524D\u90FD\u4F1A\u5F39\u51FA DSH \u5BA1\u6279\uFF0C\u9700\u8981\u4F60\u6279\u51C6\u3002", "autonomousLive is off: every live order or leverage change by the agent waits for your DSH approval.")) : null));
+  const [draft, setDraft] = React26.useState(EMPTY);
+  const [busy, setBusy] = React26.useState(false);
+  const [error, setError] = React26.useState("");
+  React26.useEffect(() => {
+    if (open && limits) {
+      setDraft(fromLimits(limits));
+      setError("");
+    }
+  }, [open, Boolean(limits)]);
+  const change = (key2, value) => setDraft((current2) => ({ ...current2, [key2]: value }));
+  const save = async (event) => {
+    event?.preventDefault();
+    setBusy(true);
+    setError("");
+    try {
+      await hyperCall("updateRiskSettings", { limits: {
+        allowedCoins: draft.allowedCoins,
+        maxOrderUsd: Number(draft.maxOrderUsd),
+        maxDailyUsd: Number(draft.maxDailyUsd),
+        maxPositionUsd: Number(draft.maxPositionUsd),
+        maxLeverage: Number(draft.maxLeverage)
+      } });
+      await loadStatus();
+      notify(tr("\u4EA4\u6613\u9650\u989D\u5DF2\u4FDD\u5B58\u5E76\u7ACB\u5373\u751F\u6548", "Trading limits saved and applied immediately"));
+    } catch (cause) {
+      setError(String(cause?.message ?? cause));
+    } finally {
+      setBusy(false);
+    }
+  };
+  const reset = async () => {
+    setBusy(true);
+    setError("");
+    try {
+      const result = await hyperCall("resetRiskSettings");
+      setDraft(fromLimits(result.riskLimits));
+      await loadStatus();
+      notify(tr("\u5DF2\u6062\u590D\u63D2\u4EF6\u914D\u7F6E\u4E2D\u7684\u4EA4\u6613\u9650\u989D", "Restored trading limits from plugin configuration"));
+    } catch (cause) {
+      setError(String(cause?.message ?? cause));
+    } finally {
+      setBusy(false);
+    }
+  };
+  const field = (key2, label, props, wide = false) => /* @__PURE__ */ React26.createElement("label", { className: wide ? "dhl-risk-wide" : void 0 }, /* @__PURE__ */ React26.createElement("span", null, label), /* @__PURE__ */ React26.createElement(import_dsh_client_ui_primitives6.Input, { className: "dhl-risk-input", value: draft[key2], onChange: (event) => change(key2, event.target.value), required: true, ...props }));
+  const footer = limits ? /* @__PURE__ */ React26.createElement(React26.Fragment, null, st?.riskSettingsSource === "desk" ? /* @__PURE__ */ React26.createElement(import_dsh_client_ui_primitives6.Button, { variant: "outline", disabled: busy, onClick: () => void reset() }, tr("\u6062\u590D\u63D2\u4EF6\u914D\u7F6E", "Restore plugin config")) : null, /* @__PURE__ */ React26.createElement(import_dsh_client_ui_primitives6.Button, { variant: "primary", type: "submit", form: "dhl-risk-form", disabled: busy }, busy ? tr("\u4FDD\u5B58\u4E2D\u2026", "Saving\u2026") : tr("\u4FDD\u5B58", "Save"))) : null;
+  return /* @__PURE__ */ React26.createElement(import_dsh_client_ui_primitives6.Modal, { open, onClose, title: tr("\u4EA4\u6613\u9650\u989D\u4E0E\u7B7E\u540D\u89C4\u5219", "Trading limits & signing rules"), closeLabel: tr("\u5173\u95ED", "Close"), className: "dhl-limits-modal", footer }, /* @__PURE__ */ React26.createElement("section", { className: "dhl-limits-section" }, /* @__PURE__ */ React26.createElement("h3", null, tr("\u4EA4\u6613\u9650\u989D", "Trading limits"), /* @__PURE__ */ React26.createElement("span", { className: "dhl-limits-ledger" }, paper ? tr("\u6A21\u62DF\u76D8\u8D26\u672C", "Paper ledger") : tr("\u5B9E\u76D8\u8D26\u672C", "Live ledger"))), limits ? /* @__PURE__ */ React26.createElement("form", { id: "dhl-risk-form", className: "dhl-risk-form", onSubmit: (event) => void save(event) }, field("allowedCoins", tr("\u5141\u8BB8\u5F00\u4ED3\u5E01\u5BF9", "Coins allowed to open"), { placeholder: "BTC, ETH", maxLength: 1e3 }, true), field("maxOrderUsd", tr("\u5355\u7B14\u540D\u4E49\u4EF7\u503C\u4E0A\u9650 \xB7 USD", "Max per order \xB7 USD"), { type: "number", min: "0.01", step: "any" }), field("maxDailyUsd", tr("\u6BCF\u65E5\u5F00\u4ED3\u989D\u5EA6 \xB7 USD", "Daily opening budget \xB7 USD"), { type: "number", min: "0.01", step: "any" }), field("maxPositionUsd", tr("\u5355\u5E01\u4ED3\u4F4D\u4E0A\u9650 \xB7 USD", "Max position per coin \xB7 USD"), { type: "number", min: "0.01", step: "any" }), field("maxLeverage", tr("\u6700\u5927\u6760\u6746 \xB7 \u500D", "Max leverage \xB7 x"), { type: "number", min: "1", max: "50", step: "1" }), /* @__PURE__ */ React26.createElement("p", { className: "dhl-risk-budget" }, tr("\u4ECA\u65E5\u5DF2\u7528\u989D\u5EA6\uFF08UTC\uFF09", "Used today (UTC)"), "\uFF1A", fmt(limits.usedTodayUsd ?? 0), " / ", fmt(limits.maxDailyUsd), " USD"), error ? /* @__PURE__ */ React26.createElement("p", { className: "dhl-risk-error", role: "alert" }, error) : null) : /* @__PURE__ */ React26.createElement("div", { className: "dhl-empty" }, tr("\u6B63\u5728\u8BFB\u53D6\u2026", "Loading\u2026")), /* @__PURE__ */ React26.createElement("p", { className: "dhl-limits-note" }, tr(
+    "\u4FDD\u5B58\u540E\u7ACB\u5373\u4F5C\u7528\u4E8E\u6A21\u62DF\u76D8\u548C\u5B9E\u76D8\uFF0C\u91CD\u542F\u540E\u7EE7\u7EED\u751F\u6548\u3002\u4E24\u79CD\u6A21\u5F0F\u7684\u6BCF\u65E5\u989D\u5EA6\u5206\u5F00\u8BB0\u8D26\uFF1B\u51CF\u4ED3\u548C\u5E73\u4ED3\u4E0D\u53D7\u5F00\u4ED3\u9650\u989D\u963B\u6B62\u3002",
+    "Changes apply immediately to paper and live trading and survive restart. Each mode has its own daily budget; reducing and closing remain available."
+  ))), /* @__PURE__ */ React26.createElement("section", { className: "dhl-limits-section" }, /* @__PURE__ */ React26.createElement("h3", null, tr("\u94B1\u5305\u7B7E\u540D", "Wallet signing")), /* @__PURE__ */ React26.createElement("p", { className: "dhl-limits-note" }, paper ? tr("\u6A21\u62DF\u76D8\u5728\u672C\u5730\u64AE\u5408\uFF0C\u4E0D\u7B7E\u540D\uFF0C\u4E5F\u4E0D\u7ECF\u8FC7\u94B1\u5305\u89C4\u5219\u3002", "Paper orders fill locally and do not use wallet signing.") : st?.signer === "web3" ? tr(
+    "\u5B9E\u76D8\u8BA2\u5355\u901A\u8FC7\u9650\u989D\u68C0\u67E5\u540E\uFF0C\u7531 dsh-web3 \u94B1\u5305\u6309\u5176\u7B7E\u540D\u7B56\u7565\u5904\u7406\u3002\u7B7E\u540D\u7B56\u7565\u5728 DSH \u8BBE\u7F6E \u2192 Web3 \u94B1\u5305\u4E2D\u7BA1\u7406\u3002",
+    "After the limits check, live orders use the dsh-web3 wallet signing policy. Manage it in DSH Settings \u2192 Web3 wallet."
+  ) : tr(
+    "\u5B9E\u76D8\u4F7F\u7528\u63D2\u4EF6\u914D\u7F6E\u4E2D\u7684\u79C1\u94A5\u7B7E\u540D\u3002\u79C1\u94A5\u4E0E\u7B7E\u540D\u65B9\u5F0F\u4ECD\u5728 DSH \u63D2\u4EF6\u914D\u7F6E\u4E2D\u7BA1\u7406\u3002",
+    "Live orders use the private key from plugin configuration. Manage the key and signing method in DSH plugin settings."
+  )), !paper && !st?.autonomousLive ? /* @__PURE__ */ React26.createElement("p", { className: "dhl-limits-note" }, tr("agent \u6BCF\u7B14\u5B9E\u76D8\u4E0B\u5355\u6216\u6539\u6760\u6746\u524D\u4ECD\u9700 DSH \u5BA1\u6279\u3002", "Each agent live order or leverage change still requires DSH approval.")) : null));
 }
 
 // src/client/app.tsx
@@ -18181,15 +20612,15 @@ function App(props) {
   const s = useStore();
   const st = s.status;
   const marketStale = isMarketStale(s);
-  const [confirmLive, setConfirmLive] = React18.useState(null);
-  const [networkBusy, setNetworkBusy] = React18.useState(false);
-  const [walletOpen, setWalletOpen] = React18.useState(false);
-  const [moreOpen, setMoreOpen] = React18.useState(false);
-  const [limitsOpen, setLimitsOpen] = React18.useState(false);
-  const moreRef = React18.useRef(null);
+  const [confirmLive, setConfirmLive] = React27.useState(null);
+  const [networkBusy, setNetworkBusy] = React27.useState(false);
+  const [walletOpen, setWalletOpen] = React27.useState(false);
+  const [moreOpen, setMoreOpen] = React27.useState(false);
+  const [limitsOpen, setLimitsOpen] = React27.useState(false);
+  const moreRef = React27.useRef(null);
   const network = st?.network === "testnet" ? "testnet" : "mainnet";
   const mode = st?.tradingMode === "paper" ? "paper" : "live";
-  const applyEnv = React18.useCallback(async (next) => {
+  const applyEnv = React27.useCallback(async (next) => {
     setNetworkBusy(true);
     try {
       const current2 = store.get().status;
@@ -18202,12 +20633,12 @@ function App(props) {
       setConfirmLive(null);
     }
   }, []);
-  const requestEnv = React18.useCallback((next) => {
+  const requestEnv = React27.useCallback((next) => {
     setMoreOpen(false);
     if (next.network === "mainnet" && next.mode === "live") setConfirmLive(next);
     else void applyEnv(next);
   }, [applyEnv]);
-  React18.useEffect(() => {
+  React27.useEffect(() => {
     if (!moreOpen) return void 0;
     const onDown = (event) => {
       if (!moreRef.current?.contains(event.target)) setMoreOpen(false);
@@ -18222,8 +20653,8 @@ function App(props) {
       window.removeEventListener("keydown", onKey);
     };
   }, [moreOpen]);
-  React18.useEffect(() => startPolling(), []);
-  React18.useEffect(() => {
+  React27.useEffect(() => startPolling(), []);
+  React27.useEffect(() => {
     const list = getContext()?.get("sessions")?.list;
     if (!list?.subscribe) return void 0;
     const read = () => {
@@ -18236,19 +20667,19 @@ function App(props) {
     read();
     return list.subscribe(read);
   }, []);
-  React18.useEffect(() => {
+  React27.useEffect(() => {
     const list = getContext()?.get("workspaces")?.list;
     if (!list?.subscribe) return void 0;
     const read = () => store.patch({ archivedSessionIds: [...list.getSnapshot()?.archivedSessionIds ?? []] });
     read();
     return list.subscribe(read);
   }, []);
-  React18.useEffect(() => {
+  React27.useEffect(() => {
     const locale = getContext()?.get("locale");
     if (!locale?.subscribe) return void 0;
     return locale.subscribe(() => store.patch((prev) => ({ localeRevision: prev.localeRevision + 1 })));
   }, []);
-  React18.useEffect(() => {
+  React27.useEffect(() => {
     if (!s.sessionsLoaded) return;
     const visible = s.sessions.filter((row) => !s.archivedSessionIds.includes(row.sessionId) && (!s.nativeSessionsReady || s.nativeSessionIds.includes(row.sessionId)));
     if (visible.some((row) => row.sessionId === s.activeSessionId)) return;
@@ -18258,53 +20689,53 @@ function App(props) {
   }, [s.sessions, s.sessionsLoaded, s.archivedSessionIds, s.nativeSessionIds, s.nativeSessionsReady, s.activeSessionId]);
   const wsState = s.snapshot?.ws?.state ?? st?.ws?.state;
   const resyncing = marketStale && !s.statusError && Date.now() - s.resumedAt < 1e4;
-  const wsBadge = wsState === "open" && !marketStale ? /* @__PURE__ */ React18.createElement("span", { className: "dhl-badge ok", title: `WebSocket: ${wsState}` }, t("status.online", "\u5728\u7EBF")) : resyncing ? /* @__PURE__ */ React18.createElement("span", { className: "dhl-badge", title: `WebSocket: ${wsState ?? "off"}` }, tr("\u540C\u6B65\u4E2D", "Syncing")) : /* @__PURE__ */ React18.createElement("span", { className: "dhl-badge err", title: `WebSocket: ${wsState ?? "off"}` }, t("status.offline", "\u79BB\u7EBF"));
+  const wsBadge = wsState === "open" && !marketStale ? /* @__PURE__ */ React27.createElement("span", { className: "dhl-badge ok", title: `WebSocket: ${wsState}` }, t("status.online", "\u5728\u7EBF")) : resyncing ? /* @__PURE__ */ React27.createElement("span", { className: "dhl-badge", title: `WebSocket: ${wsState ?? "off"}` }, tr("\u540C\u6B65\u4E2D", "Syncing")) : /* @__PURE__ */ React27.createElement("span", { className: "dhl-badge err", title: `WebSocket: ${wsState ?? "off"}` }, t("status.offline", "\u79BB\u7EBF"));
   const [layout, setLayout, commitLayout] = useLayout(
     s.activeSessionId,
     s.activeSessionId && s.workspaceSessionId === s.activeSessionId ? s.workspace?.layout : null,
     (next) => saveSessionWorkspace({ layout: next })
   );
-  const resizeSessions = React18.useCallback((delta) => {
+  const resizeSessions = React27.useCallback((delta) => {
     setLayout((prev) => ({ sessionsWidth: clampWidth(prev.sessionsWidth + delta, LIMITS.sessions) }));
   }, [setLayout]);
-  const resizeChat = React18.useCallback((delta) => {
+  const resizeChat = React27.useCallback((delta) => {
     setLayout((prev) => ({ chatWidth: clampWidth(prev.chatWidth + delta, LIMITS.chat) }));
   }, [setLayout]);
-  const resetSessions = React18.useCallback(() => {
+  const resetSessions = React27.useCallback(() => {
     setLayout({ sessionsWidth: DEFAULTS.sessionsWidth });
     commitLayout();
   }, [setLayout, commitLayout]);
-  const resetChat = React18.useCallback(() => {
+  const resetChat = React27.useCallback(() => {
     setLayout({ chatWidth: DEFAULTS.chatWidth });
     commitLayout();
   }, [setLayout, commitLayout]);
-  const toggleSessions = React18.useCallback(() => {
+  const toggleSessions = React27.useCallback(() => {
     setLayout((prev) => ({ sessionsCollapsed: !prev.sessionsCollapsed }));
     commitLayout();
   }, [setLayout, commitLayout]);
-  const toggleDesk = React18.useCallback(() => {
+  const toggleDesk = React27.useCallback(() => {
     setLayout((prev) => ({ deskCollapsed: !prev.deskCollapsed }));
     commitLayout();
   }, [setLayout, commitLayout]);
-  const toggleChat = React18.useCallback(() => {
+  const toggleChat = React27.useCallback(() => {
     setLayout((prev) => ({ chatCollapsed: !prev.chatCollapsed }));
     commitLayout();
   }, [setLayout, commitLayout]);
   const showSessions = !layout.sessionsCollapsed;
   const showDesk = !layout.deskCollapsed;
   const showChat = !layout.chatCollapsed;
-  return /* @__PURE__ */ React18.createElement("div", { className: "dhl-root" }, /* @__PURE__ */ React18.createElement("div", { className: "dhl-topbar" }, /* @__PURE__ */ React18.createElement("span", { className: "dhl-brand" }, /* @__PURE__ */ React18.createElement(BrandMark, null), "Hyperliquid ", /* @__PURE__ */ React18.createElement("span", { style: { fontWeight: 400, color: "var(--dsw-alias-label-secondary)" } }, t("app.suffix", "\u4EA4\u6613\u53F0"))), /* @__PURE__ */ React18.createElement("div", { className: "dhl-spacer" }), s.statusError ? /* @__PURE__ */ React18.createElement("span", { className: "dhl-badge err" }, t("status.unavailable", "\u8FDC\u7AEF\u4E0D\u53EF\u7528")) : null, st && network === "testnet" ? /* @__PURE__ */ React18.createElement("span", { className: "dhl-badge paper" }, t("network.testnet", "\u6D4B\u8BD5\u7F51")) : null, st && mode === "paper" ? /* @__PURE__ */ React18.createElement("span", { className: "dhl-badge paper" }, t("mode.paper", "\u6A21\u62DF\u76D8")) : null, wsBadge, /* @__PURE__ */ React18.createElement("button", { type: "button", className: "dhl-badge dhl-wallet-trigger", onClick: () => setWalletOpen(true), "aria-haspopup": "dialog", "aria-label": tr("\u67E5\u770B\u94B1\u5305\u8BE6\u60C5\u548C\u6536\u76CA", "View wallet and P&L") }, mode === "paper" ? tr("\u6A21\u62DF\u8D26\u6237", "Paper account") : st?.address ? st.address.slice(0, 6) + "\u2026" + st.address.slice(-4) : t("account.none", "\u672A\u8FDE\u63A5\u94B1\u5305"), /* @__PURE__ */ React18.createElement("span", { "aria-hidden": "true" }, "\u2304")), /* @__PURE__ */ React18.createElement("div", { className: "dhl-more", ref: moreRef }, /* @__PURE__ */ React18.createElement("button", { type: "button", className: "dhl-top-control dhl-more-trigger", "aria-haspopup": "menu", "aria-expanded": moreOpen, "aria-label": tr("\u66F4\u591A\u8BBE\u7F6E", "More settings"), title: tr("\u66F4\u591A\u8BBE\u7F6E", "More settings"), onClick: () => setMoreOpen((value) => !value) }, "\u22EF"), moreOpen ? /* @__PURE__ */ React18.createElement("div", { className: "dhl-more-popover", role: "menu" }, /* @__PURE__ */ React18.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React18.createElement("span", null, t("network.label", "\u7F51\u7EDC")), /* @__PURE__ */ React18.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React18.createElement("button", { type: "button", className: network === "mainnet" ? "on" : "", disabled: networkBusy || !st, onClick: () => network !== "mainnet" && requestEnv({ network: "mainnet", mode }) }, t("network.mainnet", "\u4E3B\u7F51")), /* @__PURE__ */ React18.createElement("button", { type: "button", className: network === "testnet" ? "on" : "", disabled: networkBusy || !st, onClick: () => network !== "testnet" && requestEnv({ network: "testnet", mode }) }, t("network.testnet", "\u6D4B\u8BD5\u7F51")))), /* @__PURE__ */ React18.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React18.createElement("span", null, tr("\u8D26\u6237", "Account")), /* @__PURE__ */ React18.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React18.createElement("button", { type: "button", className: mode === "live" ? "on" : "", disabled: networkBusy || !st, onClick: () => mode !== "live" && requestEnv({ network, mode: "live" }) }, t("mode.live", "\u5B9E\u76D8")), /* @__PURE__ */ React18.createElement("button", { type: "button", className: mode === "paper" ? "on" : "", disabled: networkBusy || !st, onClick: () => mode !== "paper" && requestEnv({ network, mode: "paper" }) }, t("mode.paper", "\u6A21\u62DF\u76D8")))), /* @__PURE__ */ React18.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React18.createElement("span", null, tr("\u76D8\u53E3 / \u6210\u4EA4\u4F4D\u7F6E", "Book / trades position")), /* @__PURE__ */ React18.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React18.createElement("button", { type: "button", className: s.tapePlacement === "auto" ? "on" : "", onClick: () => setTapePlacement("auto") }, tr("\u81EA\u9002\u5E94", "Auto")), /* @__PURE__ */ React18.createElement("button", { type: "button", className: s.tapePlacement === "below" ? "on" : "", onClick: () => setTapePlacement("below") }, tr("\u56FE\u8868\u4E0B\u65B9", "Below chart")))), /* @__PURE__ */ React18.createElement("button", { type: "button", className: "dhl-more-link", onClick: () => {
+  return /* @__PURE__ */ React27.createElement("div", { className: "dhl-root" }, /* @__PURE__ */ React27.createElement("div", { className: "dhl-topbar" }, /* @__PURE__ */ React27.createElement("span", { className: "dhl-brand" }, /* @__PURE__ */ React27.createElement(BrandMark, null), "Hyperliquid ", /* @__PURE__ */ React27.createElement("span", { style: { fontWeight: 400, color: "var(--dsw-alias-label-secondary)" } }, t("app.suffix", "\u4EA4\u6613\u53F0"))), /* @__PURE__ */ React27.createElement("div", { className: "dhl-spacer" }), s.statusError ? /* @__PURE__ */ React27.createElement("span", { className: "dhl-badge err" }, t("status.unavailable", "\u8FDC\u7AEF\u4E0D\u53EF\u7528")) : null, st && network === "testnet" ? /* @__PURE__ */ React27.createElement("span", { className: "dhl-badge paper" }, t("network.testnet", "\u6D4B\u8BD5\u7F51")) : null, st && mode === "paper" ? /* @__PURE__ */ React27.createElement("span", { className: "dhl-badge paper" }, t("mode.paper", "\u6A21\u62DF\u76D8")) : null, wsBadge, /* @__PURE__ */ React27.createElement("button", { type: "button", className: "dhl-badge dhl-wallet-trigger", onClick: () => setWalletOpen(true), "aria-haspopup": "dialog", "aria-label": tr("\u67E5\u770B\u94B1\u5305\u8BE6\u60C5\u548C\u6536\u76CA", "View wallet and P&L") }, mode === "paper" ? tr("\u6A21\u62DF\u8D26\u6237", "Paper account") : st?.address ? st.address.slice(0, 6) + "\u2026" + st.address.slice(-4) : t("account.none", "\u672A\u8FDE\u63A5\u94B1\u5305"), /* @__PURE__ */ React27.createElement(UiIcon, { name: "chevronDown", size: 14 })), /* @__PURE__ */ React27.createElement("div", { className: "dhl-more", ref: moreRef }, /* @__PURE__ */ React27.createElement("button", { type: "button", className: "dhl-top-control dhl-more-trigger", "aria-haspopup": "menu", "aria-expanded": moreOpen, "aria-label": tr("\u4EA4\u6613\u8BBE\u7F6E", "Trading settings"), title: tr("\u4EA4\u6613\u8BBE\u7F6E", "Trading settings"), onClick: () => setMoreOpen((value) => !value) }, /* @__PURE__ */ React27.createElement(UiIcon, { name: "settings", size: 17 })), moreOpen ? /* @__PURE__ */ React27.createElement("div", { className: "dhl-more-popover", role: "menu" }, /* @__PURE__ */ React27.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React27.createElement("span", null, t("network.label", "\u7F51\u7EDC")), /* @__PURE__ */ React27.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React27.createElement("button", { type: "button", className: network === "mainnet" ? "on" : "", disabled: networkBusy || !st, onClick: () => network !== "mainnet" && requestEnv({ network: "mainnet", mode }) }, t("network.mainnet", "\u4E3B\u7F51")), /* @__PURE__ */ React27.createElement("button", { type: "button", className: network === "testnet" ? "on" : "", disabled: networkBusy || !st, onClick: () => network !== "testnet" && requestEnv({ network: "testnet", mode }) }, t("network.testnet", "\u6D4B\u8BD5\u7F51")))), /* @__PURE__ */ React27.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React27.createElement("span", null, tr("\u8D26\u6237", "Account")), /* @__PURE__ */ React27.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React27.createElement("button", { type: "button", className: mode === "live" ? "on" : "", disabled: networkBusy || !st, onClick: () => mode !== "live" && requestEnv({ network, mode: "live" }) }, t("mode.live", "\u5B9E\u76D8")), /* @__PURE__ */ React27.createElement("button", { type: "button", className: mode === "paper" ? "on" : "", disabled: networkBusy || !st, onClick: () => mode !== "paper" && requestEnv({ network, mode: "paper" }) }, t("mode.paper", "\u6A21\u62DF\u76D8")))), /* @__PURE__ */ React27.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React27.createElement("span", null, tr("\u76D8\u53E3 / \u6210\u4EA4\u4F4D\u7F6E", "Book / trades position")), /* @__PURE__ */ React27.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React27.createElement("button", { type: "button", className: s.tapePlacement === "auto" ? "on" : "", onClick: () => setTapePlacement("auto") }, tr("\u81EA\u9002\u5E94", "Auto")), /* @__PURE__ */ React27.createElement("button", { type: "button", className: s.tapePlacement === "below" ? "on" : "", onClick: () => setTapePlacement("below") }, tr("\u56FE\u8868\u4E0B\u65B9", "Below chart")))), /* @__PURE__ */ React27.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React27.createElement("span", null, tr("\u4EA4\u6613\u8BBE\u7F6E", "Trading settings")), /* @__PURE__ */ React27.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React27.createElement("button", { type: "button", onClick: () => {
     setMoreOpen(false);
     setLimitsOpen(true);
-  } }, tr("\u4EA4\u6613\u9650\u989D\u4E0E\u7B7E\u540D\u89C4\u5219", "Trading limits & signing rules"))) : null)), /* @__PURE__ */ React18.createElement(import_dsh_client_ui_primitives5.Modal, { open: Boolean(confirmLive), onClose: () => setConfirmLive(null), title: tr("\u5207\u6362\u5230\u4E3B\u7F51\u5B9E\u76D8", "Switch to mainnet live"), closeLabel: t("modal.close", "\u5173\u95ED"), className: "dhl-network-modal", footer: /* @__PURE__ */ React18.createElement(React18.Fragment, null, /* @__PURE__ */ React18.createElement("button", { type: "button", className: "dhl-modal-secondary", onClick: () => setConfirmLive(null) }, t("modal.cancel", "\u53D6\u6D88")), /* @__PURE__ */ React18.createElement("button", { type: "button", className: "dhl-modal-primary", disabled: networkBusy, onClick: () => {
+  } }, tr("\u4EA4\u6613\u9650\u989D\u4E0E\u7B7E\u540D\u89C4\u5219", "Limits & signing rules"))))) : null)), /* @__PURE__ */ React27.createElement(import_dsh_client_ui_primitives7.Modal, { open: Boolean(confirmLive), onClose: () => setConfirmLive(null), title: tr("\u5207\u6362\u5230\u4E3B\u7F51\u5B9E\u76D8", "Switch to mainnet live"), closeLabel: t("modal.close", "\u5173\u95ED"), className: "dhl-network-modal", footer: /* @__PURE__ */ React27.createElement(React27.Fragment, null, /* @__PURE__ */ React27.createElement(import_dsh_client_ui_primitives7.Button, { variant: "outline", onClick: () => setConfirmLive(null) }, t("modal.cancel", "\u53D6\u6D88")), /* @__PURE__ */ React27.createElement(import_dsh_client_ui_primitives7.Button, { variant: "primary", disabled: networkBusy, onClick: () => {
     if (confirmLive) void applyEnv(confirmLive);
-  } }, tr("\u786E\u8BA4\u5207\u6362", "Switch"))) }, /* @__PURE__ */ React18.createElement("p", null, tr("\u4E3B\u7F51\u5B9E\u76D8\u4F1A\u663E\u793A\u771F\u5B9E\u884C\u60C5\u548C\u771F\u5B9E\u8D26\u6237\uFF0C\u540E\u7EED\u4EA4\u6613\u5C06\u4F7F\u7528\u771F\u5B9E\u8D44\u91D1\u3002", "Mainnet live shows real markets and your real account; trades use real funds."))), /* @__PURE__ */ React18.createElement(WalletDetails, { open: walletOpen, onClose: () => setWalletOpen(false) }), /* @__PURE__ */ React18.createElement(TradingLimits, { open: limitsOpen, onClose: () => setLimitsOpen(false) }), /* @__PURE__ */ React18.createElement("div", { className: "dhl-toasts" }, marketStale && !resyncing ? /* @__PURE__ */ React18.createElement("div", { className: "dhl-data-warning", role: "status" }, tr("\u884C\u60C5\u6216\u5BBF\u4E3B\u72B6\u6001\u672A\u53CA\u65F6\u66F4\u65B0\uFF1B\u5F53\u524D\u4EF7\u683C\u53EF\u80FD\u8FC7\u671F\u3002\u4EA4\u6613\u7968\u636E\u5DF2\u6682\u505C\u63D0\u4EA4\uFF0C\u7B49\u5F85\u6570\u636E\u6062\u590D\u3002", "Market or host data is stale. Ticket submission is paused until data recovers.")) : null, s.notice ? /* @__PURE__ */ React18.createElement("div", { className: "dhl-notice", onClick: () => notify(null) }, /* @__PURE__ */ React18.createElement("span", null, "\u26A1"), /* @__PURE__ */ React18.createElement("span", { style: { flex: 1 } }, s.notice.text), /* @__PURE__ */ React18.createElement("span", null, "\u2715")) : null), /* @__PURE__ */ React18.createElement("div", { className: "dhl-body" }, showSessions ? /* @__PURE__ */ React18.createElement(SessionsColumn, { width: layout.sessionsWidth, fill: !showDesk && !showChat, onCollapse: toggleSessions }) : /* @__PURE__ */ React18.createElement("button", { className: "dhl-panel-rail", type: "button", onClick: toggleSessions, "aria-label": tr("\u5C55\u5F00\u4F1A\u8BDD\u680F", "Expand sessions"), title: tr("\u5C55\u5F00\u4F1A\u8BDD\u680F", "Expand sessions") }, /* @__PURE__ */ React18.createElement(PanelIcon, { kind: "sessions" })), showSessions && (showDesk || showChat) ? /* @__PURE__ */ React18.createElement(Divider, { side: "left", onResize: resizeSessions, onCommit: commitLayout, onReset: resetSessions }) : null, showDesk ? /* @__PURE__ */ React18.createElement(DeskColumn, { onCollapse: toggleDesk }) : /* @__PURE__ */ React18.createElement("button", { className: "dhl-panel-rail", type: "button", onClick: toggleDesk, "aria-label": tr("\u5C55\u5F00\u884C\u60C5\u533A", "Expand market panel"), title: tr("\u5C55\u5F00\u884C\u60C5\u533A", "Expand market panel") }, /* @__PURE__ */ React18.createElement(PanelIcon, { kind: "desk" })), showDesk && showChat ? /* @__PURE__ */ React18.createElement(Divider, { side: "right", onResize: resizeChat, onCommit: commitLayout, onReset: resetChat }) : null, showChat ? /* @__PURE__ */ React18.createElement(ChatColumn, { width: layout.chatWidth, fill: !showDesk, onCollapse: toggleChat, SessionProvider: props.SessionProvider ?? props.sessionProvider, renderFactorySlot: props.renderFactorySlot }) : /* @__PURE__ */ React18.createElement("button", { className: "dhl-panel-rail", type: "button", onClick: toggleChat, "aria-label": tr("\u5C55\u5F00\u5BF9\u8BDD\u680F", "Expand chat"), title: tr("\u5C55\u5F00\u5BF9\u8BDD\u680F", "Expand chat") }, /* @__PURE__ */ React18.createElement(PanelIcon, { kind: "chat" }))));
+  } }, tr("\u786E\u8BA4\u5207\u6362", "Switch"))) }, /* @__PURE__ */ React27.createElement("p", null, tr("\u4E3B\u7F51\u5B9E\u76D8\u4F1A\u663E\u793A\u771F\u5B9E\u884C\u60C5\u548C\u771F\u5B9E\u8D26\u6237\uFF0C\u540E\u7EED\u4EA4\u6613\u5C06\u4F7F\u7528\u771F\u5B9E\u8D44\u91D1\u3002", "Mainnet live shows real markets and your real account; trades use real funds."))), /* @__PURE__ */ React27.createElement(WalletDetails, { open: walletOpen, onClose: () => setWalletOpen(false) }), /* @__PURE__ */ React27.createElement(TradingLimits, { open: limitsOpen, onClose: () => setLimitsOpen(false) }), /* @__PURE__ */ React27.createElement("div", { className: "dhl-toasts" }, marketStale && !resyncing ? /* @__PURE__ */ React27.createElement("div", { className: "dhl-data-warning", role: "status" }, tr("\u884C\u60C5\u6216\u5BBF\u4E3B\u72B6\u6001\u672A\u53CA\u65F6\u66F4\u65B0\uFF1B\u5F53\u524D\u4EF7\u683C\u53EF\u80FD\u8FC7\u671F\u3002\u4EA4\u6613\u7968\u636E\u5DF2\u6682\u505C\u63D0\u4EA4\uFF0C\u7B49\u5F85\u6570\u636E\u6062\u590D\u3002", "Market or host data is stale. Ticket submission is paused until data recovers.")) : null, s.notice ? /* @__PURE__ */ React27.createElement("div", { className: "dhl-notice", onClick: () => notify(null) }, /* @__PURE__ */ React27.createElement(UiIcon, { name: "info", size: 16 }), /* @__PURE__ */ React27.createElement("span", { style: { flex: 1 } }, s.notice.text), /* @__PURE__ */ React27.createElement(UiIcon, { name: "close", size: 14 })) : null), /* @__PURE__ */ React27.createElement("div", { className: "dhl-body" }, showSessions ? /* @__PURE__ */ React27.createElement(SessionsColumn, { width: layout.sessionsWidth, fill: !showDesk && !showChat, onCollapse: toggleSessions }) : /* @__PURE__ */ React27.createElement("button", { className: "dhl-panel-rail", type: "button", onClick: toggleSessions, "aria-label": tr("\u5C55\u5F00\u4F1A\u8BDD\u680F", "Expand sessions"), title: tr("\u5C55\u5F00\u4F1A\u8BDD\u680F", "Expand sessions") }, /* @__PURE__ */ React27.createElement(PanelIcon, { kind: "sessions" })), showSessions && (showDesk || showChat) ? /* @__PURE__ */ React27.createElement(Divider, { side: "left", onResize: resizeSessions, onCommit: commitLayout, onReset: resetSessions }) : null, showDesk ? /* @__PURE__ */ React27.createElement(DeskColumn, { onCollapse: toggleDesk }) : /* @__PURE__ */ React27.createElement("button", { className: "dhl-panel-rail", type: "button", onClick: toggleDesk, "aria-label": tr("\u5C55\u5F00\u884C\u60C5\u533A", "Expand market panel"), title: tr("\u5C55\u5F00\u884C\u60C5\u533A", "Expand market panel") }, /* @__PURE__ */ React27.createElement(PanelIcon, { kind: "desk" })), showDesk && showChat ? /* @__PURE__ */ React27.createElement(Divider, { side: "right", onResize: resizeChat, onCommit: commitLayout, onReset: resetChat }) : null, showChat ? /* @__PURE__ */ React27.createElement(ChatColumn, { width: layout.chatWidth, fill: !showDesk, onCollapse: toggleChat, SessionProvider: props.SessionProvider ?? props.sessionProvider, renderFactorySlot: props.renderFactorySlot }) : /* @__PURE__ */ React27.createElement("button", { className: "dhl-panel-rail", type: "button", onClick: toggleChat, "aria-label": tr("\u5C55\u5F00\u5BF9\u8BDD\u680F", "Expand chat"), title: tr("\u5C55\u5F00\u5BF9\u8BDD\u680F", "Expand chat") }, /* @__PURE__ */ React27.createElement(PanelIcon, { kind: "chat" }))));
 }
 
 // src/client/components/panel-entry.tsx
-var React19 = __toESM(require("react"), 1);
+var React28 = __toESM(require("react"), 1);
 function PanelEntry(props) {
-  return /* @__PURE__ */ React19.createElement("span", { className: "dhl-entrymark" }, /* @__PURE__ */ React19.createElement(BrandMark, { size: props?.size ?? 18 }));
+  return /* @__PURE__ */ React28.createElement("span", { className: "dhl-entrymark" }, /* @__PURE__ */ React28.createElement(BrandMark, { size: props?.size ?? 18 }));
 }
 
 // src/client/index.tsx
@@ -18336,29 +20767,30 @@ function apply(ctx) {
         locale: NS,
         children: { "hyper.panel.seat": { kind: "single", scope: "session" } }
       },
-      (props) => React20.createElement(App, {
+      (props) => React29.createElement(App, {
         SessionProvider: props?.SessionProvider,
         renderFactorySlot: props?.renderFactorySlot
       })
     )), NS + ": main panel");
     ctx.effect(() => slots.inject("sidebar.panellist", () => slots.register(
       { name: "sidebar.panellist", id: NS, order: 20, label: () => t("app.title", "Hyperliquid \u4EA4\u6613\u53F0"), registrant: NS, locale: NS },
-      (props) => React20.createElement(PanelEntry, props)
+      (props) => React29.createElement(PanelEntry, props)
     )), NS + ": panel entry");
   }
+  registerDshExtensions(ctx, slots);
   const layout = ctx.get("layout");
   if (layout?.panelInfo?.subscribe && slots) ctx.effect(() => {
-    const key = `${NS}.panel-selected.v1`;
+    const key2 = `${NS}.panel-selected.v1`;
     let restore = false;
     try {
-      restore = sessionStorage.getItem(key) === "1";
+      restore = sessionStorage.getItem(key2) === "1";
     } catch {
     }
     let ready = false;
     const remember = () => {
       if (!ready) return;
       try {
-        sessionStorage.setItem(key, layout.panelInfo.getSnapshot()?.activePanelId === NS ? "1" : "0");
+        sessionStorage.setItem(key2, layout.panelInfo.getSnapshot()?.activePanelId === NS ? "1" : "0");
       } catch {
       }
     };

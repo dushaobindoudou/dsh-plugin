@@ -19,7 +19,17 @@ description: 在 DSH 交易会话中分析 Hyperliquid 实时行情、账户与�
 
 1. 用 `hyper_market action=indicators` 读取对应币种和周期的 SMA20、EMA20/50、RSI14、MACD、布林带、ATR14、20 根量比以及最近摆动高低点推导的支撑/阻力。工具只用交易所 `T` 收盘时间已过去的 K 线计算，并返回 `excludedOpen`；图表上的实时末根 K 线仍可能形成中。先检查 `ready`、已收盘 K 线数量和 `observedAt`（最新收盘时间），并按周期判断数据是否过期；旧数据或少于 50 根已收盘 K 线不可作为入场依据。需要跨周期验证时分别查询当前周期与更高周期，不把两者混作同一信号。
 2. 将趋势、动量、波动和量能分开判断：例如价格相对 EMA20/50、MACD 与 RSI 是否同向，价格是否接近支撑/阻力，量比是否支持突破，ATR 所示正常波动是否足以触及止损。指标相互矛盾、价格已经远离合理入场区、盘口过薄或止损所需风险超过限额时，选择观望。支撑/阻力是历史区间，不是保证成交或反弹的价格。
-3. 给人解释图表时可用 `hyper_chart action=add` 画水平支撑/阻力线或两点趋势线，标签写明依据和周期；画线前用实际 K 线核实价格与时间（趋势线使用 epoch 毫秒）。每条线只属于当前 DSH 交易会话、币种和周期，可用 `list/remove` 管理。图表标注不触发交易，也不替代 `hyper_decide` 的实时预检。
+3. 给人解释图表时可用 `hyper_chart action=add` 画水平支撑/阻力线、两点趋势线，或用 points 画射线、平行通道、斐波那契回撤（第 1 点为波段起点）、矩形区间与价格区间测量、文本备注，或用 long/short 标出入场、止损与止盈（points 为 [入场, 止损, 止盈]）；波段结构可用 fibext（第 3 点为回撤点）、pitchfork、regression（按收盘价拟合 ±2σ）、gannfan / gannbox 表达，浪型与形态用 elliott（0-5）、elliottabc、xabcd、abcd、headshoulders 标出，关键位用 callout / pricelabel / icon 标注；已有画线用 `action=update` 按 id 调整，不必删除重画；用户要求盯某个价位或趋势线时，可对 level/hray/trend/ray/extended 设置 `alert=true`（穿越时提醒，触发一次），需要在同币种所有会话可见时设置 `shared=true`，标签写明依据和周期；画线前用实际 K 线核实价格与时间（趋势线使用 epoch 毫秒）。每条线只属于当前 DSH 交易会话、币种和周期，可用 `list/remove` 管理。图表标注不触发交易，也不替代 `hyper_decide` 的实时预检。需要平滑均线（SMMA/RMA）或任意周期的 SMA/EMA/WMA 时，用 `hyper_chart action=add kind=ma maType=smma period=…` 叠加到图上（可加 smoothingType/smoothingPeriod 二次平滑），用 `hyper_market action=indicators` 读取其最新已收盘值；不要再建议用户去外部图表工具。
+
+## 策略研究框架
+
+交易台的“策略框架”只用已收盘 K 线展示可核对的观察条件；它没有证明当前币种、周期或执行方式能够盈利。若用户询问策略，先确认其交易周期与风险预算，区分**理论依据、当下满足的条件、反证、执行成本**，再决定观望或继续分析。不得把单个指标称为买卖信号。尤其是布林带碰到上/下轨本身不是反转信号，轨外收盘也可能延续趋势（[Bollinger 原始规则](https://www.bollingerbands.com/bollinger-band-rules)）。
+
+- **趋势跟随**：观察已收盘价相对 EMA20/50 的位置、均线斜率，并用更高周期确认方向。时间序列动量有跨传统期货资产的研究证据（[Moskowitz、Ooi、Pedersen，2012](https://doi.org/10.1016/j.jfineco.2011.11.003)），不能直接外推为 5 分钟加密永续合约的预期收益。说明回撤入场条件、趋势失效点和追价风险。
+- **区间突破**：以前 20 根已收盘 K 线高低点和量比做候选条件；必须检查收盘是否站稳、盘口滑点与假突破。20 根和 1.5 倍量比只是产品默认观察参数，尚未在当前市场回测优化；不要把它们描述成已验证阈值。
+- **波动带回归**：只在相对平缓的趋势中，观察前根收盘越轨、随后收回轨内以及 RSI 的配合；出现强单边趋势时优先观望。布林带的 20 根、2 倍标准差为常见默认参数，需按市场和任务重新验证。
+
+任何框架都要结合 `hyper_market indicators` 的最新已收盘时间、ATR、成交量、盘口、资金费与账户暴露。波动升高时应审查仓位规模；波动管理的研究来自股票因子等资产，并不保证该合约收益（[Moreira、Muir，2017](https://www.nber.org/system/files/working_papers/w22208/w22208.pdf)）。若用历史 K 线比较方案，要计入手续费、滑点和资金费，并区分样本内、样本外与实际交易；模拟表现有显著局限（[CFTC 说明](https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/fraudadv_tradingsystem.html)）。
 
 ## 决策与执行
 

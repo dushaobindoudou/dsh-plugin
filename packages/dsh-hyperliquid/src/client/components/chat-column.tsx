@@ -4,6 +4,8 @@ import * as React from 'react'
 import { getContext, t, tr } from '../remote'
 import { notify, setActiveRef, store, useStore } from '../store'
 import { queueToAgent } from '../data'
+import { chartReferenceChipsReady } from '../dsh-extensions'
+import { CHART_REFERENCE_SOURCE, encodeChartReference } from '../chart-reference'
 import { TradeTicket } from './trade-ticket'
 import type { RetainedSession } from '../types'
 import { FoldIcon } from './panel-icons'
@@ -101,14 +103,19 @@ export function ChatColumn({ width, fill = false, onCollapse, SessionProvider, r
       return
     }
     const inserted: number[] = []
+    const chips = chartReferenceChipsReady() && typeof input.insertReference === 'function'
     for (const quote of pendingQuotes) {
       const draft = String(input.state.getSnapshot().draft ?? '')
       // Collapse a selected range so citing a chart point never deletes the
       // trader's existing words or structured reference chips.
       const captured = actions.captureInsertion()
       const span = { ...captured, start: captured.end }
-      const text = `${draft ? '\n\n' : ''}${quote.text}`
-      if (!actions.insertText(text, span)) break
+      // A chip shows a short label; the full point text reaches the model on send.
+      const ok = chips
+        ? input.insertReference({ source: CHART_REFERENCE_SOURCE, label: quote.label, clipboardText: quote.text,
+          ref: encodeChartReference({ coin: quote.coin, interval: quote.interval, t: quote.t, text: quote.text }) }, span)
+        : actions.insertText(`${draft ? '\n\n' : ''}${quote.text}`, span)
+      if (!ok) break
       inserted.push(quote.id)
     }
     if (inserted.length) {

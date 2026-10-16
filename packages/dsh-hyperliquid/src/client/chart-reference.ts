@@ -2,6 +2,7 @@
 import type { Candle, Interval } from './types'
 import type { IndicatorId } from './chart-indicators'
 import { chartIndicators } from './chart-indicators'
+import { maLabel, maSeries, type MaLine } from '../../lib/moving-average.js'
 
 export type ChartHit = IndicatorId | 'bollingerUpper' | 'bollingerLower' | 'macdSignal' | 'macdHistogram' | null
 
@@ -23,7 +24,7 @@ const SERIES: Array<[IndicatorId, string, string]> = [
 ]
 
 /** Match the chart's candles and study windows exactly. */
-export function selectChartCandle(candles: Candle[], time: number, active: ReadonlySet<IndicatorId>, hit: ChartHit): ChartSelection | null {
+export function selectChartCandle(candles: Candle[], time: number, active: ReadonlySet<IndicatorId>, hit: ChartHit, maLines: readonly MaLine[] = []): ChartSelection | null {
   const rows = candles
   const index = rows.findIndex((candle) => Math.floor(candle.t / 1000) === Math.floor(time / 1000))
   if (index < 0) return null
@@ -35,6 +36,12 @@ export function selectChartCandle(candles: Candle[], time: number, active: Reado
     const point = studies[key as keyof typeof studies].find((item) => item.time === epoch)
     return point ? [{ label, value: point.value }] : []
   })
+  // Configurable MAs at the same candle (and their smoothing), exactly as drawn.
+  for (const line of maLines) {
+    const { values: series, smoothed } = maSeries(rows, line)
+    if (series[index] != null) values.push({ label: maLabel(line).split(' · ')[0], value: series[index]! })
+    if (smoothed?.[index] != null) values.push({ label: maLabel(line), value: smoothed[index]! })
+  }
   const previous = rows.slice(Math.max(0, index - 20), index).map((row) => row.v).filter((value) => Number.isFinite(value) && value >= 0)
   const priorVolumeMean20 = previous.length === 20 ? previous.reduce((sum, value) => sum + value, 0) / 20 : null
   return { candle, hit, values, priorVolumeMean20 }
@@ -64,4 +71,28 @@ export function formatChartReference(selection: ChartSelection, coin: string, in
   if (values.length) lines.push(`${english ? 'Displayed studies' : '已显示指标'}：${values.map(({ label, value }) => `${label}=${computed(value)}`).join('，')}`)
   if (hit && hit !== 'volume') lines.push(`${english ? 'Selected study' : '点击指标'}：${hitLabel[hit] ?? hit}`)
   return lines.join('\n')
+}
+
+/** Composer reference-source name; the chip's model text comes from this source's codec. */
+export const CHART_REFERENCE_SOURCE = 'hyperliquid-chart'
+
+export interface ChartReferenceRef { coin: string; interval: Interval; t: number; text: string }
+
+/** Short chip label, e.g. "BTC 15m 10-15 13:45 · C 81397". */
+export function chartReferenceLabel(selection: ChartSelection, coin: string, interval: Interval): string {
+  const d = new Date(selection.candle.t)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${coin} ${interval} ${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())} · C ${selection.candle.c}`
+}
+
+/** The chip's ref carries everything needed to serialize it and to reopen the point on the chart. */
+export function encodeChartReference(ref: ChartReferenceRef): string {
+  return JSON.stringify(ref)
+}
+
+export function decodeChartReference(raw: string): ChartReferenceRef | null {
+  try {
+    const value = JSON.parse(raw)
+    return typeof value?.text === 'string' && typeof value?.coin === 'string' && Number.isFinite(value?.t) ? value : null
+  } catch { return null }
 }

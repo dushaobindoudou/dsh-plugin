@@ -1,47 +1,98 @@
-/**
- * Two independent rule sets gate an order, and the desk shows them apart:
- *   1. trading limits — this plugin's config, checked for paper AND live;
- *   2. wallet signing — dsh-web3's own policy, consulted only when a live
- *      order is signed through the vault (signer=web3).
- * @module src/client/components/trading-limits
- */
+/** Trading limits are a durable desk override shared by paper and live guards. */
 import * as React from 'react'
-import { Modal } from '@deepseek-ai/dsh-client-ui-primitives'
-import { tr } from '../remote'
+import { Button, Input, Modal } from '@deepseek-ai/dsh-client-ui-primitives'
+import { hyperCall, tr } from '../remote'
 import { fmt } from '../format'
-import { useStore } from '../store'
+import { notify, useStore } from '../store'
+import { loadStatus } from '../data'
+
+type Draft = { allowedCoins: string; maxOrderUsd: string; maxDailyUsd: string; maxPositionUsd: string; maxLeverage: string }
+const EMPTY: Draft = { allowedCoins: '', maxOrderUsd: '', maxDailyUsd: '', maxPositionUsd: '', maxLeverage: '' }
+
+function fromLimits(limits: any): Draft {
+  return {
+    allowedCoins: (limits?.allowedCoins ?? []).join(', '),
+    maxOrderUsd: String(limits?.maxOrderUsd ?? ''),
+    maxDailyUsd: String(limits?.maxDailyUsd ?? ''),
+    maxPositionUsd: String(limits?.maxPositionUsd ?? ''),
+    maxLeverage: String(limits?.maxLeverage ?? ''),
+  }
+}
 
 export function TradingLimits({ open, onClose }: { open: boolean; onClose: () => void }) {
   const st = useStore().status
   const limits = st?.riskLimits
   const paper = st?.tradingMode === 'paper'
-  const used = Number(limits?.usedTodayUsd ?? 0)
-  const daily = Number(limits?.maxDailyUsd ?? 0)
-  const rows: Array<[string, string]> = limits ? [
-    [tr('允许开仓币对', 'Coins allowed to open'), (limits.allowedCoins ?? []).join(', ') || '—'],
-    [tr('单笔名义价值上限', 'Max per order'), `${fmt(limits.maxOrderUsd)} USD`],
-    [tr('今日开仓额度（UTC）', 'Daily opening budget (UTC)'), `${fmt(used)} / ${fmt(daily)} USD`],
-    [tr('单币仓位上限', 'Max position per coin'), `${fmt(limits.maxPositionUsd)} USD`],
-    [tr('杠杆上限', 'Max leverage'), `${fmt(limits.maxLeverage, 0)}x`],
-  ] : []
-  return <Modal open={open} onClose={onClose} title={tr('交易限额与签名规则', 'Trading limits & signing rules')} closeLabel={tr('关闭', 'Close')} className="dhl-limits-modal">
+  const [draft, setDraft] = React.useState<Draft>(EMPTY)
+  const [busy, setBusy] = React.useState(false)
+  const [error, setError] = React.useState('')
+  React.useEffect(() => {
+    if (open && limits) { setDraft(fromLimits(limits)); setError('') }
+  }, [open, Boolean(limits)])
+
+  const change = (key: keyof Draft, value: string) => setDraft((current) => ({ ...current, [key]: value }))
+  const save = async (event?: React.FormEvent) => {
+    event?.preventDefault()
+    setBusy(true)
+    setError('')
+    try {
+      await hyperCall('updateRiskSettings', { limits: {
+        allowedCoins: draft.allowedCoins,
+        maxOrderUsd: Number(draft.maxOrderUsd),
+        maxDailyUsd: Number(draft.maxDailyUsd),
+        maxPositionUsd: Number(draft.maxPositionUsd),
+        maxLeverage: Number(draft.maxLeverage),
+      } })
+      await loadStatus()
+      notify(tr('交易限额已保存并立即生效', 'Trading limits saved and applied immediately'))
+    } catch (cause) { setError(String((cause as Error)?.message ?? cause)) }
+    finally { setBusy(false) }
+  }
+  const reset = async () => {
+    setBusy(true)
+    setError('')
+    try {
+      const result = await hyperCall('resetRiskSettings')
+      setDraft(fromLimits(result.riskLimits))
+      await loadStatus()
+      notify(tr('已恢复插件配置中的交易限额', 'Restored trading limits from plugin configuration'))
+    } catch (cause) { setError(String((cause as Error)?.message ?? cause)) }
+    finally { setBusy(false) }
+  }
+
+  const field = (key: keyof Draft, label: string, props: React.InputHTMLAttributes<HTMLInputElement>, wide = false) =>
+    <label className={wide ? 'dhl-risk-wide' : undefined}><span>{label}</span>
+      <Input className="dhl-risk-input" value={draft[key]} onChange={(event) => change(key, event.target.value)} required {...props} /></label>
+  const footer = limits ? <>
+    {st?.riskSettingsSource === 'desk' ? <Button variant="outline" disabled={busy} onClick={() => void reset()}>{tr('恢复插件配置', 'Restore plugin config')}</Button> : null}
+    <Button variant="primary" type="submit" form="dhl-risk-form" disabled={busy}>{busy ? tr('保存中…', 'Saving…') : tr('保存', 'Save')}</Button>
+  </> : null
+
+  return <Modal open={open} onClose={onClose} title={tr('交易限额与签名规则', 'Trading limits & signing rules')} closeLabel={tr('关闭', 'Close')} className="dhl-limits-modal" footer={footer}>
     <section className="dhl-limits-section">
-      <h3>{tr('交易限额 · 交易台', 'Trading limits · desk')}<span className="dhl-badge">{paper ? tr('模拟盘账本', 'Paper ledger') : tr('实盘账本', 'Live ledger')}</span></h3>
-      {rows.length ? <div className="dhl-wallet-stats">{rows.map(([label, value]) => <div key={label}><span>{label}</span><strong>{value}</strong></div>)}</div>
-        : <div className="dhl-empty">{tr('正在读取…', 'Loading…')}</div>}
-      <p className="dhl-ticket-note">{tr(
-        '由 dsh-hyperliquid 插件配置决定，模拟盘和实盘都会检查，每日额度两边分开记账；减仓与平仓不受限。agent 自主下单与你填写的票据都受同一套限额约束。修改方式：DSH 设置中的 hyperliquid 插件配置，或 profile 的 cordis.patch.yml 里 id: hyperliquid 下的 allowedCoins / maxOrderUsd / maxDailyUsd / maxPositionUsd / maxLeverage，重启后生效。',
-        'Set by the dsh-hyperliquid plugin config and checked in both paper and live, with separate daily budgets; reducing or closing is never blocked. Agent orders and your tickets share these limits. Change them in the hyperliquid plugin config in DSH Settings, or allowedCoins / maxOrderUsd / maxDailyUsd / maxPositionUsd / maxLeverage under id: hyperliquid in the profile cordis.patch.yml; restart to apply.')}</p>
+      <h3>{tr('交易限额', 'Trading limits')}<span className="dhl-limits-ledger">{paper ? tr('模拟盘账本', 'Paper ledger') : tr('实盘账本', 'Live ledger')}</span></h3>
+      {limits ? <form id="dhl-risk-form" className="dhl-risk-form" onSubmit={(event) => void save(event)}>
+        {field('allowedCoins', tr('允许开仓币对', 'Coins allowed to open'), { placeholder: 'BTC, ETH', maxLength: 1000 }, true)}
+        {field('maxOrderUsd', tr('单笔名义价值上限 · USD', 'Max per order · USD'), { type: 'number', min: '0.01', step: 'any' })}
+        {field('maxDailyUsd', tr('每日开仓额度 · USD', 'Daily opening budget · USD'), { type: 'number', min: '0.01', step: 'any' })}
+        {field('maxPositionUsd', tr('单币仓位上限 · USD', 'Max position per coin · USD'), { type: 'number', min: '0.01', step: 'any' })}
+        {field('maxLeverage', tr('最大杠杆 · 倍', 'Max leverage · x'), { type: 'number', min: '1', max: '50', step: '1' })}
+        <p className="dhl-risk-budget">{tr('今日已用额度（UTC）', 'Used today (UTC)')}：{fmt(limits.usedTodayUsd ?? 0)} / {fmt(limits.maxDailyUsd)} USD</p>
+        {error ? <p className="dhl-risk-error" role="alert">{error}</p> : null}
+      </form> : <div className="dhl-empty">{tr('正在读取…', 'Loading…')}</div>}
+      <p className="dhl-limits-note">{tr('保存后立即作用于模拟盘和实盘，重启后继续生效。两种模式的每日额度分开记账；减仓和平仓不受开仓限额阻止。',
+        'Changes apply immediately to paper and live trading and survive restart. Each mode has its own daily budget; reducing and closing remain available.')}</p>
     </section>
     <section className="dhl-limits-section">
-      <h3>{tr('钱包签名 · 与交易限额无关', 'Wallet signing · separate from limits')}</h3>
-      <p className="dhl-ticket-note">{paper
-        ? tr('模拟盘在本地撮合，不签名，也不经过任何钱包规则。', 'Paper orders fill locally; nothing is signed and no wallet rules apply.')
+      <h3>{tr('钱包签名', 'Wallet signing')}</h3>
+      <p className="dhl-limits-note">{paper
+        ? tr('模拟盘在本地撮合，不签名，也不经过钱包规则。', 'Paper orders fill locally and do not use wallet signing.')
         : st?.signer === 'web3'
-          ? tr('实盘订单通过限额检查后，还要交给 dsh-web3 钱包签名。钱包按自己的签名策略决定这次签名是自动通过、需要你确认还是拒绝；它不知道也不检查上面的交易限额。签名策略在 DSH 设置 → Web3 钱包中管理。',
-            'After passing the limits above, a live order is signed by the dsh-web3 wallet. Its signing policy decides whether that signature is automatic, needs your approval or is refused; it neither knows nor checks the trading limits. Manage it in DSH Settings → Web3 wallet.')
-          : tr('实盘使用插件配置中的私钥直接签名，没有额外的钱包审批；只有上面的交易限额在把关。', 'Live orders are signed with the configured private key; there is no separate wallet approval, only the trading limits above.')}</p>
-      {!paper && !st?.autonomousLive ? <p className="dhl-ticket-note">{tr('autonomousLive 关闭：agent 每笔实盘下单、改杠杆前都会弹出 DSH 审批，需要你批准。', 'autonomousLive is off: every live order or leverage change by the agent waits for your DSH approval.')}</p> : null}
+          ? tr('实盘订单通过限额检查后，由 dsh-web3 钱包按其签名策略处理。签名策略在 DSH 设置 → Web3 钱包中管理。',
+            'After the limits check, live orders use the dsh-web3 wallet signing policy. Manage it in DSH Settings → Web3 wallet.')
+          : tr('实盘使用插件配置中的私钥签名。私钥与签名方式仍在 DSH 插件配置中管理。',
+            'Live orders use the private key from plugin configuration. Manage the key and signing method in DSH plugin settings.')}</p>
+      {!paper && !st?.autonomousLive ? <p className="dhl-limits-note">{tr('agent 每笔实盘下单或改杠杆前仍需 DSH 审批。', 'Each agent live order or leverage change still requires DSH approval.')}</p> : null}
     </section>
   </Modal>
 }

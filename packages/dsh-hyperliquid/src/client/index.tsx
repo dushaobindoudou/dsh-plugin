@@ -22,6 +22,7 @@ import { NS, DICT } from './locale'
 import { setConnection, setContext, setLocaleBinder, t } from './remote'
 import { App } from './app'
 import { PanelEntry } from './components/panel-entry'
+import { registerDshExtensions } from './dsh-extensions'
 
 export const inject = ['connection', 'slots', 'locale', 'theme', 'layout', 'sessions', 'workspaces', 'uiConversation', 'uiWorkspace']
 
@@ -64,6 +65,10 @@ export function apply(ctx: any): void {
       (props: any) => React.createElement(PanelEntry, props),
     )), NS + ': panel entry')
   }
+
+  // Quote chips, hyper_* tool rows and the approval order card live in
+  // DSH's own conversation surfaces, so they work outside this panel too.
+  registerDshExtensions(ctx, slots)
 
   // DSH starts on Conversation after a browser refresh. Restore this panel
   // only when it was the selected panel in the same browser tab before reload.

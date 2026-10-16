@@ -25,3 +25,6 @@ The Hyperliquid mark is traced from the official app icon
 (app.hyperliquid.xyz/android-chrome-512x512.png, #97FCE4). Hyperliquid and its
 logos are trademarks of Hyperliquid Labs; this package is an independent
 integration, not an official Hyperliquid product.
+
+**Lucide icons** (the settings gear outline in src/client/components/panel-icons.tsx)
+Copyright (c) Lucide Contributors — ISC License, https://lucide.dev/license

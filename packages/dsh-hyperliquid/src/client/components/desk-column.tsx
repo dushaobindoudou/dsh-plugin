@@ -1,18 +1,28 @@
 /** Market workspace: contract strip, chart/funding, depth and account. */
 import * as React from 'react'
+import { Select } from './select'
 import { hyperCall, t, tr } from '../remote'
 import { fmt, fmtPrice, INTERVALS, MORE_INTERVALS } from '../format'
 import { notify, store, useStore } from '../store'
-import { insertChartReference, loadCandles, loadChartMarks, loadOlderCandles, loadFunding, loadTradeHistory, pushDeskInterval, saveSessionWorkspace } from '../data'
-import { CandleChart } from './candle-chart'
+import { insertChartReference, openSession, loadCandles, loadChartMarks, loadOlderCandles, loadFunding, loadTradeHistory, pushDeskInterval, saveSessionWorkspace } from '../data'
+import { CandleChart, type ClonePayload, type DrawPayload, type MagnetMode } from './candle-chart'
+import { useDrawingHistory } from '../drawing-history'
+import { loadStyleTemplate } from '../drawing-templates'
+import { DrawingList } from './drawing-list'
+import { StickerPicker } from './sticker-picker'
+import { Button, Input, Modal } from '@deepseek-ai/dsh-client-ui-primitives'
+import { DRAWING_TOOLS, ToolIcon, drawingLabel, isTextKind, toolOf, type DrawPoint, type DrawingKind } from '../drawing-tools'
+import { MaEditor } from './ma-editor'
+import type { MaLine } from '../types'
 import { MarketTape } from './market-tape'
 import { BottomTable } from './bottom-table'
 import type { ChartMark, Interval, SessionWorkspace } from '../types'
-import { FoldIcon } from './panel-icons'
+import { FoldIcon, UiIcon } from './panel-icons'
 import { MarketPicker } from './market-picker'
 import { MarketIcon } from './market-icon'
+import { StrategyMenu } from './strategy-menu'
 import type { IndicatorId } from '../chart-indicators'
-import { chartTradeEvents } from '../trade-events'
+import { chartTradeEvents, type TradeEvent } from '../trade-events'
 
 const INDICATOR_CHOICES: Array<[IndicatorId, string, string]> = [
   ['volume', '成交量', 'K 线下方的成交量柱'],
@@ -30,6 +40,14 @@ const INDICATOR_EN: Partial<Record<IndicatorId, [string, string]>> = {
   ema20: ['EMA 20', '20-close exponential moving average'], ema50: ['EMA 50', '50-close exponential moving average'],
   bollinger20: ['Bollinger 20', 'Mean and two standard deviation bands'], rsi14: ['RSI 14', 'Relative strength index'],
   macd: ['MACD', '12 / 26 / 9 momentum panel'],
+}
+
+/** A per-browser drawing preference, safe when storage is unavailable. */
+function usePreference<T>(name: string, fallback: T, parse: (value: unknown) => T): [T, (value: T) => void] {
+  const key = `dsh-hyperliquid.draw.${name}`
+  const [value, setValue] = React.useState<T>(() => { try { const raw = localStorage.getItem(key); return raw == null ? fallback : parse(JSON.parse(raw)) } catch { return fallback } })
+  const update = React.useCallback((next: T) => { setValue(next); try { localStorage.setItem(key, JSON.stringify(next)) } catch { /* storage unavailable */ } }, [key])
+  return [value, update]
 }
 
 function finite(value: unknown): number | null {
@@ -59,37 +77,85 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
   const change = mark != null && mark > 0 && prev != null && prev > 0 ? (mark / prev - 1) * 100 : null
   const chartTab = s.workspaceSessionId === s.activeSessionId ? s.workspace?.chartTab ?? 'chart' : 'chart'
   const indicators = React.useMemo(() => new Set<IndicatorId>(s.workspaceSessionId === s.activeSessionId ? s.workspace?.indicators ?? ['volume'] : ['volume']), [s.workspace, s.workspaceSessionId, s.activeSessionId])
-  const [drawMode, setDrawMode] = React.useState<'level' | 'trend' | null>(null)
+  const [drawMode, setDrawMode] = React.useState<DrawingKind | null>(null)
+  const drawMenu = React.useRef<HTMLDetailsElement>(null)
+  // Tool preferences are per browser (TradingView keeps them global); drawings themselves are per session.
+  const [magnet, setMagnet] = usePreference<MagnetMode>('magnet', 'off', (value) => value === 'weak' || value === 'strong' ? value : 'off')
+  const [stayDrawing, setStayDrawing] = usePreference<boolean>('stayDrawing', false, (value) => value === true)
+  const [drawingsLocked, setDrawingsLocked] = usePreference<boolean>('drawingsLocked', false, (value) => value === true)
+  const [textAt, setTextAt] = React.useState<{ kind: DrawingKind; points: DrawPoint[] } | null>(null)
+  const [selectRequest, setSelectRequest] = React.useState<{ id: string; at: number } | null>(null)
+  const [textValue, setTextValue] = React.useState('')
+  const [confirmClear, setConfirmClear] = React.useState(false)
   const [pickerOpen, setPickerOpen] = React.useState(false)
   const [chartExpanded, setChartExpanded] = React.useState(false)
   const [chartResetToken, setChartResetToken] = React.useState(0)
+  const sessionMaLines = s.workspaceSessionId === s.activeSessionId ? s.workspace?.maLines : undefined
+  const maLines = React.useMemo<MaLine[]>(() => sessionMaLines ?? [], [sessionMaLines])
   const toggleIndicator = (id: IndicatorId) => {
     const next = new Set(indicators)
     if (next.has(id)) next.delete(id); else next.add(id)
     saveSessionWorkspace({ indicators: [...next] })
   }
   React.useEffect(() => { setDrawMode(null); setChartExpanded(false) }, [s.activeSessionId])
-  const marks = s.chartMarksKey === `${s.activeSessionId ?? ''}:${coin}:${s.interval}` ? s.chartMarks : []
-  const layers = { orders: true, fills: true, drawings: true, ...s.workspace?.chartLayers }
+  const marks = s.chartMarksKey === `${s.activeSessionId ?? ''}:${coin}` ? s.chartMarks : []
+  const layers = { orders: true, fills: true, drawings: true, reasons: false, ...s.workspace?.chartLayers }
   const tradeEvents = React.useMemo(() => chartTradeEvents(s.candles, coin,
     layers.orders ? s.tradeHistory?.orders ?? [] : [], layers.fills ? s.tradeHistory?.fills ?? [] : []),
   [s.candles, coin, s.tradeHistory, layers.orders, layers.fills])
-  const draw = React.useCallback(async (mark: Pick<ChartMark, 'kind' | 'price' | 'fromTime' | 'fromPrice' | 'toTime' | 'toPrice'>) => {
-    const sessionId = store.get().activeSessionId
-    if (!sessionId) { notify(tr('请先选择交易会话', 'Choose a trading session first')); return }
-    const { activeCoin, interval } = store.get()
-    try {
-      await hyperCall('drawChartMark', { ...mark, sessionId, coin: activeCoin, interval, role: 'neutral',
-        label: mark.kind === 'level' ? tr('水平线', 'Horizontal line') : tr('趋势线', 'Trend line') })
-      if (store.get().activeSessionId === sessionId) void loadChartMarks()
-    } catch (error) { notify(tr('画线失败', 'Could not draw line') + '：' + String((error as Error)?.message ?? error)) }
-    setDrawMode(null)
+  const stayRef = React.useRef(stayDrawing)
+  stayRef.current = stayDrawing
+  const history = useDrawingHistory(`${s.activeSessionId ?? ''}:${coin}`)
+  const historyRef = React.useRef(history)
+  historyRef.current = history
+  /** New drawings take the tool's saved default style. */
+  const save = React.useCallback((mark: DrawPayload, label: string) => {
+    void historyRef.current.create({ ...loadStyleTemplate(mark.kind), ...mark, label })
   }, [])
-  const erase = React.useCallback(async (id: string) => {
-    const sessionId = store.get().activeSessionId
-    if (!sessionId) return
-    try { await hyperCall('eraseChartMark', { sessionId, id }); if (store.get().activeSessionId === sessionId) void loadChartMarks() }
-    catch (error) { notify(tr('删除画线失败', 'Could not remove line') + '：' + String((error as Error)?.message ?? error)) }
+  const draw = React.useCallback((mark: DrawPayload) => {
+    if (!stayRef.current) setDrawMode(null)
+    if ((isTextKind(mark.kind) || mark.kind === 'icon') && 'points' in mark) { setTextValue(''); setTextAt({ kind: mark.kind, points: mark.points }); return }
+    void save(mark, mark.kind === 'level' ? drawingLabel('level', [], mark.price)
+      : mark.kind === 'trend' ? drawingLabel('trend', [{ time: mark.fromTime, price: mark.fromPrice }])
+        : drawingLabel(mark.kind, mark.points))
+  }, [save])
+  /** A fill goes back to the conversation that decided it, as a quote chip with its rationale. */
+  const analyzeFill = React.useCallback((event: TradeEvent) => {
+    const state = store.get()
+    const known = (id: string | null) => Boolean(id && state.sessions.some((row) => row.sessionId === id) && !state.archivedSessionIds.includes(id))
+    const target = known(event.sessionId) ? event.sessionId! : state.activeSessionId
+    if (!target) { notify(tr('请先选择交易会话', 'Choose a trading session first')); return }
+    const side = event.isBuy ? tr('买入', 'Buy') : tr('卖出', 'Sell')
+    const when = new Date(event.time).toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC')
+    const text = [
+      tr(`【成交复盘】${event.coin} ${side} ${event.sz} @ ${event.px}（${when}，图表周期 ${state.interval}）`, `[Fill review] ${event.coin} ${side} ${event.sz} @ ${event.px} (${when}, chart ${state.interval})`),
+      event.reason ? tr(`当时的决策原因：${event.reason}`, `Rationale at the time: ${event.reason}`) : tr('这笔成交没有记录决策原因。', 'No rationale was recorded for this fill.'),
+      tr('请结合成交之后的走势复盘：依据是否仍然成立、执行是否到位、接下来如何管理这笔仓位。', 'Review it against what happened since: does the thesis still hold, was execution sound, and how should the position be managed now?'),
+    ].join('\n')
+    store.patch((current) => ({ chartReferences: [...current.chartReferences, { id: Date.now() + Math.random(), sessionId: target, text,
+      label: `${tr('成交', 'Fill')} ${side} ${event.sz} ${event.coin} @ ${fmtPrice(event.px)}`, coin: event.coin, interval: state.interval, t: event.candleTime }] }))
+    if (target !== state.activeSessionId) {
+      void openSession(target, event.coin)
+      notify(tr('已切换到做出这笔决策的会话，复盘引用已放入输入框', 'Switched to the session that made this decision; the review is in the composer'))
+    }
+  }, [])
+  const editMark = React.useCallback((id: string, patch: Record<string, unknown>) => historyRef.current.edit(id, patch), [])
+  const erase = React.useCallback((id: string) => historyRef.current.remove(id), [])
+  const cloneMark = React.useCallback((copy: ClonePayload) => {
+    void historyRef.current.create({ kind: copy.kind, label: copy.label, ...copy.geometry, ...copy.style })
+  }, [])
+  // Ctrl/Cmd+Z undo, Shift+Ctrl/Cmd+Z or Ctrl+Y redo — never while typing (the chat composer keeps its own undo).
+  React.useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (!(event.metaKey || event.ctrlKey) || event.altKey) return
+      const element = event.target as HTMLElement | null
+      if (element?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element?.tagName ?? '')) return
+      const key = event.key.toLowerCase()
+      if (key === 'z' && !event.shiftKey) { event.preventDefault(); void historyRef.current.undo() }
+      else if ((key === 'z' && event.shiftKey) || key === 'y') { event.preventDefault(); void historyRef.current.redo() }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
   }, [])
 
   React.useEffect(() => {
@@ -146,7 +212,7 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
           <button type="button" className="dhl-market-trigger" aria-haspopup="dialog" aria-expanded={pickerOpen} onClick={() => setPickerOpen(true)}>
             <MarketIcon market={row ?? { name: coin, label: `${coin}-USDC`, kind: 'perp' }} />
             <strong>{row?.label ?? `${coin}-USDC`}</strong>
-            <span className="dhl-market-chevron" aria-hidden="true">⌄</span>
+            <span className="dhl-market-chevron"><UiIcon name="chevronDown" size={16} /></span>
           </button>
           <span className="dhl-market-kind">{row?.kind === 'spot' ? 'SPOT' : row?.kind === 'hip3' ? 'HIP-3' : row?.kind === 'outcome' ? 'OUTCOME' : 'PERP'}</span>
           {row?.maxLeverage ? <span className="dhl-market-tag">{row.maxLeverage}x</span> : null}
@@ -161,6 +227,11 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
         </div>
         <button className="dhl-panel-iconbtn" type="button" onClick={onCollapse} aria-label={tr('收起行情区', 'Collapse market panel')} title={tr('收起行情区', 'Collapse market panel')}><FoldIcon direction="right" /></button>
       </header>
+      <Modal open={Boolean(textAt)} onClose={() => setTextAt(null)} title={textAt?.kind === 'icon' ? tr('选择图标', 'Pick an icon') : textAt?.kind === 'callout' ? tr('添加标注', 'Add callout') : tr('添加文本', 'Add text')} closeLabel={tr('关闭', 'Close')} className="dhl-rename-modal"
+        footer={<><Button variant="outline" onClick={() => setTextAt(null)}>{tr('取消', 'Cancel')}</Button><Button variant="primary" disabled={!textValue.trim()} onClick={() => { if (textAt && textValue.trim()) void save({ kind: textAt.kind as 'text', points: textAt.points }, textValue.trim()); setTextAt(null) }}>{tr('添加', 'Add')}</Button></>}>
+        {textAt?.kind === 'icon' ? <StickerPicker onPick={(name) => { if (textAt) void save({ kind: 'icon', points: textAt.points }, name); setTextAt(null) }} /> :         <Input data-modal-autofocus className="dhl-rename-input" value={textValue} maxLength={200} placeholder={tr('输入要标在图上的文字', 'Text to place on the chart')} aria-label={tr('文本内容', 'Text')}
+          onChange={(event) => setTextValue(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && textAt && textValue.trim()) { event.preventDefault(); void save({ kind: textAt.kind as 'text', points: textAt.points }, textValue.trim()); setTextAt(null) } }} />}
+      </Modal>
       {pickerOpen ? <MarketPicker activeCoin={coin} onClose={() => setPickerOpen(false)} /> : null}
 
       <div className={'dhl-market-workspace' + (s.tapePlacement === 'below' ? ' dhl-tape-below' : '')}>
@@ -174,34 +245,61 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
               <div className="dhl-chart-tools">
                 <div className="dhl-intervals" aria-label={tr('K 线周期', 'Chart interval')}>
                   {INTERVALS.map((iv) => <button key={iv} type="button" className={s.interval === iv ? 'on' : ''} onClick={() => changeInterval(iv)}>{iv}</button>)}
-                  <select className="dhl-interval-more" aria-label={tr('更多 K 线周期', 'More chart intervals')} value={MORE_INTERVALS.includes(s.interval) ? s.interval : ''} onChange={(event) => changeInterval(event.target.value as Interval)}>
+                  <Select aria-label={tr('更多 K 线周期', 'More chart intervals')} value={MORE_INTERVALS.includes(s.interval) ? s.interval : ''} onChange={(event) => changeInterval(event.target.value as Interval)}>
                     <option value="" disabled>{tr('更多', 'More')}</option>
                     {MORE_INTERVALS.map((iv) => <option key={iv} value={iv}>{iv}</option>)}
-                  </select>
+                  </Select>
                 </div>
                 <div className="dhl-chart-actions">
                   <details className="dhl-layer-menu">
-                    <summary>{tr('显示', 'Show')}</summary>
+                    <summary>{tr('显示', 'Show')}<UiIcon name="chevronDown" size={12} /></summary>
                     <div className="dhl-layer-popover">
-                      {([['orders', tr('委托', 'Orders')], ['fills', tr('成交', 'Fills')], ['drawings', tr('画线', 'Drawings')]] as const).map(([id, label]) => <label key={id}><input type="checkbox" checked={layers[id]} onChange={(event) => saveSessionWorkspace({ chartLayers: { ...layers, [id]: event.target.checked } })} />{label}</label>)}
+                      {([['orders', tr('委托', 'Orders')], ['fills', tr('成交', 'Fills')], ['reasons', tr('成交原因', 'Fill reasons')], ['drawings', tr('画线', 'Drawings')]] as const).map(([id, label]) => <label key={id}><input type="checkbox" checked={layers[id]} onChange={(event) => saveSessionWorkspace({ chartLayers: { ...layers, [id]: event.target.checked } })} />{label}</label>)}
                     </div>
                   </details>
                   <details className="dhl-indicator-menu">
-                    <summary aria-label={tr('选择图表指标', 'Choose chart indicators')}>{tr('指标', 'Indicators')} <span className="dhl-indicator-count">{indicators.size}</span></summary>
+                    <summary aria-label={tr('选择图表指标', 'Choose chart indicators')}>{tr('指标', 'Indicators')} <span className="dhl-indicator-count">{indicators.size + maLines.length}</span></summary>
                     <div className="dhl-indicator-popover" role="group" aria-label={tr('图表指标', 'Chart indicators')}>
                       <strong>{tr('图表指标', 'Chart indicators')}</strong>
                       {INDICATOR_CHOICES.map(([id, label, description]) => <button type="button" key={id} className={indicators.has(id) ? 'on' : ''} aria-pressed={indicators.has(id)} onClick={() => toggleIndicator(id)}>
-                        <span className="dhl-indicator-check" aria-hidden="true">{indicators.has(id) ? '✓' : ''}</span>
+                        <span className="dhl-indicator-check" aria-hidden="true">{indicators.has(id) ? <UiIcon name="check" size={13} /> : null}</span>
                         <span><b>{tr(label, INDICATOR_EN[id]?.[0] ?? label)}</b><small>{tr(description, INDICATOR_EN[id]?.[1] ?? description)}</small></span>
                       </button>)}
+                      <MaEditor lines={maLines} onChange={(next) => saveSessionWorkspace({ maLines: next })} />
                     </div>
                   </details>
-                  <button type="button" className={drawMode === 'level' ? 'on' : ''} aria-pressed={drawMode === 'level'} onClick={() => setDrawMode(drawMode === 'level' ? null : 'level')} title={tr('单击图表添加水平线', 'Click chart to add a horizontal line')}>{tr('水平线', 'H Line')}</button>
-                  <button type="button" className={drawMode === 'trend' ? 'on' : ''} aria-pressed={drawMode === 'trend'} onClick={() => setDrawMode(drawMode === 'trend' ? null : 'trend')} title={tr('单击图表两次添加趋势线', 'Click chart twice to add a trend line')}>{tr('趋势线', 'Trend')}</button>
-                  <button type="button" disabled={!marks.some((item) => item.source === 'user')} title={tr('撤销最近一条手动画线', 'Undo last drawing')} onClick={() => { const last = [...marks].reverse().find((item) => item.source === 'user'); if (last) void erase(last.id) }}>{tr('撤销', 'Undo')}</button>
-                  <select className="dhl-interval-more" aria-label={tr('价格刻度', 'Price scale')} value={s.workspace?.priceScale ?? 'normal'} onChange={(event) => saveSessionWorkspace({ priceScale: event.target.value as SessionWorkspace['priceScale'] })}>
+                  <StrategyMenu candles={s.candles} coin={coin} interval={s.interval} />
+                  <details className={'dhl-draw-menu' + (drawMode ? ' active' : '')} ref={drawMenu}>
+                    <summary aria-label={tr('画线工具', 'Drawing tools')}>{drawMode ? <><ToolIcon kind={drawMode} size={14} />{tr(toolOf(drawMode).zh, toolOf(drawMode).en)}</> : tr('画线', 'Draw')}<UiIcon name="chevronDown" size={12} /></summary>
+                    <div className="dhl-draw-popover" role="menu" aria-label={tr('画线工具', 'Drawing tools')}>
+                      {DRAWING_TOOLS.map((tool, index) => <React.Fragment key={tool.kind}>{index > 0 && DRAWING_TOOLS[index - 1].group !== tool.group ? <hr /> : null}<button type="button" role="menuitemradio" key={tool.kind} aria-checked={drawMode === tool.kind} className={drawMode === tool.kind ? 'on' : ''}
+                        onClick={() => { setDrawMode(drawMode === tool.kind ? null : tool.kind); drawMenu.current?.removeAttribute('open') }}>
+                        <ToolIcon kind={tool.kind} /><span><b>{tr(tool.zh, tool.en)}</b><small>{tr(tool.hintZh, tool.hintEn)}</small></span>
+                      </button></React.Fragment>)}
+                      <div className="dhl-draw-settings">
+                        <div className="dhl-draw-setting"><span>{tr('磁吸', 'Magnet')}</span>
+                          <span className="dhl-draw-seg" role="radiogroup" aria-label={tr('磁吸', 'Magnet')}>
+                            {([['off', '关', 'Off'], ['weak', '弱', 'Weak'], ['strong', '强', 'Strong']] as const).map(([value, zh, en]) => <button type="button" role="radio" key={value} aria-checked={magnet === value} className={magnet === value ? 'on' : ''} onClick={() => setMagnet(value)}>{tr(zh, en)}</button>)}
+                          </span></div>
+                        <label className="dhl-draw-setting"><span>{tr('连续绘制', 'Stay in drawing mode')}</span><input type="checkbox" checked={stayDrawing} onChange={(event) => setStayDrawing(event.target.checked)} /></label>
+                        <label className="dhl-draw-setting"><span>{tr('锁定所有画线', 'Lock all drawings')}</span><input type="checkbox" checked={drawingsLocked} onChange={(event) => setDrawingsLocked(event.target.checked)} /></label>
+                        <button type="button" className={'dhl-draw-clear' + (confirmClear ? ' confirm' : '')} disabled={!marks.length || drawingsLocked}
+                          onClick={() => { if (!confirmClear) { setConfirmClear(true); return } setConfirmClear(false); drawMenu.current?.removeAttribute('open'); void history.removeMany(marks.filter((item) => !item.locked).map((item) => item.id)) }}
+                          onBlur={() => setConfirmClear(false)}>
+                          {confirmClear ? tr(`确认删除 ${marks.filter((item) => !item.locked).length} 条画线`, `Delete ${marks.filter((item) => !item.locked).length} drawings`) : tr('删除所有画线', 'Remove all drawings')}
+                        </button>
+                      </div>
+                    </div>
+                  </details>
+                  <button type="button" className="dhl-chart-iconbtn" disabled={!history.canUndo} aria-label={tr('撤销', 'Undo')} title={tr('撤销画线操作（Ctrl/Cmd+Z）', 'Undo drawing change (Ctrl/Cmd+Z)')} onClick={() => void history.undo()}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M9 14 4 9l5-5" /><path d="M4 9h10a6 6 0 0 1 0 12h-3" /></svg>
+                  </button>
+                  <button type="button" className="dhl-chart-iconbtn" disabled={!history.canRedo} aria-label={tr('重做', 'Redo')} title={tr('重做（Shift+Ctrl/Cmd+Z）', 'Redo (Shift+Ctrl/Cmd+Z)')} onClick={() => void history.redo()}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m15 14 5-5-5-5" /><path d="M20 9H10a6 6 0 0 0 0 12h3" /></svg>
+                  </button>
+                  <Select aria-label={tr('价格刻度', 'Price scale')} value={s.workspace?.priceScale ?? 'normal'} onChange={(event) => saveSessionWorkspace({ priceScale: event.target.value as SessionWorkspace['priceScale'] })}>
                     <option value="normal">{tr('线性', 'Linear')}</option><option value="log">{tr('对数', 'Log')}</option><option value="percentage">%</option>
-                  </select>
+                  </Select>
                   <span className="dhl-chart-action-separator" aria-hidden="true" />
                   <button type="button" className="dhl-chart-iconbtn" aria-label={tr('复位图表视图', 'Reset chart view')} title={tr('复位图表视图', 'Reset chart view')} onClick={() => setChartResetToken((value) => value + 1)}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M3 11a9 9 0 1 0 2.6-6.4M3 4v6h6" /><path d="M12 7v5l3 2" /></svg>
@@ -215,16 +313,19 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
               </div>
               <div className="dhl-chart">
                 <CandleChart candles={s.candles} marks={layers.drawings ? marks : []} tradeEvents={tradeEvents} indicators={indicators} expanded={chartExpanded} resetToken={chartResetToken}
-                  drawMode={drawMode} onDraw={draw} onSelect={(selection) => insertChartReference(selection, coin, s.interval)} onNeedOlder={loadOlderCandles} olderState={s.candlesOlder} priceScale={s.workspace?.priceScale ?? 'normal'}
+                  drawMode={drawMode} onDraw={draw} onSelect={(selection) => insertChartReference(selection, coin, s.interval)} onNeedOlder={loadOlderCandles} olderState={s.candlesOlder}
+                  showReasons={layers.fills && layers.reasons} onAnalyzeFill={analyzeFill}
+                  onCloneMark={cloneMark} selectRequest={selectRequest}
+                  magnet={magnet} drawingsLocked={drawingsLocked} onEditMark={(id, patch) => void editMark(id, patch)} onRemoveMark={(id) => void erase(id)}
+                  focus={s.chartFocus && s.chartFocus.coin === coin && s.chartFocus.interval === s.interval ? s.chartFocus : null} maLines={maLines} priceScale={s.workspace?.priceScale ?? 'normal'}
                   visibleRange={s.workspace?.chartRanges?.[`${coin}:${s.interval}`] ?? null}
                   onVisibleRange={(range) => saveSessionWorkspace({ chartRanges: { [`${coin}:${s.interval}`]: range } })}
                   key={`${s.activeSessionId ?? ''}:${s.workspaceSessionId === s.activeSessionId ? 'ready' : 'pending'}:${coin}:${s.interval}`} />
                 <div className="dhl-chart-click-hint">{drawMode
-                  ? drawMode === 'level' ? tr('单击 K 线图设置水平线 · Esc 取消', 'Click chart to place line · Esc to cancel') : tr('在 K 线图上依次选择起点和终点 · Esc 取消', 'Click start and end points · Esc to cancel')
+                  ? `${tr(toolOf(drawMode).zh, toolOf(drawMode).en)}：${tr(toolOf(drawMode).hintZh, toolOf(drawMode).hintEn)} · ${tr('Esc 取消', 'Esc to cancel')}`
                   : tr('点击 K 线、成交量柱或指标线，将该点数据加入聊天输入框', 'Click a candle, volume bar or study line to add its data to the chat draft')}</div>
-                {marks.length > 0 ? <div className="dhl-chart-mark-list" aria-label={tr('本会话画线', 'This session’s lines')}>
-                  {marks.map((item) => <span key={item.id}>{item.label}<button type="button" aria-label={`${tr('删除画线', 'Remove line')} ${item.label}`} onClick={() => void erase(item.id)}>×</button></span>)}
-                </div> : null}
+                {marks.length > 0 ? <DrawingList marks={marks} locked={drawingsLocked} onSelect={(id) => setSelectRequest({ id, at: Date.now() })}
+                  onEdit={(id, patch) => void editMark(id, patch)} onRemove={(id) => void erase(id)} /> : null}
                 {s.candlesState === 'error' ? <div className="dhl-inline-error">{tr('K 线暂时不可用。切换周期可重试。', 'Chart data is unavailable. Change interval to retry.')}</div> : null}
               </div>
             </div>

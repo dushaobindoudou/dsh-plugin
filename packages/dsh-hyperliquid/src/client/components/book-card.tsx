@@ -1,5 +1,6 @@
 /** Exchange-aggregated L2 depth. Full precision stays available to risk checks. */
 import * as React from 'react'
+import { Select } from './select'
 import { t, tr } from '../remote'
 import { fmt, fmtPrice } from '../format'
 import { loadSnapshot, saveSessionWorkspace } from '../data'
@@ -75,9 +76,9 @@ export function BookCard({ snapshot }: { snapshot: any }) {
   return <div className="dhl-card">
     <h4>{t('book.title', '盘口')}</h4>
     <div className="dhl-book-options">
-      <label>{tr('价格档位', 'Price grouping')} <select aria-label={tr('盘口价格档位', 'Order book price grouping')} value={grouping} onChange={(event) => chooseGrouping(event.target.value as BookGrouping)}>
+      <label>{tr('价格档位', 'Price grouping')} <Select aria-label={tr('盘口价格档位', 'Order book price grouping')} value={grouping} onChange={(event) => chooseGrouping(event.target.value as BookGrouping)}>
         {GROUPINGS.map(([key, factor]) => <option key={key} value={key}>{factor == null ? tr('原始', 'Full') : stepLabel(baseStep * factor)}</option>)}
-      </select></label>
+      </Select></label>
       <span>{coin}</span>
     </div>
     {asks.length === 0 && bids.length === 0

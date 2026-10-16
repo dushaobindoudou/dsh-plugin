@@ -1,0 +1,23 @@
+export type DrawingKind = 'level' | 'hray' | 'vline' | 'text' | 'trend' | 'ray' | 'extended' | 'fib' | 'rect' | 'measure' | 'channel' | 'long' | 'short' | 'fibext' | 'fibchannel' | 'fibtime' | 'gannfan' | 'pitchfork' | 'regression' | 'arrow' | 'callout' | 'circle' | 'triangle' | 'brush' | 'crossline' | 'pricelabel' | 'infoline' | 'trendangle' | 'pricerange' | 'daterange' | 'elliott' | 'elliottabc' | 'xabcd' | 'abcd' | 'headshoulders' | 'gannbox' | 'gannsquare' | 'schiff' | 'modschiff' | 'icon'
+export type LineStyleName = 'solid' | 'dashed' | 'dotted'
+export interface DrawingStyle { color?: string; lineWidth?: number; lineStyle?: LineStyleName; locked?: boolean; hidden?: boolean; shared?: boolean; alert?: boolean }
+export declare const DRAWING_POINTS: Record<DrawingKind, number>
+export declare const DRAWING_KINDS: DrawingKind[]
+export declare const DRAWING_CLICKS: Record<DrawingKind, number>
+export declare const LINE_STYLES: LineStyleName[]
+export declare function drawingStyle(request: unknown): DrawingStyle
+export declare const FIB_LEVELS: number[]
+export declare function drawingGeometry(kind: string, request: unknown, now?: number): Record<string, unknown>
+export declare const BRUSH_MIN: number
+export declare const BRUSH_MAX: number
+export declare const TEXT_KINDS: DrawingKind[]
+export declare const FIB_EXT_LEVELS: number[]
+export declare const FIB_TIME_SERIES: number[]
+export declare const GANN_RATIOS: Array<[number, number]>
+export declare const ICON_NAMES: string[]
+export declare const GANN_BOX_LEVELS: number[]
+export declare const STICKERS: Record<'trading' | 'faces' | 'symbols', string[]>
+export declare function isIconLabel(label: unknown): boolean
+export declare const ALERT_KINDS: DrawingKind[]
+export declare function linePriceAt(mark: unknown, time: number): number | null
+export declare function isSingleEmoji(value: unknown): boolean

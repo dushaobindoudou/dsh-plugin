@@ -10,6 +10,8 @@ export interface TradeEvent {
   sz: number
   status: string
   reason: string
+  /** Trading session whose decision produced it, when the desk recorded one. */
+  sessionId: string | null
   id: string
 }
 
@@ -30,6 +32,7 @@ export function chartTradeEvents(candles: Candle[], coin: string, orders: any[],
   }
   const cleanReason = (value: unknown) => typeof value === 'string' && !value.startsWith('session:') && !['tool', 'chat', 'order'].includes(value) ? value : ''
   const reasonByOid = new Map(orders.filter((row) => row?.oid != null && row.reason).map((row) => [String(row.oid), cleanReason(row.reason)]))
+  const sessionByOid = new Map(orders.filter((row) => row?.oid != null && row.sessionId).map((row) => [String(row.oid), String(row.sessionId)]))
   const out: TradeEvent[] = []
   for (const [index, row] of orders.entries()) {
     if (row?.coin !== coin) continue
@@ -38,7 +41,7 @@ export function chartTradeEvents(candles: Candle[], coin: string, orders: any[],
     if (candleTime == null) continue
     out.push({ kind: 'order', coin, time, candleTime, isBuy: row.isBuy ?? row.side === 'B',
       px: Number(row.limitPx ?? row.px), sz: Number(row.origSz ?? row.sz), status: String(row.status ?? ''),
-      reason: cleanReason(row.reason), id: `order:${row.oid ?? row.cloid ?? index}:${time}` })
+      reason: cleanReason(row.reason), sessionId: row.sessionId ?? null, id: `order:${row.oid ?? row.cloid ?? index}:${time}` })
   }
   for (const [index, row] of fills.entries()) {
     if (row?.coin !== coin) continue
@@ -47,7 +50,8 @@ export function chartTradeEvents(candles: Candle[], coin: string, orders: any[],
     if (candleTime == null) continue
     out.push({ kind: 'fill', coin, time, candleTime, isBuy: row.isBuy ?? row.side === 'B',
       px: Number(row.px ?? row.filledPx), sz: Number(row.sz ?? row.filledSz), status: 'filled',
-      reason: cleanReason(row.reason) || reasonByOid.get(String(row.oid)) || '', id: `fill:${row.tid ?? row.hash ?? index}:${time}` })
+      reason: cleanReason(row.reason) || reasonByOid.get(String(row.oid)) || '', sessionId: row.sessionId ?? sessionByOid.get(String(row.oid)) ?? null,
+      id: `fill:${row.tid ?? row.hash ?? index}:${time}` })
   }
   return out.sort((a, b) => a.candleTime - b.candleTime || a.time - b.time).slice(-120)
 }

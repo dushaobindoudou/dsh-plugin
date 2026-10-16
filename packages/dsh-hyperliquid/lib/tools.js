@@ -6,7 +6,11 @@
  * @module lib/tools.js
  */
 
-import { computeIndicators } from './indicators.js'
+import { closedCandles, computeIndicators } from './indicators.js'
+import { MA_KINDS, MA_SOURCES, maLabel, maLatest, normalizeMaLine, normalizeMaLines } from './moving-average.js'
+import { DRAWING_KINDS } from './chart-drawings.js'
+
+const DRAWING_NAMES = { level: '水平线', hray: '水平射线', vline: '垂直线', text: '文本', trend: '趋势线', ray: '射线', extended: '延长线', channel: '平行通道', fib: '斐波那契回撤', rect: '矩形', measure: '价格区间', long: '多头头寸', short: '空头头寸', fibext: '斐波那契扩展', fibchannel: '斐波那契通道', fibtime: '斐波那契时间周期', gannfan: '江恩扇形', pitchfork: '安德鲁叉子线', regression: '回归趋势', arrow: '箭头', callout: '标注气泡', circle: '圆形', triangle: '三角形', brush: '画笔', crossline: '十字线', pricelabel: '价格标签', infoline: '信息线', trendangle: '趋势角度', pricerange: '价格区间', daterange: '日期区间', elliott: '艾略特推动浪', elliottabc: '艾略特调整浪', xabcd: 'XABCD 谐波', abcd: 'ABCD 形态', headshoulders: '头肩形态', gannbox: '江恩箱', gannsquare: '江恩方格', schiff: 'Schiff 叉子线', modschiff: '改良 Schiff 叉子线', icon: '图标' }
 import { canonicalMarketCoin } from './market-symbol.js'
 
 /** Resolve the calling session id from a tool run context. */
@@ -23,7 +27,19 @@ function fmt(n, d = 2) {
 
 function shortSide(isBuy) { return isBuy ? 'BUY/LONG' : 'SELL/SHORT' }
 
+/**
+ * DSH requires tool output to be lossless JSON: no undefined fields, no NaN / Infinity.
+ * Every hyper_* result is normalized here so a stray field can never fail a tool call.
+ */
+export function losslessJson(value) {
+  return JSON.parse(JSON.stringify(value, (_key, item) => typeof item === 'number' && !Number.isFinite(item) ? null : item))
+}
+
 export function buildToolDefinitions(remote) {
+  return buildTools(remote).map((tool) => ({ ...tool, async execute(...args) { return losslessJson(await tool.execute(...args)) } }))
+}
+
+function buildTools(remote) {
   return [
     {
       name: 'hyper_context',
@@ -106,6 +122,7 @@ export function buildToolDefinitions(remote) {
         type: 'object',
         properties: {
           action: { type: 'string', enum: ['overview', 'catalog', 'book', 'candles', 'indicators', 'trades'], description: '行情查询类型' },
+          ma: { type: 'array', description: 'action=indicators 可选：额外计算的均线，最多 8 条；省略时返回当前会话图表上已叠加的均线', items: { type: 'object', properties: { kind: { type: 'string', enum: MA_KINDS }, period: { type: 'number' }, source: { type: 'string', enum: MA_SOURCES }, smoothing: { type: 'object', properties: { kind: { type: 'string', enum: MA_KINDS }, period: { type: 'number' } } } }, required: ['kind', 'period'] } },
           coin: { type: 'string', description: '官方合约名，以 action=catalog 返回的 name 为准，如 BTC 或 xyz:XYZ100；overview 时可省略' },
           kind: { type: 'string', enum: ['perp', 'hip3', 'spot', 'outcome'], description: 'catalog 市场类型过滤' },
           category: { type: 'string', description: 'catalog 官方分类过滤，如 crypto、stocks、commodities、indices、fx、rates、preipo；tradfi 聚合这些传统金融标签' },
@@ -118,7 +135,7 @@ export function buildToolDefinitions(remote) {
       },
       output: { schema: { type: 'object', additionalProperties: true }, render: (_a, v) => [{ type: 'text', text: v.text }] },
       timeoutMs: 15_000,
-      async execute(args) {
+      async execute(args, exec) {
         const action = args?.action ?? 'overview'
         if (action === 'overview') {
           const { universe } = await remote.markets()
@@ -174,9 +191,14 @@ export function buildToolDefinitions(remote) {
             `RSI14=${fmt(indicators.rsi14, 1)} MACD=${fmt(indicators.macd.line, 4)} signal=${fmt(indicators.macd.signal, 4)} hist=${fmt(indicators.macd.histogram, 4)}`,
             `布林带下/中/上=${fmt(indicators.bollinger20.lower)}/${fmt(indicators.bollinger20.middle)}/${fmt(indicators.bollinger20.upper)} ATR14=${fmt(indicators.atr14)} 量比20=${fmt(indicators.volumeRatio20, 2)}`,
             `邻近支撑=${fmt(indicators.support.price)}（${new Date(indicators.support.time).toISOString()}） 阻力=${fmt(indicators.resistance.price)}（${new Date(indicators.resistance.time).toISOString()}）`,
-            '指标是历史 K 线的派生值；需要结合最新盘口、账户风险和数据时效验证，不能单独当作下单信号。',
-          ].join('\n')
-          return { text, indicators, interval, coin }
+          ]
+          let session = null
+          try { session = sessionIdOf(exec) } catch { /* not a trading session */ }
+          const requested = Array.isArray(args?.ma) ? normalizeMaLines(args.ma) : (session && remote.store.getSession?.(session) ? remote.store.getSessionWorkspace(session).maLines ?? [] : [])
+          const ma = requested.length ? maLatest(closedCandles(candles, { interval }).rows, requested) : []
+          if (ma.length) text.push('均线（最新已收盘）：' + ma.map((row) => `${row.label}=${row.value == null ? '数据不足' : fmt(row.value)}${row.line.smoothing ? `→平滑${fmt(row.smoothed)}` : ''}`).join('  '))
+          text.push('指标是历史 K 线的派生值；需要结合最新盘口、账户风险和数据时效验证，不能单独当作下单信号。')
+          return { text: text.join('\n'), indicators, ma, interval, coin }
         }
         if (action === 'trades') {
           const snap = await remote.snapshot({ coin })
@@ -188,13 +210,26 @@ export function buildToolDefinitions(remote) {
     },
     {
       name: 'hyper_chart',
-      description: '在当前 DSH 交易会话的行情图上画或管理供人查看的水平支撑/阻力线与趋势线。先用 hyper_market candles/indicators 验证价格和时间；标注仅用于解释，不是自动订单或交易信号。',
+      description: '在当前 DSH 交易会话的行情图上画或管理供人查看的水平支撑/阻力线、趋势线与均线。kind=ma 在图上叠加一条按 K 线实时计算的均线：maType 支持 sma/ema/smma(平滑均线，即 RMA/Wilder)/wma，period 1-500，source 默认 close，可选 smoothingType+smoothingPeriod 再对均线做一次平滑（同 TradingView 均线指标的 Smoothing）；均线按会话保存，随周期切换重算，最多 8 条，add 会返回最新已收盘值。画线工具：level 水平线(price)、trend 趋势线(fromTime/fromPrice/toTime/toPrice)，其余用 points=[{time,price}]：hray 水平射线/vline 垂直线 1 点，ray 射线/extended 延长线/fib 斐波那契回撤(第 1 点=1、第 2 点=0)/rect 矩形/measure 价格区间 2 点，channel 平行通道 3 点（第 3 点定通道宽度），text 文本 1 点（label 为文本，最多 200 字），long/short 多空头寸 3 点 [入场, 止损, 止盈]（第 2 点时间为右边界）；fibext 斐波那契扩展 3 点(A→B 波段，自 C 投射)、fibchannel 斐波那契通道 3 点、fibtime 斐波那契时间周期 2 点、gannfan 江恩扇形 2 点(第 2 点定 1×1)、pitchfork 安德鲁叉子线 3 点、regression 回归趋势 2 点(时间区间)、arrow 箭头 2 点、callout 标注气泡 2 点(锚点+文本框位置，label 为文本)、circle 圆形 2 点(圆心+边缘)、triangle 三角形 3 点、brush 画笔 2-500 点；crossline 十字线、pricelabel 价格标签 1 点；infoline 信息线、trendangle 趋势角度、pricerange 价格区间、daterange 日期区间 2 点；elliott 推动浪 6 点(0-5)、elliottabc 调整浪 4 点(0-A-B-C)、xabcd 谐波 5 点、abcd 4 点、headshoulders 头肩 7 点(左底-左肩-颈1-头-颈2-右肩-右底)、gannbox/gannsquare 2 点对角、schiff/modschiff 叉子线 3 点、icon 图标 1 点(label 为 flag/star/up/down/warning/check/cross/fire/target/bell，或贴图库 emoji:📈/🚀/🐂/🐻/⚠️ 等)。update 按 id 修改 points/price/label 或样式 color/lineWidth(1-4)/lineStyle(solid/dashed/dotted)/locked。画线按会话和标的保存，在该标的所有周期显示。先用 hyper_market candles/indicators 验证价格和时间；标注仅用于解释，不是自动订单或交易信号。',
       parameters: {
         type: 'object', properties: {
-          action: { type: 'string', enum: ['add', 'list', 'remove'] },
+          action: { type: 'string', enum: ['add', 'list', 'update', 'remove'] },
           coin: { type: 'string', description: '默认会话绑定币对' },
           interval: { type: 'string', description: '默认当前交易台周期' },
-          kind: { type: 'string', enum: ['level', 'trend'], description: 'add 必填：水平线或趋势线' },
+          kind: { type: 'string', enum: [...DRAWING_KINDS, 'ma'], description: 'add 必填：画线类型或 ma 均线' },
+          points: { type: 'array', description: 'hray/vline/ray/extended/channel/fib/rect/measure 的锚点，按点击顺序', items: { type: 'object', properties: { time: { type: 'number', description: 'K 线时间 epoch ms' }, price: { type: 'number' } }, required: ['time', 'price'] } },
+          maType: { type: 'string', enum: MA_KINDS, description: 'kind=ma：均线类型；smma 即平滑均线（RMA）' },
+          period: { type: 'number', description: 'kind=ma：周期，1-500 的整数' },
+          source: { type: 'string', enum: MA_SOURCES, description: 'kind=ma：价格源，默认 close' },
+          smoothingType: { type: 'string', enum: MA_KINDS, description: 'kind=ma 可选：对均线再做一次平滑的类型' },
+          smoothingPeriod: { type: 'number', description: 'kind=ma 可选：平滑周期' },
+          color: { type: 'string', description: '可选 #RRGGBB 颜色（画线或均线）' },
+          lineWidth: { type: 'number', description: '画线线宽 1-4' },
+          lineStyle: { type: 'string', enum: ['solid', 'dashed', 'dotted'], description: '画线线型' },
+          locked: { type: 'boolean', description: 'update：锁定后用户不能误拖动' },
+          hidden: { type: 'boolean', description: 'update：在图上隐藏（保留在画线列表中）' },
+          shared: { type: 'boolean', description: '同步到该币种的所有交易会话' },
+          alert: { type: 'boolean', description: '价格穿越提醒（level/hray/trend/ray/extended），触发一次后自动关闭' },
           role: { type: 'string', enum: ['support', 'resistance', 'neutral'], description: '视觉语义' },
           label: { type: 'string', description: '图上展示的短标签，1-60 字' },
           price: { type: 'number', description: '水平线价格' },
@@ -202,7 +237,7 @@ export function buildToolDefinitions(remote) {
           fromPrice: { type: 'number', description: '趋势线起点价格' },
           toTime: { type: 'number', description: '趋势线终点 K 线时间，epoch ms' },
           toPrice: { type: 'number', description: '趋势线终点价格' },
-          id: { type: 'string', description: 'remove 时使用 list 返回的标注 ID' },
+          id: { type: 'string', description: 'remove 时使用 list 返回的标注或均线 ID' },
         }, required: ['action'], additionalProperties: false,
       },
       output: { schema: { type: 'object', additionalProperties: true }, render: (_a, v) => [{ type: 'text', text: v.text }] },
@@ -211,13 +246,39 @@ export function buildToolDefinitions(remote) {
         remote.requireTradingSession(sessionId)
         const coin = canonicalMarketCoin(args?.coin ?? remote.store.getSession(sessionId)?.coin ?? remote.desk.coin)
         const interval = args?.interval ?? remote.store.getSessionWorkspace?.(sessionId)?.interval ?? remote.desk.interval
+        const maLines = () => remote.store.getSessionWorkspace?.(sessionId)?.maLines ?? []
+        const maValues = async (lines) => {
+          if (!lines.length) return []
+          const { candles } = await remote.candles({ coin, interval })
+          return maLatest(closedCandles(candles, { interval }).rows, lines)
+        }
+        const maText = (row) => `${row.id} ${row.label} = ${row.value == null ? '数据不足' : fmt(row.value)}${row.line.smoothing ? `，平滑 = ${row.smoothed == null ? '数据不足' : fmt(row.smoothed)}` : ''}`
         if (args?.action === 'list') {
-          const result = await remote.chartMarks({ sessionId, coin, interval })
-          return { text: result.marks.length ? result.marks.map((mark) => `${mark.id} ${mark.kind} ${mark.role} ${mark.label}`).join('\n') : '当前图表没有标注', ...result }
+          const result = await remote.chartMarks({ sessionId, coin, allIntervals: true })
+          const ma = await maValues(maLines())
+          const lines = [...result.marks.map((mark) => `${mark.id} ${mark.interval} ${mark.kind} ${mark.role} ${mark.label}`), ...ma.map((row) => `${maText(row)}（${coin} ${interval} 最新已收盘）`)]
+          return { text: lines.length ? lines.join('\n') : '当前标的没有标注或均线', ...result, maLines: ma }
+        }
+        if (args?.action === 'add' && args?.kind === 'ma') {
+          const line = normalizeMaLine({ kind: args.maType, period: args.period, source: args.source, color: args.color,
+            smoothing: args.smoothingType != null || args.smoothingPeriod != null ? { kind: args.smoothingType, period: args.smoothingPeriod } : null })
+          const next = remote.setSessionMaLines(sessionId, [...maLines().filter((row) => row.id !== line.id), line])
+          const [row] = await maValues([next.find((item) => item.id === line.id)])
+          return { text: `已在 ${coin} 图表叠加均线 ${maText(row)}（${interval} 最新已收盘），切换周期会自动重算。`, line: row.line, value: row.value, smoothed: row.smoothed }
+        }
+        if (args?.action === 'remove' && maLines().some((row) => row.id === args?.id)) {
+          const removed = maLines().find((row) => row.id === args.id)
+          remote.setSessionMaLines(sessionId, maLines().filter((row) => row.id !== args.id))
+          return { text: `已移除均线：${maLabel(removed)}（${removed.id}）`, line: removed }
+        }
+        if (args?.action === 'update') {
+          const patch = Object.fromEntries(['points', 'price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'label', 'color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert'].filter((key) => args?.[key] != null).map((key) => [key, args[key]]))
+          const mark = remote.editChartMark(args?.id, patch, sessionId)
+          return { text: `已更新${DRAWING_NAMES[mark.kind] ?? mark.kind}：${mark.label}（${mark.id}）`, mark }
         }
         if (args?.action === 'add') {
           const mark = remote.addChartMark({ ...args, coin, interval }, sessionId)
-          return { text: `已在 ${coin} ${interval} 图表添加 ${mark.kind === 'level' ? '水平线' : '趋势线'}：${mark.label}（${mark.id}）`, mark }
+          return { text: `已在 ${coin} ${interval} 图表添加${DRAWING_NAMES[mark.kind] ?? mark.kind}：${mark.label}（${mark.id}）`, mark }
         }
         if (args?.action === 'remove') {
           const mark = remote.removeChartMark(args?.id, sessionId)

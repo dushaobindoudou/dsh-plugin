@@ -12,6 +12,9 @@ export type BookGrouping = 'full' | '5' | '5x2' | '5x5' | '4' | '3' | '2'
 
 export type CandleState = 'idle' | 'loading' | 'ready' | 'error'
 
+import type { MaLine } from '../../lib/moving-average.js'
+export type { MaLine }
+
 export type TapePlacement = 'auto' | 'below'
 
 export interface SessionWorkspace {
@@ -23,7 +26,9 @@ export interface SessionWorkspace {
   bottomTab: 'positions' | 'orders' | 'account'
   indicators: Array<'volume' | 'sma20' | 'sma60' | 'ema20' | 'ema50' | 'bollinger20' | 'rsi14' | 'macd'>
   priceScale: 'normal' | 'log' | 'percentage'
-  chartLayers?: { orders: boolean; fills: boolean; drawings: boolean }
+  /** Configurable moving averages (SMA / EMA / SMMA / WMA, optional smoothing). */
+  maLines?: MaLine[]
+  chartLayers?: { orders: boolean; fills: boolean; drawings: boolean; reasons?: boolean }
   chartRanges: Record<string, { from: number; to: number }>
   layout: { sessionsWidth: number; chatWidth: number; sessionsCollapsed: boolean; deskCollapsed: boolean; chatCollapsed: boolean }
 }
@@ -68,7 +73,7 @@ export interface ChartMark {
   sessionId: string
   coin: string
   interval: Interval
-  kind: 'level' | 'trend'
+  kind: import('../../lib/chart-drawings.js').DrawingKind
   role: 'support' | 'resistance' | 'neutral'
   label: string
   price?: number
@@ -76,6 +81,18 @@ export interface ChartMark {
   fromPrice?: number
   toTime?: number
   toPrice?: number
+  /** Anchors of every kind other than level / trend, in click order. */
+  points?: Array<{ time: number; price: number }>
+  color?: string
+  lineWidth?: number
+  lineStyle?: 'solid' | 'dashed' | 'dotted'
+  locked?: boolean
+  hidden?: boolean
+  /** Synced to every trading session of this coin. */
+  shared?: boolean
+  /** Price-cross alert armed (fires once). */
+  alert?: boolean
+  alertTriggeredAt?: number
   source: 'agent' | 'user'
   createdAt: number
 }
@@ -139,7 +156,9 @@ export interface DeskState {
   notice: Notice | null
   eventsSeq: number
   ticketDraft: { coin: string; isBuy: boolean; px: string; at: number } | null
-  chartReferences: Array<{ id: number; sessionId: string; text: string }>
+  chartReferences: Array<{ id: number; sessionId: string; text: string; label: string; coin: string; interval: Interval; t: number }>
+  /** A chart point to bring into view, e.g. after the trader opens a quote chip. */
+  chartFocus: { coin: string; interval: Interval; t: number; at: number } | null
   /** Order book / trades placement: beside the chart when wide enough, or always below it. */
   tapePlacement: TapePlacement
   /** When the panel last became visible; stale data right after this is a resync, not an outage. */

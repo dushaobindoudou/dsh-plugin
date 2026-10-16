@@ -8,13 +8,13 @@
  */
 
 import * as React from 'react'
-import { Modal } from '@deepseek-ai/dsh-client-ui-primitives'
+import { Button, Input, Modal } from '@deepseek-ai/dsh-client-ui-primitives'
 import { getContext, hyperCall, t, tr } from '../remote'
 import { relTime } from '../format'
 import { getActiveRef, notify, store, useStore } from '../store'
 import { loadSessions, openSession } from '../data'
 import type { SessionRow } from '../types'
-import { FoldIcon } from './panel-icons'
+import { FoldIcon, UiIcon } from './panel-icons'
 
 export function SessionsColumn({ width, fill = false, onCollapse }: { width?: number; fill?: boolean; onCollapse: () => void }) {
   const s = useStore()
@@ -103,7 +103,7 @@ export function SessionsColumn({ width, fill = false, onCollapse }: { width?: nu
         <button className="dhl-panel-iconbtn" type="button" onClick={onCollapse} aria-label={tr('收起会话栏', 'Collapse sessions')} title={tr('收起会话栏', 'Collapse sessions')}><FoldIcon direction="left" /></button>
       </div>
       <button className="dhl-newbtn" onClick={createSession}>
-        {'＋ '}{t('sessions.new', '新建交易会话')}
+        <UiIcon name="plus" size={16} />{t('sessions.new', '新建交易会话')}
       </button>
       <div style={{ flex: '1', overflowY: 'auto', minHeight: 0 }}>
         {rows.length === 0
@@ -120,14 +120,14 @@ export function SessionsColumn({ width, fill = false, onCollapse }: { width?: nu
               <span className="title">{row.title ?? row.sessionId}</span>
               <span className="t">{relTime(row.updatedAt ?? row.createdAt ?? 0)}</span>
               <span className="dhl-srow-actions">
-                <button className="dhl-srow-action" type="button" title={t('session.rename', '重命名')} aria-label={t('session.rename', '重命名')} onClick={(event) => { event.stopPropagation(); setEditing({ id: row.sessionId, title: row.title ?? '' }) }}>✎</button>
-                <button className="dhl-srow-action" type="button" title={t('session.archive', '归档')} aria-label={t('session.archive', '归档')} onClick={(event) => { event.stopPropagation(); void archive(row.sessionId) }}>⌑</button>
+                <button className="dhl-srow-action" type="button" title={t('session.rename', '重命名')} aria-label={t('session.rename', '重命名')} onClick={(event) => { event.stopPropagation(); setEditing({ id: row.sessionId, title: row.title ?? '' }) }}><UiIcon name="pencil" size={14} /></button>
+                <button className="dhl-srow-action" type="button" title={t('session.archive', '归档')} aria-label={t('session.archive', '归档')} onClick={(event) => { event.stopPropagation(); void archive(row.sessionId) }}><UiIcon name="archive" size={14} /></button>
               </span>
             </div>
           ))}
       </div>
-      <Modal open={Boolean(editing)} onClose={() => setEditing(null)} title={t('session.rename', '重命名会话')} closeLabel={t('modal.close', '关闭')} className="dhl-rename-modal" footer={<><button type="button" className="dhl-modal-secondary" onClick={() => setEditing(null)}>{t('modal.cancel', '取消')}</button><button type="button" className="dhl-modal-primary" disabled={!editing?.title.trim() || saving} onClick={() => { void saveTitle() }}>{t('modal.save', '保存')}</button></>}>
-        <input data-modal-autofocus className="dhl-rename-input" value={editing?.title ?? ''} onChange={(event) => setEditing((prev) => prev ? { ...prev, title: event.target.value } : null)} onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); void saveTitle() } }} maxLength={120} aria-label={t('session.name', '会话名称')} />
+      <Modal open={Boolean(editing)} onClose={() => setEditing(null)} title={t('session.rename', '重命名会话')} closeLabel={t('modal.close', '关闭')} className="dhl-rename-modal" footer={<><Button variant="outline" onClick={() => setEditing(null)}>{t('modal.cancel', '取消')}</Button><Button variant="primary" disabled={!editing?.title.trim() || saving} onClick={() => { void saveTitle() }}>{t('modal.save', '保存')}</Button></>}>
+        <Input data-modal-autofocus className="dhl-rename-input" value={editing?.title ?? ''} onChange={(event) => setEditing((prev) => prev ? { ...prev, title: event.target.value } : null)} onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); void saveTitle() } }} maxLength={120} aria-label={t('session.name', '会话名称')} />
       </Modal>
     </div>
   )

@@ -5,14 +5,14 @@
  * @module lib/store.js
  */
 
-import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, rmSync } from 'node:fs'
+import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, rmSync, unlinkSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { randomUUID, createHash } from 'node:crypto'
 import { canonicalMarketCoin } from './market-symbol.js'
 
 const PAPER_START_USD = 100_000
 const WORKSPACE_DEFAULTS = Object.freeze({
-  interval: '15m', bookGrouping: 'full', chartTab: 'chart', tapeTab: 'book', bottomTab: 'positions', indicators: ['volume'],
+  interval: '15m', bookGrouping: 'full', chartTab: 'chart', tapeTab: 'book', bottomTab: 'positions', indicators: ['volume'], maLines: [],
   priceScale: 'normal', chartRanges: {}, chartLayers: { orders: true, fills: true, drawings: true },
   layout: { sessionsWidth: 232, chatWidth: 480, sessionsCollapsed: false, deskCollapsed: false, chatCollapsed: false },
 })
@@ -26,6 +26,7 @@ export class HyperStore {
     this.liveOrdersFile = join(dataDir, 'live-orders.json')
     this.liveDecisionsFile = join(dataDir, 'live-decisions.json')
     this.chartMarksFile = join(dataDir, 'chart-marks.json')
+    this.riskSettingsFile = join(dataDir, 'risk-settings.json')
     this.events = [] // UI event ring
     this.eventSeq = 0
     this.sessions = this.#readJson(this.sessionsFile, { sessions: {} })
@@ -107,6 +108,14 @@ export class HyperStore {
     if (!existsSync(file)) return fallback
     try { return JSON.parse(readFileSync(file, 'utf8')) }
     catch { throw new Error(`会话文件损坏：${file}`) }
+  }
+
+  getRiskSettings() { return this.#readArtifact(this.riskSettingsFile, null) }
+
+  saveRiskSettings(settings) { this.#writeJson(this.riskSettingsFile, settings) }
+
+  clearRiskSettings() {
+    if (existsSync(this.riskSettingsFile)) unlinkSync(this.riskSettingsFile)
   }
 
   #migrateChartMarks() {
@@ -211,29 +220,94 @@ export class HyperStore {
     return this.sessions.sessions[sessionId] ?? null
   }
 
+  /**
+   * Drawings synced to every trading session of a coin (TradingView's "sync drawings"):
+   * one shared file; each drawing keeps the session that created it as `sessionId`.
+   */
+  #shared() {
+    if (!this.sharedMarks) {
+      const marks = this.#readArtifact(join(this.dataDir, 'shared-chart-marks.json'), [])
+      if (!Array.isArray(marks)) throw new Error('共享图表标注文件损坏')
+      this.sharedMarks = marks
+    }
+    return this.sharedMarks
+  }
+
+  #saveShared() { this.#writeJson(join(this.dataDir, 'shared-chart-marks.json'), this.#shared()) }
+
+  #saveSession(sessionId) { this.#writeJson(this.#sessionFile(sessionId, 'chart-marks.json'), this.#marks(sessionId)) }
+
+  #notify(mark, sessionId) {
+    this.recordEvent('chart.mark', mark.shared
+      ? { sessionId: null, shared: true, coin: mark.coin, interval: mark.interval, id: mark.id }
+      : { sessionId, coin: mark.coin, interval: mark.interval, id: mark.id })
+  }
+
   listChartMarks(sessionId, coin, interval) {
-    return this.#marks(sessionId).filter((mark) => mark.coin === coin && mark.interval === interval)
+    const match = (mark) => mark.coin === coin && (interval == null || mark.interval === interval)
+    return [...this.#marks(sessionId).filter(match), ...this.#shared().filter(match)]
+  }
+
+  /** Every drawing that lives in a session file or the shared file (for host-side watchers). */
+  allChartMarks() {
+    const sessions = Object.keys(this.sessions?.sessions ?? {})
+    return [...sessions.flatMap((id) => { try { return this.#marks(id) } catch { return [] } }), ...this.#shared()]
   }
 
   addChartMark(mark) {
     const related = this.listChartMarks(mark.sessionId, mark.coin, mark.interval)
     if (related.length >= 30) throw new Error('当前图表最多保留 30 条标注，请先删除旧线')
-    const marks = this.#marks(mark.sessionId)
+    const marks = mark.shared ? this.#shared() : this.#marks(mark.sessionId)
     if (marks.length >= 300) throw new Error('当前会话最多保留 300 条图表标注，请先删除旧线')
     const saved = { ...mark, id: randomUUID(), createdAt: Date.now() }
     marks.push(saved)
-    this.#writeJson(this.#sessionFile(mark.sessionId, 'chart-marks.json'), marks)
-    this.recordEvent('chart.mark', { sessionId: mark.sessionId, coin: mark.coin, interval: mark.interval, id: saved.id })
+    if (mark.shared) this.#saveShared(); else this.#saveSession(mark.sessionId)
+    this.#notify(saved, mark.sessionId)
     return saved
   }
 
-  removeChartMark(sessionId, id) {
-    const marks = this.#marks(sessionId)
-    const mark = marks.find((row) => row.id === id)
+  getChartMark(sessionId, id) {
+    const mark = this.#marks(sessionId).find((row) => row.id === id) ?? this.#shared().find((row) => row.id === id)
     if (!mark) throw new Error('图表标注不存在或不属于当前会话')
-    this.chartMarksBySession.set(sessionId, marks.filter((row) => row !== mark))
-    this.#writeJson(this.#sessionFile(sessionId, 'chart-marks.json'), this.#marks(sessionId))
-    this.recordEvent('chart.mark', { sessionId, coin: mark.coin, interval: mark.interval, id })
+    return mark
+  }
+
+  /** Patch one drawing; toggling `shared` moves it between the session file and the shared file. */
+  updateChartMark(sessionId, id, fields) {
+    const own = this.#marks(sessionId), shared = this.#shared()
+    const inShared = !own.some((row) => row.id === id)
+    const list = inShared ? shared : own
+    const index = list.findIndex((row) => row.id === id)
+    if (index < 0) throw new Error('图表标注不存在或不属于当前会话')
+    const next = { ...list[index], ...fields, updatedAt: Date.now() }
+    // Cleared fields (undefined) are removed, so stored and returned drawings stay lossless JSON.
+    for (const [key, value] of Object.entries(next)) if (value === undefined) delete next[key]
+    if (!next.shared) delete next.shared
+    const moving = Boolean(next.shared) !== inShared
+    if (moving) {
+      list.splice(index, 1)
+      if (next.shared) shared.push(next); else own.push({ ...next, sessionId })
+      this.#saveShared(); this.#saveSession(sessionId)
+      // Both the old and the new owners must reload.
+      this.recordEvent('chart.mark', { sessionId: null, shared: true, coin: next.coin, interval: next.interval, id })
+      this.recordEvent('chart.mark', { sessionId, coin: next.coin, interval: next.interval, id })
+      return next.shared ? next : { ...next, sessionId }
+    }
+    list[index] = next
+    if (inShared) this.#saveShared(); else this.#saveSession(sessionId)
+    this.#notify(next, sessionId)
+    return next
+  }
+
+  removeChartMark(sessionId, id) {
+    const own = this.#marks(sessionId)
+    const inShared = !own.some((row) => row.id === id)
+    const list = inShared ? this.#shared() : own
+    const mark = list.find((row) => row.id === id)
+    if (!mark) throw new Error('图表标注不存在或不属于当前会话')
+    list.splice(list.indexOf(mark), 1)
+    if (inShared) this.#saveShared(); else this.#saveSession(sessionId)
+    this.#notify(mark, sessionId)
     return mark
   }
 
@@ -258,7 +332,7 @@ export class HyperStore {
    * Fill a paper order against the given mid with a simple slippage model.
    * @returns the fill record
    */
-  paperFill({ coin, isBuy, sz, px, time = Date.now(), reason = 'order' }) {
+  paperFill({ coin, isBuy, sz, px, time = Date.now(), reason = 'order', sessionId = null }) {
     const szNum = Number(sz)
     const pxNum = Number(px)
     if (!Number.isFinite(szNum) || szNum <= 0) throw new Error('paper: 无效数量')
@@ -287,7 +361,8 @@ export class HyperStore {
       this.paper.positions[coin] = pos
     }
     this.paper.usd += realized // realized PnL settles into cash; margin tracked conceptually
-    const fill = { coin, isBuy, sz: szNum, px: pxNum, notional, realized, time, reason }
+    // sessionId: the trading conversation whose decision produced this fill.
+    const fill = { coin, isBuy, sz: szNum, px: pxNum, notional, realized, time, reason, sessionId }
     this.paper.fills.unshift(fill)
     if (this.paper.fills.length > 200) this.paper.fills.length = 200
     this.#writeJson(this.paperFile, this.paper)

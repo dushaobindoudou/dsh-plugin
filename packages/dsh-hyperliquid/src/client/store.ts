@@ -96,6 +96,7 @@ export const store = createStore<DeskState>({
   eventsSeq: 0,
   ticketDraft: null,
   chartReferences: [],
+  chartFocus: null,
 })
 
 export function useStore(): DeskState {

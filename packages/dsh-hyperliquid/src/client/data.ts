@@ -10,7 +10,7 @@
 import { hyperCall, t, tr } from './remote'
 import { getActiveRef, notify, store } from './store'
 import type { Candle, ChartMark, DeskState, Interval, SessionWorkspace } from './types'
-import { formatChartReference, type ChartSelection } from './chart-reference'
+import { chartReferenceLabel, formatChartReference, type ChartReferenceRef, type ChartSelection } from './chart-reference'
 
 const POLL_FAST_MS = 900
 const POLL_SLOW_MS = 3000
@@ -44,12 +44,13 @@ let catalogPendingEpoch = -1
 let networkEpoch = 0
 const workspaceWrites = new Map<string, Promise<unknown>>()
 const ANONYMOUS_WORKSPACE: SessionWorkspace = {
-  coin: 'BTC', interval: '15m', bookGrouping: 'full', chartTab: 'chart', tapeTab: 'book', bottomTab: 'positions', indicators: ['volume'],
+  coin: 'BTC', interval: '15m', bookGrouping: 'full', chartTab: 'chart', tapeTab: 'book', bottomTab: 'positions', indicators: ['volume'], maLines: [],
   priceScale: 'normal', chartRanges: {},
   chartLayers: { orders: true, fills: true, drawings: true },
   layout: { sessionsWidth: 232, chatWidth: 480, sessionsCollapsed: false, deskCollapsed: false, chatCollapsed: false },
 }
 let workspaceLoadVersion = 0
+let chartMarksLoadVersion = 0
 
 /** Restore preferences before binding market focus; stale replies cannot cross sessions. */
 export async function openSession(sessionId: string, fallbackCoin = 'BTC'): Promise<void> {
@@ -292,13 +293,14 @@ export async function loadCandles(): Promise<void> {
 }
 
 export async function loadChartMarks(): Promise<void> {
-  const { activeSessionId: sessionId, activeCoin: coin, interval } = store.get()
-  const key = `${sessionId ?? ''}:${coin}:${interval}`
+  const { activeSessionId: sessionId, activeCoin: coin } = store.get()
+  const key = `${sessionId ?? ''}:${coin}`
+  const version = ++chartMarksLoadVersion
   if (!sessionId) { store.patch({ chartMarks: [], chartMarksKey: key }); return }
   try {
-    const res = await hyperCall('chartMarks', { sessionId, coin, interval })
+    const res = await hyperCall('chartMarks', { sessionId, coin, allIntervals: true })
     const current = store.get()
-    if (`${current.activeSessionId ?? ''}:${current.activeCoin}:${current.interval}` === key) {
+    if (version === chartMarksLoadVersion && `${current.activeSessionId ?? ''}:${current.activeCoin}` === key) {
       store.patch({ chartMarks: (res.marks ?? []) as ChartMark[], chartMarksKey: key })
     }
   } catch { /* preserve existing marks during transient host errors */ }
@@ -356,6 +358,15 @@ export async function loadSessions(): Promise<void> {
   } catch { /* transient */ }
 }
 
+/** The agent changed this session's MA lines: take the host's copy without touching other workspace edits. */
+async function reloadMaLines(sessionId: string): Promise<void> {
+  try {
+    const workspace = await hyperCall('sessionWorkspace', { sessionId }) as SessionWorkspace
+    const state = store.get()
+    if (state.workspaceSessionId === sessionId && state.workspace) store.patch({ workspace: { ...state.workspace, maLines: workspace.maLines ?? [] } })
+  } catch { /* next event or session reload retries */ }
+}
+
 /** Drain the host event ring: fills refresh the account, desk.state moves the focus. */
 export async function pollEvents(): Promise<void> {
   if (eventsPending) return
@@ -366,8 +377,14 @@ export async function pollEvents(): Promise<void> {
       for (const ev of res.events) {
         if (ev.kind === 'network.changed' && (ev.data?.to === 'mainnet' || ev.data?.to === 'testnet') && ev.data.to !== store.get().status?.network) resetNetworkView(ev.data.to)
         if (ev.kind === 'mode.changed' && (ev.data?.to === 'live' || ev.data?.to === 'paper') && ev.data.to !== store.get().status?.tradingMode) resetModeView(ev.data.to)
+        if (ev.kind === 'risk.changed') void loadStatus()
         if (ev.kind === 'paper.fill' || ev.kind?.startsWith('live.order.')) { void loadAccount(); void loadTradeHistory(true) }
-        if (ev.kind === 'chart.mark' && ev.data?.sessionId === store.get().activeSessionId) void loadChartMarks()
+        if (ev.kind === 'chart.mark' && (ev.data?.sessionId === store.get().activeSessionId || (ev.data?.shared && ev.data?.coin === store.get().activeCoin))) void loadChartMarks()
+        if (ev.kind === 'chart.alert' && (ev.data?.sessionId === store.get().activeSessionId || ev.data?.shared)) {
+          notify(tr(`${ev.data.coin} 价格${ev.data.direction === 'up' ? '上穿' : '下穿'}「${ev.data.label}」：${ev.data.price}`, `${ev.data.coin} crossed ${ev.data.direction === 'up' ? 'above' : 'below'} "${ev.data.label}": ${ev.data.price}`))
+          if (ev.data.coin === store.get().activeCoin) void loadChartMarks()
+        }
+        if (ev.kind === 'chart.ma' && ev.data?.sessionId === store.get().activeSessionId) void reloadMaLines(ev.data.sessionId)
         if (ev.data?.clientId === focusClientId) continue
         if (ev.kind === 'desk.state' && ev.data?.coin && (!ev.data.sessionId || ev.data.sessionId === store.get().activeSessionId) && ev.data.coin !== store.get().activeCoin) {
           focusVersion += 1
@@ -435,11 +452,23 @@ export function insertChartReference(selection: ChartSelection, coin: string, in
   const sessionId = store.get().activeSessionId
   if (!sessionId) { notify(tr('请先选择交易会话', 'Choose a trading session first')); return }
   const text = formatChartReference(selection, coin, interval, tr('zh', 'en') === 'en')
-  store.patch((current) => ({ chartReferences: [...current.chartReferences, { id: Date.now() + Math.random(), sessionId, text }] }))
+  const quote = { id: Date.now() + Math.random(), sessionId, text, label: chartReferenceLabel(selection, coin, interval), coin, interval, t: selection.candle.t }
+  store.patch((current) => ({ chartReferences: [...current.chartReferences, quote] }))
   if (store.get().workspace?.layout?.chatCollapsed) notify(tr('点位已暂存，展开对话栏后可编辑', 'Chart point saved; open the chat panel to edit it'))
 }
 
 /** One authoritative UI → host focus path, including the active session. */
+/** Reopen a quoted chart point: switch market / interval when needed, then let the chart focus it. */
+export async function focusChartReference(ref: Pick<ChartReferenceRef, 'coin' | 'interval' | 't'>): Promise<void> {
+  if (store.get().activeCoin !== ref.coin) await setDeskCoin(ref.coin)
+  if (store.get().interval !== ref.interval) {
+    store.patch({ interval: ref.interval })
+    pushDeskInterval(ref.interval)
+    void loadCandles()
+  }
+  store.patch({ chartFocus: { coin: ref.coin, interval: ref.interval, t: ref.t, at: Date.now() } })
+}
+
 export function setDeskCoin(coin: string): Promise<void> {
   const version = ++focusVersion
   const sessionId = store.get().activeSessionId

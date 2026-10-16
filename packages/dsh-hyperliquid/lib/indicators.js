@@ -46,13 +46,18 @@ function closeTime(row, interval) {
   return minutes ? row.t + minutes * 60_000 - 1 : row.t
 }
 
-export function computeIndicators(candles, { now = Date.now(), interval } = {}) {
+/** Valid, de-duplicated, ascending candles split into closed rows and the count of still-forming ones. */
+export function closedCandles(candles, { now = Date.now(), interval } = {}) {
   const valid = (candles ?? []).map((c) => ({ t: Number(c.t), T: c.T, o: Number(c.o), h: Number(c.h), l: Number(c.l), c: Number(c.c), v: Number(c.v) }))
     .filter((c) => [c.t, c.o, c.h, c.l, c.c, c.v].every(Number.isFinite) && c.t > 0 && c.h >= c.l && c.c > 0)
     .sort((a, b) => a.t - b.t)
   const unique = [...new Map(valid.map((row) => [row.t, row])).values()]
   const rows = unique.filter((row) => closeTime(row, interval) < now)
-  const excludedOpen = unique.length - rows.length
+  return { rows, excludedOpen: unique.length - rows.length, closeTime: (row) => closeTime(row, interval) }
+}
+
+export function computeIndicators(candles, { now = Date.now(), interval } = {}) {
+  const { rows, excludedOpen } = closedCandles(candles, { now, interval })
   if (rows.length < 50) return { ready: false, candlesUsed: rows.length, excludedOpen, reason: '至少需要 50 根已收盘的有效 K 线' }
   const close = rows.map((c) => c.c)
   const volume = rows.map((c) => c.v)

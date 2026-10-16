@@ -49,6 +49,7 @@ const ReactStub = {
   useEffect: () => {},
   useMemo: (fn) => fn(),
   useCallback: (fn) => fn,
+  memo: (component) => component,
   useSyncExternalStore: (_sub, snapshot) => snapshot(),
 }
 
@@ -64,7 +65,7 @@ const sandbox = {
     __ModuleLoader__: {
       load(opts) {
         const requireStub = (id) => id === 'react' ? ReactStub
-          : id === '@deepseek-ai/dsh-client-ui-primitives' ? { Modal: () => null }
+          : id === '@deepseek-ai/dsh-client-ui-primitives' ? { Modal: () => null, Button: () => null, Input: () => null, DisclosureRow: () => null }
             : undefined
         plugin = opts.factory(requireStub)
       },
@@ -113,6 +114,10 @@ const ctx = {
 plugin.apply(ctx)
 check('注册 main 三栏面板', typeof captured['dsh-hyperliquid'] === 'function')
 check('注册 sidebar 入口图标', typeof captured['sidebar.panellist'] === 'function')
+for (const tool of ['hyper_context', 'hyper_market', 'hyper_chart', 'hyper_account', 'hyper_decide', 'hyper_order', 'hyper_session']) {
+  check(`注册 ${tool} 工具卡片`, typeof captured[tool] === 'function')
+}
+check('注册审批订单详情', typeof captured['conversation.approval.detail'] === 'function')
 check('注入插件样式', styleEls.length === 1 && String(styleEls[0].textContent).includes('.dhl-root'))
 
 // ── 3) render the full component tree ──────────────────────────────────

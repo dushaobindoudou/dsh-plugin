@@ -8,7 +8,7 @@
  */
 
 import * as React from 'react'
-import { Modal } from '@deepseek-ai/dsh-client-ui-primitives'
+import { Button, Modal } from '@deepseek-ai/dsh-client-ui-primitives'
 import { getContext, t, tr } from './remote'
 import { notify, setTapePlacement, store, useStore } from './store'
 import { isMarketStale, openSession, saveSessionWorkspace, startPolling, switchNetwork, switchTradingMode } from './data'
@@ -18,7 +18,7 @@ import { Divider } from './components/divider'
 import { SessionsColumn } from './components/sessions-column'
 import { DeskColumn } from './components/desk-column'
 import { ChatColumn } from './components/chat-column'
-import { PanelIcon } from './components/panel-icons'
+import { PanelIcon, UiIcon } from './components/panel-icons'
 import { WalletDetails } from './components/wallet-details'
 import { TradingLimits } from './components/trading-limits'
 
@@ -165,10 +165,10 @@ export function App(props: AppProps) {
         {wsBadge}
         <button type="button" className="dhl-badge dhl-wallet-trigger" onClick={() => setWalletOpen(true)} aria-haspopup="dialog" aria-label={tr('查看钱包详情和收益', 'View wallet and P&L')}>
           {mode === 'paper' ? tr('模拟账户', 'Paper account') : st?.address ? st.address.slice(0, 6) + '…' + st.address.slice(-4) : t('account.none', '未连接钱包')}
-          <span aria-hidden="true">⌄</span>
+          <UiIcon name="chevronDown" size={14} />
         </button>
         <div className="dhl-more" ref={moreRef}>
-          <button type="button" className="dhl-top-control dhl-more-trigger" aria-haspopup="menu" aria-expanded={moreOpen} aria-label={tr('更多设置', 'More settings')} title={tr('更多设置', 'More settings')} onClick={() => setMoreOpen((value) => !value)}>⋯</button>
+          <button type="button" className="dhl-top-control dhl-more-trigger" aria-haspopup="menu" aria-expanded={moreOpen} aria-label={tr('交易设置', 'Trading settings')} title={tr('交易设置', 'Trading settings')} onClick={() => setMoreOpen((value) => !value)}><UiIcon name="settings" size={17} /></button>
           {moreOpen ? <div className="dhl-more-popover" role="menu">
             <div className="dhl-more-group">
               <span>{t('network.label', '网络')}</span>
@@ -191,11 +191,16 @@ export function App(props: AppProps) {
                 <button type="button" className={s.tapePlacement === 'below' ? 'on' : ''} onClick={() => setTapePlacement('below')}>{tr('图表下方', 'Below chart')}</button>
               </div>
             </div>
-            <button type="button" className="dhl-more-link" onClick={() => { setMoreOpen(false); setLimitsOpen(true) }}>{tr('交易限额与签名规则', 'Trading limits & signing rules')}</button>
+            <div className="dhl-more-group">
+              <span>{tr('交易设置', 'Trading settings')}</span>
+              <div className="dhl-segment">
+                <button type="button" onClick={() => { setMoreOpen(false); setLimitsOpen(true) }}>{tr('交易限额与签名规则', 'Limits & signing rules')}</button>
+              </div>
+            </div>
           </div> : null}
         </div>
       </div>
-      <Modal open={Boolean(confirmLive)} onClose={() => setConfirmLive(null)} title={tr('切换到主网实盘', 'Switch to mainnet live')} closeLabel={t('modal.close', '关闭')} className="dhl-network-modal" footer={<><button type="button" className="dhl-modal-secondary" onClick={() => setConfirmLive(null)}>{t('modal.cancel', '取消')}</button><button type="button" className="dhl-modal-primary" disabled={networkBusy} onClick={() => { if (confirmLive) void applyEnv(confirmLive) }}>{tr('确认切换', 'Switch')}</button></>}>
+      <Modal open={Boolean(confirmLive)} onClose={() => setConfirmLive(null)} title={tr('切换到主网实盘', 'Switch to mainnet live')} closeLabel={t('modal.close', '关闭')} className="dhl-network-modal" footer={<><Button variant="outline" onClick={() => setConfirmLive(null)}>{t('modal.cancel', '取消')}</Button><Button variant="primary" disabled={networkBusy} onClick={() => { if (confirmLive) void applyEnv(confirmLive) }}>{tr('确认切换', 'Switch')}</Button></>}>
         <p>{tr('主网实盘会显示真实行情和真实账户，后续交易将使用真实资金。', 'Mainnet live shows real markets and your real account; trades use real funds.')}</p>
       </Modal>
       <WalletDetails open={walletOpen} onClose={() => setWalletOpen(false)} />
@@ -206,9 +211,9 @@ export function App(props: AppProps) {
         {s.notice
           ? (
             <div className="dhl-notice" onClick={() => notify(null)}>
-              <span>⚡</span>
+              <UiIcon name="info" size={16} />
               <span style={{ flex: 1 }}>{s.notice.text}</span>
-              <span>✕</span>
+              <UiIcon name="close" size={14} />
             </div>
           )
           : null}

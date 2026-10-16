@@ -19,11 +19,7 @@ export function MarketIcon({ market, small = false }: { market: IconMarket; smal
   const [state, setState] = React.useState({ identity, index: 0, loaded: false })
   const current = state.identity === identity ? state : { identity, index: 0, loaded: false }
   const name = names[current.index]
-  const fallback = (market.kind === 'spot' ? market.label.split('/')[0] : market.name.split(':').pop() || market.name)
-    .replace(/^k(?=[A-Z])/, '').slice(0, 2).toUpperCase()
-
   return <span className={'dhl-market-icon' + (small ? ' dhl-market-icon-small' : '')} aria-hidden="true">
-    <span className="dhl-market-icon-fallback">{fallback || '·'}</span>
     {name ? <img
       key={`${identity}:${current.index}`}
       src={`${ICON_ROOT}${encodeURIComponent(name)}.svg`}

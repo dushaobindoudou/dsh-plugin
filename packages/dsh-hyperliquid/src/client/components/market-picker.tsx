@@ -6,7 +6,7 @@ import { fmt, fmtPrice } from '../format'
 import { loadMarketCatalog, setDeskCoin } from '../data'
 import { notify, useStore } from '../store'
 import type { MarketEntry } from '../types'
-import { SearchIcon } from './panel-icons'
+import { SearchIcon, UiIcon } from './panel-icons'
 import { MarketIcon } from './market-icon'
 
 type Category = 'all' | 'perp' | 'spot' | 'hip3' | 'outcome' | 'crypto' | 'tradfi' | 'preipo' | 'trending' | 'favorites'
@@ -152,7 +152,7 @@ export function MarketPicker({ activeCoin, onClose }: { activeCoin: string; onCl
     if (event.key === 'Enter' && marketRows[cursor]) { event.preventDefault(); choose(marketRows[cursor]) }
   }
   const header = (label: string, key: SortKey) => <button type="button" onClick={() => sortBy(key)} aria-label={tr(`按${label}排序`, `Sort by ${label}`)}>
-    {label}{sort === key ? <span aria-hidden="true">{descending ? ' ↓' : ' ↑'}</span> : null}
+    {label}{sort === key ? <UiIcon name={descending ? 'arrowDown' : 'arrowUp'} size={12} /> : null}
   </button>
 
   return <Modal open onClose={onClose} title={t('market.choose', '选择市场')} headless className="dhl-picker-modal" backdropBlur onKeyDownCapture={onKeyDown}>
@@ -163,14 +163,14 @@ export function MarketPicker({ activeCoin, onClose }: { activeCoin: string; onCl
           <button type="button" className={strict ? 'on' : ''} aria-pressed={strict} onClick={() => setStrict(true)}>{t('market.tradable', '可交易')}</button>
           <button type="button" className={!strict ? 'on' : ''} aria-pressed={!strict} onClick={() => setStrict(false)}>{t('market.all', '全部')}</button>
         </div>
-        <button type="button" className="dhl-picker-close" onClick={onClose} aria-label={t('modal.close', '关闭')}>×</button>
+        <button type="button" className="dhl-picker-close" onClick={onClose} aria-label={t('modal.close', '关闭')}><UiIcon name="close" size={18} /></button>
       </div>
       {!strict ? <p className="dhl-picker-readonly-note">{tr('“只读”表示本插件仅提供行情，尚未接入该市场的下单与风控；HIP-3 和现货在 Hyperliquid 本身可交易。', '“View only” means this plugin has market data but no order and risk support for that market. Hyperliquid itself supports HIP-3 and spot trading.')}</p> : null}
       <nav className="dhl-picker-tabs" aria-label={tr('市场分类', 'Market categories')}>
         {CATEGORIES.map(([key, label]) => <button type="button" key={key} className={category === key ? 'on' : ''} aria-current={category === key ? 'page' : undefined} onClick={() => { setCategory(key); if (['spot', 'hip3', 'outcome', 'crypto', 'tradfi', 'preipo'].includes(key)) setStrict(false) }}>{t(`market.category.${key}`, label)}</button>)}
       </nav>
       <div className="dhl-picker-tablehead">
-        <span aria-hidden="true">☆</span>{header(t('market.name', '市场'), 'name')}{header(t('market.price', '最新价'), 'price')}{header(t('market.change', '24h 涨跌'), 'change')}{header(t('market.funding', '资金费'), 'funding')}{header(t('market.volume', '24h 成交额'), 'volume')}{header(t('market.openInterest', '未平仓量'), 'openInterest')}
+        <UiIcon name="star" size={15} />{header(t('market.name', '市场'), 'name')}{header(t('market.price', '最新价'), 'price')}{header(t('market.change', '24h 涨跌'), 'change')}{header(t('market.funding', '资金费'), 'funding')}{header(t('market.volume', '24h 成交额'), 'volume')}{header(t('market.openInterest', '未平仓量'), 'openInterest')}
       </div>
       <div className="dhl-picker-list" role="listbox" aria-label={tr('市场列表', 'Market list')} ref={listRef} onScroll={(event) => {
         const element = event.currentTarget
@@ -179,7 +179,7 @@ export function MarketPicker({ activeCoin, onClose }: { activeCoin: string; onCl
         {marketRows.slice(0, renderCount).map((row, index) => {
           const change = changeOf(row)
           return <div className={'dhl-picker-row' + (row.name === activeCoin ? ' active' : '') + (cursor === index ? ' cursor' : '')} role="option" aria-selected={row.name === activeCoin} key={`${row.kind}:${row.name}`} data-market-index={index} onMouseEnter={() => setCursor(index)}>
-            <button type="button" className={'dhl-picker-star' + (favorites.includes(row.name) ? ' on' : '')} aria-label={`${favorites.includes(row.name) ? tr('取消自选', 'Remove favorite') : tr('加入自选', 'Add favorite')} ${row.label}`} onClick={() => toggleFavorite(row.name)}>{favorites.includes(row.name) ? '★' : '☆'}</button>
+            <button type="button" className={'dhl-picker-star' + (favorites.includes(row.name) ? ' on' : '')} aria-label={`${favorites.includes(row.name) ? tr('取消自选', 'Remove favorite') : tr('加入自选', 'Add favorite')} ${row.label}`} onClick={() => toggleFavorite(row.name)}><UiIcon name="star" size={17} filled={favorites.includes(row.name)} /></button>
             <button type="button" className="dhl-picker-market" onClick={() => choose(row)} title={`${row.label} · ${row.name} · ${row.venue}${row.category ? ` · ${row.category}` : ''}`}><MarketIcon market={row} small /><strong>{row.label}</strong><small>{row.kind === 'perp' ? 'PERP' : row.kind === 'hip3' ? 'HIP-3' : row.kind === 'outcome' ? 'OUTCOME' : 'SPOT'}{row.name.startsWith('@') ? ` ${row.name}` : ''}{row.category ? ` · ${row.category}` : ''}{row.tradable ? '' : ` · ${tr('只读', 'View only')}`}</small></button>
             <span>{n(row.ctx?.markPx) > 0 ? fmtPrice(row.ctx.markPx) : '—'}</span>
             <span className={change > 0 ? 'dhl-up' : change < 0 ? 'dhl-down' : ''}>{n(row.ctx?.prevDayPx) > 0 ? `${change >= 0 ? '+' : ''}${change.toFixed(2)}%` : '—'}</span>

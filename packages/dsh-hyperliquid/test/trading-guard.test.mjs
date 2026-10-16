@@ -81,8 +81,11 @@ assert.deepEqual(actions, [
   { type: 'updateLeverage', asset: 0, isCross: true, leverage: 2 },
   { type: 'cancel', cancels: [{ a: 0, o: 123 }] },
 ])
-remote.approvalGateway = () => ({ request: async () => 'denied' })
+const approvalRequests = []
+remote.approvalGateway = () => ({ request: async (req) => { approvalRequests.push(req); return 'denied' } })
 await assert.rejects(remote.executeToolCancel({ coin: 'ETH', oid: 125 }, exec), /未批准/)
+assert.equal(approvalRequests[0].reason, approvalRequests[0].displayReason.zh, 'audit reason stays the Chinese text')
+assert.match(approvalRequests[0].displayReason.en, /cancel ETH order oid=125/)
 assert.equal(actions.length, 2)
 remote.cfg.autonomousLive = false
 await assert.rejects(remote.executeToolCancel({ coin: 'BTC', oid: 124 }, exec), /未批准/)
