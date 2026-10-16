@@ -81,6 +81,9 @@ export interface ChartMark {
   fontSize?: number
   bold?: boolean
   italic?: boolean
+  /** Trend line extended past its anchors. */
+  extendLeft?: boolean
+  extendRight?: boolean
   /** Background fill opacity for shapes. */
   fillOpacity?: number
   /** Custom Fibonacci levels (fib, fibext, fibchannel). */

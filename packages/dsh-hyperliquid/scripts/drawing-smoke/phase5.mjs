@@ -32,7 +32,9 @@ try {
   check(await page.getByText('已选 2 条画线').isVisible(), 'Shift-click builds a two-drawing selection with a batch toolbar')
   await page.keyboard.press('Delete')
   // The host round trip can take longer than a fixed settle under a full smoke run: wait for the outcome.
+  const deleteAt = Date.now()
   for (let t = 0; t < 25 && ((await marks()).length || (await hostMarks()).length); t += 1) await page.waitForTimeout(200)
+  console.log(`group delete reached the host after ${Date.now() - deleteAt}ms`)
   check((await marks()).length === 0 && (await hostMarks()).length === 0, 'Delete removes the whole group', { local: (await marks()).length, host: (await hostMarks()).length })
   await page.keyboard.press(`${mod}+z`); await page.waitForTimeout(2500)
   check((await marks()).length === 2 && (await hostMarks()).length === 2, 'one undo restores the whole group', { local: (await marks()).length, host: (await hostMarks()).length })
@@ -175,6 +177,19 @@ try {
   await page.locator('.dhl-drawing-list').getByRole('button', { name: /矩形/ }).first().click()
   await bar.getByRole('button', { name: '隐藏画线' }).click(); await settle()
   check((await hostMarks()).find((m) => m.id === box6.id)?.hidden === true && await page.locator(`.dhl-chart-drawing-overlay [data-mark-id="${box6.id}"]`).count() === 0, 'the toolbar hide button hides the drawing')
+
+  // Trend line extension (TradingView's extend left / right).
+  const trendsBefore = (await marks()).filter((m) => m.kind === 'trend').map((m) => m.id)
+  await page.keyboard.press('Alt+KeyT'); await page.waitForTimeout(150)
+  await clickXY({ x: b6.x + b6.width * .3, y: b6.y + b6.height * .6 }); await clickXY({ x: b6.x + b6.width * .4, y: b6.y + b6.height * .5 }); await settle()
+  const tl = (await marks()).find((m) => m.kind === 'trend' && !trendsBefore.includes(m.id))
+  await page.locator(`.dhl-drawing-list [data-mark-id="${tl.id}"] .dhl-drawing-list-name`).click()
+  const tlRight = () => page.evaluate((id) => document.querySelector(`.dhl-chart-drawing-overlay [data-mark-id="${id}"] line`)?.getBoundingClientRect().right ?? 0, tl.id)
+  const shortRight = await tlRight()
+  await bar.getByRole('button', { name: '向右延长' }).click(); await settle()
+  const longRight = await tlRight()
+  check((await hostMarks()).find((m) => m.id === tl.id)?.extendRight === true && longRight > shortRight + b6.width * .2, 'extend right is saved and the line runs past its anchor', { shortRight, longRight })
+  await page.keyboard.press('Escape')
 
   check(errors.length === 0, 'no page errors', errors)
   console.log('phase5 ok')

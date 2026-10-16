@@ -106,7 +106,8 @@ export function linePriceAt(mark, time) {
   if (!a) return null
   if (mark.kind === 'hray') return time >= a.time ? a.price : null
   if (!b || b.time === a.time) return null
-  if (mark.kind === 'trend' && (time < Math.min(a.time, b.time) || time > Math.max(a.time, b.time))) return null
+  // A trend line can be extended left and/or right (TradingView's per-line extend option).
+  if (mark.kind === 'trend' && ((!mark.extendLeft && time < Math.min(a.time, b.time)) || (!mark.extendRight && time > Math.max(a.time, b.time)))) return null
   if (mark.kind === 'ray' && (time - a.time) * (b.time - a.time) < 0) return null
   return a.price + (b.price - a.price) * (time - a.time) / (b.time - a.time)
 }
@@ -205,6 +206,12 @@ export function drawingStyle(request) {
     const size = Number(request.fontSize)
     if (!Number.isInteger(size) || size < 10 || size > 32) throw new Error('字号必须为 10-32 的整数')
     style.fontSize = size
+  }
+  for (const flag of ['extendLeft', 'extendRight']) {
+    if (request?.[flag] == null) continue
+    if (request?.kind != null && request.kind !== 'trend') throw new Error(`${flag} 只适用于 trend`)
+    if (typeof request[flag] !== 'boolean') throw new Error(`${flag} 必须为布尔值`)
+    style[flag] = request[flag]
   }
   for (const flag of ['bold', 'italic']) {
     if (request?.[flag] == null) continue

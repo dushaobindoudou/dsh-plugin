@@ -59,6 +59,14 @@ export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, o
           <svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><line x1="2" x2="16" y1="9" y2="9" stroke="currentColor" strokeWidth="2" strokeDasharray={value === 'dashed' ? '4 3' : value === 'dotted' ? '1 3' : undefined} strokeLinecap="round" /></svg>
         </button>)}
       </span> : null}
+      {mark.kind === 'trend' ? <span className="dhl-draw-toolbar-group" role="group" aria-label={tr('延长', 'Extend')}>
+        <button type="button" className={mark.extendLeft ? 'on' : ''} aria-pressed={Boolean(mark.extendLeft)} disabled={locked} aria-label={tr('向左延长', 'Extend left')} title={tr('向左延长', 'Extend left')} onClick={() => onEdit({ extendLeft: !mark.extendLeft })}>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M3 12h13" strokeDasharray="2 2.5" /><path d="M14 12h7" /><circle cx="14" cy="12" r="1.8" /><path d="M6 9l-3 3 3 3" /></svg>
+        </button>
+        <button type="button" className={mark.extendRight ? 'on' : ''} aria-pressed={Boolean(mark.extendRight)} disabled={locked} aria-label={tr('向右延长', 'Extend right')} title={tr('向右延长', 'Extend right')} onClick={() => onEdit({ extendRight: !mark.extendRight })}>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M3 12h7" /><path d="M10 12h11" strokeDasharray="2 2.5" /><circle cx="10" cy="12" r="1.8" /><path d="M18 9l3 3-3 3" /></svg>
+        </button>
+      </span> : null}
       {(FONT_KINDS as string[]).includes(mark.kind) || (FILL_KINDS as string[]).includes(mark.kind) ? <span className="dhl-draw-toolbar-group" role="group" aria-label={tr('文字与填充', 'Text and fill')}>
         {(FONT_KINDS as string[]).includes(mark.kind) ? <Select aria-label={tr('字号', 'Font size')} title={tr('字号', 'Font size')} value={String(mark.fontSize ?? 12)} disabled={locked} onChange={(event) => onEdit({ fontSize: Number(event.target.value) })}>
           {[10, 12, 14, 18, 24, 32].map((size) => <option key={size} value={size}>{`${size}px`}</option>)}

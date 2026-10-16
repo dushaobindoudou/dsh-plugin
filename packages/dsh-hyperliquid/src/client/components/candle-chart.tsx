@@ -1034,7 +1034,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     const line = timelineRef.current
     const shifted = markPoints(mark).map((point) => ({ time: line.toTime(line.toLogical(point.time) + 5), price: point.price }))
     // Tool settings (fib levels, volume profile rows / value area) travel with the copy.
-    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle, levels: mark.levels, rows: mark.rows, valueArea: mark.valueArea, fontSize: mark.fontSize, bold: mark.bold, italic: mark.italic, fillOpacity: mark.fillOpacity, visibleIntervals: mark.visibleIntervals }).filter(([, value]) => value != null))
+    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle, levels: mark.levels, rows: mark.rows, valueArea: mark.valueArea, fontSize: mark.fontSize, bold: mark.bold, italic: mark.italic, extendLeft: mark.extendLeft, extendRight: mark.extendRight, fillOpacity: mark.fillOpacity, visibleIntervals: mark.visibleIntervals }).filter(([, value]) => value != null))
     return { kind: mark.kind, geometry: geometryPatch(mark.kind, shifted), style, label: mark.label }
   }, [])
   const clipboard = React.useRef<ChartMark | null>(null)
@@ -1258,12 +1258,12 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
             // Off-screen culling: a bounded drawing entirely left or right of the plot renders nothing.
             // Kept: drawings whose label or alert / shared badge is clamped into the plot even when the anchors are not.
             const clampedDecoration = !(mark.source === 'user' || mark.kind === 'level') || Boolean(mark.alert) || Boolean(mark.shared)
-            if (!selected && !clampedDecoration && FINITE_KINDS.has(mark.kind) && offscreen(shown, view)) return null
+            if (!selected && !clampedDecoration && !mark.extendLeft && !mark.extendRight && FINITE_KINDS.has(mark.kind) && offscreen(shown, view)) return null
             return <DrawingShape key={mark.id} id={mark.id} kind={mark.kind} points={shown} view={view} text={mark.label}
               dataVersion={mark.kind === 'vprofile' || mark.kind === 'regression' ? candles : undefined}
               className={`dhl-drawing ${roleClass(mark)}${mark.kind === 'level' ? ' is-level' : ''}${selected ? ' selected' : ''}${mark.locked || drawingsLocked ? ' locked' : ''}`}
               label={mark.source === 'user' || mark.kind === 'level' ? undefined : mark.label} anchors={selected} interactive={!drawMode}
-              color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} alert={mark.alert} shared={mark.shared} rows={mark.rows} valueArea={mark.valueArea} levels={mark.levels} fontSize={mark.fontSize} bold={mark.bold} italic={mark.italic} fillOpacity={mark.fillOpacity} />
+              color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} alert={mark.alert} shared={mark.shared} rows={mark.rows} valueArea={mark.valueArea} levels={mark.levels} fontSize={mark.fontSize} bold={mark.bold} italic={mark.italic} fillOpacity={mark.fillOpacity} extendLeft={mark.extendLeft} extendRight={mark.extendRight} />
           })}
           <g className="dhl-fills">
             {fills.map((event) => {

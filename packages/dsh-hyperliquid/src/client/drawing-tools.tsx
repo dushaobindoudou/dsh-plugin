@@ -161,9 +161,9 @@ export interface Projector {
 type Pt = { x: number; y: number }
 
 /** Clip the infinite line through a→b to the plot (Liang–Barsky); `from` 0 = ray from a, -Inf = both ways. */
-function clipLine(a: Pt, b: Pt, w: number, h: number, from: number): [Pt, Pt] | null {
+function clipLine(a: Pt, b: Pt, w: number, h: number, from: number, to = Infinity): [Pt, Pt] | null {
   const dx = b.x - a.x, dy = b.y - a.y
-  let t0 = from, t1 = Infinity
+  let t0 = from, t1 = to
   for (const [p, q] of [[-dx, a.x], [dx, w - a.x], [-dy, a.y], [dy, h - a.y]] as const) {
     if (p === 0) { if (q < 0) return null; continue }
     const r = q / p
@@ -277,10 +277,13 @@ export interface ShapeProps {
   bold?: boolean
   italic?: boolean
   fillOpacity?: number
+  /** Trend line extension. */
+  extendLeft?: boolean
+  extendRight?: boolean
 }
 
 /** One drawing as SVG; `points` are in click order (a preview passes clicks + hover). */
-export const DrawingShape = React.memo(function DrawingShape({ kind, points, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels, fontSize, bold, italic, fillOpacity }: ShapeProps) {
+export const DrawingShape = React.memo(function DrawingShape({ kind, points, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels, fontSize, bold, italic, fillOpacity, extendLeft, extendRight }: ShapeProps) {
   const k = (fontSize ?? 12) / 12
   const badges = [...(alert ? ['alert' as const] : []), ...(shared ? ['shared' as const] : [])]
   const { width: w, height: h } = view
@@ -296,7 +299,15 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
     case 'level': body = <line x1="0" x2={w} y1={p[0].y} y2={p[0].y} />; handles = [{ x: Math.min(w - 24, Math.max(24, p[0].x)), y: p[0].y }]; break
     case 'hray': body = <line x1={p[0].x} x2={w} y1={p[0].y} y2={p[0].y} />; break
     case 'vline': body = <line x1={p[0].x} x2={p[0].x} y1="0" y2={h} />; handles = [{ x: p[0].x, y: Math.min(h - 12, Math.max(12, p[0].y)) }]; break
-    case 'trend': body = p[1] ? <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} /> : null; break
+    case 'trend': {
+      if (!p[1]) break
+      if (!extendLeft && !extendRight) { body = <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />; break }
+      // Anchors are stored oldest first, so "left" runs back from p[0] and "right" past p[1].
+      const [l, r] = p[0].x <= p[1].x ? [p[0], p[1]] : [p[1], p[0]]
+      const seg = clipLine(l, r, w, h, extendLeft ? -Infinity : 0, extendRight ? Infinity : 1)
+      body = seg ? <line x1={seg[0].x} y1={seg[0].y} x2={seg[1].x} y2={seg[1].y} /> : null
+      break
+    }
     case 'ray':
     case 'extended': {
       if (!p[1]) break

@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { build } from 'esbuild'
-import { DRAWING_CLICKS, DRAWING_KINDS, DRAWING_POINTS, FIB_LEVELS, drawingGeometry, drawingStyle } from '../lib/chart-drawings.js'
+import { DRAWING_CLICKS, DRAWING_KINDS, DRAWING_POINTS, FIB_LEVELS, drawingGeometry, drawingStyle, linePriceAt } from '../lib/chart-drawings.js'
 import { HyperStore } from '../lib/store.js'
 import { HyperRemote } from '../lib/remote.js'
 import { buildToolDefinitions } from '../lib/tools.js'
@@ -171,6 +171,16 @@ try {
   assert.throws(() => drawingStyle({ kind: 'trend', fontSize: 14 }), /只适用于/)
   assert.deepEqual(drawingStyle({ kind: 'callout', bold: true, italic: false }), { bold: true, italic: false })
   assert.throws(() => drawingStyle({ kind: 'trend', bold: true }), /只适用于/)
+  assert.deepEqual(drawingStyle({ kind: 'trend', extendRight: true }), { extendRight: true })
+  assert.throws(() => drawingStyle({ kind: 'rect', extendLeft: true }), /只适用于 trend/)
+  const seg = { kind: 'trend', fromTime: 1000, fromPrice: 100, toTime: 2000, toPrice: 200 }
+  assert.equal(linePriceAt(seg, 3000), null)
+  assert.equal(linePriceAt({ ...seg, extendRight: true }, 3000), 300)
+  assert.equal(linePriceAt({ ...seg, extendRight: true }, 0), null)
+  assert.equal(linePriceAt({ ...seg, extendLeft: true }, 0), 0)
+  const x2 = (svg) => Number(/<line[^>]*x2="([\d.-]+)"/.exec(svg)?.[1])
+  const pts = [{ time: now - 7200_000, price: 100 }, { time: now - 3600_000, price: 105 }]
+  assert.ok(x2(render('trend', pts, { extendRight: true })) > x2(render('trend', pts)), 'extendRight draws past the second anchor')
   assert.ok(render('text', [{ time: now, price: 100 }], { text: 'x', bold: true, italic: true }).includes('--dhl-font-weight:700'), 'bold reaches the text')
   const small = render('text', [{ time: now, price: 100 }], { text: '突破' }), big = render('text', [{ time: now, price: 100 }], { text: '突破', fontSize: 24 })
   const boxWidth = (svg) => Number(/dhl-text-box[^>]*width="([\d.]+)"/.exec(svg)?.[1])

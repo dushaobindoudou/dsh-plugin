@@ -1,8 +1,8 @@
 # 画线工具 · TradingView 逐项对照
 
-核对日期：2026-10-17（0.4.2 候选）。对照对象是 TradingView 网页版的画线面板与画线对象设置。「已做」以源码和测试为依据：单元测试 `test/chart-drawings.test.mjs`，真实宿主冒烟 `npm run smoke:drawing`（`scripts/drawing-smoke/` 下的 basics、phase1–5、perf）；依据列引号内是冒烟里 check 的原文。没有自动化测试的项单独注明。
+核对日期：2026-10-17（0.4.3）。对照对象是 TradingView 网页版的画线面板与画线对象设置。「已做」以源码和测试为依据：单元测试 `test/chart-drawings.test.mjs`，真实宿主冒烟 `npm run smoke:drawing`（`scripts/drawing-smoke/` 下的 basics、phase1–5、perf）；依据列引号内是冒烟里 check 的原文。没有自动化测试的项单独注明。
 
-结论：下表通用交互与对象属性里列出的项已做，例外是「字体」未做、「线段延长开关」用独立工具替代；每个工具分组的常用工具已做；第三节「未做」列是各分组里较少用的工具。
+结论：通用交互与对象属性两节列出的项全部已做；每个工具分组的常用工具已做；第三节「未做」列是各分组里较少用的工具，不属于本轮「基础能力」范围。
 
 ## 一、通用交互
 
@@ -27,7 +27,7 @@
 | 画线跨周期显示，按会话 / 币种保存，重启保留 | 已做 | phase2「drawings and MAs restored after restart」 |
 | 同步到同币种所有会话 | 已做 | phase4「drawing synced」及新会话可见检查 |
 | 画线价格提醒（穿越触发一次） | 已做 | phase4「price alert armed」与触发检查；HIP-3 行情同样参与提醒 |
-| 快速连续点击不丢锚点 | 已做 | 原生 click 路径；0.1.0 对照复现与当前 80 次 0 漏画 |
+| 快速连续点击不丢锚点 | 已做 | 原生 click 路径。0.1.0 对照：两次点击间隔 100/300/450ms 均漏画 20/20，550/700ms 0/20（图表库 500ms 双击窗口）；当前版本 100/300/450/900ms 各 20 次 0 漏画 |
 | 屏幕外画线不渲染 | 已做 | perf「a drawing far off-screen is not rendered」 |
 
 ## 二、对象属性
@@ -41,9 +41,9 @@
 | 背景填充浓淡（矩形、圆、三角、通道、斐波那契、区间等） | 已做（0.4.2） | phase5「fill and interval visibility are saved」；单元测试填充透明度 |
 | 斐波那契自定义层级 | 已做 | phase5「custom fib levels」 |
 | 成交量分布行数与价值区比例 | 已做 | phase5「rows to 96」 |
-| 线段向左 / 右延长开关 | 部分 | 用独立的「射线」「延长线」工具实现，趋势线本身无开关 |
+| 趋势线向左 / 右延长 | 已做（0.4.3） | phase5「extend right is saved and the line runs past its anchor」；单元测试延长后的提醒价格 |
 | 文字粗体 / 斜体 | 已做（0.4.2） | 单元测试「bold reaches the text」 |
-| 字体选择 | 未做 | 使用界面字体 |
+| 字体选择 | 不适用 | TradingView 文本设置只有颜色、字号、粗体、斜体、背景、边框，没有字体选择 |
 
 ## 三、工具分组
 

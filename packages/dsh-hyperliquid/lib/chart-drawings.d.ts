@@ -1,6 +1,6 @@
 export type DrawingKind = 'level' | 'hray' | 'vline' | 'text' | 'trend' | 'ray' | 'extended' | 'fib' | 'rect' | 'measure' | 'channel' | 'long' | 'short' | 'fibext' | 'fibchannel' | 'fibtime' | 'gannfan' | 'pitchfork' | 'regression' | 'vprofile' | 'arrow' | 'callout' | 'circle' | 'triangle' | 'brush' | 'crossline' | 'pricelabel' | 'infoline' | 'trendangle' | 'pricerange' | 'daterange' | 'elliott' | 'elliottabc' | 'xabcd' | 'abcd' | 'headshoulders' | 'gannbox' | 'gannsquare' | 'schiff' | 'modschiff' | 'icon'
 export type LineStyleName = 'solid' | 'dashed' | 'dotted'
-export interface DrawingStyle { visibleIntervals?: string[]; fontSize?: number; bold?: boolean; italic?: boolean; fillOpacity?: number; levels?: number[]; rows?: number; valueArea?: number; color?: string; lineWidth?: number; lineStyle?: LineStyleName; locked?: boolean; hidden?: boolean; shared?: boolean; alert?: boolean }
+export interface DrawingStyle { visibleIntervals?: string[]; fontSize?: number; bold?: boolean; italic?: boolean; extendLeft?: boolean; extendRight?: boolean; fillOpacity?: number; levels?: number[]; rows?: number; valueArea?: number; color?: string; lineWidth?: number; lineStyle?: LineStyleName; locked?: boolean; hidden?: boolean; shared?: boolean; alert?: boolean }
 export declare const DRAWING_POINTS: Record<DrawingKind, number>
 export declare const DRAWING_KINDS: DrawingKind[]
 export declare const DRAWING_CLICKS: Record<DrawingKind, number>

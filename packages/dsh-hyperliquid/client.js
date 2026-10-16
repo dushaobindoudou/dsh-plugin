@@ -17908,9 +17908,9 @@ function drawingLabel(kind, points2, price) {
   const when = new Date(first.time).toLocaleString(tr("zh-CN", "en-US"), { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false });
   return `${name} ${when}`;
 }
-function clipLine(a, b, w, h, from) {
+function clipLine(a, b, w, h, from, to = Infinity) {
   const dx = b.x - a.x, dy = b.y - a.y;
-  let t0 = from, t1 = Infinity;
+  let t0 = from, t1 = to;
   for (const [p, q] of [[-dx, a.x], [dx, w - a.x], [-dy, a.y], [dy, h - a.y]]) {
     if (p === 0) {
       if (q < 0) return null;
@@ -17992,7 +17992,7 @@ function guide(a, b, value, key3, text) {
 }
 var BADGE_PATHS = { alert: "M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0", shared: "M4 9h13l-3-3M20 15H7l3 3" };
 var DASH = { solid: void 0, dashed: "7 5", dotted: "1.5 4" };
-var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels, fontSize, bold, italic, fillOpacity }) {
+var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels, fontSize, bold, italic, fillOpacity, extendLeft, extendRight }) {
   const k = (fontSize ?? 12) / 12;
   const badges = [...alert ? ["alert"] : [], ...shared ? ["shared"] : []];
   const { width: w, height: h } = view;
@@ -18014,9 +18014,17 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
       body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, x2: p[0].x, y1: "0", y2: h });
       handles = [{ x: p[0].x, y: Math.min(h - 12, Math.max(12, p[0].y)) }];
       break;
-    case "trend":
-      body = p[1] ? /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y }) : null;
+    case "trend": {
+      if (!p[1]) break;
+      if (!extendLeft && !extendRight) {
+        body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+        break;
+      }
+      const [l, r] = p[0].x <= p[1].x ? [p[0], p[1]] : [p[1], p[0]];
+      const seg = clipLine(l, r, w, h, extendLeft ? -Infinity : 0, extendRight ? Infinity : 1);
+      body = seg ? /* @__PURE__ */ React7.createElement("line", { x1: seg[0].x, y1: seg[0].y, x2: seg[1].x, y2: seg[1].y }) : null;
       break;
+    }
     case "ray":
     case "extended": {
       if (!p[1]) break;
@@ -18435,7 +18443,7 @@ function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone,
       onClick: () => onEdit({ lineStyle: value })
     },
     /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 18 18", width: "16", height: "16", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("line", { x1: "2", x2: "16", y1: "9", y2: "9", stroke: "currentColor", strokeWidth: "2", strokeDasharray: value === "dashed" ? "4 3" : value === "dotted" ? "1 3" : void 0, strokeLinecap: "round" }))
-  ))) : null, FONT_KINDS.includes(mark.kind) || FILL_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6587\u5B57\u4E0E\u586B\u5145", "Text and fill") }, FONT_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u5B57\u53F7", "Font size"), title: tr("\u5B57\u53F7", "Font size"), value: String(mark.fontSize ?? 12), disabled: locked, onChange: (event) => onEdit({ fontSize: Number(event.target.value) }) }, [10, 12, 14, 18, 24, 32].map((size3) => /* @__PURE__ */ React8.createElement("option", { key: size3, value: size3 }, `${size3}px`))) : null, FONT_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement(React8.Fragment, null, /* @__PURE__ */ React8.createElement("button", { type: "button", className: mark.bold ? "on" : "", "aria-pressed": Boolean(mark.bold), disabled: locked, "aria-label": tr("\u7C97\u4F53", "Bold"), title: tr("\u7C97\u4F53", "Bold"), onClick: () => onEdit({ bold: !mark.bold }) }, /* @__PURE__ */ React8.createElement("b", null, "B")), /* @__PURE__ */ React8.createElement("button", { type: "button", className: mark.italic ? "on" : "", "aria-pressed": Boolean(mark.italic), disabled: locked, "aria-label": tr("\u659C\u4F53", "Italic"), title: tr("\u659C\u4F53", "Italic"), onClick: () => onEdit({ italic: !mark.italic }) }, /* @__PURE__ */ React8.createElement("i", null, "I"))) : null, FILL_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u80CC\u666F\u586B\u5145", "Background fill"), title: tr("\u80CC\u666F\u586B\u5145", "Background fill"), value: String(mark.fillOpacity ?? (mark.kind === "fib" ? 0.07 : 0.08)), disabled: locked, onChange: (event) => onEdit({ fillOpacity: Number(event.target.value) }) }, [[0, "\u65E0\u586B\u5145", "No fill"], [mark.kind === "fib" ? 0.07 : 0.08, "\u6DE1", "Light"], [0.18, "\u4E2D", "Medium"], [0.32, "\u6D53", "Strong"]].map(([value, zh, en]) => /* @__PURE__ */ React8.createElement("option", { key: String(value), value: String(value) }, tr(String(zh), String(en))))) : null) : null, FIB_LEVEL_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6590\u6CE2\u90A3\u5951\u5C42\u7EA7", "Fibonacci levels") }, /* @__PURE__ */ React8.createElement(
+  ))) : null, mark.kind === "trend" ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u5EF6\u957F", "Extend") }, /* @__PURE__ */ React8.createElement("button", { type: "button", className: mark.extendLeft ? "on" : "", "aria-pressed": Boolean(mark.extendLeft), disabled: locked, "aria-label": tr("\u5411\u5DE6\u5EF6\u957F", "Extend left"), title: tr("\u5411\u5DE6\u5EF6\u957F", "Extend left"), onClick: () => onEdit({ extendLeft: !mark.extendLeft }) }, /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("path", { d: "M3 12h13", strokeDasharray: "2 2.5" }), /* @__PURE__ */ React8.createElement("path", { d: "M14 12h7" }), /* @__PURE__ */ React8.createElement("circle", { cx: "14", cy: "12", r: "1.8" }), /* @__PURE__ */ React8.createElement("path", { d: "M6 9l-3 3 3 3" }))), /* @__PURE__ */ React8.createElement("button", { type: "button", className: mark.extendRight ? "on" : "", "aria-pressed": Boolean(mark.extendRight), disabled: locked, "aria-label": tr("\u5411\u53F3\u5EF6\u957F", "Extend right"), title: tr("\u5411\u53F3\u5EF6\u957F", "Extend right"), onClick: () => onEdit({ extendRight: !mark.extendRight }) }, /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("path", { d: "M3 12h7" }), /* @__PURE__ */ React8.createElement("path", { d: "M10 12h11", strokeDasharray: "2 2.5" }), /* @__PURE__ */ React8.createElement("circle", { cx: "10", cy: "12", r: "1.8" }), /* @__PURE__ */ React8.createElement("path", { d: "M18 9l3 3-3 3" })))) : null, FONT_KINDS.includes(mark.kind) || FILL_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6587\u5B57\u4E0E\u586B\u5145", "Text and fill") }, FONT_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u5B57\u53F7", "Font size"), title: tr("\u5B57\u53F7", "Font size"), value: String(mark.fontSize ?? 12), disabled: locked, onChange: (event) => onEdit({ fontSize: Number(event.target.value) }) }, [10, 12, 14, 18, 24, 32].map((size3) => /* @__PURE__ */ React8.createElement("option", { key: size3, value: size3 }, `${size3}px`))) : null, FONT_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement(React8.Fragment, null, /* @__PURE__ */ React8.createElement("button", { type: "button", className: mark.bold ? "on" : "", "aria-pressed": Boolean(mark.bold), disabled: locked, "aria-label": tr("\u7C97\u4F53", "Bold"), title: tr("\u7C97\u4F53", "Bold"), onClick: () => onEdit({ bold: !mark.bold }) }, /* @__PURE__ */ React8.createElement("b", null, "B")), /* @__PURE__ */ React8.createElement("button", { type: "button", className: mark.italic ? "on" : "", "aria-pressed": Boolean(mark.italic), disabled: locked, "aria-label": tr("\u659C\u4F53", "Italic"), title: tr("\u659C\u4F53", "Italic"), onClick: () => onEdit({ italic: !mark.italic }) }, /* @__PURE__ */ React8.createElement("i", null, "I"))) : null, FILL_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u80CC\u666F\u586B\u5145", "Background fill"), title: tr("\u80CC\u666F\u586B\u5145", "Background fill"), value: String(mark.fillOpacity ?? (mark.kind === "fib" ? 0.07 : 0.08)), disabled: locked, onChange: (event) => onEdit({ fillOpacity: Number(event.target.value) }) }, [[0, "\u65E0\u586B\u5145", "No fill"], [mark.kind === "fib" ? 0.07 : 0.08, "\u6DE1", "Light"], [0.18, "\u4E2D", "Medium"], [0.32, "\u6D53", "Strong"]].map(([value, zh, en]) => /* @__PURE__ */ React8.createElement("option", { key: String(value), value: String(value) }, tr(String(zh), String(en))))) : null) : null, FIB_LEVEL_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6590\u6CE2\u90A3\u5951\u5C42\u7EA7", "Fibonacci levels") }, /* @__PURE__ */ React8.createElement(
     "input",
     {
       className: "dhl-draw-toolbar-text dhl-fib-levels",
@@ -19666,7 +19674,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
   const cloneOf = React10.useCallback((mark) => {
     const line = timelineRef.current;
     const shifted = markPoints(mark).map((point) => ({ time: line.toTime(line.toLogical(point.time) + 5), price: point.price }));
-    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle, levels: mark.levels, rows: mark.rows, valueArea: mark.valueArea, fontSize: mark.fontSize, bold: mark.bold, italic: mark.italic, fillOpacity: mark.fillOpacity, visibleIntervals: mark.visibleIntervals }).filter(([, value]) => value != null));
+    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle, levels: mark.levels, rows: mark.rows, valueArea: mark.valueArea, fontSize: mark.fontSize, bold: mark.bold, italic: mark.italic, extendLeft: mark.extendLeft, extendRight: mark.extendRight, fillOpacity: mark.fillOpacity, visibleIntervals: mark.visibleIntervals }).filter(([, value]) => value != null));
     return { kind: mark.kind, geometry: geometryPatch(mark.kind, shifted), style, label: mark.label };
   }, []);
   const clipboard = React10.useRef(null);
@@ -19915,7 +19923,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     const selected = selectedId === mark.id || group.includes(mark.id);
     if (interval && mark.visibleIntervals?.length && !mark.visibleIntervals.includes(interval)) return null;
     const clampedDecoration = !(mark.source === "user" || mark.kind === "level") || Boolean(mark.alert) || Boolean(mark.shared);
-    if (!selected && !clampedDecoration && FINITE_KINDS.has(mark.kind) && offscreen(shown, view)) return null;
+    if (!selected && !clampedDecoration && !mark.extendLeft && !mark.extendRight && FINITE_KINDS.has(mark.kind) && offscreen(shown, view)) return null;
     return /* @__PURE__ */ React10.createElement(
       DrawingShape,
       {
@@ -19941,7 +19949,9 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         fontSize: mark.fontSize,
         bold: mark.bold,
         italic: mark.italic,
-        fillOpacity: mark.fillOpacity
+        fillOpacity: mark.fillOpacity,
+        extendLeft: mark.extendLeft,
+        extendRight: mark.extendRight
       }
     );
   }), /* @__PURE__ */ React10.createElement("g", { className: "dhl-fills" }, fills.map((event) => {
@@ -20017,7 +20027,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
 var React11 = __toESM(require("react"), 1);
 var HISTORY_LIMIT = 100;
 var GEOMETRY = ["price", "fromTime", "fromPrice", "toTime", "toPrice", "points"];
-var STYLE = ["color", "lineWidth", "lineStyle", "locked", "hidden", "shared", "alert", "rows", "valueArea", "levels", "visibleIntervals", "fontSize", "fillOpacity", "bold", "italic"];
+var STYLE = ["color", "lineWidth", "lineStyle", "locked", "hidden", "shared", "alert", "rows", "valueArea", "levels", "visibleIntervals", "fontSize", "fillOpacity", "bold", "italic", "extendLeft", "extendRight"];
 var FLAGS = /* @__PURE__ */ new Set(["locked", "hidden", "shared", "alert"]);
 function recreateRequest(mark) {
   const out = { kind: mark.kind, label: mark.label, role: mark.role, coin: mark.coin, interval: mark.interval };
