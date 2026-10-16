@@ -18686,6 +18686,37 @@ function cssVar(el, name, fallback) {
 function chartData(points2) {
   return points2.map((point) => ({ time: point.time, value: point.value }));
 }
+var FINITE_KINDS = /* @__PURE__ */ new Set([
+  "trend",
+  "rect",
+  "measure",
+  "fib",
+  "long",
+  "short",
+  "text",
+  "arrow",
+  "triangle",
+  "brush",
+  "infoline",
+  "trendangle",
+  "pricerange",
+  "daterange",
+  "elliott",
+  "elliottabc",
+  "xabcd",
+  "abcd",
+  "gannbox",
+  "gannsquare",
+  "icon",
+  "vprofile",
+  "regression"
+]);
+function offscreen(points2, view) {
+  if (!points2.length) return false;
+  const xs = points2.map((point) => view.project(point.time, point.price)?.x);
+  if (xs.some((x) => x == null)) return false;
+  return xs.every((x) => x < -320) || xs.every((x) => x > view.width + 320);
+}
 var profileCache = /* @__PURE__ */ new WeakMap();
 function cachedProfile(candles, from, to, options = {}) {
   let byRange = profileCache.get(candles);
@@ -19837,6 +19868,8 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     const live = draft?.id === mark.id ? draft.points : groupDraft?.get(mark.id) ?? points2;
     const shown = mark.kind === "level" ? [{ time: lastTime, price: live[0].price }] : live;
     const selected = selectedId === mark.id || group.includes(mark.id);
+    const clampedDecoration = !(mark.source === "user" || mark.kind === "level") || Boolean(mark.alert) || Boolean(mark.shared);
+    if (!selected && !clampedDecoration && FINITE_KINDS.has(mark.kind) && offscreen(shown, view)) return null;
     return /* @__PURE__ */ React10.createElement(
       DrawingShape,
       {

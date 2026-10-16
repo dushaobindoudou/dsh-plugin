@@ -172,6 +172,19 @@ interface ChartProps {
   selectRequest: { id: string; at: number } | null
 }
 
+/** Drawings that end at their anchors (no ray, line or fan running to the plot edge), so they can be culled. */
+// Not here: anything that can reach past its anchors — circles (radius), fib extensions (projection), the
+// head-and-shoulders neckline, callouts (long text) — or runs to the plot edge (lines, rays, channels, fans).
+const FINITE_KINDS = new Set(['trend', 'rect', 'measure', 'fib', 'long', 'short', 'text', 'arrow', 'triangle', 'brush',
+  'infoline', 'trendangle', 'pricerange', 'daterange', 'elliott', 'elliottabc', 'xabcd', 'abcd', 'gannbox', 'gannsquare', 'icon', 'vprofile', 'regression'])
+/** Every anchor beyond the same side of the plot (with a margin for labels and handles). */
+function offscreen(points: DrawPoint[], view: { project: (time: number, price: number) => { x: number } | null; width: number }): boolean {
+  if (!points.length) return false
+  const xs = points.map((point) => view.project(point.time, point.price)?.x)
+  if (xs.some((x) => x == null)) return false
+  return xs.every((x) => x! < -320) || xs.every((x) => x! > view.width + 320)
+}
+
 /** Volume profiles per candle set: panning, crosshair moves and drags reuse the result until the bars change. */
 const profileCache = new WeakMap<Candle[], Map<string, ReturnType<typeof volumeProfile>>>()
 function cachedProfile(candles: Candle[], from: number, to: number, options: { rows?: number; valueArea?: number } = {}): ReturnType<typeof volumeProfile> {
@@ -1228,6 +1241,10 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
             const live = draft?.id === mark.id ? draft.points : groupDraft?.get(mark.id) ?? points
             const shown = mark.kind === 'level' ? [{ time: lastTime, price: live[0].price }] : live
             const selected = selectedId === mark.id || group.includes(mark.id)
+            // Off-screen culling: a bounded drawing entirely left or right of the plot renders nothing.
+            // Kept: drawings whose label or alert / shared badge is clamped into the plot even when the anchors are not.
+            const clampedDecoration = !(mark.source === 'user' || mark.kind === 'level') || Boolean(mark.alert) || Boolean(mark.shared)
+            if (!selected && !clampedDecoration && FINITE_KINDS.has(mark.kind) && offscreen(shown, view)) return null
             return <DrawingShape key={mark.id} id={mark.id} kind={mark.kind} points={shown} view={view} text={mark.label}
               dataVersion={mark.kind === 'vprofile' || mark.kind === 'regression' ? candles : undefined}
               className={`dhl-drawing ${roleClass(mark)}${mark.kind === 'level' ? ' is-level' : ''}${selected ? ' selected' : ''}${mark.locked || drawingsLocked ? ' locked' : ''}`}

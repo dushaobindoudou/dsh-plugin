@@ -81,6 +81,15 @@ try {
   })
   await page.waitForTimeout(800)
   check((await store(page)).candles >= 5000, '5000 bars loaded')
+  // Off-screen culling: a trend line 4900 bars back is not in the DOM until the chart goes there.
+  await page.evaluate(() => { const s = window.__dhlStore.get(), c = s.candles
+    window.__dhlStore.patch({ chartMarks: [...s.chartMarks, { id: 'perf-far', sessionId: s.activeSessionId, coin: s.activeCoin, interval: s.interval, kind: 'trend', role: 'neutral', label: 'perf-far', source: 'user', createdAt: Date.now(),
+      fromTime: c[40].t, fromPrice: c[40].c, toTime: c[60].t, toPrice: c[60].c }] }) })
+  await page.waitForTimeout(500)
+  check(await page.locator('.dhl-chart-drawing-overlay [data-mark-id="perf-far"]').count() === 0, 'a drawing far off-screen is not rendered')
+  await page.locator('.dhl-drawing-list').getByRole('button', { name: /perf-far/ }).first().click(); await page.waitForTimeout(800)
+  check(await page.locator('.dhl-chart-drawing-overlay [data-mark-id="perf-far"]').count() > 0, 'it renders once the chart is brought to it')
+  await page.keyboard.press('Escape')
   await page.locator('.dhl-drawing-list').getByRole('button', { name: /perf-vp/ }).first().click()
   await page.waitForTimeout(500)
   const handle = await page.locator('[data-mark-id="perf-vp"] [data-anchor="1"]').first().boundingBox()

@@ -142,6 +142,8 @@ try {
   const vpSvg = renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'vprofile', points: [{ time: now - 3 * 3600_000, price: 100 }, { time: now, price: 100 }], view: vpView }))
   assert.ok(vpSvg.includes('POC ') && vpSvg.includes('VAH ') && vpSvg.includes('dhl-vprofile-up'), 'the volume profile draws rows, POC and value area')
   assert.ok(vpSvg.includes('K 线估算'), 'the profile says it is estimated from bars')
+  const vpHit = renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'vprofile', id: 'vp', interactive: true, points: [{ time: now - 3 * 3600_000, price: 100 }, { time: now, price: 100 }], view: vpView }))
+  assert.ok((vpHit.match(/<(path|rect|line|text)\b/g) ?? []).length < 40, 'rows are merged into a few paths, so even with its click layer a profile stays small')
   const partialSvg = renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'vprofile', points: [{ time: now - 3 * 3600_000, price: 100 }, { time: now, price: 100 }], view: { ...vpView, firstTime: now - 3600_000, barMs: 3600_000 } }))
   assert.ok(partialSvg.includes('区间前段历史未加载'), 'a range that starts before the loaded history is flagged')
   assert.equal(volumeProfile([{ open: 100, high: 100, low: 100, close: 100, volume: 5 }]).poc, 100, 'a flat range puts the POC on the traded price')
