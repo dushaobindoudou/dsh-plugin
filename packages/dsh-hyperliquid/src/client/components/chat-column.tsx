@@ -9,6 +9,7 @@ import { CHART_REFERENCE_SOURCE, encodeChartReference } from '../chart-reference
 import { TradeTicket } from './trade-ticket'
 import type { RetainedSession } from '../types'
 import { FoldIcon } from './panel-icons'
+import { readNativeSessionList } from '../native-session-list'
 
 interface ConversationKit {
   SessionProvider?: React.ComponentType<{ session: RetainedSession; children: React.ReactNode }>
@@ -50,7 +51,7 @@ export function ChatColumn({ width, fill = false, onCollapse, SessionProvider, r
         // On reload the plugin registry may arrive before DSH has hydrated
         // its native session list. Retain only after that session is known;
         // otherwise retain() rejects and the chat never retries.
-        const nativeList = sessionsSvc.list?.get?.()
+        const nativeList = readNativeSessionList(sessionsSvc.list)
         if (nativeList && !nativeList.byId?.[activeId]) {
           if (nativeList.phase === 'ready') throw new Error(tr('该交易会话已不在 DSH 会话列表中', 'This trading session no longer exists in DSH'))
           return
@@ -83,7 +84,7 @@ export function ChatColumn({ width, fill = false, onCollapse, SessionProvider, r
 
   const title = React.useMemo(() => {
     if (!activeId) return ''
-    const row = getContext()?.get('sessions')?.list?.get?.()?.byId?.[activeId]
+    const row = readNativeSessionList(getContext()?.get('sessions')?.list)?.byId?.[activeId]
     return s.sessionTitles?.[activeId] ?? row?.displayTitle ?? s.sessions.find((r) => r.sessionId === activeId)?.title ?? t('session.defaultTitle', 'Hyperliquid 交易会话')
   }, [activeId, s.sessions, s.sessionTitles, s.localeRevision])
   const readyRef = ref?.sessionId === activeId ? ref : null

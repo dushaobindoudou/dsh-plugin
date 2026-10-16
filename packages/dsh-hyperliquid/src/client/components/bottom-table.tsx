@@ -11,7 +11,9 @@ import { fmt, fmtPrice } from '../format'
 import { loadTradeHistory, queueToAgent, saveSessionWorkspace } from '../data'
 import { useStore } from '../store'
 
-type Tab = 'positions' | 'orders' | 'account'
+import { TradeReview } from './trade-review'
+
+type Tab = 'positions' | 'orders' | 'account' | 'review'
 
 export function BottomTable({ account, accountError }: { account: any; accountError: string | null }) {
   const s = useStore()
@@ -35,6 +37,7 @@ export function BottomTable({ account, accountError }: { account: any; accountEr
     ['positions', t('tab.positions', '持仓')],
     ['orders', t('tab.orders', '委托与成交')],
     ['account', t('tab.account', '账户')],
+    ['review', tr('交易复盘', 'Trade review')],
   ]
   const head = (...cells: string[]) => (
     <div className="dhl-posrow dhl-poshead">{cells.map((c) => <span key={c}>{c}</span>)}</div>
@@ -108,6 +111,8 @@ export function BottomTable({ account, accountError }: { account: any; accountEr
         {orderView !== 'open' && rows.length > historyLimit ? <button type="button" className="dhl-history-more" onClick={() => setHistoryLimit((limit) => limit + 100)}>{tr('显示更多', 'Show more')} · {Math.min(historyLimit, rows.length)}/{rows.length}</button> : null}
       </div>
     )
+  } else if (tab === 'review') {
+    body = <TradeReview />
   } else {
     body = (
       <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', fontSize: 11.5, fontVariantNumeric: 'tabular-nums', padding: '4px 0' }}>
@@ -153,7 +158,7 @@ export function BottomTable({ account, accountError }: { account: any; accountEr
         ))}
       </div>
       {body}
-      {account?.mode === 'paper' ? <p className="dhl-ticket-note">{tr(account.simulation, 'Fixed slippage; order book depth, fees, funding and liquidation are not simulated.')}</p> : null}
+      {account?.mode === 'paper' ? <p className="dhl-ticket-note">{tr(account.simulation, 'Configured slippage and fees; depth, funding and liquidation are not simulated.')}</p> : null}
     </div>
   )
 }

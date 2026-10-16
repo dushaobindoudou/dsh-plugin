@@ -26,6 +26,8 @@ export function TradingLimits({ open, onClose }: { open: boolean; onClose: () =>
   const [draft, setDraft] = React.useState<Draft>(EMPTY)
   const [busy, setBusy] = React.useState(false)
   const [error, setError] = React.useState('')
+  const [costs, setCosts] = React.useState({ feeBps: '4.5', slippageBps: '5' })
+  React.useEffect(() => { if (open) setCosts({ feeBps: String(st?.paperCosts?.feeBps ?? 4.5), slippageBps: String(st?.paperCosts?.slippageBps ?? 5) }) }, [open])
   React.useEffect(() => {
     if (open && limits) { setDraft(fromLimits(limits)); setError('') }
   }, [open, Boolean(limits)])
@@ -82,6 +84,12 @@ export function TradingLimits({ open, onClose }: { open: boolean; onClose: () =>
       </form> : <div className="dhl-empty">{tr('正在读取…', 'Loading…')}</div>}
       <p className="dhl-limits-note">{tr('保存后立即作用于模拟盘和实盘，重启后继续生效。两种模式的每日额度分开记账；减仓和平仓不受开仓限额阻止。',
         'Changes apply immediately to paper and live trading and survive restart. Each mode has its own daily budget; reducing and closing remain available.')}</p>
+    </section>
+    <section className="dhl-limits-section">
+      <h3>{tr('模拟成交成本', 'Paper execution costs')}</h3>
+      <div className="dhl-risk-form">{(['feeBps', 'slippageBps'] as const).map((key) => <label key={key}><span>{key === 'feeBps' ? tr('手续费 · bps', 'Fee · bps') : tr('不利滑点 · bps', 'Adverse slippage · bps')}</span><Input type="number" aria-label={key === 'feeBps' ? tr('模拟手续费 bps', 'Paper fee bps') : tr('模拟滑点 bps', 'Paper slippage bps')} min="0" max="100" step="any" value={costs[key]} onChange={(e) => setCosts((old) => ({ ...old, [key]: e.target.value }))} /></label>)}</div>
+      <p className="dhl-limits-note">{tr('1 bps = 0.01%。这是模拟假设，不是实盘费率。仅作用于之后的模拟成交，旧记录保留原值；不模拟盘口深度、资金费和强平。', '1 bps = 0.01%. Simulation assumptions, not exchange fee tiers. Future paper fills only; historical assumptions are preserved. No depth, funding or liquidation simulation.')}</p>
+      <Button variant="outline" disabled={busy} onClick={() => { setBusy(true); setError(''); void hyperCall('updatePaperCosts', { costs: { feeBps: costs.feeBps.trim() ? Number(costs.feeBps) : NaN, slippageBps: costs.slippageBps.trim() ? Number(costs.slippageBps) : NaN } }).then(() => loadStatus()).then(() => notify(tr('模拟成本已保存', 'Paper costs saved'))).catch((cause) => setError(String(cause.message))).finally(() => setBusy(false)) }}>{tr('保存模拟成本', 'Save paper costs')}</Button>
     </section>
     <section className="dhl-limits-section">
       <h3>{tr('钱包签名', 'Wallet signing')}</h3>

@@ -15,6 +15,11 @@ export async function openDesk(page, url) {
     await page.getByRole('button', { name: /稍后配置/ }).first().click()
     await onboarding.waitFor({ state: 'hidden', timeout: 5000 })
   }
+  // The release notice can mount while the provider onboarding check is waiting.
+  if (await preview.isVisible().catch(() => false)) {
+    await preview.getByRole('button', { name: '继续' }).click()
+    await preview.waitFor({ state: 'hidden', timeout: 5000 })
+  }
   await page.getByRole('button', { name: /Hyperliquid/ }).first().click()
   await page.locator('.dhl-root').waitFor({ state: 'visible', timeout: 15_000 })
 }

@@ -21,6 +21,7 @@ import { ChatColumn } from './components/chat-column'
 import { PanelIcon, UiIcon } from './components/panel-icons'
 import { WalletDetails } from './components/wallet-details'
 import { TradingLimits } from './components/trading-limits'
+import { readNativeSessionList } from './native-session-list'
 
 interface AppProps {
   SessionProvider?: React.ComponentType<any>
@@ -75,7 +76,7 @@ export function App(props: AppProps) {
     const list = getContext()?.get('sessions')?.list
     if (!list?.subscribe) return undefined
     const read = () => {
-      const snapshot = list.get?.() ?? {}
+      const snapshot = readNativeSessionList(list) ?? {}
       const byId = snapshot.byId ?? {}
       const titles: Record<string, string | null> = {}
       for (const [id, row] of Object.entries(byId)) titles[id] = (row as any)?.displayTitle ?? null

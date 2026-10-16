@@ -54,4 +54,7 @@ export async function hyperCall(method: string, request: any = null): Promise<an
   throw new Error(t('error.badResponse', '远端响应格式错误'))
 }
 
+// Same RPC the page already holds, for the real-host smoke and scripted setups.
+try { (window as any).__dhlCall = hyperCall } catch { /* non-window env */ }
+
 export { notify }

@@ -8,9 +8,11 @@
 
 import { closedCandles, computeIndicators } from './indicators.js'
 import { MA_KINDS, MA_SOURCES, maLabel, maLatest, normalizeMaLine, normalizeMaLines } from './moving-average.js'
-import { DRAWING_KINDS } from './chart-drawings.js'
+import { INDICATOR_IDS, computeStudies, normalizeIndicatorSettings, studyDefinitions } from './studies.js'
+import { reviewLedger } from './review.js'
+import { DRAWING_KINDS, volumeProfile } from './chart-drawings.js'
 
-const DRAWING_NAMES = { level: '水平线', hray: '水平射线', vline: '垂直线', text: '文本', trend: '趋势线', ray: '射线', extended: '延长线', channel: '平行通道', fib: '斐波那契回撤', rect: '矩形', measure: '价格区间', long: '多头头寸', short: '空头头寸', fibext: '斐波那契扩展', fibchannel: '斐波那契通道', fibtime: '斐波那契时间周期', gannfan: '江恩扇形', pitchfork: '安德鲁叉子线', regression: '回归趋势', arrow: '箭头', callout: '标注气泡', circle: '圆形', triangle: '三角形', brush: '画笔', crossline: '十字线', pricelabel: '价格标签', infoline: '信息线', trendangle: '趋势角度', pricerange: '价格区间', daterange: '日期区间', elliott: '艾略特推动浪', elliottabc: '艾略特调整浪', xabcd: 'XABCD 谐波', abcd: 'ABCD 形态', headshoulders: '头肩形态', gannbox: '江恩箱', gannsquare: '江恩方格', schiff: 'Schiff 叉子线', modschiff: '改良 Schiff 叉子线', icon: '图标' }
+const DRAWING_NAMES = { vprofile: '固定范围成交量分布', level: '水平线', hray: '水平射线', vline: '垂直线', text: '文本', trend: '趋势线', ray: '射线', extended: '延长线', channel: '平行通道', fib: '斐波那契回撤', rect: '矩形', measure: '价格区间', long: '多头头寸', short: '空头头寸', fibext: '斐波那契扩展', fibchannel: '斐波那契通道', fibtime: '斐波那契时间周期', gannfan: '江恩扇形', pitchfork: '安德鲁叉子线', regression: '回归趋势', arrow: '箭头', callout: '标注气泡', circle: '圆形', triangle: '三角形', brush: '画笔', crossline: '十字线', pricelabel: '价格标签', infoline: '信息线', trendangle: '趋势角度', pricerange: '价格区间', daterange: '日期区间', elliott: '艾略特推动浪', elliottabc: '艾略特调整浪', xabcd: 'XABCD 谐波', abcd: 'ABCD 形态', headshoulders: '头肩形态', gannbox: '江恩箱', gannsquare: '江恩方格', schiff: 'Schiff 叉子线', modschiff: '改良 Schiff 叉子线', icon: '图标' }
 import { canonicalMarketCoin } from './market-symbol.js'
 
 /** Resolve the calling session id from a tool run context. */
@@ -18,6 +20,8 @@ function sessionIdOf(exec) {
   const agent = exec?.agent
   return agent?.id ?? agent?.session?.id ?? null
 }
+
+const INTERVAL_MS = { '1m': 60e3, '3m': 180e3, '5m': 300e3, '15m': 900e3, '30m': 1800e3, '1h': 3600e3, '2h': 7200e3, '4h': 14400e3, '8h': 28800e3, '12h': 43200e3, '1d': 86400e3, '3d': 259200e3, '1w': 604800e3, '1M': 2592000e3 }
 
 function fmt(n, d = 2) {
   if (n == null) return '—'
@@ -72,7 +76,7 @@ function buildTools(remote) {
         const change24hPct = Number(market.ctx?.prevDayPx) > 0 && mark != null ? (mark / Number(market.ctx.prevDayPx) - 1) * 100 : null
         const context = {
           workspace: workspace ? { interval: workspace.interval, bookGrouping: workspace.bookGrouping,
-            chartTab: workspace.chartTab, indicators: workspace.indicators, priceScale: workspace.priceScale } : null,
+            chartTab: workspace.chartTab, chartType: workspace.chartType ?? 'candles', indicators: workspace.indicators, indicatorSettings: normalizeIndicatorSettings(workspace.indicatorSettings), research: workspace.research ?? null, priceScale: workspace.priceScale } : null,
           sessionId, coin, interval, marketKind: detail?.market?.kind ?? 'perp', tradable, network: markets.network, mode: account.mode,
           mark, mid: midFresh ? mid : null, change24hPct, funding1h: market.ctx?.funding != null ? Number(market.ctx.funding) : null,
           volume24hUsd: market.ctx?.dayNtlVlm != null ? Number(market.ctx.dayNtlVlm) : null,
@@ -100,14 +104,14 @@ function buildTools(remote) {
           : bookAge == null || marketAge == null || bookAge > 10 || marketAge > 60 ? '只读行情过期/缺失' : '只读行情可用'
         const text = [
           `${coin} ${interval} · ${detail?.market?.kind ?? 'perp'}${tradable ? '' : '（只读市场）'} · ${account.mode}/${markets.network} · 读取 ${new Date(context.assembledAt).toISOString()} · 盘口 ${bookAge ?? '?'}s / ${tradable ? 'mid ' + (midsAge ?? '?') : '市场上下文 ' + (marketAge ?? '?')}s · ${freshness}`,
-          workspace ? `会话图表：${workspace.chartTab} · 指标=${workspace.indicators.join(',') || '无'} · 刻度=${workspace.priceScale} · 盘口精度=${workspace.bookGrouping}` : '',
+          workspace ? `会话图表：${workspace.chartTab}/${workspace.chartType ?? 'candles'} · 指标=${workspace.indicators.join(',') || '无'} · 刻度=${workspace.priceScale} · 盘口精度=${workspace.bookGrouping}` : '',
           `mark=${fmt(mark)} mid=${fmt(context.mid)} 24h=${change24hPct == null ? '?' : fmt(change24hPct) + '%'} 资金费=${context.funding1h == null ? '不适用' : fmt(context.funding1h * 100, 4) + '%/h'} 24h成交=${fmt(context.volume24hUsd, 0)} USD`,
           `bid=${fmt(context.bid?.px)} ask=${fmt(context.ask?.px)} ${context.balanceSource === 'spot' ? 'USDC余额' : context.accountDex ? `${context.accountDex} DEX 抵押额` : '权益'}=${fmt(context.accountValue)} ${context.balanceSource === 'spot' ? '交易所可交易名义额' : '可用'}=${fmt(context.available)} ${context.accountDex && context.balanceSource !== 'spot' ? '抵押币单位' : 'USD'} · 挂单=${context.openOrders.length}${context.accountMode ? ` · 账户模式=${context.accountMode}` : ''}`,
           !tradable ? account.mode === 'paper'
             ? '当前账户数据不代表该只读市场的余额、仓位或可交易额度。'
             : `当前市场仅可分析；${context.positionsCoverage === 'all-dexs' ? '仓位来自全部永续 DEX 快照' : '账户仓位仅覆盖所选 DEX'}${position ? `；当前仓位=${fmt(position.size, 6)} ${coin}` : ''}，不能据此在该市场下单。`
             : position ? `仓位 ${position.size > 0 ? 'LONG' : 'SHORT'} ${fmt(Math.abs(position.size), 6)} ${coin} entry=${fmt(position.entryPx)} uPnL=${fmt(position.uPnl)}` : '当前币对无持仓',
-          `风险：允许币对=${(context.riskLimits?.allowedCoins ?? []).join(',')} 单笔≤${fmt(context.riskLimits?.maxOrderUsd)} USD 每日≤${fmt(context.riskLimits?.maxDailyUsd)} USD 杠杆≤${fmt(context.riskLimits?.maxLeverage, 0)}x · 自主执行=${context.autonomousLive ? '开启' : '关闭'}${account.mode === 'paper' ? ' · 模拟盘固定滑点，未模拟盘口深度、手续费、资金费或强平' : ''}`,
+          `风险：允许币对=${(context.riskLimits?.allowedCoins ?? []).join(',')} 单笔≤${fmt(context.riskLimits?.maxOrderUsd)} USD 每日≤${fmt(context.riskLimits?.maxDailyUsd)} USD 杠杆≤${fmt(context.riskLimits?.maxLeverage, 0)}x · 自主执行=${context.autonomousLive ? '开启' : '关闭'}${account.mode === 'paper' ? ' · 模拟盘配置的滑点与手续费，未模拟盘口深度、资金费或强平' : ''}`,
           `近 ${candles.length} 根 K 线价格（末根可能未收盘）: ${candles.map((c) => fmt(c.c)).join(', ')}`,
         ].join('\n')
         return { text, context }
@@ -117,7 +121,7 @@ function buildTools(remote) {
       name: 'hyper_market',
       description:
         '查询 Hyperliquid 核心永续、HIP-3、现货与 Outcome 行情。action=overview 列出核心永续的 24h 涨跌/成交/资金费；action=book 查盘口；' +
-        'action=catalog 搜索所有市场，支持官方 perpCategories 分类；action=candles 查 K 线（支持 Hyperliquid 官方 1m 至 1M 的 14 种周期）；action=indicators 计算 SMA/EMA/RSI/MACD/布林带/ATR/支撑阻力；action=trades 查最近成交。非核心永续目前只读。',
+        'action=catalog 搜索所有市场，支持官方 perpCategories 分类；action=candles 查 K 线（支持 Hyperliquid 官方 1m 至 1M 的 14 种周期）；action=indicators 计算 SMA/EMA/RSI/MACD/布林带/ATR/Stochastic/ADX/OBV/支撑阻力，遵循当前会话指标参数；action=trades 查最近成交。非核心永续目前只读。',
       parameters: {
         type: 'object',
         properties: {
@@ -182,23 +186,29 @@ function buildTools(remote) {
         if (action === 'indicators') {
           const interval = args?.interval ?? '1h'
           const { candles } = await remote.candles({ coin, interval })
+          let session = null
+          try { session = sessionIdOf(exec) } catch { /* not a trading session */ }
+          const workspace = session && remote.store.getSession?.(session) ? remote.store.getSessionWorkspace(session) : null
+          const settings = normalizeIndicatorSettings(workspace?.indicatorSettings)
+          const closedWindow = closedCandles(candles, { interval })
+          const closed = closedWindow.rows
+          const studies = computeStudies(closed, settings)
+          const configured = { settings, values: Object.fromEntries(Object.entries(studies).map(([key, rows]) => [key, rows.at(-1)?.time === Math.floor((closed.at(-1)?.t ?? 0) / 1000) ? rows.at(-1).value : null])), candlesUsed: closed.length, observedAt: closed.length ? closedWindow.closeTime(closed.at(-1)) : null }
           const indicators = computeIndicators(candles, { interval })
-          if (!indicators.ready) return { text: `${coin} ${interval} 指标数据不足：${indicators.reason}；已排除 ${indicators.excludedOpen} 根未收盘 K 线`, indicators }
+          if (!indicators.ready) return { text: `${coin} ${interval} 指标数据不足：${indicators.reason}；已排除 ${indicators.excludedOpen} 根未收盘 K 线`, indicators, configured }
           const ageMin = Math.max(0, Math.round((Date.now() - indicators.observedAt) / 60_000))
           const text = [
             `${coin} ${interval} · ${indicators.candlesUsed} 根已收盘 K 线 · 最新收盘 ${new Date(indicators.observedAt).toISOString()}（${ageMin} 分钟前） · 排除 ${indicators.excludedOpen} 根形成中 K 线`,
             `收盘=${fmt(indicators.close)} SMA20=${fmt(indicators.sma20)} EMA20=${fmt(indicators.ema20)} EMA50=${fmt(indicators.ema50)}`,
-            `RSI14=${fmt(indicators.rsi14, 1)} MACD=${fmt(indicators.macd.line, 4)} signal=${fmt(indicators.macd.signal, 4)} hist=${fmt(indicators.macd.histogram, 4)}`,
-            `布林带下/中/上=${fmt(indicators.bollinger20.lower)}/${fmt(indicators.bollinger20.middle)}/${fmt(indicators.bollinger20.upper)} ATR14=${fmt(indicators.atr14)} 量比20=${fmt(indicators.volumeRatio20, 2)}`,
+            '会话参数（已收盘）：' + studyDefinitions(settings).filter(([id]) => ['rsi14', 'macd', 'bollinger20', 'stochastic', 'adx', 'obv'].includes(id)).map(([, key, label]) => `${label}=${configured.values[key] == null ? '数据不足' : fmt(configured.values[key], 4)}`).join(' · '),
+            `ATR14=${fmt(indicators.atr14)} 量比20=${fmt(indicators.volumeRatio20, 2)}`,
             `邻近支撑=${fmt(indicators.support.price)}（${new Date(indicators.support.time).toISOString()}） 阻力=${fmt(indicators.resistance.price)}（${new Date(indicators.resistance.time).toISOString()}）`,
           ]
-          let session = null
-          try { session = sessionIdOf(exec) } catch { /* not a trading session */ }
           const requested = Array.isArray(args?.ma) ? normalizeMaLines(args.ma) : (session && remote.store.getSession?.(session) ? remote.store.getSessionWorkspace(session).maLines ?? [] : [])
           const ma = requested.length ? maLatest(closedCandles(candles, { interval }).rows, requested) : []
           if (ma.length) text.push('均线（最新已收盘）：' + ma.map((row) => `${row.label}=${row.value == null ? '数据不足' : fmt(row.value)}${row.line.smoothing ? `→平滑${fmt(row.smoothed)}` : ''}`).join('  '))
           text.push('指标是历史 K 线的派生值；需要结合最新盘口、账户风险和数据时效验证，不能单独当作下单信号。')
-          return { text: text.join('\n'), indicators, ma, interval, coin }
+          return { text: text.join('\n'), configured, indicators: { ...indicators, rsi14: configured.values.rsi14, macd: { line: configured.values.macd, signal: configured.values.signal, histogram: configured.values.histogram }, bollinger20: { lower: configured.values.lower, middle: configured.values.basis, upper: configured.values.upper }, parameterSettings: settings }, ma, interval, coin }
         }
         if (action === 'trades') {
           const snap = await remote.snapshot({ coin })
@@ -210,10 +220,12 @@ function buildTools(remote) {
     },
     {
       name: 'hyper_chart',
-      description: '在当前 DSH 交易会话的行情图上画或管理供人查看的水平支撑/阻力线、趋势线与均线。kind=ma 在图上叠加一条按 K 线实时计算的均线：maType 支持 sma/ema/smma(平滑均线，即 RMA/Wilder)/wma，period 1-500，source 默认 close，可选 smoothingType+smoothingPeriod 再对均线做一次平滑（同 TradingView 均线指标的 Smoothing）；均线按会话保存，随周期切换重算，最多 8 条，add 会返回最新已收盘值。画线工具：level 水平线(price)、trend 趋势线(fromTime/fromPrice/toTime/toPrice)，其余用 points=[{time,price}]：hray 水平射线/vline 垂直线 1 点，ray 射线/extended 延长线/fib 斐波那契回撤(第 1 点=1、第 2 点=0)/rect 矩形/measure 价格区间 2 点，channel 平行通道 3 点（第 3 点定通道宽度），text 文本 1 点（label 为文本，最多 200 字），long/short 多空头寸 3 点 [入场, 止损, 止盈]（第 2 点时间为右边界）；fibext 斐波那契扩展 3 点(A→B 波段，自 C 投射)、fibchannel 斐波那契通道 3 点、fibtime 斐波那契时间周期 2 点、gannfan 江恩扇形 2 点(第 2 点定 1×1)、pitchfork 安德鲁叉子线 3 点、regression 回归趋势 2 点(时间区间)、arrow 箭头 2 点、callout 标注气泡 2 点(锚点+文本框位置，label 为文本)、circle 圆形 2 点(圆心+边缘)、triangle 三角形 3 点、brush 画笔 2-500 点；crossline 十字线、pricelabel 价格标签 1 点；infoline 信息线、trendangle 趋势角度、pricerange 价格区间、daterange 日期区间 2 点；elliott 推动浪 6 点(0-5)、elliottabc 调整浪 4 点(0-A-B-C)、xabcd 谐波 5 点、abcd 4 点、headshoulders 头肩 7 点(左底-左肩-颈1-头-颈2-右肩-右底)、gannbox/gannsquare 2 点对角、schiff/modschiff 叉子线 3 点、icon 图标 1 点(label 为 flag/star/up/down/warning/check/cross/fire/target/bell，或贴图库 emoji:📈/🚀/🐂/🐻/⚠️ 等)。update 按 id 修改 points/price/label 或样式 color/lineWidth(1-4)/lineStyle(solid/dashed/dotted)/locked。画线按会话和标的保存，在该标的所有周期显示。先用 hyper_market candles/indicators 验证价格和时间；标注仅用于解释，不是自动订单或交易信号。',
+      description: '在当前 DSH 交易会话的行情图上画或管理供人查看的水平支撑/阻力线、趋势线与均线，并切换图表周期与副图指标。action=view 设置周期(interval)并用 show/hide 开关指标（rsi14、macd、bollinger20、volume、atr14、vwap、stochastic、adx、obv 等，图上实时计算，不要自己算数值再画线）。kind=ma 在图上叠加一条按 K 线实时计算的均线：maType 支持 sma/ema/smma(平滑均线，即 RMA/Wilder)/wma，period 1-500，source 默认 close，可选 smoothingType+smoothingPeriod 再对均线做一次平滑（同 TradingView 均线指标的 Smoothing）；均线按会话保存，随周期切换重算，最多 8 条，add 会返回最新已收盘值。画线工具：level 水平线(price)、trend 趋势线(fromTime/fromPrice/toTime/toPrice)，其余用 points=[{time,price}]：hray 水平射线/vline 垂直线 1 点，ray 射线/extended 延长线/fib 斐波那契回撤(第 1 点=1、第 2 点=0)/rect 矩形/measure 价格区间 2 点，vprofile 固定范围成交量分布 2 点（只取两点的时间区间，返回 POC 与 70% 价值区 VAH/VAL），channel 平行通道 3 点（第 3 点定通道宽度），text 文本 1 点（label 为文本，最多 200 字），long/short 多空头寸 3 点 [入场, 止损, 止盈]（第 2 点时间为右边界）；fibext 斐波那契扩展 3 点(A→B 波段，自 C 投射)、fibchannel 斐波那契通道 3 点、fibtime 斐波那契时间周期 2 点、gannfan 江恩扇形 2 点(第 2 点定 1×1)、pitchfork 安德鲁叉子线 3 点、regression 回归趋势 2 点(时间区间)、arrow 箭头 2 点、callout 标注气泡 2 点(锚点+文本框位置，label 为文本)、circle 圆形 2 点(圆心+边缘)、triangle 三角形 3 点、brush 画笔 2-500 点；crossline 十字线、pricelabel 价格标签 1 点；infoline 信息线、trendangle 趋势角度、pricerange 价格区间、daterange 日期区间 2 点；elliott 推动浪 6 点(0-5)、elliottabc 调整浪 4 点(0-A-B-C)、xabcd 谐波 5 点、abcd 4 点、headshoulders 头肩 7 点(左底-左肩-颈1-头-颈2-右肩-右底)、gannbox/gannsquare 2 点对角、schiff/modschiff 叉子线 3 点、icon 图标 1 点(label 为 flag/star/up/down/warning/check/cross/fire/target/bell，或贴图库 emoji:📈/🚀/🐂/🐻/⚠️ 等)。update 按 id 修改 points/price/label 或样式 color/lineWidth(1-4)/lineStyle(solid/dashed/dotted)/locked。画线按会话和标的保存，在该标的所有周期显示。先用 hyper_market candles/indicators 验证价格和时间；标注仅用于解释，不是自动订单或交易信号。',
       parameters: {
         type: 'object', properties: {
-          action: { type: 'string', enum: ['add', 'list', 'update', 'remove'] },
+          action: { type: 'string', enum: ['add', 'list', 'update', 'remove', 'view'], description: 'view：切换图表周期与副图指标' },
+          show: { type: 'array', items: { type: 'string', enum: INDICATOR_IDS }, description: 'action=view：要显示的指标' },
+          hide: { type: 'array', items: { type: 'string', enum: INDICATOR_IDS }, description: 'action=view：要隐藏的指标' },
           coin: { type: 'string', description: '默认会话绑定币对' },
           interval: { type: 'string', description: '默认当前交易台周期' },
           kind: { type: 'string', enum: [...DRAWING_KINDS, 'ma'], description: 'add 必填：画线类型或 ma 均线' },
@@ -225,6 +237,8 @@ function buildTools(remote) {
           smoothingPeriod: { type: 'number', description: 'kind=ma 可选：平滑周期' },
           color: { type: 'string', description: '可选 #RRGGBB 颜色（画线或均线）' },
           lineWidth: { type: 'number', description: '画线线宽 1-4' },
+          rows: { type: 'number', description: 'kind=vprofile：价格行数 6-200，默认 48' },
+          valueArea: { type: 'number', description: 'kind=vprofile：价值区成交量占比 0.5-0.95，默认 0.7' },
           lineStyle: { type: 'string', enum: ['solid', 'dashed', 'dotted'], description: '画线线型' },
           locked: { type: 'boolean', description: 'update：锁定后用户不能误拖动' },
           hidden: { type: 'boolean', description: 'update：在图上隐藏（保留在画线列表中）' },
@@ -259,6 +273,10 @@ function buildTools(remote) {
           const lines = [...result.marks.map((mark) => `${mark.id} ${mark.interval} ${mark.kind} ${mark.role} ${mark.label}`), ...ma.map((row) => `${maText(row)}（${coin} ${interval} 最新已收盘）`)]
           return { text: lines.length ? lines.join('\n') : '当前标的没有标注或均线', ...result, maLines: ma }
         }
+        if (args?.action === 'view') {
+          const view = remote.setSessionChartView(sessionId, { interval: args?.interval, show: args?.show ?? [], hide: args?.hide ?? [] })
+          return { text: `图表周期 ${view.interval}，显示指标：${view.indicators.join(', ') || '无'}`, interval: view.interval, indicators: view.indicators }
+        }
         if (args?.action === 'add' && args?.kind === 'ma') {
           const line = normalizeMaLine({ kind: args.maType, period: args.period, source: args.source, color: args.color,
             smoothing: args.smoothingType != null || args.smoothingPeriod != null ? { kind: args.smoothingType, period: args.smoothingPeriod } : null })
@@ -272,13 +290,31 @@ function buildTools(remote) {
           return { text: `已移除均线：${maLabel(removed)}（${removed.id}）`, line: removed }
         }
         if (args?.action === 'update') {
-          const patch = Object.fromEntries(['points', 'price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'label', 'color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert'].filter((key) => args?.[key] != null).map((key) => [key, args[key]]))
+          const patch = Object.fromEntries(['points', 'price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'label', 'color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert', 'rows', 'valueArea'].filter((key) => args?.[key] != null).map((key) => [key, args[key]]))
           const mark = remote.editChartMark(args?.id, patch, sessionId)
           return { text: `已更新${DRAWING_NAMES[mark.kind] ?? mark.kind}：${mark.label}（${mark.id}）`, mark }
         }
         if (args?.action === 'add') {
+          // Fetch the range first: a failed market request must not leave a saved drawing behind.
+          let summary = null
+          if (args?.kind === 'vprofile') {
+            const times = (Array.isArray(args?.points) ? args.points : []).map((point) => Number(point?.time)).filter(Number.isFinite).sort((x, y) => x - y)
+            if (times.length === 2) {
+              const { candles } = await remote.candles({ coin, interval, startMs: times[0], endMs: times[1] + 1 })
+              const inRange = candles.filter((c) => c.t >= times[0] && c.t <= times[1])
+              const profile = volumeProfile(inRange.map((c) => ({ open: c.o, high: c.h, low: c.l, close: c.c, volume: c.v })), { rows: Number(args?.rows) || 48, valueArea: Number(args?.valueArea) || 0.7 })
+              const step = INTERVAL_MS[interval] ?? (inRange.length > 1 ? inRange[1].t - inRange[0].t : 0)
+              const partial = !inRange.length || (step > 0 && inRange[0].t - times[0] > step)
+              summary = { profile, partial, bars: inRange.length, from: inRange[0]?.t ?? null }
+            }
+          }
           const mark = remote.addChartMark({ ...args, coin, interval }, sessionId)
-          return { text: `已在 ${coin} ${interval} 图表添加${DRAWING_NAMES[mark.kind] ?? mark.kind}：${mark.label}（${mark.id}）`, mark }
+          const text = `已在 ${coin} ${interval} 图表添加${DRAWING_NAMES[mark.kind] ?? mark.kind}：${mark.label}（${mark.id}）`
+          if (!summary) return { text, mark }
+          if (!summary.profile) return { text: `${text}；区间内没有成交量数据，无法统计成交量分布`, mark }
+          const { profile } = summary
+          const note = `按 ${summary.bars} 根 ${interval} K 线估算（每根成交量均匀分摊到其高低区间）${summary.partial ? `；交易所只返回 ${new Date(summary.from).toISOString().slice(0, 16)} 之后的 K 线，区间前段缺失` : ''}`
+          return { text: `${text}；POC=${fmt(profile.poc)} 价值区 VAH=${fmt(profile.vah)} VAL=${fmt(profile.val)}（${Math.round((Number(args?.valueArea) || 0.7) * 100)}% 成交量）；${note}`, mark, profile: { poc: profile.poc, vah: profile.vah, val: profile.val, bars: summary.bars, partial: summary.partial } }
         }
         if (args?.action === 'remove') {
           const mark = remote.removeChartMark(args?.id, sessionId)
@@ -289,17 +325,19 @@ function buildTools(remote) {
     },
     {
       name: 'hyper_account',
-      description: '查询交易账户。action=state 返回权益/持仓；orders 返回挂单；fills 返回成交；orderStatus 用 oid 或 cloid 核对某笔 live 订单，尤其在网络超时后。',
+      description: '查询交易账户。action=state 返回权益/持仓；orders 返回挂单；fills 返回成交；orderStatus 用 oid 或 cloid 核对某笔 live 订单，尤其在网络超时后。review 返回最近 7/30/90 天成交复盘、订单数量核对、费用和资金费覆盖缺口；不是完整账户收益率。',
       parameters: {
         type: 'object',
         properties: {
-          action: { type: 'string', enum: ['state', 'orders', 'fills', 'orderStatus'], description: '账户查询类型，默认 state' },
+          action: { type: 'string', enum: ['state', 'orders', 'fills', 'orderStatus', 'review'], description: '账户查询类型，默认 state' },
           oid: { type: 'string', description: 'orderStatus 必填；交易所 oid 或 0x 开头 128 位 cloid' },
+          days: { type: 'number', enum: [7, 30, 90], description: 'review 窗口，默认 30 天' },
+          coin: { type: 'string', description: 'review 可选，仅核对该标的；省略为全部' },
         },
         additionalProperties: false,
       },
       output: { schema: { type: 'object', additionalProperties: true }, render: (_a, v) => [{ type: 'text', text: v.text }] },
-      timeoutMs: 15_000,
+      timeoutMs: 60_000,
       async execute(args) {
         const action = args?.action ?? 'state'
         if (action === 'state') {
@@ -328,6 +366,13 @@ function buildTools(remote) {
           const f = await remote.fills()
           const rows = f.fills ?? []
           return { text: rows.length ? rows.slice(0, 20).map((r) => `${new Date(r.time ?? r.filledTime ?? Date.now()).toISOString().slice(5, 19)} ${r.coin} ${r.side ?? ''} ${fmt(r.sz ?? r.filledSz, 4)} @ ${fmt(r.px ?? r.filledPx)}`).join('\n') : '（无成交）', fills: rows.slice(0, 50) }
+        }
+        if (action === 'review') {
+          const days = args?.days ?? 30
+          if (![7, 30, 90].includes(days)) throw Error('复盘支持最近 7/30/90 天')
+          const evidence = await remote.tradeHistory({ includeFunding: true, days })
+          const review = reviewLedger(evidence, args?.coin ? canonicalMarketCoin(args.coin) : '')
+          return { text: `窗口复盘（不是账户收益率）：${JSON.stringify({ coverage: evidence.coverage, mode: evidence.mode, network: evidence.network, ...review })}`, evidence, review }
         }
         if (action === 'orderStatus') {
           const result = await remote.orderStatus({ oid: args?.oid })

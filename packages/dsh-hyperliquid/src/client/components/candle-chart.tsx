@@ -15,6 +15,8 @@ import * as React from 'react'
 import {
   createChart,
   CandlestickSeries,
+  BarSeries,
+  AreaSeries,
   HistogramSeries,
   LineSeries,
   LineStyle,
@@ -37,10 +39,15 @@ import { selectChartCandle, type ChartHit, type ChartSelection } from '../chart-
 import type { TradeEvent } from '../trade-events'
 import { maLabel, maSeries, type MaLine } from '../../../lib/moving-average.js'
 import { DrawingShape, clicksNeeded, completePoints, constrainPoints, geometryPatch, markPoints, type DrawPoint, type DrawingKind, type Projector } from '../drawing-tools'
-import { BRUSH_MAX } from '../../../lib/chart-drawings.js'
-import { DrawToolbar } from './draw-toolbar'
+import { BRUSH_MAX, volumeProfile } from '../../../lib/chart-drawings.js'
+import { DrawToolbar, DRAW_COLORS } from './draw-toolbar'
+import { DrawingEditor } from './drawing-editor'
 import { UiIcon } from './panel-icons'
 import { pressStillAClick } from '../click-guard'
+import { chartBars, candleIndex, downloadBlob, type ChartType, type ChartCommand } from '../chart-basics'
+import { chartImage } from '../chart-export'
+import { notify } from '../store'
+import { normalizeIndicatorSettings, studyDefinitions, type IndicatorSettings } from '../../../lib/studies.js'
 
 export type MagnetMode = 'off' | 'weak' | 'strong'
 /** Weak magnet radius in pixels (TradingView snaps within roughly this distance). */
@@ -88,17 +95,31 @@ function cssVar(el: HTMLElement, name: string, fallback: string): string {
   return v || fallback
 }
 
+export interface ChartLink {
+  id: string
+  cursor?: { source: string; at: number; time: number | null } | null
+  range?: { source: string; at: number; from: number; to: number } | null
+  onCursor: (time: number | null) => void
+  onRange: (range: { from: number; to: number }) => void
+}
+
 interface ChartRefs {
   chart: IChartApi
-  candles: ISeriesApi<'Candlestick'>
+  candles: ISeriesApi<'Candlestick' | 'Bar' | 'Line' | 'Area'>
   volume: ISeriesApi<'Histogram'>
   sma: ISeriesApi<'Line'>
+  basis: ISeriesApi<'Line'>
+  extra: Record<string, ISeriesApi<'Line'>>
+  rsiBounds?: IPriceLine[]
+  stochBounds?: IPriceLine[]
   sma60: ISeriesApi<'Line'>
   ema20: ISeriesApi<'Line'>
   ema50: ISeriesApi<'Line'>
   upper: ISeriesApi<'Line'>
   lower: ISeriesApi<'Line'>
   rsi?: ISeriesApi<'Line'>
+  atr?: ISeriesApi<'Line'>
+  vwap?: ISeriesApi<'Line'>
   macd?: ISeriesApi<'Line'>
   signal?: ISeriesApi<'Line'>
   histogram?: ISeriesApi<'Histogram'>
@@ -110,6 +131,14 @@ function chartData(points: ChartPoint[]): Array<{ time: UTCTimestamp; value: num
 
 interface ChartProps {
   candles: Candle[]; marks: ChartMark[]; indicators: Set<IndicatorId>; expanded: boolean; resetToken: number
+  indicatorSettings?: IndicatorSettings
+  showDataWindow?: boolean
+  link?: ChartLink
+  compact?: boolean
+  readOnly?: boolean
+  chartType?: ChartType
+  command?: ChartCommand | null
+  caption?: string
   drawMode: DrawingKind | null
   onDraw: (payload: DrawPayload) => void
   onSelect: (selection: ChartSelection) => void
@@ -129,6 +158,10 @@ interface ChartProps {
   drawingsLocked: boolean
   onEditMark: (id: string, patch: Record<string, unknown>) => void
   onRemoveMark: (id: string) => void
+  /** Batch actions for a multi-selection (one undo step each). */
+  onRemoveMarks?: (ids: string[]) => void
+  onEditMarks?: (ids: string[], patch: Record<string, unknown>) => void
+  onEditEach?: (patches: Array<[string, Record<string, unknown>]>) => void
   /** Show each fill's decision reason next to its dot. */
   showReasons: boolean
   /** Take a fill (and its reason) back to the conversation that decided it. */
@@ -138,21 +171,37 @@ interface ChartProps {
   selectRequest: { id: string; at: number } | null
 }
 
-export function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMode, onDraw, onSelect, priceScale, visibleRange, onVisibleRange, tradeEvents, onNeedOlder, olderState, focus, maLines, magnet, drawingsLocked, onEditMark, onRemoveMark, showReasons, onAnalyzeFill, onCloneMark, selectRequest }: ChartProps) {
+/** Volume profiles per candle set: panning, crosshair moves and drags reuse the result until the bars change. */
+const profileCache = new WeakMap<Candle[], Map<string, ReturnType<typeof volumeProfile>>>()
+function cachedProfile(candles: Candle[], from: number, to: number, options: { rows?: number; valueArea?: number } = {}): ReturnType<typeof volumeProfile> {
+  let byRange = profileCache.get(candles)
+  if (!byRange) { byRange = new Map(); profileCache.set(candles, byRange) }
+  const key = `${from}:${to}:${options.rows ?? ''}:${options.valueArea ?? ''}`
+  if (!byRange.has(key)) byRange.set(key, volumeProfile(candles.filter((c) => c.t >= from && c.t <= to).map((c) => ({ open: c.o, high: c.h, low: c.l, close: c.c, volume: c.v })), options))
+  return byRange.get(key)!
+}
+
+export function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMode, onDraw, onSelect, priceScale, visibleRange, onVisibleRange, tradeEvents, onNeedOlder, olderState, focus, maLines, magnet, drawingsLocked, onEditMark, onRemoveMark, onRemoveMarks, onEditMarks, onEditEach, showReasons, onAnalyzeFill, onCloneMark, selectRequest, chartType = 'candles', command = null, caption = '', indicatorSettings, showDataWindow = false, link, compact = false, readOnly = false }: ChartProps) {
   const boxRef = React.useRef<HTMLDivElement>(null)
+  const clipId = React.useRef('dhl-plot-' + Math.random().toString(36).slice(2))
+  const linkRef = React.useRef(link); linkRef.current = link
+  const syncingCursor = React.useRef(false)
+  const externalRangeUntil = React.useRef(0)
+  const settings = React.useMemo(() => normalizeIndicatorSettings(indicatorSettings), [indicatorSettings])
   const refs = React.useRef<ChartRefs | null>(null)
   const priceLines = React.useRef(new Map<string, IPriceLine>())
   const tradeMarkers = React.useRef<ISeriesMarkersPluginApi<Time> | null>(null)
   const fitted = React.useRef(false)
   const firstBarTime = React.useRef<number | null>(null)
   const handledFocus = React.useRef(0)
+  const handledCommand = React.useRef(0)
   const maRefs = React.useRef(new Map<string, { main: ISeriesApi<'Line'>; smooth?: ISeriesApi<'Line'> }>())
   const restoring = React.useRef(false)
   const initialRange = React.useRef(visibleRange)
   const drawModeRef = React.useRef(drawMode)
   const onDrawRef = React.useRef(onDraw)
   const onSelectRef = React.useRef(onSelect)
-  const selectionData = React.useRef({ candles, indicators, maLines })
+  const selectionData = React.useRef({ candles, indicators, maLines, settings })
   const onRangeRef = React.useRef(onVisibleRange)
   const onNeedOlderRef = React.useRef(onNeedOlder)
   onNeedOlderRef.current = onNeedOlder
@@ -162,10 +211,19 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   const candlesRef = React.useRef(candles)
   candlesRef.current = candles
   const [selectedId, setSelectedId] = React.useState<string | null>(null)
+  const [editingId, setEditingId] = React.useState<string | null>(null)
   const selectedRef = React.useRef<string | null>(null)
   selectedRef.current = selectedId
+  /** Shift / Ctrl / ⌘-click builds a group selection (two or more drawings). */
+  const [group, setGroup] = React.useState<string[]>([])
+  const groupRef = React.useRef<string[]>([])
+  groupRef.current = group
+  const [hoverSnapped, setHoverSnapped] = React.useState(false)
+  const lastSnapped = React.useRef(false)
   /** Live geometry of the drawing being dragged; saved once on release. */
   const [draft, setDraft] = React.useState<{ id: string; points: DrawPoint[] } | null>(null)
+  /** Live positions while a group selection is dragged. */
+  const [groupDraft, setGroupDraft] = React.useState<Map<string, DrawPoint[]> | null>(null)
   const [selectedFill, setSelectedFill] = React.useState<string | null>(null)
   const selectedFillRef = React.useRef<string | null>(null)
   selectedFillRef.current = selectedFill
@@ -174,8 +232,11 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   drawModeRef.current = drawMode
   onDrawRef.current = onDraw
   onSelectRef.current = onSelect
-  selectionData.current = { candles, indicators, maLines }
-  onRangeRef.current = onVisibleRange
+  selectionData.current = { candles, indicators, maLines, settings }
+  onRangeRef.current = (range) => {
+    onVisibleRange(range)
+    if (performance.now() > externalRangeUntil.current) linkRef.current?.onRange(range)
+  }
   const [crosshair, setCrosshair] = React.useState<Candle | null>(null)
   const [selectedTime, setSelectedTime] = React.useState<number | null>(null)
   const [themeVersion, setThemeVersion] = React.useState(0)
@@ -183,7 +244,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   const [pendingPoints, setPendingPoints] = React.useState<DrawPoint[]>([])
   const [drawingHover, setDrawingHover] = React.useState<DrawPoint | null>(null)
   const showVolume = indicators.has('volume')
-  const studies = React.useMemo(() => chartIndicators(candles), [candles])
+  const studies = React.useMemo(() => chartIndicators(candles, settings), [candles, settings])
   const maComputed = React.useMemo(() => maLines.map((line, index) => ({ line, color: maColor(line, index), ...maSeries(candles, line) })), [candles, maLines])
   // Bar index ↔ time, extrapolated beyond both ends so drawings can reach empty space.
   const timeline = React.useMemo(() => {
@@ -233,11 +294,14 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       timeScale: { borderColor: theme.border, timeVisible: true, secondsVisible: false },
     })
 
-    const candleSeries = chart.addSeries(CandlestickSeries, {
-      upColor: theme.up, downColor: theme.down,
-      borderUpColor: theme.up, borderDownColor: theme.down,
-      wickUpColor: theme.up, wickDownColor: theme.down,
-    })
+    const candleSeries: ChartRefs['candles'] = chartType === 'line'
+      ? chart.addSeries(LineSeries, { color: '#4c82d8', lineWidth: 2 })
+      : chartType === 'area' ? chart.addSeries(AreaSeries, { lineColor: '#4c82d8', topColor: 'rgba(76,130,216,.28)', bottomColor: 'rgba(76,130,216,0)' })
+      : chartType === 'bars' ? chart.addSeries(BarSeries, { upColor: theme.up, downColor: theme.down })
+      : chart.addSeries(CandlestickSeries, {
+        upColor: theme.up, downColor: theme.down, borderUpColor: theme.up, borderDownColor: theme.down,
+        wickUpColor: theme.up, wickDownColor: theme.down,
+      })
     const volumeSeries = chart.addSeries(HistogramSeries, {
       priceFormat: { type: 'volume' },
       priceScaleId: 'dhl-vol',
@@ -248,13 +312,14 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       color: SMA20_COLOR,
       lineWidth: 2, lastValueVisible: false, priceLineVisible: false,
     })
+    const basis = chart.addSeries(LineSeries, { color: '#7aa4d4', lineWidth: 1, lastValueVisible: false, priceLineVisible: false })
     const sma60 = chart.addSeries(LineSeries, { color: '#d78c78', lineWidth: 2, lastValueVisible: false, priceLineVisible: false })
     const ema20 = chart.addSeries(LineSeries, { color: '#e2a943', lineWidth: 2, lastValueVisible: false, priceLineVisible: false })
     const ema50 = chart.addSeries(LineSeries, { color: '#9b86db', lineWidth: 2, lastValueVisible: false, priceLineVisible: false })
     const upper = chart.addSeries(LineSeries, { color: '#7aa4d4', lineWidth: 1, lineStyle: LineStyle.Dashed, lastValueVisible: false, priceLineVisible: false })
     const lower = chart.addSeries(LineSeries, { color: '#7aa4d4', lineWidth: 1, lineStyle: LineStyle.Dashed, lastValueVisible: false, priceLineVisible: false })
     chart.priceScale('dhl-vol').applyOptions({ scaleMargins: { top: 0.82, bottom: 0 } })
-    refs.current = { chart, candles: candleSeries, volume: volumeSeries, sma: smaSeries, sma60, ema20, ema50, upper, lower }
+    refs.current = { chart, candles: candleSeries, volume: volumeSeries, sma: smaSeries, basis, extra: {}, sma60, ema20, ema50, upper, lower }
     tradeMarkers.current = createSeriesMarkers(candleSeries, [])
     fitted.current = false
     const identifyHit = (hovered: unknown): ChartHit => {
@@ -267,7 +332,13 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       if (hovered === r.ema50) return 'ema50'
       if (hovered === r.upper) return 'bollingerUpper'
       if (hovered === r.lower) return 'bollingerLower'
+      if (hovered === r.basis) return 'bollinger20'
+      if (hovered === r.extra.stochK || hovered === r.extra.stochD) return 'stochastic'
+      if (hovered === r.extra.adx || hovered === r.extra.plusDI || hovered === r.extra.minusDI) return 'adx'
+      if (hovered === r.extra.obv) return 'obv'
       if (hovered === r.rsi) return 'rsi14'
+      if (hovered === r.atr) return 'atr14'
+      if (hovered === r.vwap) return 'vwap'
       if (hovered === r.macd) return 'macd'
       if (hovered === r.signal) return 'macdSignal'
       if (hovered === r.histogram) return 'macdHistogram'
@@ -275,10 +346,10 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     }
     chart.subscribeCrosshairMove((param) => {
       hoveredHit.current = identifyHit(param.hoveredSeries)
-      const point = param.seriesData.get(candleSeries) as { open?: number; high?: number; low?: number; close?: number } | undefined
-      if (point?.open != null && point.high != null && point.low != null && point.close != null) {
-        setCrosshair({ t: Number(param.time ?? 0) * 1000, o: point.open, h: point.high, l: point.low, c: point.close, v: 0 })
-      } else setCrosshair(null)
+      // Always quote the real exchange candle, including on synthetic HA / line charts.
+      const time = typeof param.time === 'number' ? param.time * 1000 : null
+      setCrosshair(time != null ? barAt(candlesRef.current, time) : null)
+      if (!syncingCursor.current) linkRef.current?.onCursor(time)
     })
     // Browsers still dispatch click after a pointer drag. Keep the press
     // trajectory so panning and scaling never turn into a chart quote or mark.
@@ -293,7 +364,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       if (press?.id === event.pointerId && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 5) press.dragged = true
       if (drawModeRef.current && event.target instanceof HTMLCanvasElement) {
         const point = pointAt(event, pending.current.at(-1))
-        if (point) setDrawingHover(point)
+        if (point) { setDrawingHover(point); setHoverSnapped(lastSnapped.current) }
       }
     }
     const cancel = () => { press = null }
@@ -309,7 +380,9 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       let price = Number(candleSeries.coordinateToPrice(y))
       if (logical == null || !Number.isFinite(price) || price <= 0) return null
       const time = timelineRef.current.toTime(Number(logical))
-      const mode = magnetRef.current
+      // Holding Ctrl/⌘ inverts the magnet for this pointer move (TradingView behaviour).
+      const mode = event.ctrlKey || event.metaKey ? (magnetRef.current === 'off' ? 'strong' : 'off') : magnetRef.current
+      lastSnapped.current = false
       if (useMagnet && mode !== 'off') {
         const bar = barAt(candlesRef.current, time)
         if (bar) {
@@ -318,7 +391,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
             const coordinate = candleSeries.priceToCoordinate(value)
             if (coordinate != null && Math.abs(coordinate - y) < best.distance) best = { price: value, distance: Math.abs(coordinate - y) }
           }
-          if (mode === 'strong' || best.distance <= MAGNET_PX) price = best.price
+          if (mode === 'strong' || best.distance <= MAGNET_PX) { price = best.price; lastSnapped.current = true }
         }
       }
       if (event.shiftKey && previous) price = previous.price
@@ -364,10 +437,11 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
         } else onDrawRef.current({ kind: mode, points })
         return
       }
+      if (groupRef.current.length) { setGroup([]); return }
       if (selectedRef.current) { setSelectedId(null); return }
       if (selectedFillRef.current) { setSelectedFill(null); return }
       if (typeof barTime !== 'number') return
-      const selection = selectChartCandle(selectionData.current.candles, barTime * 1000, selectionData.current.indicators, hoveredHit.current, selectionData.current.maLines)
+      const selection = selectChartCandle(selectionData.current.candles, barTime * 1000, selectionData.current.indicators, hoveredHit.current, selectionData.current.maLines, selectionData.current.settings)
       if (selection) { setSelectedTime(selection.candle.t); onSelectRef.current(selection) }
     }
     box.addEventListener('click', chartClick)
@@ -378,12 +452,22 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       viewportFrame = requestAnimationFrame(() => setViewportVersion((value) => value + 1))
     }
     chart.timeScale().subscribeVisibleLogicalRangeChange(refreshOverlay)
+    // Price-axis drags, wheel scaling and double-click resets move the y mapping without a time-range event.
+    const scaleDrag = (event: PointerEvent) => { if (event.buttons) refreshOverlay() }
+    box.addEventListener('pointermove', scaleDrag, { passive: true })
+    box.addEventListener('wheel', refreshOverlay, { passive: true })
+    box.addEventListener('dblclick', refreshOverlay)
     const sizeObserver = new ResizeObserver(refreshOverlay)
     sizeObserver.observe(box)
     chart.timeScale().subscribeVisibleTimeRangeChange((range) => {
       if (!fitted.current || restoring.current || !range || typeof range.from !== 'number' || typeof range.to !== 'number') return
       if (rangeTimer) clearTimeout(rangeTimer)
-      rangeTimer = setTimeout(() => onRangeRef.current({ from: Number(range.from), to: Number(range.to) }), 650)
+      rangeTimer = setTimeout(() => {
+        // History restoration can suppress newer range events. Never let an
+        // earlier debounced event overwrite the viewport a date jump just saved.
+        const current = chart.timeScale().getVisibleRange()
+        if (current && typeof current.from === 'number' && typeof current.to === 'number') onRangeRef.current({ from: current.from, to: current.to })
+      }, 650)
     })
     // Scrolling toward the oldest loaded bar pages in more history.
     chart.timeScale().subscribeVisibleLogicalRangeChange((range) => {
@@ -419,16 +503,21 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       box.removeEventListener('pointercancel', cancel, true)
       box.removeEventListener('click', chartClick)
       chart.timeScale().unsubscribeVisibleLogicalRangeChange(refreshOverlay)
+      box.removeEventListener('pointermove', scaleDrag)
+      box.removeEventListener('wheel', refreshOverlay)
+      box.removeEventListener('dblclick', refreshOverlay)
       sizeObserver.disconnect()
       if (viewportFrame) cancelAnimationFrame(viewportFrame)
       if (rangeTimer) clearTimeout(rangeTimer)
+      const range = chart.timeScale().getVisibleRange()
+      if (range && typeof range.from === 'number' && typeof range.to === 'number') initialRange.current = { from: range.from, to: range.to }
       refs.current = null
       maRefs.current.clear()
       priceLines.current.clear()
       chart.remove()
       tradeMarkers.current = null
     }
-  }, [])
+  }, [chartType])
 
   // ── data: host candles (ms) → LWC series (UTC seconds, unique, ascending)
   React.useEffect(() => {
@@ -445,12 +534,12 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     })
     markers.sort((a, b) => Number(a.time) - Number(b.time))
     tradeMarkers.current?.setMarkers(markers)
-  }, [tradeEvents, selectedTime, candles])
+  }, [tradeEvents, selectedTime, candles, chartType])
 
   React.useEffect(() => {
     const r = refs.current
     if (!r) return
-    const rows = candles
+    const rows = chartBars(candles, chartType)
     if (rows.length < 2) return
     const seen = new Set<number>()
     const bars: Array<{ time: UTCTimestamp; open: number; high: number; low: number; close: number }> = []
@@ -475,9 +564,11 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     const prevFirst = firstBarTime.current
     const prepended = prevFirst != null && bars[0].time < prevFirst ? Math.max(0, bars.findIndex((bar) => bar.time >= prevFirst)) : 0
     firstBarTime.current = bars[0].time
-    r.candles.setData(bars)
+    r.candles.setData(chartType === 'line' || chartType === 'area' ? bars.map((bar) => ({ time: bar.time, value: bar.close })) : bars)
     r.volume.setData(vols.map((v) => ({ ...v, color: v.color === FALLBACK_UP ? th.up : th.down })))
     r.sma.setData(chartData(studies.sma20))
+    r.basis.setData(chartData(studies.basis))
+    r.basis.applyOptions({ visible: indicators.has('bollinger20') })
     r.sma60.setData(chartData(studies.sma60))
     r.ema20.setData(chartData(studies.ema20))
     r.ema50.setData(chartData(studies.ema50))
@@ -490,13 +581,25 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     r.ema50.applyOptions({ visible: indicators.has('ema50') })
     r.upper.applyOptions({ visible: indicators.has('bollinger20') })
     r.lower.applyOptions({ visible: indicators.has('bollinger20') })
+    if (indicators.has('vwap')) {
+      r.vwap ??= r.chart.addSeries(LineSeries, { color: '#e89a56', lineWidth: 2, lastValueVisible: false, priceLineVisible: false })
+      r.vwap.setData(chartData(studies.vwap))
+    } else if (r.vwap) { r.chart.removeSeries(r.vwap); r.vwap = undefined }
+    if (indicators.has('atr14')) {
+      if (!r.atr) {
+        const pane = r.chart.addPane(); pane.setStretchFactor(0.28)
+        r.atr = pane.addSeries(LineSeries, { color: '#56bca7', lineWidth: 2, priceLineVisible: false })
+      }
+      r.atr.setData(chartData(studies.atr14))
+    } else if (r.atr) { r.chart.removeSeries(r.atr); r.atr = undefined }
     if (indicators.has('rsi14')) {
       if (!r.rsi) {
         const pane = r.chart.addPane()
         pane.setStretchFactor(0.28)
         r.rsi = pane.addSeries(LineSeries, { color: '#a788df', lineWidth: 2, priceLineVisible: false, lastValueVisible: true })
-        for (const price of [30, 70]) r.rsi.createPriceLine({ price, color: '#8d8d8d', lineWidth: 1, lineStyle: LineStyle.Dashed, axisLabelVisible: false })
+        r.rsiBounds = [settings.rsi.lower, settings.rsi.upper].map((price) => r.rsi!.createPriceLine({ price, color: '#8d8d8d', lineWidth: 1, lineStyle: LineStyle.Dashed, axisLabelVisible: false }))
       }
+      r.rsiBounds?.forEach((line, index) => line.applyOptions({ price: index ? settings.rsi.upper : settings.rsi.lower }))
       r.rsi.setData(chartData(studies.rsi14))
     } else if (r.rsi) { r.chart.removeSeries(r.rsi); r.rsi = undefined }
     if (indicators.has('macd')) {
@@ -513,6 +616,22 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     } else if (r.macd) {
       r.chart.removeSeries(r.macd); r.chart.removeSeries(r.signal!); r.chart.removeSeries(r.histogram!)
       r.macd = undefined; r.signal = undefined; r.histogram = undefined
+    }
+    for (const group of [
+      { id: 'stochastic' as const, keys: ['stochK', 'stochD'] as const, colors: ['#55a6ce', '#e2a943'] },
+      { id: 'adx' as const, keys: ['adx', 'plusDI', 'minusDI'] as const, colors: ['#a788df', '#2fd3a0', '#ef5f6c'] },
+      { id: 'obv' as const, keys: ['obv'] as const, colors: ['#56bca7'] },
+    ]) {
+      if (indicators.has(group.id)) {
+        if (!r.extra[group.keys[0]]) {
+          const pane = r.chart.addPane(); pane.setStretchFactor(0.28)
+          group.keys.forEach((key, index) => { r.extra[key] = pane.addSeries(LineSeries, { color: group.colors[index], lineWidth: 2, priceLineVisible: false, lastValueVisible: false }) })
+          if (group.id === 'stochastic') r.stochBounds = [settings.stochastic.lower, settings.stochastic.upper].map((price) => r.extra.stochK.createPriceLine({ price, color: '#8d8d8d', lineWidth: 1, lineStyle: LineStyle.Dashed, axisLabelVisible: false }))
+          if (group.id === 'adx') r.extra.adx.createPriceLine({ price: 25, color: '#8d8d8d', lineWidth: 1, lineStyle: LineStyle.Dashed, axisLabelVisible: false })
+        }
+        for (const key of group.keys) r.extra[key].setData(chartData(studies[key]))
+        if (group.id === 'stochastic') r.stochBounds?.forEach((line, index) => line.applyOptions({ price: index ? settings.stochastic.upper : settings.stochastic.lower }))
+      } else for (const key of group.keys) { if (r.extra[key]) { r.chart.removeSeries(r.extra[key]); delete r.extra[key] } }
     }
     if (viewBefore && prepended > 0) {
       restoring.current = true
@@ -561,7 +680,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       fitted.current = true
       setTimeout(() => { restoring.current = false }, 100)
     }
-  }, [candles, studies, indicators, showVolume, maComputed])
+  }, [candles, studies, indicators, showVolume, maComputed, chartType, settings])
 
   // A reopened quote chip: page in history until the candle exists, then center and mark it.
   React.useEffect(() => {
@@ -572,7 +691,8 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       else if (olderState === 'idle') onNeedOlderRef.current()
       return
     }
-    const index = candles.findIndex((candle) => candle.t >= focus.t)
+    let index = candleIndex(candles, focus.t)
+    if (index > 0 && candles[index].t > focus.t) index--
     if (index < 0) return
     handledFocus.current = focus.at
     const view = r.chart.timeScale().getVisibleLogicalRange()
@@ -586,7 +706,81 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   React.useEffect(() => {
     refs.current?.chart.priceScale('right').applyOptions({ mode: priceScale === 'log' ? PriceScaleMode.Logarithmic : priceScale === 'percentage' ? PriceScaleMode.Percentage : PriceScaleMode.Normal })
     setViewportVersion((value) => value + 1)
-  }, [priceScale])
+  }, [priceScale, chartType])
+
+  React.useEffect(() => {
+    const r = refs.current, box = boxRef.current
+    if (!command || command.at === handledCommand.current || !r || !box || candles.length < 2) return
+    const last = candles.at(-1)!
+    if (command.kind === 'snapshot') {
+      handledCommand.current = command.at
+      void chartImage(r.chart, box, caption).then((blob) => downloadBlob(blob, `${caption.replace(/[^a-zA-Z0-9_-]/g, '_')}.png`))
+        .catch(() => notify(tr('图表图片导出失败，请重试', 'Chart image export failed; please retry')))
+      return
+    }
+    if (command.kind === 'live') {
+      r.chart.priceScale('right').applyOptions({ autoScale: true })
+      r.chart.timeScale().scrollToPosition(0, false)
+    } else if (command.kind === 'fit') r.chart.timeScale().fitContent()
+    else {
+      const target = command.kind === 'date' ? command.time : last.t - command.duration
+      if (target > Date.now()) { handledCommand.current = command.at; notify(tr('请选择已发生的日期', 'Choose a past date')); return }
+      if (target < candles[0].t && olderState !== 'done' && olderState !== 'error') {
+        if (olderState === 'idle') onNeedOlderRef.current()
+        return
+      }
+      if (target < candles[0].t) notify(olderState === 'error'
+        ? tr('历史加载失败，仅显示已加载的数据；可重新定位重试', 'History load failed; showing loaded data. Select the date again to retry.')
+        : tr('已到可用历史边界，显示最早可用的数据', 'History limit reached; showing the earliest available data'))
+      const index = candleIndex(candles, target)
+      if (command.kind === 'date') {
+        const view = r.chart.timeScale().getVisibleLogicalRange()
+        const half = Math.max(15, view ? (view.to - view.from) / 2 : 40)
+        r.chart.timeScale().setVisibleLogicalRange({ from: index - half, to: index + half })
+      } else r.chart.timeScale().setVisibleLogicalRange({ from: index, to: candles.length - 1 + 3 })
+    }
+    handledCommand.current = command.at
+    // LWC applies a target range in its render frame, not in setVisibleLogicalRange.
+    // Prepending also suspends range events: read AFTER rendering to save the new
+    // range rather than re-saving the viewport from before this navigation.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (refs.current !== r || handledCommand.current !== command.at) return
+      const range = r.chart.timeScale().getVisibleRange()
+      if (range && typeof range.from === 'number' && typeof range.to === 'number') onRangeRef.current({ from: range.from, to: range.to })
+    }))
+    setViewportVersion((value) => value + 1)
+  }, [command, candles, olderState, caption])
+
+  React.useEffect(() => {
+    const r = refs.current, cursor = link?.cursor
+    if (!r || !cursor || cursor.source === link?.id) return
+    syncingCursor.current = true
+    try {
+      if (cursor.time == null || !candles.length || cursor.time < candles[0].t || cursor.time >= candles[candles.length - 1].t + (candles.length > 1 ? candles[1].t - candles[0].t : 60_000)) { r.chart.clearCrosshairPosition(); setCrosshair(null); return }
+      let lo = 0, hi = candles.length - 1
+      while (lo < hi) { const mid = Math.ceil((lo + hi) / 2); if (candles[mid].t <= cursor.time) lo = mid; else hi = mid - 1 }
+      const candle = candles[lo]
+      r.chart.setCrosshairPosition(candle.c, Math.floor(candle.t / 1000) as UTCTimestamp, r.candles)
+      setCrosshair(candle)
+    } finally { syncingCursor.current = false }
+  }, [link?.cursor, candles, chartType])
+  const handledLinkRange = React.useRef('')
+  React.useEffect(() => {
+    const r = refs.current, range = link?.range
+    if (!r || !range || range.source === link?.id || candles.length < 2 || handledLinkRange.current === `${range.at}:${chartType}`) return
+    if (range.from * 1000 < candles[0].t && olderState === 'idle') { onNeedOlderRef.current(); return }
+    handledLinkRange.current = `${range.at}:${chartType}`
+    externalRangeUntil.current = performance.now() + 900
+    restoring.current = true
+    // Fractional logical positions keep a coarse linked chart (e.g. 4h showing ~8 bars) within one bar of the
+    // source; setVisibleRange snaps both ends to whole bars and can drift by two.
+    const line = timelineRef.current
+    r.chart.timeScale().setVisibleLogicalRange({ from: line.toLogical(range.from * 1000), to: line.toLogical(range.to * 1000) })
+    const actual = r.chart.timeScale().getVisibleRange()
+    if (actual && typeof actual.from === 'number' && typeof actual.to === 'number') onRangeRef.current({ from: actual.from, to: actual.to })
+    const timer = setTimeout(() => { restoring.current = false }, 120)
+    return () => { clearTimeout(timer); restoring.current = false }
+  }, [link?.range, candles, olderState, chartType])
 
   React.useEffect(() => { pending.current = []; setPendingPoints([]); setDrawingHover(null) }, [drawMode])
 
@@ -613,7 +807,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
         lineWidth: (mark.lineWidth ?? (mark.source === 'user' ? 2 : 1)) as 1 | 2 | 3 | 4, lineStyle: styleOf(mark),
         axisLabelVisible: true, title: mark.label }))
     }
-  }, [marks, themeVersion])
+  }, [marks, themeVersion, chartType])
 
   const warming = candles.length < 2
 
@@ -627,6 +821,10 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   onEditRef.current = onEditMark
   const onRemoveRef = React.useRef(onRemoveMark)
   onRemoveRef.current = onRemoveMark
+  const onRemoveMarksRef = React.useRef(onRemoveMarks)
+  onRemoveMarksRef.current = onRemoveMarks
+  const onEditEachRef = React.useRef(onEditEach)
+  onEditEachRef.current = onEditEach
   const shapes = React.useMemo(() => marks.filter((mark) => !mark.hidden).map((mark) => ({ mark, points: markPoints(mark) })), [marks])
   const lastTime = candles.at(-1)?.t ?? Date.now()
   // Recomputed on viewport/scale changes and new candles, not on crosshair moves.
@@ -643,6 +841,10 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       height: chartApi.chart.panes()[0]?.getHeight() ?? box.clientHeight,
       bars: (from, to) => timeline.toLogical(to) - timeline.toLogical(from),
       closes: (from, to) => candles.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, price: candle.c })),
+      candles: (from, to) => candles.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, open: candle.o, high: candle.h, low: candle.l, close: candle.c, volume: candle.v })),
+      profile: (from, to, options) => cachedProfile(candles, from, to, options),
+      firstTime: candles[0]?.t,
+      barMs: candles.length > 1 ? candles[1].t - candles[0].t : undefined,
     }
   }, [viewportVersion, timeline, themeVersion, expanded, indicators])
 
@@ -654,12 +856,30 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     const mark = markById.get(draft.id)
     if (mark?.kind === 'level') priceLines.current.get(draft.id)?.applyOptions({ price: draft.points[0].price })
   }, [draft, markById])
+  React.useEffect(() => { setGroup((current) => { const next = current.filter((id) => markById.has(id)); return next.length === current.length ? current : next }) }, [markById])
+  React.useEffect(() => { if (drawMode) setGroup([]) }, [drawMode])
+  React.useEffect(() => {
+    if (group.length < 2) return undefined
+    const onKey = (event: KeyboardEvent) => {
+      const element = event.target as HTMLElement | null
+      if (element?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element?.tagName ?? '')) return
+      if (event.key === 'Escape') { event.preventDefault(); setGroup([]); return }
+      if (event.key !== 'Delete' && event.key !== 'Backspace') return
+      if (lockedRef.current) return
+      event.preventDefault()
+      const ids = groupRef.current.filter((id) => !markByIdRef.current.get(id)?.locked)
+      if (ids.length) onRemoveMarksRef.current?.(ids)
+      setGroup([])
+    }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+  }, [group.length])
   React.useEffect(() => {
     if (!selectedId) return undefined
     const onKey = (event: KeyboardEvent) => {
       const element = event.target as HTMLElement | null
       if (element?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element?.tagName ?? '')) return
-      if (event.key === 'Escape') { setSelectedId(null); return }
+      if (event.key === 'Escape') { event.preventDefault(); setSelectedId(null); return }
       if (event.key !== 'Delete' && event.key !== 'Backspace') return
       const mark = markByIdRef.current.get(selectedId)
       if (!mark || mark.locked || lockedRef.current) return
@@ -667,10 +887,13 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       onRemoveRef.current(selectedId)
       setSelectedId(null)
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
   }, [selectedId])
 
+  /** Ends the pointer gesture in progress without committing it (pointercancel, Esc, unmount). */
+  const abortGesture = React.useRef<(() => void) | null>(null)
+  React.useEffect(() => () => abortGesture.current?.(), [])
   const [brushPoints, setBrushPoints] = React.useState<DrawPoint[]>([])
   /** Freehand: the overlay captures the pointer (so the chart does not pan) and samples every ~4px. */
   const beginBrush = (event: React.PointerEvent<SVGSVGElement>) => {
@@ -690,16 +913,24 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       cancelAnimationFrame(frame)
       frame = requestAnimationFrame(() => setBrushPoints([...collected]))
     }
-    const up = () => {
-      window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up)
+    const detach = () => {
+      window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); window.removeEventListener('keydown', onKey, true)
       cancelAnimationFrame(frame)
       setBrushPoints([])
+      abortGesture.current = null
+    }
+    const cancel = () => detach()
+    const onKey = (ev: KeyboardEvent) => { if (ev.key === 'Escape') { ev.stopPropagation(); detach() } }
+    const up = () => {
+      detach()
       if (collected.length < 2) return
       const stride = Math.ceil(collected.length / BRUSH_MAX)
       const points = collected.filter((_, index) => index % stride === 0 || index === collected.length - 1).slice(-BRUSH_MAX)
       onDrawRef.current({ kind: 'brush', points })
     }
-    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up)
+    abortGesture.current?.()
+    abortGesture.current = cancel
+    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); window.addEventListener('keydown', onKey, true)
   }
 
   /** A copy shifted 5 bars right, with the same style and label. */
@@ -761,6 +992,60 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     if (!id || !mark) return
     event.preventDefault()
     event.stopPropagation()
+    if (event.shiftKey || event.ctrlKey || event.metaKey) {
+      const base = groupRef.current.length ? groupRef.current : selectedRef.current ? [selectedRef.current] : []
+      const next = base.includes(id) ? base.filter((item) => item !== id) : [...base, id]
+      if (next.length >= 2) { setGroup(next); setSelectedId(null) } else { setGroup([]); setSelectedId(next[0] ?? null) }
+      return
+    }
+    const anchorHit = target.getAttribute('data-anchor') != null
+    if (groupRef.current.includes(id) && groupRef.current.length >= 2 && !anchorHit) {
+      // Drag the whole group by one time/price offset; locked members stay put.
+      const snapGroup = snapRef.current
+      if (lockedRef.current || !snapGroup) return
+      const startGroup = snapGroup(event.nativeEvent, undefined, false)
+      if (!startGroup) return
+      const line = timelineRef.current, startLogical = line.toLogical(startGroup.time)
+      const originals = new Map(groupRef.current.map((member) => markByIdRef.current.get(member)).filter((item): item is ChartMark => Boolean(item) && !item!.locked).map((item) => [item.id, item] as const))
+      const origin = { x: event.clientX, y: event.clientY }
+      let moved = false, frame = 0, latest: Map<string, DrawPoint[]> | null = null
+      const compute = (ev: PointerEvent) => {
+        const point = snapGroup(ev, undefined, false)
+        if (!point) return
+        const shift = Math.round(line.toLogical(point.time) - startLogical), delta = point.price - startGroup.price
+        const next = new Map<string, DrawPoint[]>()
+        for (const [memberId, member] of originals) {
+          const moved = markPoints(member).map((item) => ({ time: line.toTime(line.toLogical(item.time) + shift), price: item.price + delta }))
+          if (moved.some((item) => item.price <= 0)) return
+          next.set(memberId, moved)
+        }
+        latest = next; setGroupDraft(next)
+      }
+      const move = (ev: PointerEvent) => {
+        if (!moved && Math.hypot(ev.clientX - origin.x, ev.clientY - origin.y) < 3) return
+        moved = true
+        cancelAnimationFrame(frame)
+        frame = requestAnimationFrame(() => compute(ev))
+      }
+      const detach = () => {
+        window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); window.removeEventListener('keydown', onKey, true)
+        cancelAnimationFrame(frame); abortGesture.current = null
+      }
+      const cancel = () => { detach(); setGroupDraft(null) }
+      const onKey = (ev: KeyboardEvent) => { if (ev.key === 'Escape' && moved) { ev.stopPropagation(); cancel() } }
+      const up = (ev: PointerEvent) => {
+        detach()
+        if (moved) compute(ev)
+        const final = latest
+        if (moved && final) onEditEachRef.current?.([...final].map(([memberId, points]) => [memberId, geometryPatch(originals.get(memberId)!.kind, points)]))
+        setGroupDraft(null)
+      }
+      abortGesture.current?.()
+      abortGesture.current = cancel
+      window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel); window.addEventListener('keydown', onKey, true)
+      return
+    }
+    setGroup([])
     setSelectedId(id)
     const snap = snapRef.current
     if (mark.locked || lockedRef.current || !snap) return
@@ -802,18 +1087,34 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       cancelAnimationFrame(frame)
       frame = requestAnimationFrame(() => compute(ev))
     }
-    const up = () => {
+    const detach = () => {
       window.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)
-      window.removeEventListener('pointercancel', up)
+      window.removeEventListener('pointercancel', cancel)
+      window.removeEventListener('keydown', onKey, true)
       cancelAnimationFrame(frame)
+      abortGesture.current = null
+    }
+    // A cancelled gesture (system, Esc, unmount) puts the drawing back where it was.
+    const cancel = () => {
+      detach()
+      // The native axis label followed the drag; put it back with the drawing.
+      if (mark.kind === 'level') priceLines.current.get(id)?.applyOptions({ price: original[0].price })
+      setDraft(null)
+    }
+    const onKey = (ev: KeyboardEvent) => { if (ev.key === 'Escape' && moved) { ev.stopPropagation(); cancel() } }
+    const up = () => {
+      detach()
       if (moved && last) compute(last)
       if (moved && latest) onEditRef.current(id, geometryPatch(mark.kind, latest))
       setDraft(null)
     }
+    abortGesture.current?.()
+    abortGesture.current = cancel
     window.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
-    window.addEventListener('pointercancel', up)
+    window.addEventListener('pointercancel', cancel)
+    window.addEventListener('keydown', onKey, true)
   }, [])
 
   const fills = React.useMemo(() => tradeEvents.filter((event) => event.kind === 'fill'), [tradeEvents])
@@ -830,23 +1131,30 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   const previewPoints = drawMode && drawingHover ? [...pendingPoints, drawingHover] : pendingPoints
   const roleClass = (mark: ChartMark) => mark.source === 'user' ? 'role-user' : `role-${mark.role}`
   const selectedMark = selectedId ? markById.get(selectedId) ?? null : null
+  const editingMark = editingId ? markById.get(editingId) ?? null : null
+  const inspected = crosshair ?? candles.at(-1)
+  const inspectedTime = inspected ? Math.floor(inspected.t / 1000) : null
+  const studyAt = (key: keyof typeof studies) => studies[key].find((point) => point.time === inspectedTime)?.value
+  const inspectedStudies = studyDefinitions(settings).filter(([id]) => indicators.has(id as IndicatorId)).map(([, key, label]) => [label, studyAt(key)] as const)
+  const paneCount = ['rsi14', 'macd', 'atr14', 'stochastic', 'adx', 'obv'].filter((id) => indicators.has(id as IndicatorId)).length
 
   return (
-    <div className="dhl-chartbox" ref={boxRef} style={{ height: expanded ? 'calc(100dvh - 160px)' : CHART_HEIGHT + Number(indicators.has('rsi14')) * 125 + Number(indicators.has('macd')) * 125 }}>
+    <>
+    <div className="dhl-chartbox" ref={boxRef} style={{ height: expanded && !compact ? undefined : (compact ? 310 : CHART_HEIGHT) + paneCount * (compact ? 65 : 125) }}>
       {view ? <svg className={'dhl-chart-drawing-overlay' + (drawMode ? ' drawing' : '') + (drawMode === 'brush' ? ' brushing' : '')} aria-hidden="true" onPointerDown={beginDrag}>
         <defs>
-          <clipPath id="dhl-plot-clip"><rect x="0" y="0" width={view.width} height={view.height} /></clipPath>
-          <marker id="dhl-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="currentColor" /></marker>
+          <clipPath id={clipId.current}><rect x="0" y="0" width={view.width} height={view.height} /></clipPath>
+          <marker id={`${clipId.current}-arrow`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="currentColor" /></marker>
         </defs>
-        <g clipPath="url(#dhl-plot-clip)">
+        <g clipPath={`url(#${clipId.current})`}>
           {shapes.map(({ mark, points }) => {
-            const live = draft?.id === mark.id ? draft.points : points
+            const live = draft?.id === mark.id ? draft.points : groupDraft?.get(mark.id) ?? points
             const shown = mark.kind === 'level' ? [{ time: lastTime, price: live[0].price }] : live
-            const selected = selectedId === mark.id
+            const selected = selectedId === mark.id || group.includes(mark.id)
             return <DrawingShape key={mark.id} id={mark.id} kind={mark.kind} points={shown} view={view} text={mark.label}
               className={`dhl-drawing ${roleClass(mark)}${mark.kind === 'level' ? ' is-level' : ''}${selected ? ' selected' : ''}${mark.locked || drawingsLocked ? ' locked' : ''}`}
               label={mark.source === 'user' || mark.kind === 'level' ? undefined : mark.label} anchors={selected} interactive={!drawMode}
-              color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} badges={[...(mark.alert ? ['alert' as const] : []), ...(mark.shared ? ['shared' as const] : [])]} />
+              color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} alert={mark.alert} shared={mark.shared} rows={mark.rows} valueArea={mark.valueArea} />
           })}
           <g className="dhl-fills">
             {fills.map((event) => {
@@ -861,6 +1169,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
             })}
           </g>
           {brushPoints.length > 1 ? <DrawingShape kind="brush" points={brushPoints} view={view} className="dhl-drawing dhl-drawing-preview role-user" /> : null}
+          {drawMode && drawingHover && hoverSnapped ? (() => { const at = view.project(drawingHover.time, drawingHover.price); return at ? <circle className="dhl-snap-ring" cx={at.x} cy={at.y} r="6" /> : null })() : null}
           {drawMode && drawMode !== 'brush' && previewPoints.length ? <DrawingShape kind={drawMode} points={completePreview(drawMode, previewPoints)} view={view} className="dhl-drawing dhl-drawing-preview role-user" anchors /> : null}
         </g>
       </svg> : null}
@@ -878,11 +1187,34 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
           <button type="button" className="dhl-fill-analyze" onClick={() => { onAnalyzeFill(fillCard); setSelectedFill(null) }}>{fillCard.sessionId ? tr('回到决策会话分析', 'Analyze in its session') : tr('在当前会话分析', 'Analyze in this session')}</button>
         </footer>
       </div> : null}
-      {selectedMark && !drawMode ? <DrawToolbar mark={selectedMark} globallyLocked={drawingsLocked}
+      {group.length >= 2 && !drawMode && !readOnly ? (() => {
+        const members = group.map((id) => markById.get(id)).filter((mark): mark is ChartMark => Boolean(mark))
+        const editable = members.filter((mark) => !mark.locked).map((mark) => mark.id)
+        const allHidden = members.every((mark) => mark.hidden), allLocked = members.every((mark) => mark.locked)
+        const stop = (event: React.SyntheticEvent) => event.stopPropagation()
+        return <div className="dhl-draw-toolbar" role="toolbar" aria-label={tr('批量编辑画线', 'Edit selected drawings')} onPointerDown={stop} onClick={stop}>
+          <span className="dhl-draw-toolbar-name">{tr(`已选 ${members.length} 条画线`, `${members.length} drawings selected`)}</span>
+          <span className="dhl-draw-toolbar-group" role="group" aria-label={tr('颜色', 'Color')}>
+            {DRAW_COLORS.map((color) => <button type="button" key={color} className="dhl-swatch" style={{ background: color }} disabled={drawingsLocked || editable.length === 0} aria-label={`${tr('全部改为', 'Recolor all')} ${color}`} onClick={() => onEditMarks?.(editable, { color })} />)}
+          </span>
+          <span className="dhl-draw-toolbar-group">
+            <button type="button" aria-label={allHidden ? tr('全部显示', 'Show all') : tr('全部隐藏', 'Hide all')} title={allHidden ? tr('全部显示', 'Show all') : tr('全部隐藏', 'Hide all')} disabled={drawingsLocked} onClick={() => onEditMarks?.(group, { hidden: !allHidden })}><UiIcon name={allHidden ? 'eye' : 'eyeOff'} size={15} /></button>
+            <button type="button" className={allLocked ? 'on' : ''} aria-pressed={allLocked} aria-label={allLocked ? tr('全部解锁', 'Unlock all') : tr('全部锁定', 'Lock all')} title={allLocked ? tr('全部解锁', 'Unlock all') : tr('全部锁定', 'Lock all')} disabled={drawingsLocked} onClick={() => onEditMarks?.(group, { locked: !allLocked })}><UiIcon name={allLocked ? 'lock' : 'unlock'} size={15} /></button>
+            <button type="button" aria-label={tr('删除所选画线', 'Delete selected drawings')} title={tr('删除（Delete）', 'Delete (Del)')} disabled={drawingsLocked || editable.length === 0} onClick={() => { onRemoveMarks?.(editable); setGroup([]) }}><UiIcon name="trash" size={15} /></button>
+            <button type="button" aria-label={tr('取消选择', 'Deselect')} title={tr('取消选择（Esc）', 'Deselect (Esc)')} onClick={() => setGroup([])}><UiIcon name="close" size={14} /></button>
+          </span>
+        </div>
+      })() : null}
+      {selectedMark && !drawMode && !readOnly ? <DrawToolbar mark={selectedMark} globallyLocked={drawingsLocked}
+        onCoordinates={() => setEditingId(selectedMark.id)}
         onEdit={(patch) => onEditMark(selectedMark.id, patch)} onClone={() => onCloneMark(cloneOf(selectedMark))} onRemove={() => { onRemoveMark(selectedMark.id); setSelectedId(null) }} onClose={() => setSelectedId(null)} /> : null}
-      {!warming && <div className="dhl-chart-ohlc" aria-live="off">
+      {editingMark ? <DrawingEditor key={editingMark.id} mark={editingMark} onApply={(patch) => { if (!drawingsLocked && !editingMark.locked) onEditMark(editingMark.id, patch) }} onClose={() => setEditingId(null)} /> : null}
+      {!warming && <div className="dhl-chart-ohlc" data-time={inspected?.t} aria-live="off">
         <span>{crosshair ? new Date(crosshair.t).toLocaleString(tr('zh-CN', 'en-US'), { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }) : tr('最新 K 线', 'Latest candle')}</span>
-        {(['o', 'h', 'l', 'c'] as const).map((key) => <span key={key}>{key.toUpperCase()} <b className={crosshair && crosshair.c < crosshair.o ? 'dhl-down' : 'dhl-up'}>{fmtPrice((crosshair ?? candles.at(-1))?.[key])}</b></span>)}
+        {(['o', 'h', 'l', 'c'] as const).map((key) => <span key={key}>{key.toUpperCase()} <b className={inspected && inspected.c < inspected.o ? 'dhl-down' : 'dhl-up'}>{fmtPrice(inspected?.[key])}</b></span>)}
+        <span>{tr('量', 'Vol')} <b>{inspected?.v.toLocaleString(undefined, { maximumFractionDigits: 4 }) ?? '—'}</b></span>
+        {inspected ? <span className={inspected.c >= inspected.o ? 'dhl-up' : 'dhl-down'}>{((inspected.c / inspected.o - 1) * 100).toFixed(2)}%</span> : null}
+        {chartType === 'heikinAshi' ? <span>{tr('平均K线 · 数值为原始行情', 'Heikin Ashi · values show exchange OHLC')}</span> : null}
       </div>}
       {!warming && olderState === 'loading' ? <div className="dhl-chart-older" role="status">{tr('正在加载更早的 K 线…', 'Loading earlier candles…')}</div> : null}
       {!warming && olderState === 'error' ? <div className="dhl-chart-older" role="status">{tr('更早的 K 线加载失败，继续向左拖动可重试', 'Could not load earlier candles; drag left again to retry')}</div> : null}
@@ -893,10 +1225,6 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
           return <span key={item.line.id} style={{ color: item.color }}>{maLabel(item.line)} <b>{fmtPrice(at(item.values))}</b>{item.smoothed ? <> / <b>{fmtPrice(at(item.smoothed))}</b></> : null}</span>
         })}
       </div> : null}
-      {marks.length > 0 ? <div className="dhl-chart-annotations" aria-label={tr('会话图表标注', 'Session chart annotations')}>
-        {marks.slice(-4).map((mark) => <span key={mark.id} className={`role-${mark.role}`} title={`${mark.label} · ${mark.kind === 'level' ? fmtPrice(mark.price) : tr('趋势线', 'Trend line')}`}>{mark.label}</span>)}
-        {marks.length > 4 ? <span>+{marks.length - 4}</span> : null}
-      </div> : null}
       {crosshair && tradeEvents.some((event) => event.candleTime === crosshair.t) ? <div className="dhl-chart-trade-detail" aria-live="off">
         {tradeEvents.filter((event) => event.candleTime === crosshair.t).slice(0, 4).map((event) => <div key={event.id}>
           <strong>{event.kind === 'order' ? tr('委托', 'Order') : tr('成交', 'Fill')} · {event.isBuy ? tr('买入', 'Buy') : tr('卖出', 'Sell')}</strong>
@@ -904,11 +1232,18 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
           {event.reason ? <span title={event.reason}>{tr('原因', 'Reason')}：{event.reason}</span> : null}
         </div>)}
       </div> : null}
-      {indicators.has('rsi14') || indicators.has('macd') ? <div className="dhl-chart-study-legend" aria-label={tr('副图指标数值', 'Study values')}>
-        {indicators.has('rsi14') ? <span>RSI 14 <b>{studies.rsi14.at(-1)?.value.toFixed(1) ?? '—'}</b></span> : null}
-        {indicators.has('macd') ? <span>MACD <b>{studies.macd.at(-1)?.value.toFixed(4) ?? '—'}</b> / {studies.signal.at(-1)?.value.toFixed(4) ?? '—'}</span> : null}
+      {inspectedStudies.length ? <div className="dhl-chart-study-legend" aria-label={tr('指标点位数值', 'Study values at crosshair')}>
+        {inspectedStudies.map(([label, value]) => <span key={label} data-study={label}>{label} <b>{value == null ? '—' : Number(value.toPrecision(7)).toLocaleString(undefined, { maximumFractionDigits: 7 })}</b></span>)}
       </div> : null}
       {warming ? <div className="dhl-empty" style={{ height: CHART_HEIGHT }}>{t('chart.loading', 'K 线加载中…')}</div> : null}
     </div>
+    {showDataWindow && inspected ? <section className="dhl-data-window" aria-label={tr('图表数据窗口', 'Chart data window')} data-time={inspected.t}>
+      <header><strong>{tr('数据窗口', 'Data window')}</strong><span>{new Date(inspected.t).toLocaleString()} · {crosshair ? tr('光标 K 线', 'Cursor bar') : tr('最新 K 线（可能未收盘）', 'Latest bar (may be forming)')}</span></header>
+      <dl>{[['Open', inspected.o], ['High', inspected.h], ['Low', inspected.l], ['Close', inspected.c], ['Volume', inspected.v], ...inspectedStudies,
+        ...maComputed.flatMap((item) => { const index = candles.findIndex((bar) => bar.t === inspected.t); return [[maLabel(item.line), item.values[index]] as const, ...(item.smoothed ? [[maLabel(item.line) + ' smooth', item.smoothed[index]] as const] : [])] })
+      ].map(([label, value]) => <div key={String(label)}><dt>{label}</dt><dd>{value == null ? '—' : Number(value).toLocaleString(undefined, { maximumSignificantDigits: 10 })}</dd></div>)}</dl>
+      {indicators.has('obv') ? <small>{tr('OBV 以已加载首根为零点；补取历史后基准会变化。', 'OBV starts at zero on the first loaded bar; loading history changes its baseline.')}</small> : null}
+    </section> : null}
+    </>
   )
 }

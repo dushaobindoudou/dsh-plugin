@@ -22,12 +22,15 @@ type Op =
 
 const HISTORY_LIMIT = 100
 const GEOMETRY = ['price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'points'] as const
-const STYLE = ['color', 'lineWidth', 'lineStyle', 'locked', 'hidden'] as const
+const STYLE = ['color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert', 'rows', 'valueArea'] as const
+/** Flags the host treats as "absent = false"; undo must send false, since null leaves them unchanged. */
+const FLAGS = new Set(['locked', 'hidden', 'shared', 'alert'])
 
 /** Everything needed to recreate a drawing on the host. */
 function recreateRequest(mark: ChartMark): Record<string, unknown> {
   const out: Record<string, unknown> = { kind: mark.kind, label: mark.label, role: mark.role, coin: mark.coin, interval: mark.interval }
   for (const key of [...GEOMETRY, ...STYLE]) if (mark[key as keyof ChartMark] != null) out[key] = mark[key as keyof ChartMark]
+  if (mark.source === 'agent') out.restoreSource = 'agent'
   return out
 }
 
@@ -39,60 +42,80 @@ function remap(ops: Op[], from: string, to: string): void {
   }
 }
 
+const beforeOf = (mark: ChartMark, patch: Record<string, unknown>) =>
+  Object.fromEntries(Object.keys(patch).map((key) => [key, (mark as unknown as Record<string, unknown>)[key] ?? (FLAGS.has(key) ? false : null)]))
+
 export interface DrawingHistory {
   create: (request: Record<string, unknown>) => Promise<ChartMark | null>
   edit: (id: string, patch: Record<string, unknown>) => Promise<void>
   remove: (id: string) => Promise<void>
   removeMany: (ids: string[]) => Promise<void>
+  editMany: (ids: string[], patch: Record<string, unknown>) => Promise<void>
+  /** Different patches for several drawings as one undo step (moving a group). */
+  editEach: (patches: Array<[string, Record<string, unknown>]>) => Promise<void>
   undo: () => Promise<void>
   redo: () => Promise<void>
   canUndo: boolean
   canRedo: boolean
 }
 
+/** The chart an operation was issued on; captured when it is queued, not when it runs. */
+interface Ctx { sessionId: string; coin: string; interval: string; scope: string }
+
 /** History is scoped to one chart (session + coin) and resets when that changes. */
 export function useDrawingHistory(scope: string): DrawingHistory {
   const undoStack = React.useRef<Op[]>([])
   const redoStack = React.useRef<Op[]>([])
+  const scopeRef = React.useRef(scope)
+  // Every operation runs after the previous one settles, so undo/redo never act on ids still being recreated.
+  const queue = React.useRef<Promise<unknown>>(Promise.resolve())
   const [, setVersion] = React.useState(0)
   const bump = () => setVersion((value) => value + 1)
-  React.useEffect(() => { undoStack.current = []; redoStack.current = []; bump() }, [scope])
+  React.useEffect(() => { scopeRef.current = scope; undoStack.current = []; redoStack.current = []; bump() }, [scope])
+  const ctxNow = (): Ctx | null => {
+    const { activeSessionId, activeCoin, interval } = store.get()
+    return activeSessionId ? { sessionId: activeSessionId, coin: activeCoin, interval, scope: scopeRef.current } : null
+  }
+  /** Queue `task` with the chart captured now; it is dropped if the trader leaves that chart before it runs. */
+  const serial = <T,>(task: (ctx: Ctx) => Promise<T>, fallback: T): Promise<T> => {
+    const ctx = ctxNow()
+    if (!ctx) { notify(tr('请先选择交易会话', 'Choose a trading session first')); return Promise.resolve(fallback) }
+    const run = queue.current.catch(() => {}).then(() => ctx.scope === scopeRef.current ? task(ctx) : fallback)
+    queue.current = run
+    return run
+  }
 
-  const session = () => store.get().activeSessionId
+  /** The chart this request belongs to is still the one on screen. */
+  const onScreen = (ctx: Ctx) => store.get().activeSessionId === ctx.sessionId && store.get().activeCoin === ctx.coin
   const fail = (what: string, error: unknown) => {
     notify(`${what}：${String((error as Error)?.message ?? error)}`)
     void loadChartMarks()
   }
-  // ── host primitives (optimistic; never recorded) ──
-  const apiCreate = async (request: Record<string, unknown>): Promise<ChartMark | null> => {
-    const sessionId = session()
-    if (!sessionId) { notify(tr('请先选择交易会话', 'Choose a trading session first')); return null }
-    const { activeCoin, interval } = store.get()
+  // ── host primitives (optimistic; never recorded); each reports success ──
+  const apiCreate = async (ctx: Ctx, request: Record<string, unknown>): Promise<ChartMark | null> => {
     try {
-      const saved = await hyperCall('drawChartMark', { coin: activeCoin, interval, role: 'neutral', ...request, sessionId }) as ChartMark
-      store.patch((current) => ({ chartMarks: [...current.chartMarks.filter((item) => item.id !== saved.id), saved] }))
+      const saved = await hyperCall('drawChartMark', { interval: ctx.interval, role: 'neutral', ...request, coin: request.coin ?? ctx.coin, sessionId: ctx.sessionId }) as ChartMark
+      // The trader may have switched session or market while the request was in flight.
+      if (onScreen(ctx) && saved.coin === ctx.coin) store.patch((current) => ({ chartMarks: [...current.chartMarks.filter((item) => item.id !== saved.id), saved] }))
       return saved
     } catch (error) { fail(tr('画线失败', 'Could not draw'), error); return null }
   }
-  const apiDelete = async (id: string) => {
-    const sessionId = session()
-    if (!sessionId) return
-    store.patch((current) => ({ chartMarks: current.chartMarks.filter((item) => item.id !== id) }))
-    try { await hyperCall('eraseChartMark', { sessionId, id }) } catch (error) { fail(tr('删除画线失败', 'Could not remove drawing'), error) }
+  const apiDelete = async (ctx: Ctx, id: string): Promise<boolean> => {
+    if (onScreen(ctx)) store.patch((current) => ({ chartMarks: current.chartMarks.filter((item) => item.id !== id) }))
+    try { await hyperCall('eraseChartMark', { sessionId: ctx.sessionId, id }); return true } catch (error) { fail(tr('删除画线失败', 'Could not remove drawing'), error); return false }
   }
-  const apiEdit = async (id: string, patch: Record<string, unknown>) => {
-    const sessionId = session()
-    if (!sessionId) return
-    store.patch((current) => ({ chartMarks: current.chartMarks.map((item) => {
+  const apiEdit = async (ctx: Ctx, id: string, patch: Record<string, unknown>): Promise<boolean> => {
+    if (onScreen(ctx)) store.patch((current) => ({ chartMarks: current.chartMarks.map((item) => {
       if (item.id !== id) return item
       const next = { ...item, ...patch } as Record<string, unknown>
       for (const [key, value] of Object.entries(patch)) if (value === null) delete next[key]
       return next as unknown as ChartMark
     }) }))
-    try { await hyperCall('updateChartMark', { sessionId, id, patch }) } catch (error) { fail(tr('修改画线失败', 'Could not edit drawing'), error) }
+    try { await hyperCall('updateChartMark', { sessionId: ctx.sessionId, id, patch }); return true } catch (error) { fail(tr('修改画线失败', 'Could not edit drawing'), error); return false }
   }
 
-  const record = (op: Op) => {
+  const record = (op: Op, ctx: Ctx) => {
+    if (ctx.scope !== scopeRef.current) return
     undoStack.current.push(op)
     if (undoStack.current.length > HISTORY_LIMIT) undoStack.current.shift()
     redoStack.current = []
@@ -100,54 +123,78 @@ export function useDrawingHistory(scope: string): DrawingHistory {
   }
   const current = (id: string) => store.get().chartMarks.find((item) => item.id === id)
 
-  /** Apply one op forward (redo) or backward (undo); returns false if it could not be applied. */
-  const apply = async (op: Op, forward: boolean): Promise<void> => {
-    if (op.type === 'batch') { for (const inner of forward ? op.ops : [...op.ops].reverse()) await apply(inner, forward); return }
-    if (op.type === 'edit') { await apiEdit(op.id, forward ? op.after : op.before); return }
+  /** Apply one op forward (redo) or backward (undo); the op is rewritten to what actually happened. Returns success. */
+  const apply = async (ctx: Ctx, op: Op, forward: boolean): Promise<boolean> => {
+    if (op.type === 'batch') {
+      let ok = true
+      for (const inner of forward ? op.ops : [...op.ops].reverse()) ok = (await apply(ctx, inner, forward)) && ok
+      return ok
+    }
+    if (op.type === 'edit') return apiEdit(ctx, op.id, forward ? op.after : op.before)
     const shouldExist = (op.type === 'create') === forward
     if (shouldExist) {
-      const saved = await apiCreate(recreateRequest(op.mark))
-      if (saved) { const old = op.mark.id; remap(undoStack.current, old, saved.id); remap(redoStack.current, old, saved.id); op.mark = { ...op.mark, id: saved.id } }
-    } else await apiDelete(op.mark.id)
+      const saved = await apiCreate(ctx, recreateRequest(op.mark))
+      if (!saved) return false
+      const old = op.mark.id; remap(undoStack.current, old, saved.id); remap(redoStack.current, old, saved.id); op.mark = { ...op.mark, id: saved.id }
+      return true
+    }
+    return apiDelete(ctx, op.mark.id)
   }
 
   return {
-    async create(request) {
-      const saved = await apiCreate(request)
-      if (saved) record({ type: 'create', mark: saved })
+    create: (request) => serial(async (ctx) => {
+      const saved = await apiCreate(ctx, request)
+      if (saved) record({ type: 'create', mark: saved }, ctx)
       return saved
-    },
-    async edit(id, patch) {
+    }, null),
+    edit: (id, patch) => serial(async (ctx) => {
       const mark = current(id)
       if (!mark) return
-      const before = Object.fromEntries(Object.keys(patch).map((key) => [key, (mark as unknown as Record<string, unknown>)[key] ?? null]))
-      record({ type: 'edit', id, before, after: patch })
-      await apiEdit(id, patch)
-    },
-    async remove(id) {
+      const before = beforeOf(mark, patch)
+      if (await apiEdit(ctx, id, patch)) record({ type: 'edit', id, before, after: patch }, ctx)
+    }, undefined),
+    remove: (id) => serial(async (ctx) => {
       const mark = current(id)
       if (!mark) return
-      record({ type: 'delete', mark })
-      await apiDelete(id)
-    },
-    async removeMany(ids) {
-      const marks = ids.map(current).filter((mark): mark is ChartMark => Boolean(mark))
-      if (!marks.length) return
-      record({ type: 'batch', ops: marks.map((mark) => ({ type: 'delete', mark })) })
-      for (const mark of marks) await apiDelete(mark.id)
-    },
-    async undo() {
+      if (await apiDelete(ctx, id)) record({ type: 'delete', mark }, ctx)
+    }, undefined),
+    // Batches record only the members the host accepted, so an undo never re-creates something that still exists.
+    removeMany: (ids) => serial(async (ctx) => {
+      const done: Op[] = []
+      for (const mark of ids.map(current).filter((item): item is ChartMark => Boolean(item))) if (await apiDelete(ctx, mark.id)) done.push({ type: 'delete', mark })
+      if (done.length) record({ type: 'batch', ops: done }, ctx)
+    }, undefined),
+    editMany: (ids, patch) => serial(async (ctx) => {
+      const done: Op[] = []
+      for (const mark of ids.map(current).filter((item): item is ChartMark => Boolean(item))) {
+        const before = beforeOf(mark, patch)
+        if (await apiEdit(ctx, mark.id, patch)) done.push({ type: 'edit', id: mark.id, before, after: patch })
+      }
+      if (done.length) record({ type: 'batch', ops: done }, ctx)
+    }, undefined),
+    editEach: (patches) => serial(async (ctx) => {
+      const done: Op[] = []
+      for (const [id, patch] of patches) {
+        const mark = current(id)
+        if (!mark) continue
+        const before = beforeOf(mark, patch)
+        if (await apiEdit(ctx, id, patch)) done.push({ type: 'edit', id, before, after: patch })
+      }
+      if (done.length) record({ type: 'batch', ops: done }, ctx)
+    }, undefined),
+    // A failed undo/redo goes back where it was, so the stacks keep describing the host.
+    undo: () => serial(async (ctx) => {
       const op = undoStack.current.pop()
       if (!op) return
       redoStack.current.push(op); bump()
-      await apply(op, false)
-    },
-    async redo() {
+      if (!(await apply(ctx, op, false))) { redoStack.current.pop(); undoStack.current.push(op); bump() }
+    }, undefined),
+    redo: () => serial(async (ctx) => {
       const op = redoStack.current.pop()
       if (!op) return
       undoStack.current.push(op); bump()
-      await apply(op, true)
-    },
+      if (!(await apply(ctx, op, true))) { undoStack.current.pop(); redoStack.current.push(op); bump() }
+    }, undefined),
     canUndo: undoStack.current.length > 0,
     canRedo: redoStack.current.length > 0,
   }

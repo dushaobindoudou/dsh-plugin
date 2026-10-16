@@ -9,13 +9,17 @@ import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, rmSync,
 import { dirname, join } from 'node:path'
 import { randomUUID, createHash } from 'node:crypto'
 import { canonicalMarketCoin } from './market-symbol.js'
+import { normalizePaperCosts } from './workspace-settings.js'
 
 const PAPER_START_USD = 100_000
 const WORKSPACE_DEFAULTS = Object.freeze({
   interval: '15m', bookGrouping: 'full', chartTab: 'chart', tapeTab: 'book', bottomTab: 'positions', indicators: ['volume'], maLines: [],
-  priceScale: 'normal', chartRanges: {}, chartLayers: { orders: true, fills: true, drawings: true },
+  priceScale: 'normal', chartType: 'candles', chartRanges: {}, chartLayers: { orders: true, fills: true, drawings: true },
   layout: { sessionsWidth: 232, chatWidth: 480, sessionsCollapsed: false, deskCollapsed: false, chatCollapsed: false },
 })
+
+/** Drawings per chart (session + coin, all intervals); the pan budget is verified at this size. */
+export const MAX_CHART_MARKS = 100
 
 export class HyperStore {
   constructor(dataDir, paperNetwork = 'testnet') {
@@ -255,8 +259,9 @@ export class HyperStore {
   }
 
   addChartMark(mark) {
-    const related = this.listChartMarks(mark.sessionId, mark.coin, mark.interval)
-    if (related.length >= 30) throw new Error('当前图表最多保留 30 条标注，请先删除旧线')
+    // The chart shows a coin's drawings from every interval, so the cap counts them all.
+    const related = this.listChartMarks(mark.sessionId, mark.coin)
+    if (related.length >= MAX_CHART_MARKS) throw new Error(`当前图表最多保留 ${MAX_CHART_MARKS} 条标注，请先删除旧线`)
     const marks = mark.shared ? this.#shared() : this.#marks(mark.sessionId)
     if (marks.length >= 300) throw new Error('当前会话最多保留 300 条图表标注，请先删除旧线')
     const saved = { ...mark, id: randomUUID(), createdAt: Date.now() }
@@ -328,16 +333,39 @@ export class HyperStore {
     return JSON.parse(JSON.stringify(this.paper))
   }
 
+  paperCosts() {
+    const file = join(this.dataDir, 'paper-costs.json')
+    return normalizePaperCosts(existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : undefined)
+  }
+  setPaperCosts(input) {
+    const costs = normalizePaperCosts(input)
+    this.#writeJson(join(this.dataDir, 'paper-costs.json'), costs)
+    return costs
+  }
+  indicatorTemplates() { return this.#readJson(join(this.dataDir, 'indicator-templates.json'), []) }
+  saveIndicatorTemplate(template) {
+    const rows = this.indicatorTemplates()
+    if (!rows.some((row) => row.id === template.id) && rows.length >= 20) throw Error('最多保存 20 个指标模板')
+    const next = { ...template, id: template.id || randomUUID(), updatedAt: Date.now() }
+    this.#writeJson(join(this.dataDir, 'indicator-templates.json'), [...rows.filter((row) => row.id !== next.id), next])
+    return next
+  }
+  removeIndicatorTemplate(id) {
+    this.#writeJson(join(this.dataDir, 'indicator-templates.json'), this.indicatorTemplates().filter((row) => row.id !== id))
+  }
+
   /**
    * Fill a paper order against the given mid with a simple slippage model.
    * @returns the fill record
    */
-  paperFill({ coin, isBuy, sz, px, time = Date.now(), reason = 'order', sessionId = null }) {
+  paperFill({ coin, isBuy, sz, px, time = Date.now(), reason = 'order', sessionId = null, feeBps = 0, referencePx = null, slippageBps = null }) {
     const szNum = Number(sz)
     const pxNum = Number(px)
     if (!Number.isFinite(szNum) || szNum <= 0) throw new Error('paper: 无效数量')
     if (!Number.isFinite(pxNum) || pxNum <= 0) throw new Error('paper: 无效价格')
     const notional = szNum * pxNum
+    if (!Number.isFinite(feeBps) || feeBps < 0 || feeBps > 100) throw Error('paper: 无效手续费')
+    const fee = notional * feeBps / 10_000
     const pos = this.paper.positions[coin] ?? { size: 0, entryPx: pxNum, leverage: this.paper.leverageByCoin?.[coin] ?? 1 }
     const signed = isBuy ? szNum : -szNum
     const prevSize = pos.size
@@ -360,11 +388,13 @@ export class HyperStore {
       pos.size = newSize
       this.paper.positions[coin] = pos
     }
-    this.paper.usd += realized // realized PnL settles into cash; margin tracked conceptually
+    this.paper.usd += realized - fee
     // sessionId: the trading conversation whose decision produced this fill.
-    const fill = { coin, isBuy, sz: szNum, px: pxNum, notional, realized, time, reason, sessionId }
+    const fill = { oid: `paper-${randomUUID()}`, coin, isBuy, sz: szNum, px: pxNum, notional, realized, closedPnl: realized,
+      fee, feeToken: 'USDC', netPnl: realized - fee, feeBps, referencePx, slippageBps,
+      closedSize: Math.min(Math.abs(prevSize), Math.sign(prevSize) !== Math.sign(signed) ? szNum : 0), startPosition: prevSize, time, reason, sessionId }
     this.paper.fills.unshift(fill)
-    if (this.paper.fills.length > 200) this.paper.fills.length = 200
+    if (this.paper.fills.length > 5000) this.paper.fills.length = 5000
     this.#writeJson(this.paperFile, this.paper)
     this.recordEvent('paper.fill', fill)
     return fill
@@ -373,7 +403,7 @@ export class HyperStore {
   paperOrderRecord(order) {
     const row = { ...order, time: Date.now(), status: 'filled' }
     this.paper.orders.unshift(row)
-    if (this.paper.orders.length > 200) this.paper.orders.length = 200
+    if (this.paper.orders.length > 5000) this.paper.orders.length = 5000
     this.#writeJson(this.paperFile, this.paper)
     this.recordEvent('paper.order', row)
   }

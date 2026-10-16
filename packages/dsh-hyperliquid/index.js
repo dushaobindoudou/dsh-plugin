@@ -94,7 +94,8 @@ export function apply(ctx, config = {}) {
         const lines = [
           '## Hyperliquid 交易台（dsh-hyperliquid）',
           `本 Harness 装有 Hyperliquid 交易台（mode=${mode}，network=${net}）。用户可在面板看行情并填写交易票据；票据只把意图送入当前会话，所有实际下单只能由你调用工具完成。`,
-          '可用工具：hyper_context（会话交易上下文）、hyper_market（详细行情）、hyper_chart（在行情图上画支撑/阻力与趋势线）、hyper_account（账户）、hyper_decide（交易决策预检并返回一次性 decisionId）、hyper_order（执行/撤单/杠杆）、hyper_session（会话视角）。',
+          '可用工具只有这 7 个，没有其它 hyper_* 工具：hyper_context（会话交易上下文）、hyper_market（行情：action=overview/catalog/book 盘口/candles/indicators/trades）、hyper_chart（画线 41 种、kind=ma 均线、action=view 切周期与 RSI/MACD 等副图指标）、hyper_account（账户）、hyper_decide（交易决策预检并返回一次性 decisionId）、hyper_order（执行/撤单/杠杆）、hyper_session（会话视角与绑定币对）。',
+          '均线用 hyper_chart add kind=ma、RSI/MACD 等用 hyper_chart action=view show=[...]，图表会实时计算；不要自己计算均线再用多段趋势线拼折线。工具返回错误时换正确参数重试一次，仍失败就直接告诉用户，不要反复推演。',
           '用户说"当前/界面上这个币"时，先 hyper_context 或 hyper_session status；需要技术判断时用 hyper_market indicators 验证趋势、动量、波动和支撑阻力，可用 hyper_chart 将依据画给用户看。交易前核对行情与账户，说明方向、数量、依据及风险。paper 模式用 hyper_order 执行；live 模式先用 hyper_decide 预检，并用返回的一次性 decisionId 执行 hyper_order。是否可自主执行由宿主配置和钱包策略决定。',
         ]
         if (skillRemove) lines.push('复杂的 Hyperliquid 分析、交易或异常对账，请先加载 hyperliquid-trading skill。')

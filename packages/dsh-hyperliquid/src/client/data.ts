@@ -139,6 +139,9 @@ function applyLocalCoin(coin: string): void {
   void loadCandles()
   void loadSnapshot()
   void loadMarketDetail(coin)
+  // Marks were cleared above; reload them here rather than rely on a render seeing the coin change
+  // (a quick A→B→A flip inside one batch would leave the chart without its drawings).
+  void loadChartMarks()
 }
 
 function liveCandle(value: any): Candle | null {
@@ -359,11 +362,29 @@ export async function loadSessions(): Promise<void> {
 }
 
 /** The agent changed this session's MA lines: take the host's copy without touching other workspace edits. */
+let maReloadVersion = 0
 async function reloadMaLines(sessionId: string): Promise<void> {
+  const version = ++maReloadVersion
   try {
     const workspace = await hyperCall('sessionWorkspace', { sessionId }) as SessionWorkspace
     const state = store.get()
+    if (version !== maReloadVersion) return
     if (state.workspaceSessionId === sessionId && state.workspace) store.patch({ workspace: { ...state.workspace, maLines: workspace.maLines ?? [] } })
+  } catch { /* next event or session reload retries */ }
+}
+
+/** The agent switched this session's interval or indicator panes. */
+let viewReloadVersion = 0
+async function reloadChartView(sessionId: string): Promise<void> {
+  // Two quick view changes can answer out of order; only the newest read may apply.
+  const version = ++viewReloadVersion
+  try {
+    const workspace = await hyperCall('sessionWorkspace', { sessionId }) as SessionWorkspace
+    const state = store.get()
+    if (version !== viewReloadVersion || state.workspaceSessionId !== sessionId || !state.workspace) return
+    const intervalChanged = workspace.interval !== state.interval
+    store.patch({ workspace: { ...state.workspace, interval: workspace.interval, indicators: workspace.indicators }, interval: workspace.interval })
+    if (intervalChanged) void loadCandles()
   } catch { /* next event or session reload retries */ }
 }
 
@@ -385,6 +406,7 @@ export async function pollEvents(): Promise<void> {
           if (ev.data.coin === store.get().activeCoin) void loadChartMarks()
         }
         if (ev.kind === 'chart.ma' && ev.data?.sessionId === store.get().activeSessionId) void reloadMaLines(ev.data.sessionId)
+        if (ev.kind === 'chart.view' && ev.data?.sessionId === store.get().activeSessionId) void reloadChartView(ev.data.sessionId)
         if (ev.data?.clientId === focusClientId) continue
         if (ev.kind === 'desk.state' && ev.data?.coin && (!ev.data.sessionId || ev.data.sessionId === store.get().activeSessionId) && ev.data.coin !== store.get().activeCoin) {
           focusVersion += 1

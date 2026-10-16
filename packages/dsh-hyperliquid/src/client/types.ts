@@ -23,8 +23,12 @@ export interface SessionWorkspace {
   bookGrouping: BookGrouping
   chartTab: 'chart' | 'funding'
   tapeTab: 'book' | 'trades'
-  bottomTab: 'positions' | 'orders' | 'account'
-  indicators: Array<'volume' | 'sma20' | 'sma60' | 'ema20' | 'ema50' | 'bollinger20' | 'rsi14' | 'macd'>
+  bottomTab: 'positions' | 'orders' | 'account' | 'review'
+  indicators: import('./chart-indicators').IndicatorId[]
+  showDataWindow?: boolean
+  indicatorSettings?: import('../../lib/studies.js').IndicatorSettings
+  research?: import('../../lib/workspace-settings.js').ResearchSettings
+  chartType?: import('./chart-basics').ChartType
   priceScale: 'normal' | 'log' | 'percentage'
   /** Configurable moving averages (SMA / EMA / SMMA / WMA, optional smoothing). */
   maLines?: MaLine[]
@@ -69,6 +73,9 @@ export interface MarketEntry {
 }
 
 export interface ChartMark {
+  /** Volume profile rows and value-area share (vprofile only). */
+  rows?: number
+  valueArea?: number
   id: string
   sessionId: string
   coin: string

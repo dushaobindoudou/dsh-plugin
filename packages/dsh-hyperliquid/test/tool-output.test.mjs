@@ -37,4 +37,23 @@ for (const args of [{ action: 'update', id: added.mark.id, label: '新支撑' },
   const output = await chart.execute(args, exec)
   assert.deepEqual(problems(output), [], `hyper_chart ${args.action} returns lossless JSON`)
 }
+const view = await chart.execute({ action: 'view', interval: '4h', show: ['rsi14', 'macd'] }, exec)
+assert.equal(view.interval, '4h'); assert.ok(view.indicators.includes('rsi14') && view.indicators.includes('macd'))
+assert.equal(store.getSessionWorkspace('s').interval, '4h', 'the session chart switches interval')
+assert.equal(remote.desk.interval, '1h', 'a session that is not on the desk leaves the desk interval alone')
+const hidden = await chart.execute({ action: 'view', hide: ['macd'] }, exec)
+assert.ok(!hidden.indicators.includes('macd') && hidden.indicators.includes('rsi14'))
+await assert.rejects(chart.execute({ action: 'view', show: ['rsi'] }, exec), /未知指标 rsi/)
+// A volume profile whose market request fails must not leave a saved drawing behind (the agent would retry and duplicate it).
+const countMarks = async () => (await remote.chartMarks({ sessionId: 's', coin: 'HYPE', allIntervals: true })).marks.length
+const beforeFail = await countMarks()
+remote.candles = async () => { throw new Error('行情超时') }
+const t0 = Date.now() - 10 * 3600_000
+await assert.rejects(chart.execute({ action: 'add', kind: 'vprofile', label: 'VP', points: [{ time: t0, price: 1 }, { time: t0 + 5 * 3600_000, price: 1 }] }, exec), /行情超时/)
+assert.equal(await countMarks(), beforeFail, 'nothing is saved when the candles request fails')
+// The session chart is on 4h here (set by the view call above): a 6h hole before the first bar is a missing bar.
+remote.candles = async () => ({ candles: [6, 7, 8].map((i) => ({ t: t0 + i * 3600_000, o: 10, h: 12, l: 9, c: 11, v: 100 })) })
+const vp = await chart.execute({ action: 'add', kind: 'vprofile', label: 'VP', points: [{ time: t0 + 9 * 3600_000, price: 1 }, { time: t0, price: 1 }] }, exec)
+assert.ok(vp.profile.partial && /区间前段缺失/.test(vp.text) && /K 线估算/.test(vp.text), vp.text)
+assert.deepEqual(problems(vp), [], 'vprofile output is lossless JSON')
 console.log('hyper_* 工具输出均为无损 JSON（清除样式、重新开启提醒后 list/update 不再报错）')

@@ -14,6 +14,8 @@ export const DRAWING_POINTS = {
   long: 3, short: 3,
   // Fibonacci family, Gann, pitchfork, regression.
   fibext: 3, fibchannel: 3, fibtime: 2, gannfan: 2, pitchfork: 3, regression: 2,
+  // Fixed range volume profile: the two points only set the time range.
+  vprofile: 2,
   // Annotation and shapes. brush is freehand: 0 = variable (BRUSH_MIN..BRUSH_MAX points).
   arrow: 2, callout: 2, circle: 2, triangle: 3, brush: 0,
   // More lines and measures: cross line, price label, info line, trend angle, price-only and date-only ranges.
@@ -44,6 +46,44 @@ export function isSingleEmoji(value) {
   if (typeof value !== 'string' || !value || value.length > 32 || !/\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(value)) return false
   return [...new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(value)].length === 1
 }
+/**
+ * Fixed range volume profile (TradingView FRVP): each bar's volume is spread evenly over its high–low
+ * range into `rows` price rows, split by bar direction. POC is the heaviest row; the value area grows
+ * from the POC toward the heavier neighbour until it holds `valueArea` of the volume.
+ * @param {Array<{ open: number, high: number, low: number, close: number, volume: number }>} bars
+ */
+export const PROFILE_ROWS_MIN = 6
+export const PROFILE_ROWS_MAX = 200
+export function volumeProfile(bars, { rows = 48, valueArea = 0.7 } = {}) {
+  const valid = bars.filter((bar) => [bar.open, bar.high, bar.low, bar.close, bar.volume].every(Number.isFinite) && bar.high >= bar.low && bar.volume >= 0)
+  if (!valid.length) return null
+  const low = Math.min(...valid.map((bar) => bar.low)), high = Math.max(...valid.map((bar) => bar.high))
+  // A flat range is one row at that exact price, not a row of invented width above it.
+  const count = high > low ? rows : 1
+  const step = high > low ? (high - low) / count : 0
+  const out = Array.from({ length: count }, (_, index) => ({ low: low + index * step, high: count === 1 ? high : low + (index + 1) * step, up: 0, down: 0 }))
+  for (const bar of valid) {
+    const side = bar.close >= bar.open ? 'up' : 'down'
+    if (count === 1) { out[0][side] += bar.volume; continue }
+    if (bar.high === bar.low) { out[Math.min(count - 1, Math.floor((bar.low - low) / step))][side] += bar.volume; continue }
+    const first = Math.max(0, Math.floor((bar.low - low) / step)), last = Math.min(count - 1, Math.floor((bar.high - low) / step))
+    for (let index = first; index <= last; index += 1) {
+      const overlap = Math.min(bar.high, out[index].high) - Math.max(bar.low, out[index].low)
+      if (overlap > 0) out[index][side] += bar.volume * overlap / (bar.high - bar.low)
+    }
+  }
+  const total = out.reduce((sum, row) => sum + row.up + row.down, 0)
+  if (!(total > 0)) return null
+  const size = (index) => index >= 0 && index < count ? out[index].up + out[index].down : -1
+  let poc = 0
+  for (let index = 1; index < count; index += 1) if (size(index) > size(poc)) poc = index
+  let lo = poc, hi = poc, held = size(poc)
+  while (held < total * valueArea && (lo > 0 || hi < count - 1)) {
+    if (size(hi + 1) >= size(lo - 1)) { hi += 1; held += size(hi) } else { lo -= 1; held += size(lo) }
+  }
+  return { rows: out, total, poc: (out[poc].low + out[poc].high) / 2, pocIndex: poc, vah: out[hi].high, val: out[lo].low, valueLow: lo, valueHigh: hi }
+}
+
 /** Gann box divisions on both axes (TradingView defaults). */
 export const GANN_BOX_LEVELS = [0, 0.25, 0.382, 0.5, 0.618, 0.75, 1]
 /** Drawings a price can cross: alerts fire when the mid price crosses them (once, like TradingView). */
@@ -112,6 +152,11 @@ export function drawingGeometry(kind, request, now = Date.now()) {
   } else if (!Array.isArray(raw) || raw.length !== need) throw new Error(`${kind} 需要 ${need} 个 points（{ time, price }）`)
   const points = raw.map((item, index) => point(item?.time, item?.price, `第 ${index + 1} 个点`))
   if (['trend', 'ray', 'extended', 'channel', 'fibchannel', 'gannfan', 'regression', 'fibtime', 'infoline', 'trendangle'].includes(kind) && points[0].time === points[1].time) throw new Error('前两个点的时间不能相同')
+  if (kind === 'vprofile') {
+    if (points[0].time === points[1].time) throw new Error('成交量分布需要一个时间区间')
+    // Only the time range matters, so either drawing direction is fine.
+    if (points[1].time < points[0].time) points.reverse()
+  }
   if ((kind === 'regression' || kind === 'fibtime' || kind === 'gannfan') && points[1].time < points[0].time) throw new Error('第二个点必须晚于第一个点')
   if (kind === 'long' || kind === 'short') {
     const [entry, stop, target] = points.map((item) => item.price)
@@ -140,6 +185,19 @@ export function drawingStyle(request) {
   if (request?.lineStyle != null) {
     if (!LINE_STYLES.includes(request.lineStyle)) throw new Error(`线型必须为 ${LINE_STYLES.join('/')}`)
     style.lineStyle = request.lineStyle
+  }
+  // Volume profile settings (TradingView "Rows" and "Value Area Volume").
+  if (request?.rows != null) {
+    if (request?.kind != null && request.kind !== 'vprofile') throw new Error('rows 只适用于固定范围成交量分布')
+    const rows = Number(request.rows)
+    if (!Number.isInteger(rows) || rows < PROFILE_ROWS_MIN || rows > PROFILE_ROWS_MAX) throw new Error(`成交量分布行数必须为 ${PROFILE_ROWS_MIN}-${PROFILE_ROWS_MAX} 的整数`)
+    style.rows = rows
+  }
+  if (request?.valueArea != null) {
+    if (request?.kind != null && request.kind !== 'vprofile') throw new Error('valueArea 只适用于固定范围成交量分布')
+    const share = Number(request.valueArea)
+    if (!Number.isFinite(share) || share < 0.5 || share > 0.95) throw new Error('价值区比例必须在 0.5-0.95 之间')
+    style.valueArea = share
   }
   for (const flag of ['shared', 'alert']) {
     if (request?.[flag] == null) continue

@@ -6,12 +6,13 @@ import { isTextKind, toolOf } from '../drawing-tools'
 import { saveStyleTemplate } from '../drawing-templates'
 import { ALERT_KINDS } from '../../../lib/chart-drawings.js'
 import { UiIcon } from './panel-icons'
+import { Select } from './select'
 
-const COLORS = ['#4c82d8', '#2fd3a0', '#ef5f6c', '#e2a943', '#9b86db', '#26b5c8', '#8a8f98']
+export const DRAW_COLORS = ['#4c82d8', '#2fd3a0', '#ef5f6c', '#e2a943', '#9b86db', '#26b5c8', '#8a8f98']
 const STYLES: Array<['solid' | 'dashed' | 'dotted', string, string]> = [['solid', '实线', 'Solid'], ['dashed', '虚线', 'Dashed'], ['dotted', '点线', 'Dotted']]
 
-export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone }: {
-  mark: ChartMark; globallyLocked: boolean; onEdit: (patch: Record<string, unknown>) => void; onRemove: () => void; onClose: () => void; onClone: () => void
+export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone, onCoordinates }: {
+  mark: ChartMark; globallyLocked: boolean; onEdit: (patch: Record<string, unknown>) => void; onRemove: () => void; onClose: () => void; onClone: () => void; onCoordinates: () => void
 }) {
   const [savedDefault, setSavedDefault] = React.useState(false)
   React.useEffect(() => { setSavedDefault(false) }, [mark.id, mark.color, mark.lineWidth, mark.lineStyle])
@@ -31,7 +32,7 @@ export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, o
         onKeyDown={(event) => { if (event.key === 'Enter' && text.trim() && text !== mark.label) onEdit({ label: text.trim() }); if (event.key === 'Escape') setText(mark.label) }}
         onBlur={() => { if (text.trim() && text !== mark.label) onEdit({ label: text.trim() }) }} /> : null}
       <span className="dhl-draw-toolbar-group" role="group" aria-label={tr('颜色', 'Color')}>
-        {COLORS.map((color) => <button type="button" key={color} className={'dhl-swatch' + ((mark.color ?? '') === color ? ' on' : '')} style={{ background: color }} disabled={locked}
+        {DRAW_COLORS.map((color) => <button type="button" key={color} className={'dhl-swatch' + ((mark.color ?? '') === color ? ' on' : '')} style={{ background: color }} disabled={locked}
           aria-label={`${tr('颜色', 'Color')} ${color}`} aria-pressed={(mark.color ?? '') === color} onClick={() => onEdit({ color })} />)}
       </span>
       {mark.kind !== 'text' ? <span className="dhl-draw-toolbar-group" role="group" aria-label={tr('线宽', 'Line width')}>
@@ -46,7 +47,16 @@ export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, o
           <svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><line x1="2" x2="16" y1="9" y2="9" stroke="currentColor" strokeWidth="2" strokeDasharray={value === 'dashed' ? '4 3' : value === 'dotted' ? '1 3' : undefined} strokeLinecap="round" /></svg>
         </button>)}
       </span> : null}
+      {mark.kind === 'vprofile' ? <span className="dhl-draw-toolbar-group" role="group" aria-label={tr('成交量分布设置', 'Volume profile settings')}>
+        <Select aria-label={tr('价格行数', 'Rows')} title={tr('价格行数', 'Rows')} value={String(mark.rows ?? 48)} disabled={locked} onChange={(event) => onEdit({ rows: Number(event.target.value) })}>
+          {[24, 48, 96, 150].map((value) => <option key={value} value={value}>{tr(`${value} 行`, `${value} rows`)}</option>)}
+        </Select>
+        <Select aria-label={tr('价值区比例', 'Value area')} title={tr('价值区成交量占比', 'Value area volume')} value={String(mark.valueArea ?? 0.7)} disabled={locked} onChange={(event) => onEdit({ valueArea: Number(event.target.value) })}>
+          {[0.68, 0.7, 0.8].map((value) => <option key={value} value={value}>{`VA ${Math.round(value * 100)}%`}</option>)}
+        </Select>
+      </span> : null}
       <span className="dhl-draw-toolbar-group">
+        <button type="button" disabled={locked} title={tr('精确编辑时间、价格与名称', 'Edit exact time, price and name')} aria-label={tr('编辑画线坐标', 'Edit drawing coordinates')} onClick={onCoordinates}><UiIcon name="settings" size={15} /></button>
         <button type="button" className={savedDefault ? 'on' : ''} title={tr(`设为${tool.zh}的默认样式`, `Use as default ${tool.en} style`)} aria-label={tr('设为默认样式', 'Save as default style')}
           onClick={() => { saveStyleTemplate(mark.kind, { color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle }); setSavedDefault(true) }}>
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6" /></svg>

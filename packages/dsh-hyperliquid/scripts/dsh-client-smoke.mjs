@@ -397,7 +397,7 @@ try {
   await page.waitForFunction(() => document.querySelectorAll('.dhl-chart-drawing-overlay .dhl-chart-anchor').length >= 2)
   await page.locator('.dhl-intervals button').filter({ hasText: /^15m$/ }).click()
   await page.waitForFunction(() => window.__dhlStore.get().interval === '15m' && window.__dhlStore.get().chartMarks.some((mark) => mark.source === 'user' && mark.interval === '1h'))
-  await page.getByLabel('会话图表标注').getByText(/水平线/).first().waitFor({ state: 'visible' })
+  await page.getByLabel('画线列表').getByText(/水平线/).first().waitFor({ state: 'visible' })
   await page.locator('.dhl-intervals button').filter({ hasText: /^1h$/ }).click()
   if (process.env.DSH_SMOKE_DRAW_SCREENSHOT) await page.locator('.dhl-chart').screenshot({ path: process.env.DSH_SMOKE_DRAW_SCREENSHOT })
   console.log('PASS trend drawing previews, saves and remains visible across intervals')
@@ -490,8 +490,8 @@ try {
       ],
     })
   })
-  await page.getByLabel('会话图表标注').getByText('Agent 支撑测试线').waitFor({ state: 'visible' })
-  await page.getByLabel('会话图表标注').getByText('Agent 趋势测试线').waitFor({ state: 'visible' })
+  await page.getByLabel('画线列表').getByText('Agent 支撑测试线').waitFor({ state: 'visible' })
+  await page.getByLabel('画线列表').getByText('Agent 趋势测试线').waitFor({ state: 'visible' })
   console.log('PASS agent annotation renders on the live chart')
 
   if (await page.evaluate(() => window.__dhlStore.get().status?.network === 'mainnet')) {

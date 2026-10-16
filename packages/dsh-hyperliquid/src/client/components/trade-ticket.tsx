@@ -149,7 +149,7 @@ export function TradeTicket({ onSubmitted }: { onSubmitted?: () => void }) {
         <div><span>{tr('手续费', 'Fees')}</span><strong>{tr('交易所结算', 'Charged by exchange')}</strong></div>
       </div>
       <p className="dhl-ticket-note">{tr('票据只提交交易意图。实际价格、杠杆与账户风险由会话在执行前重新核对。', 'The ticket submits a trade intent. The chat rechecks price, leverage, and account risk before execution.')}</p>
-      {s.account?.mode === 'paper' ? <p className="dhl-ticket-note">{tr(s.account.simulation, 'Fixed slippage; order book depth, fees, funding and liquidation are not simulated.')}</p> : null}
+      {s.account?.mode === 'paper' ? <p className="dhl-ticket-note">{tr(s.account.simulation, 'Configured slippage and fees; depth, funding and liquidation are not simulated.')}</p> : null}
     </section>
   )
 }

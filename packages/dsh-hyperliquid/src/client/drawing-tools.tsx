@@ -13,7 +13,7 @@
 import * as React from 'react'
 import { tr } from './remote'
 import { fmtPrice } from './format'
-import { DRAWING_CLICKS, FIB_EXT_LEVELS, FIB_LEVELS, FIB_TIME_SERIES, GANN_BOX_LEVELS, GANN_RATIOS, ICON_NAMES, TEXT_KINDS, type DrawingKind, type LineStyleName } from '../../lib/chart-drawings.js'
+import { volumeProfile, DRAWING_CLICKS, FIB_EXT_LEVELS, FIB_LEVELS, FIB_TIME_SERIES, GANN_BOX_LEVELS, GANN_RATIOS, ICON_NAMES, TEXT_KINDS, type DrawingKind, type LineStyleName } from '../../lib/chart-drawings.js'
 import type { ChartMark } from './types'
 
 export type { DrawingKind }
@@ -24,21 +24,22 @@ export const isTextKind = (kind: DrawingKind) => (TEXT_KINDS as string[]).includ
 
 /** Menu order follows TradingView's lines → channels/Fibonacci → shapes/annotation → measure/positions. */
 export const DRAWING_TOOLS: DrawingTool[] = [
-  { group: 'lines', kind: 'trend', zh: '趋势线', en: 'Trend line', hintZh: '依次点击起点和终点', hintEn: 'Click start and end points', icon: 'M4 19 20 5' },
+  { group: 'lines', kind: 'trend', zh: '趋势线', en: 'Trend line', hintZh: '依次点击起点和终点（Alt+T）', hintEn: 'Click start and end points (Alt+T)', icon: 'M4 19 20 5' },
   { group: 'lines', kind: 'ray', zh: '射线', en: 'Ray', hintZh: '点击起点，再点击方向点，向前无限延伸', hintEn: 'Click origin, then direction; extends forward', icon: 'M4 19 20 5M4 19h.01' },
   { group: 'lines', kind: 'extended', zh: '延长线', en: 'Extended line', hintZh: '点击两点，两端无限延伸', hintEn: 'Click two points; extends both ways', icon: 'M2 21 22 3' },
-  { group: 'lines', kind: 'level', zh: '水平线', en: 'Horizontal line', hintZh: '单击设置价格', hintEn: 'Click to set the price', icon: 'M3 12h18' },
-  { group: 'lines', kind: 'hray', zh: '水平射线', en: 'Horizontal ray', hintZh: '单击起点，向右延伸', hintEn: 'Click origin; extends right', icon: 'M6 12h15M6 12h.01' },
+  { group: 'lines', kind: 'level', zh: '水平线', en: 'Horizontal line', hintZh: '单击设置价格（Alt+H）', hintEn: 'Click to set the price (Alt+H)', icon: 'M3 12h18' },
+  { group: 'lines', kind: 'hray', zh: '水平射线', en: 'Horizontal ray', hintZh: '单击起点，向右延伸（Alt+J）', hintEn: 'Click origin; extends right (Alt+J)', icon: 'M6 12h15M6 12h.01' },
   { group: 'lines', kind: 'infoline', zh: '信息线', en: 'Info line', hintZh: '两点画线，显示涨跌、根数、时长和角度', hintEn: 'Two points; shows change, bars, time and angle', icon: 'M4 18 18 6M14 4h6v5' },
   { group: 'lines', kind: 'trendangle', zh: '趋势角度', en: 'Trend angle', hintZh: '两点画线，显示与水平线的夹角', hintEn: 'Two points; shows the angle to horizontal', icon: 'M4 19 19 6M4 19h15M10 19a6 6 0 0 0-1.6-4' },
-  { group: 'lines', kind: 'crossline', zh: '十字线', en: 'Cross line', hintZh: '单击放置水平与垂直交叉线', hintEn: 'Click to place a horizontal and vertical cross', icon: 'M12 3v18M3 12h18' },
-  { group: 'lines', kind: 'vline', zh: '垂直线', en: 'Vertical line', hintZh: '单击标记时间', hintEn: 'Click to mark a time', icon: 'M12 3v18' },
+  { group: 'lines', kind: 'crossline', zh: '十字线', en: 'Cross line', hintZh: '单击放置水平与垂直交叉线（Alt+C）', hintEn: 'Click to place a horizontal and vertical cross (Alt+C)', icon: 'M12 3v18M3 12h18' },
+  { group: 'lines', kind: 'vline', zh: '垂直线', en: 'Vertical line', hintZh: '单击标记时间（Alt+V）', hintEn: 'Click to mark a time (Alt+V)', icon: 'M12 3v18' },
   { group: 'channels', kind: 'channel', zh: '平行通道', en: 'Parallel channel', hintZh: '点击两点画基线，第三点设置通道宽度', hintEn: 'Two points for the base, a third for width', icon: 'M3 15 15 5M9 19 21 9' },
   { group: 'channels', kind: 'pitchfork', zh: '安德鲁叉子线', en: 'Pitchfork', hintZh: '点击枢轴点，再点击波段高点与低点', hintEn: 'Click the pivot, then the swing high and low', icon: 'M4 20 12 4M12 4l8 8M12 4 4 12M8 16l12-4' },
   { group: 'channels', kind: 'schiff', zh: 'Schiff 叉子线', en: 'Schiff pitchfork', hintZh: '同叉子线，起点移到 A、B 价格中点', hintEn: 'Pitchfork with the handle at A–B price midpoint', icon: 'M4 14 12 4M12 4l8 8M12 4 4 12M8 16l12-4' },
   { group: 'channels', kind: 'modschiff', zh: '改良 Schiff 叉子线', en: 'Modified Schiff pitchfork', hintZh: '同叉子线，起点移到 A、B 时间与价格中点', hintEn: 'Pitchfork with the handle at the A–B midpoint', icon: 'M6 12 12 4M12 4l8 8M12 4 4 12M8 16l12-4' },
   { group: 'channels', kind: 'regression', zh: '回归趋势', en: 'Regression trend', hintZh: '点击区间起点和终点，按收盘价拟合 ±2σ 通道', hintEn: 'Click range start and end; fits closes with ±2σ', icon: 'M3 17 21 7M3 13 21 3M3 21 21 11' },
-  { group: 'fib', kind: 'fib', zh: '斐波那契回撤', en: 'Fib retracement', hintZh: '从波段起点点到终点（终点为 0）', hintEn: 'Click swing start, then end (end = 0)', icon: 'M3 5h18M3 9h18M3 13h18M3 19h18' },
+  { group: 'channels', kind: 'vprofile', zh: '固定范围成交量分布', en: 'Fixed range volume profile', hintZh: '点击区间起点和终点，按价格统计成交量，标出 POC 与 70% 价值区', hintEn: 'Click range start and end; volume by price with POC and 70% value area', icon: 'M4 3v18M4 6h7M4 9h12M4 12h16M4 15h9M4 18h5' },
+  { group: 'fib', kind: 'fib', zh: '斐波那契回撤', en: 'Fib retracement', hintZh: '从波段起点点到终点（终点为 0）（Alt+F）', hintEn: 'Click swing start, then end (end = 0) (Alt+F)', icon: 'M3 5h18M3 9h18M3 13h18M3 19h18' },
   { group: 'fib', kind: 'fibext', zh: '斐波那契扩展', en: 'Trend-based fib extension', hintZh: '点击波段起点、终点，再点击回撤点，自回撤点投射', hintEn: 'Swing start, swing end, then the retracement point', icon: 'M3 20 9 6l6 9M15 4h7M15 8h7M15 12h7' },
   { group: 'fib', kind: 'fibchannel', zh: '斐波那契通道', en: 'Fib channel', hintZh: '两点画基线，第三点设置通道宽度', hintEn: 'Two points for the base, a third for width', icon: 'M3 19 21 9M3 15 21 5M3 11 21 1' },
   { group: 'fib', kind: 'fibtime', zh: '斐波那契时间周期', en: 'Fib time zone', hintZh: '点击两点确定单位间隔', hintEn: 'Click two points to set the unit spacing', icon: 'M4 3v18M7 3v18M10 3v18M15 3v18M22 3v18' },
@@ -50,7 +51,7 @@ export const DRAWING_TOOLS: DrawingTool[] = [
   { group: 'patterns', kind: 'xabcd', zh: 'XABCD 谐波', en: 'XABCD pattern', hintZh: '依次点击 X、A、B、C、D，显示斐波那契比值', hintEn: 'Click X, A, B, C, D; shows Fibonacci ratios', icon: 'M2 18 7 5l4 9 5-7 6 12M2 18l9-4M11 14l11 5' },
   { group: 'patterns', kind: 'abcd', zh: 'ABCD 形态', en: 'ABCD pattern', hintZh: '依次点击 A、B、C、D', hintEn: 'Click A, B, C, D', icon: 'M3 19 9 6l5 8 7-10' },
   { group: 'patterns', kind: 'headshoulders', zh: '头肩形态', en: 'Head and shoulders', hintZh: '依次点击左底、左肩、颈线点、头、颈线点、右肩、右底', hintEn: 'Click 7 points from left base to right base', icon: 'M2 18l3-6 3 3 4-10 4 10 3-3 3 6M5 15h14' },
-  { group: 'shapes', kind: 'rect', zh: '矩形', en: 'Rectangle', hintZh: '点击两个对角', hintEn: 'Click two opposite corners', icon: 'M4 6h16v12H4z' },
+  { group: 'shapes', kind: 'rect', zh: '矩形', en: 'Rectangle', hintZh: '点击两个对角（Alt+Shift+R）', hintEn: 'Click two opposite corners (Alt+Shift+R)', icon: 'M4 6h16v12H4z' },
   { group: 'shapes', kind: 'circle', zh: '圆形', en: 'Circle', hintZh: '点击圆心，再点击边缘', hintEn: 'Click the center, then the edge', icon: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z' },
   { group: 'shapes', kind: 'triangle', zh: '三角形', en: 'Triangle', hintZh: '依次点击三个顶点', hintEn: 'Click three corners', icon: 'M12 4 21 20H3z' },
   { group: 'shapes', kind: 'brush', zh: '画笔', en: 'Brush', hintZh: '按住鼠标拖动自由绘制', hintEn: 'Press and drag to draw freehand', icon: 'M3 17c3-6 5 2 8-3s4-6 7-4 3 4 3 4' },
@@ -148,6 +149,13 @@ export interface Projector {
   bars: (from: number, to: number) => number
   /** Closes of the bars in [from, to] (ms), for regression. */
   closes: (from: number, to: number) => DrawPoint[]
+  /** Full bars in [from, to] (ms), for the volume profile. */
+  candles?: (from: number, to: number) => Array<{ time: number; open: number; high: number; low: number; close: number; volume: number }>
+  /** Volume profile of [from, to], cached per candle set by the chart. */
+  profile?: (from: number, to: number, options?: { rows?: number; valueArea?: number }) => ReturnType<typeof volumeProfile>
+  /** Open time of the first loaded bar and the bar spacing, to tell whether a range is fully covered. */
+  firstTime?: number
+  barMs?: number
 }
 
 type Pt = { x: number; y: number }
@@ -182,6 +190,26 @@ function duration(ms: number): string {
   const hours = minutes / 60
   if (hours < 48) return `${Math.round(hours * 10) / 10}h`
   return `${Math.round(hours / 24 * 10) / 10}d`
+}
+
+/** Approximate rendered width of 11px chart text: CJK and emoji are wide, Latin is narrow. */
+const textWidth = (value: string) => [...value].reduce((sum, ch) => sum + (ch.charCodeAt(0) > 255 ? 12 : 6.6), 0)
+
+/** Greedy wrap to `max` px; explicit newlines are kept, words longer than a line are broken. */
+export function wrapText(value: string, max: number): string[] {
+  const out: string[] = []
+  for (const paragraph of value.split('\n')) {
+    let line = ''
+    for (const ch of paragraph) {
+      if (line && textWidth(line + ch) > max) {
+        const space = line.lastIndexOf(' ')
+        if (ch !== ' ' && space > 0 && /^[\x20-\x7e]+$/.test(line.slice(space + 1))) { out.push(line.slice(0, space)); line = line.slice(space + 1) + ch }
+        else { out.push(line); line = ch === ' ' ? '' : ch }
+      } else line += ch
+    }
+    out.push(line)
+  }
+  return out.slice(0, 12)
 }
 
 /** Least-squares line through closes by bar index, with the residual standard deviation. */
@@ -234,12 +262,17 @@ export interface ShapeProps {
   lineWidth?: number
   lineStyle?: LineStyleName
   id?: string
-  /** Status icons near the first anchor: alert armed, synced to all sessions. */
-  badges?: Array<'alert' | 'shared'>
+  /** Status icons near the first anchor (primitives, so React.memo holds). */
+  alert?: boolean
+  shared?: boolean
+  /** Volume profile settings. */
+  rows?: number
+  valueArea?: number
 }
 
 /** One drawing as SVG; `points` are in click order (a preview passes clicks + hover). */
-export const DrawingShape = React.memo(function DrawingShape({ kind, points, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, badges }: ShapeProps) {
+export const DrawingShape = React.memo(function DrawingShape({ kind, points, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea }: ShapeProps) {
+  const badges = [...(alert ? ['alert' as const] : []), ...(shared ? ['shared' as const] : [])]
   const { width: w, height: h } = view
   const px = points.map((point) => view.project(point.time, point.price))
   if (!px.length || px.some((point) => point == null)) return null
@@ -545,12 +578,49 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
       handles = [c0, c1]
       break
     }
+    case 'vprofile': {
+      if (!p[1]) break
+      const [from, to] = points[0].time <= points[1].time ? points : [points[1], points[0]]
+      const x0 = Math.min(p[0].x, p[1].x), x1 = Math.max(p[0].x, p[1].x)
+      const settings = { rows: rows ?? 48, valueArea: valueArea ?? 0.7 }
+      const profile = view.profile ? view.profile(from.time, to.time, settings) : volumeProfile(view.candles?.(from.time, to.time) ?? [], settings)
+      const partial = view.firstTime != null && view.barMs != null && view.firstTime - from.time > view.barMs
+      if (!profile) {
+        body = <><rect className="dhl-drawing-fill" x={x0} y={0} width={Math.max(1, x1 - x0)} height={h} />{text(x0 + 4, 16, tr('区间内暂无成交量数据', 'No volume in this range'), 'start')}</>
+        handles = [p[0], p[1]]
+        break
+      }
+      const y = (price: number) => view.project(from.time, price)?.y
+      const maxRow = Math.max(...profile.rows.map((row) => row.up + row.down)) || 1
+      const span = Math.max(24, (x1 - x0) * 0.3)
+      const yTop = y(profile.rows.at(-1)!.high), yBottom = y(profile.rows[0].low), yPoc = y(profile.poc), yVah = y(profile.vah), yVal = y(profile.val)
+      body = <g className="dhl-vprofile">
+        {yTop != null && yBottom != null ? <rect className="dhl-vprofile-range" x={x0} y={yTop} width={Math.max(1, x1 - x0)} height={Math.max(1, yBottom - yTop)} /> : null}
+        {profile.rows.map((row, index) => {
+          const top = y(row.high), bottom = y(row.low)
+          if (top == null || bottom == null) return null
+          const height = Math.max(1, bottom - top - 0.5), inValue = index >= profile.valueLow && index <= profile.valueHigh
+          const upWidth = span * row.up / maxRow, downWidth = span * row.down / maxRow
+          return <g key={index} className={inValue ? 'dhl-vprofile-va' : 'dhl-vprofile-out'}>
+            <rect className="dhl-vprofile-up" x={x0} y={top} width={upWidth} height={height} />
+            <rect className="dhl-vprofile-down" x={x0 + upWidth} y={top} width={downWidth} height={height} />
+          </g>
+        })}
+        {yPoc != null ? <><line className="dhl-vprofile-poc" x1={x0} y1={yPoc} x2={x1} y2={yPoc} />{text(x1 - 4, yPoc - 4, `POC ${fmtPrice(profile.poc)}`, 'end')}</> : null}
+        {yVah != null ? <><line className="dhl-drawing-mid" x1={x0} y1={yVah} x2={x1} y2={yVah} />{text(x1 - 4, yVah - 4, `VAH ${fmtPrice(profile.vah)}`, 'end')}</> : null}
+        {yVal != null ? <><line className="dhl-drawing-mid" x1={x0} y1={yVal} x2={x1} y2={yVal} />{text(x1 - 4, yVal + 12, `VAL ${fmtPrice(profile.val)}`, 'end')}</> : null}
+        {yBottom != null ? text(x0 + 4, Math.min(h - 4, yBottom + 14), partial ? tr('K 线估算 · 区间前段历史未加载', 'Estimated from bars · early range not loaded') : tr('K 线估算', 'Estimated from bars'), 'start', partial ? 'dhl-drawing-text dhl-vprofile-warn' : 'dhl-drawing-text') : null}
+      </g>
+      handles = [p[0], p[1]]
+      break
+    }
     case 'text': {
       const value = textValue || label || tr('文本', 'Text')
-      const width = Math.min(260, 14 + [...value].reduce((sum, ch) => sum + (ch.charCodeAt(0) > 255 ? 12 : 6.6), 0))
+      const lines = wrapText(value, 300)
+      const width = 14 + Math.max(...lines.map(textWidth))
       body = <>
-        <rect className="dhl-text-box" x={p[0].x} y={p[0].y - 20} width={width} height="24" rx="4" />
-        {text(p[0].x + 7, p[0].y - 4, value, 'start', 'dhl-drawing-text dhl-text-value')}
+        <rect className="dhl-text-box" x={p[0].x} y={p[0].y - 20} width={width} height={8 + lines.length * 16} rx="4" />
+        {lines.map((line, index) => <React.Fragment key={index}>{text(p[0].x + 7, p[0].y - 4 + index * 16, line, 'start', 'dhl-drawing-text dhl-text-value')}</React.Fragment>)}
       </>
       break
     }
@@ -585,9 +655,9 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
         <rect className="dhl-position-stop" x={x0} width={width} y={Math.min(yEntry, yStop)} height={Math.abs(yStop - yEntry)} />
         {yTarget != null ? <rect className="dhl-position-target" x={x0} width={width} y={Math.min(yEntry, yTarget)} height={Math.abs(yTarget - yEntry)} /> : null}
         <line className="dhl-position-entry" x1={x0} x2={x0 + width} y1={yEntry} y2={yEntry} />
-        {yTarget != null ? text(x0 + width / 2, yTarget + (kind === 'long' ? 14 : -6), `${tr('止盈', 'Target')} ${fmtPrice(target.price)} (+${pct(reward)}%)`, 'middle', 'dhl-drawing-text dhl-position-text') : null}
-        {text(x0 + width / 2, yStop + (kind === 'long' ? -6 : 14), `${tr('止损', 'Stop')} ${fmtPrice(stop.price)} (-${pct(risk)}%)`, 'middle', 'dhl-drawing-text dhl-position-text')}
-        {text(x0 + width / 2, yEntry + (kind === 'long' ? 14 : -6), `${kind === 'long' ? tr('多', 'Long') : tr('空', 'Short')} ${fmtPrice(entry.price)} · R:R ${risk > 0 ? (reward / risk).toFixed(2) : '—'}`, 'middle', 'dhl-drawing-text dhl-position-text')}
+        {yTarget != null ? text(x0 + width / 2, yTarget + (kind === 'long' ? -6 : 14), `${tr('止盈', 'Target')} ${fmtPrice(target.price)} (+${pct(reward)}%)`, 'middle', 'dhl-drawing-text dhl-position-text') : null}
+        {text(x0 + width / 2, yStop + (kind === 'long' ? 14 : -6), `${tr('止损', 'Stop')} ${fmtPrice(stop.price)} (-${pct(risk)}%)`, 'middle', 'dhl-drawing-text dhl-position-text')}
+        {text(x0 + width / 2, yEntry + (kind === 'long' ? -6 : 14), `${kind === 'long' ? tr('多', 'Long') : tr('空', 'Short')} ${fmtPrice(entry.price)} · R:R ${risk > 0 ? (reward / risk).toFixed(2) : '—'}`, 'middle', 'dhl-drawing-text dhl-position-text')}
       </g>
       handles = [p[0], p[1], ...(p[2] ? [p[2]] : [])]
       break

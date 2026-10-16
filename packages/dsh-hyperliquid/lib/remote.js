@@ -16,6 +16,9 @@ import { TradingGuard } from './trading-guard.js'
 import { normalizeMaLines } from './moving-average.js'
 import { ALERT_KINDS, ICON_NAMES, TEXT_KINDS, drawingGeometry, drawingStyle, isIconLabel, linePriceAt } from './chart-drawings.js'
 import { normalizeRiskSettings } from './risk-settings.js'
+import { INDICATOR_IDS, normalizeIndicatorSettings } from './studies.js'
+import { normalizeResearch } from './workspace-settings.js'
+import { fundingWindow } from './review.js'
 
 const TOOL_CALL = Symbol('verified DSH tool call')
 
@@ -482,6 +485,20 @@ export class HyperRemote extends TypertRemoteService {
     return maLines
   }
 
+  /** Agent sets what the session chart shows (interval, indicator panes); the desk follows on `chart.view`. */
+  setSessionChartView(sessionId, { interval, show = [], hide = [] } = {}) {
+    this.requireTradingSession(sessionId)
+    const unknown = [...show, ...hide].filter((id) => !INDICATOR_IDS.includes(id))
+    if (unknown.length) throw new Error(`未知指标 ${unknown.join(',')}，可选：${INDICATOR_IDS.join(', ')}`)
+    const current = this.store.getSessionWorkspace(sessionId)
+    const patch = { indicators: [...new Set([...(current.indicators ?? []).filter((id) => !hide.includes(id)), ...show])] }
+    if (interval != null) patch.interval = requireInterval(interval)
+    const next = this.store.updateSessionWorkspace(sessionId, patch)
+    if (this.desk?.sessionId === sessionId && patch.interval) this.desk.interval = patch.interval
+    this.store.recordEvent('chart.view', { sessionId, interval: next.interval, indicators: next.indicators })
+    return next
+  }
+
   /** Move, reshape, restyle or relabel one drawing; geometry is re-validated as a whole. */
   editChartMark(id, patch, sessionId) {
     this.requireTradingSession(sessionId)
@@ -492,7 +509,7 @@ export class HyperRemote extends TypertRemoteService {
     const fields = { ...drawingStyle({ ...patch, kind: current.kind }) }
     if (patch?.alert === true) fields.alertTriggeredAt = undefined
     // null clears a style back to its default (undo of a first restyle relies on this).
-    for (const key of ['color', 'lineWidth', 'lineStyle']) if (key in patch && patch[key] === null) fields[key] = undefined
+    for (const key of ['color', 'lineWidth', 'lineStyle', 'rows', 'valueArea']) if (key in patch && patch[key] === null) fields[key] = undefined
     if (geometryKeys.some((key) => key in patch)) Object.assign(fields, drawingGeometry(current.kind, merged))
     if ('label' in patch) {
       const label = String(patch.label ?? '').trim()
@@ -573,15 +590,22 @@ export class HyperRemote extends TypertRemoteService {
       patch.tapeTab = input.tapeTab
     }
     if ('bottomTab' in input) {
-      if (!['positions', 'orders', 'account'].includes(input.bottomTab)) throw new Error('账户页签无效')
+      if (!['positions', 'orders', 'account', 'review'].includes(input.bottomTab)) throw new Error('账户页签无效')
       patch.bottomTab = input.bottomTab
     }
     if ('indicators' in input) {
-      const allowed = ['volume', 'sma20', 'sma60', 'ema20', 'ema50', 'bollinger20', 'rsi14', 'macd']
+      const allowed = INDICATOR_IDS
       if (!Array.isArray(input.indicators) || input.indicators.length > allowed.length || input.indicators.some((id) => !allowed.includes(id))) throw new Error('图表指标无效')
       patch.indicators = [...new Set(input.indicators)]
     }
     if ('maLines' in input) patch.maLines = normalizeMaLines(input.maLines)
+    if ('indicatorSettings' in input) patch.indicatorSettings = normalizeIndicatorSettings(input.indicatorSettings)
+    if ('research' in input) patch.research = normalizeResearch(input.research)
+    if ('showDataWindow' in input) { if (typeof input.showDataWindow !== 'boolean') throw Error('数据窗口设置无效'); patch.showDataWindow = input.showDataWindow }
+    if ('chartType' in input) {
+      if (!['candles', 'bars', 'line', 'area', 'heikinAshi'].includes(input.chartType)) throw new Error('图表类型无效')
+      patch.chartType = input.chartType
+    }
     if ('priceScale' in input) {
       if (!['normal', 'log', 'percentage'].includes(input.priceScale)) throw new Error('价格刻度无效')
       patch.priceScale = input.priceScale
@@ -625,9 +649,30 @@ export class HyperRemote extends TypertRemoteService {
     return result
   }
 
+  async indicatorTemplates(request) {
+    const action = request?.action ?? 'list'
+    if (action === 'list') return { templates: this.store.indicatorTemplates() }
+    if (action === 'remove') { this.store.removeIndicatorTemplate(String(request?.id ?? '')); return { templates: this.store.indicatorTemplates() } }
+    if (action !== 'save') throw Error('指标模板操作无效')
+    const name = String(request?.name ?? '').trim()
+    if (!name || name.length > 60) throw Error('模板名称需要 1–60 个字符')
+    const indicators = request?.indicators
+    if (!Array.isArray(indicators) || indicators.length > INDICATOR_IDS.length || indicators.some((id) => !INDICATOR_IDS.includes(id))) throw Error('模板指标无效')
+    const id = request?.id
+    if (id != null && !this.store.indicatorTemplates().some((row) => row.id === id)) throw Error('指标模板不存在')
+    const template = this.store.saveIndicatorTemplate({ id, name, indicators: [...new Set(indicators)], indicatorSettings: normalizeIndicatorSettings(request?.indicatorSettings), maLines: normalizeMaLines(request?.maLines ?? []) })
+    return { template, templates: this.store.indicatorTemplates() }
+  }
+
+  async updatePaperCosts(request) {
+    if (this.activeTradeOps > 0) throw Error('交易操作仍在进行，请稍后修改模拟成本')
+    return { paperCosts: this.store.setPaperCosts(request?.costs) }
+  }
+
   async drawChartMark(request) {
     const sessionId = String(request?.sessionId ?? '')
-    return this.addChartMark(request, sessionId, 'user')
+    // Undo re-creates a deleted agent drawing; keep its origin so the chart still labels it as the agent's.
+    return this.addChartMark(request, sessionId, request?.restoreSource === 'agent' ? 'agent' : 'user')
   }
 
   async eraseChartMark(request) {
@@ -722,6 +767,7 @@ export class HyperRemote extends TypertRemoteService {
     const address = await this.resolveAddress()
     const wallet = this.cfg.signer === 'web3' ? this.walletService() : null
     return {
+      paperCosts: this.store.paperCosts?.() ?? { feeBps: 4.5, slippageBps: 5 },
       network: this.cfg.network,
       tradingMode: this.cfg.tradingMode,
       signer: this.cfg.signer,
@@ -832,7 +878,7 @@ export class HyperRemote extends TypertRemoteService {
         marginUsed: risk.marksConfirmed ? risk.marginUsed : null,
         availableMargin: risk.marksConfirmed ? Math.max(0, risk.equity - risk.marginUsed) : null,
         marksConfirmed: risk.marksConfirmed, positions: risk.positions, fills: paper.fills.slice(0, 50),
-        simulation: '固定滑点；未模拟盘口深度、手续费、资金费或强平' }
+        simulation: '已模拟配置的滑点与手续费；未模拟盘口深度、资金费或强平' }
     }
     const address = await this.resolveAddress()
     if (!address) throw new Error('live 模式需要钱包（config.privateKey 或 signer=web3）')
@@ -926,25 +972,45 @@ export class HyperRemote extends TypertRemoteService {
 
   /** Explicitly loaded history: these weighted API calls must not join the 3s account poll. */
   async tradeHistory(request) {
-    if (this.cfg.tradingMode === 'paper') {
+    const client = this.client, mode = this.cfg.tradingMode, network = this.cfg.network
+    if (request?.days != null && ![7, 30, 90].includes(request.days)) throw Error('复盘支持最近 7/30/90 天')
+    const end = Date.now(), requestedStart = request?.days != null ? end - request.days * 86_400_000 : request?.startTime == null ? null : Number(request.startTime)
+    if (requestedStart != null && (!Number.isFinite(requestedStart) || requestedStart < end - 90 * 86_400_000 || requestedStart >= end)) throw Error('复盘时间范围必须在最近 90 天内')
+    const start = requestedStart ?? Math.max(0, end - 30 * 86_400_000)
+    let result
+    if (mode === 'paper') {
       const paper = this.store.paperAccount()
-      return { mode: 'paper', orders: paper.orders.slice(0, 200), fills: paper.fills.slice(0, 200) }
+      result = { mode: 'paper', orders: paper.orders.slice(0, 5000), fills: paper.fills.slice(0, 5000), paperCosts: this.store.paperCosts(), funding: [],
+        coverage: { fundingStatus: 'not-simulated', fillsLimited: paper.fills.length >= 200, ordersLimited: paper.orders.length >= 200 } }
+    } else {
+      const address = await this.resolveAddress()
+      if (!address) throw Error('未配置交易主账户地址')
+      const [orders, fills] = await Promise.all([client.historicalOrders(address), client.userFills(address)])
+      if (!Array.isArray(orders) || !Array.isArray(fills)) throw Error('交易所历史数据响应无效')
+      const decisions = this.store.liveDecisions ?? {}
+      const rows = orders.slice(0, 2000).map((entry) => {
+        const order = entry.order ?? entry, local = this.store.liveOrders?.[order.cloid], decision = decisions[local?.decisionId]
+        return { ...order, status: entry.status ?? local?.status ?? 'unknown', statusTimestamp: entry.statusTimestamp,
+          referencePx: decision?.preview?.mid ?? null,
+          reason: local?.thesis ?? decision?.thesis ?? null, sessionId: local?.sessionId ?? decision?.sessionId ?? null }
+      })
+      result = { mode: 'live', orders: rows, fills: fills.slice(0, 2000), funding: [],
+        coverage: { fundingStatus: 'not-requested', fillsLimited: fills.length >= 2000, ordersLimited: orders.length >= 2000 },
+        localOrders: Object.entries(this.store.liveOrders ?? {}).map(([cloid, row]) => ({ cloid, coin: row.coin, status: row.status, at: row.updatedAt ?? row.at, sessionId: row.sessionId })) }
+      if (request?.includeFunding) {
+        try {
+          const funding = await fundingWindow(client, address, start, end)
+          result.funding = funding.rows
+          result.coverage.fundingStatus = funding.status
+        } catch (error) { result.coverage.fundingStatus = 'error'; result.coverage.fundingError = String(error?.message ?? error) }
+      }
     }
-    const address = await this.resolveAddress()
-    if (!address) throw new Error('未配置交易主账户地址')
-    const [orders, fills] = await Promise.all([
-      this.client.historicalOrders(address), this.client.userFills(address),
-    ])
-    if (!Array.isArray(orders) || !Array.isArray(fills)) throw new Error('交易所历史数据响应无效')
-    const localByCloid = this.store.liveOrders
-    const decisions = this.store.liveDecisions
-    return { mode: 'live', orders: orders.slice(0, 2000).map((entry) => {
-      const order = entry.order ?? entry
-      const local = localByCloid[order.cloid]
-      return { ...order, status: entry.status ?? local?.status ?? 'unknown', statusTimestamp: entry.statusTimestamp,
-        reason: local?.thesis ?? (local?.decisionId ? decisions[local.decisionId]?.thesis ?? null : null),
-        sessionId: local?.sessionId ?? (local?.decisionId ? decisions[local.decisionId]?.sessionId ?? null : null) }
-    }), fills: fills.slice(0, 2000) }
+    if (requestedStart != null) {
+      result.fills = result.fills.filter((row) => Number(row.time) >= start && Number(row.time) <= end)
+      const ids = new Set(result.fills.filter((row) => row.oid != null).map((row) => `${row.coin}:${row.oid}`))
+      result.orders = result.orders.filter((row) => Number(row.timestamp ?? row.time) >= start || ids.has(`${row.coin}:${row.oid}`))
+    }
+    return { ...result, network, observedAt: Date.now(), coverage: { ...result.coverage, startTime: start, endTime: end, bounded: true } }
   }
 
   /** Hyperliquid portfolio samples are display data, not an accounting ledger. */
@@ -953,7 +1019,10 @@ export class HyperRemote extends TypertRemoteService {
       const account = await this.account({})
       const fills = this.store.paperAccount().fills
       return { mode: 'paper', equity: account.equity, unrealizedPnl: account.uPnl,
-        realizedPnl: fills.reduce((sum, fill) => sum + Number(fill.realized ?? 0), 0), series: {} }
+        realizedPnl: fills.reduce((sum, fill) => sum + Number(fill.realized ?? 0), 0),
+        fees: fills.reduce((sum, fill) => sum + Number(fill.fee ?? 0), 0),
+        netRealizedPnl: fills.some((fill) => fill.fee == null) ? null : fills.reduce((sum, fill) => sum + Number(fill.realized ?? 0) - Number(fill.fee), 0),
+        retainedFills: fills.length, series: {} }
     }
     const address = await this.resolveAddress()
     if (!address) throw new Error('未配置交易主账户地址')
@@ -1142,30 +1211,32 @@ export class HyperRemote extends TypertRemoteService {
         if (!Number.isFinite(limit) || limit <= 0) throw new Error('限价单需要有效 px')
         if ((isBuy && limit < mid) || (!isBuy && limit > mid)) throw new Error('paper 当前只支持可立即成交的限价单')
       }
-      const slip = Number(request?.slippagePct)
-      const pct = Number.isFinite(slip) ? Math.min(Math.max(slip, 0), 10) / 100 : 0.0005
+      const costs = this.store.paperCosts()
+      const slip = request?.slippagePct == null ? null : Number(request.slippagePct)
+      const pct = slip != null && Number.isFinite(slip) ? Math.min(Math.max(slip, 0), 10) / 100 : costs.slippageBps / 10_000
       const px = mid * (isBuy ? 1 + pct : 1 - pct)
       if (request?.type === 'limit' && (isBuy ? px > Number(request.px) : px < Number(request.px))) throw new Error('paper 模拟滑点后无法满足限价')
       const paper = this.store.paperAccount()
-      const risk = paperRiskState(paper, { ...await safeMids(this), [coin]: px }, true)
+      const risk = paperRiskState(paper, { ...await safeMids(this), [coin]: mid }, true)
       const positionSize = Number(paper.positions[coin]?.size ?? 0)
       const leverage = Number(paper.positions[coin]?.leverage ?? paper.leverageByCoin?.[coin] ?? 1)
       const otherExposureUsd = risk.positions.reduce((sum, p) => sum + (p.coin === coin ? 0 : Math.abs(p.size) * p.markPx), 0)
       const guard = this.paperGuard ??= new TradingGuard(this.cfg.dataDir, { ...this.cfg, dataDir: this.cfg.dataDir }, { budgetName: this.cfg.network === 'mainnet' ? 'paper-budget-mainnet.json' : 'paper-budget.json' })
       const checked = guard.validate({ coin, isBuy, sz, price: px, positionSize, otherExposureUsd, accountValue: risk.equity, leverage, reduceOnly })
-      const currentMargin = Math.abs(positionSize) * px / leverage
-      const projectedMargin = risk.marginUsed - currentMargin + Math.abs(checked.nextSize) * px / leverage
-      if (!checked.riskReducing && projectedMargin > risk.equity + 1e-8) throw new Error('模拟账户可用保证金不足')
+      const currentMargin = Math.abs(positionSize) * mid / leverage
+      const projectedMargin = risk.marginUsed - currentMargin + Math.abs(checked.nextSize) * mid / leverage
+      const projectedEquity = risk.equity - checked.notionalUsd * costs.feeBps / 10_000 - sz * (isBuy ? px - mid : mid - px)
+      if (!checked.riskReducing && projectedMargin > projectedEquity + 1e-8) throw new Error('模拟账户可用保证金不足')
       const budgetTicket = guard.reserve(checked.notionalUsd, { riskReducing: checked.riskReducing })
       let fill
       const sessionId = request?.[TOOL_CALL]?.sessionId ?? null
-      try { fill = this.store.paperFill({ coin, isBuy, sz, px, reason: request?.reason ?? 'chat', sessionId }) }
+      try { fill = this.store.paperFill({ coin, isBuy, sz, px, reason: request?.reason ?? 'chat', sessionId, feeBps: costs.feeBps, referencePx: mid, slippageBps: pct * 10_000 }) }
       catch (err) { guard.release(budgetTicket); throw err }
-      this.store.paperOrderRecord({ coin, isBuy, sz, px: request?.type === 'limit' ? Number(request.px) : px,
+      this.store.paperOrderRecord({ oid: fill.oid, referencePx: mid, coin, isBuy, sz, px: request?.type === 'limit' ? Number(request.px) : px,
         filledPx: px, type: request?.type === 'limit' ? 'limit' : 'market', reduceOnly,
         reason: request?.reason ?? '', sessionId })
-      return { mode: 'paper', fill, marginUsed: projectedMargin, availableMargin: Math.max(0, risk.equity - projectedMargin),
-        simulation: '固定滑点；未模拟盘口深度、手续费、资金费或强平' }
+      return { mode: 'paper', fill, marginUsed: projectedMargin, availableMargin: Math.max(0, projectedEquity - projectedMargin),
+        simulation: '已模拟配置的滑点与手续费；未模拟盘口深度、资金费或强平' }
     }
     // live
     const trusted = request?.[TOOL_CALL]
@@ -1486,7 +1557,7 @@ function paperRiskState(paper, mids, strict = false) {
 
 // Remote markers: every method the web client may call.
 for (const m of [
-  'status', 'switchNetwork', 'switchTradingMode', 'updateRiskSettings', 'resetRiskSettings', 'markets', 'marketCatalog', 'marketDetail', 'chartMarks', 'drawChartMark', 'updateChartMark', 'eraseChartMark', 'sessionWorkspace', 'updateSessionWorkspace', 'snapshot', 'candles', 'fundingHistory', 'account', 'fills', 'tradeHistory', 'portfolio',
+  'indicatorTemplates', 'updatePaperCosts', 'status', 'switchNetwork', 'switchTradingMode', 'updateRiskSettings', 'resetRiskSettings', 'markets', 'marketCatalog', 'marketDetail', 'chartMarks', 'drawChartMark', 'updateChartMark', 'eraseChartMark', 'sessionWorkspace', 'updateSessionWorkspace', 'snapshot', 'candles', 'fundingHistory', 'account', 'fills', 'tradeHistory', 'portfolio',
   'sessions', 'registerSession', 'removeSession', 'bindCoin', 'deskState',
   'eventsSince',
 ]) {

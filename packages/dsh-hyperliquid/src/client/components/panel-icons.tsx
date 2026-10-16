@@ -24,11 +24,17 @@ export function SearchIcon() {
 }
 
 export type UiIconName = 'chevronDown' | 'chevronRight' | 'arrowDown' | 'arrowUp' | 'more' | 'settings' | 'info' | 'close' | 'plus' | 'check' | 'star' | 'pencil' | 'archive' | 'coin'
-  | 'bell' | 'sync' | 'trash' | 'lock' | 'unlock' | 'eye' | 'eyeOff' | 'copy' | 'save'
+  | 'bell' | 'sync' | 'trash' | 'lock' | 'unlock' | 'eye' | 'eyeOff' | 'copy' | 'save' | 'cursor' | 'calendar' | 'download' | 'camera' | 'help' | 'live'
 
 /** Shared outline icons, aligned on the same 24px grid as the panel icons. */
 export function UiIcon({ name, size = 16, filled = false }: { name: UiIconName; size?: number; filled?: boolean }) {
   const paths: Record<UiIconName, React.ReactNode> = {
+    cursor: <path d="m5 3 14 10-7 1-3 7z" />,
+    calendar: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M7 3v4m10-4v4M3 11h18M7 15h3m4 0h3M7 18h3" /></>,
+    download: <path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" />,
+    camera: <><path d="M3 7h4l2-3h6l2 3h4v14H3z" /><circle cx="12" cy="13" r="4" /></>,
+    help: <><circle cx="12" cy="12" r="9" /><path d="M9 9a3 3 0 0 1 6 0c0 2-3 2-3 5m0 3h.01" /></>,
+    live: <path d="m4 4 10 8L4 20zm14 0v16" />,
     chevronDown: <path d="m6 9 6 6 6-6" />,
     chevronRight: <path d="m9 6 6 6-6 6" />,
     bell: <path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0" />,

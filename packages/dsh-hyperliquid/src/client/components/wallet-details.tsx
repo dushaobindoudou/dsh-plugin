@@ -41,7 +41,8 @@ export function WalletDetails({ open, onClose }: { open: boolean; onClose: () =>
   const stats: Array<[string, string]> = account?.mode === 'paper' ? [
     [tr('账户权益', 'Equity'), `${fmt(account.equity)} USDC`],
     [tr('可用保证金', 'Available margin'), `${fmt(account.availableMargin)} USDC`],
-    [tr('累计已实现收益', 'Total realized P&L'), `${fmt(portfolio?.realizedPnl)} USDC`],
+    [tr('保留成交毛盈亏', 'Retained fills gross P&L'), `${fmt(portfolio?.realizedPnl)} USDC`],
+    [tr('保留成交扣费净额', 'Retained fills net after fees'), portfolio?.netRealizedPnl == null ? '—' : `${fmt(portfolio.netRealizedPnl)} USDC`],
     [tr('未实现收益', 'Unrealized P&L'), `${fmt(account.uPnl)} USDC`],
   ] : [
     [shared ? tr('USDC 余额', 'USDC balance') : tr('永续账户价值', 'Perp account value'), `${fmt(shared ? account?.usdcBalance : account?.marginSummary?.accountValue)} USDC`],
@@ -57,7 +58,7 @@ export function WalletDetails({ open, onClose }: { open: boolean; onClose: () =>
       <div className="dhl-wallet-pnl"><span>{tr('期间收益', 'Period P&L')}</span><strong className={pnl >= 0 ? 'dhl-up' : 'dhl-down'}>{Number.isFinite(pnl) ? `${pnl >= 0 ? '+' : ''}${fmt(pnl)} USDC` : '—'}</strong></div>
       <ProfitLine points={sample?.pnlHistory ?? []} />
       <p className="dhl-ticket-note">{tr('收益曲线使用 Hyperliquid 组合账户样本（含入出金调整）；与当前可交易余额口径不同。', 'P&L uses Hyperliquid portfolio samples adjusted for deposits and withdrawals; it differs from tradable balance.')}</p>
-    </> : <p className="dhl-ticket-note">{tr('模拟盘收益按本地成交与当前标记价格计算，未计手续费、资金费及强平。', 'Paper P&L uses local fills and current marks, excluding fees, funding and liquidation.')}</p>}
+    </> : <p className="dhl-ticket-note">{tr('模拟权益已扣除新成交的配置手续费；历史统计仅覆盖保留成交，旧记录费用可能未知。未模拟资金费及强平。', 'Paper equity deducts configured fees on new fills. History totals cover retained fills only; legacy fees may be unknown. No funding or liquidation simulation.')}</p>}
     {loading ? <div className="dhl-empty">{tr('正在读取收益…', 'Loading P&L…')}</div> : null}
     {error ? <div className="dhl-inline-error" role="status">{error}</div> : null}
   </Modal>

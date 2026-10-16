@@ -21,22 +21,31 @@ boot() {
   : > "$TMP/web.log"
   HOME="$TMP/home" "$DSH_BIN" web --port "$PORT" --no-open >"$TMP/web.log" 2>&1 &
   WEB_PID=$!; url=""
-  for _ in $(seq 1 40); do
+  for _ in $(seq 1 90); do
     url="$(grep -m1 -oE 'http://127\.0\.0\.1:[0-9]+/\?token=[^[:space:]]+' "$TMP/web.log" || true)"
-    if [ -n "$url" ] && curl --noproxy '*' -sf "$url" >/dev/null 2>&1; then return 0; fi
+    if [ -n "$url" ] && curl --noproxy '*' --max-time 3 -sf "$url" >/dev/null 2>&1; then return 0; fi
     if ! kill -0 "$WEB_PID" 2>/dev/null; then break; fi
     sleep 1
   done
-  echo "FAIL dsh web did not become ready"; exit 1
+  echo "FAIL dsh web did not become ready"
+  sed -E 's/(token=)[^[:space:]]+/\1[redacted]/g' "$TMP/web.log" | tail -n 20
+  exit 1
 }
 run() { echo "== $1"; printf '%s' "$url" | "$NODE_BIN" "$HERE/$1"; }
 boot
+if [ "${DRAWING_SMOKE_ONLY:-}" = "basics" ]; then run basics.mjs; exit 0; fi
+if [ "${DRAWING_SMOKE_ONLY:-}" = "navigation" ]; then run navigation.mjs; exit 0; fi
+if [ "${DRAWING_SMOKE_ONLY:-}" = "research" ]; then run research.mjs; exit 0; fi
+if [ -n "${DRAWING_SMOKE_ONLY:-}" ]; then run "$DRAWING_SMOKE_ONLY.mjs"; exit 0; fi
 run phase1.mjs
 kill "$WEB_PID"; wait "$WEB_PID" 2>/dev/null || true; WEB_PID=""
 boot
 run phase2.mjs
+run basics.mjs
+run research.mjs
 run phase3.mjs
 run fills.mjs
 run perf.mjs
 run phase4.mjs
+run phase5.mjs
 echo "drawing smoke: all phases passed"

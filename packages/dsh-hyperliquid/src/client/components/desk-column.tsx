@@ -23,6 +23,14 @@ import { MarketIcon } from './market-icon'
 import { StrategyMenu } from './strategy-menu'
 import type { IndicatorId } from '../chart-indicators'
 import { chartTradeEvents, type TradeEvent } from '../trade-events'
+import { IndicatorEditor } from './indicator-editor'
+import { normalizeIndicatorSettings } from '../../../lib/studies.js'
+import { ResearchPane } from './research-pane'
+import { normalizeResearch } from '../../../lib/workspace-settings.js'
+import type { ChartLink } from './candle-chart'
+import { queueToAgent } from '../data'
+import { ChartNavigation } from './chart-navigation'
+import { candlesCsv, downloadBlob, type ChartCommand, type ChartType } from '../chart-basics'
 
 const INDICATOR_CHOICES: Array<[IndicatorId, string, string]> = [
   ['volume', '成交量', 'K 线下方的成交量柱'],
@@ -33,6 +41,11 @@ const INDICATOR_CHOICES: Array<[IndicatorId, string, string]> = [
   ['bollinger20', '布林带 20', '均线及上下两倍标准差'],
   ['rsi14', 'RSI 14', '相对强弱指数副图'],
   ['macd', 'MACD', '12 / 26 / 9 动量副图'],
+  ['stochastic', 'Stochastic', '%K 与 %D 随机指标'],
+  ['adx', 'ADX / DMI', '趋势强度与正负方向指标'],
+  ['obv', 'OBV', '以加载窗口首根为零点的累积能量潮'],
+  ['atr14', 'ATR 14', 'Wilder 平滑的真实波幅，衡量价格波动'],
+  ['vwap', 'VWAP · UTC', 'UTC 每日重置，以 HLC3 和成交量计算；自动补取当日 K 线'],
 ]
 const INDICATOR_EN: Partial<Record<IndicatorId, [string, string]>> = {
   volume: ['Volume', 'Volume bars below the candles'], sma20: ['SMA 20', '20-close simple moving average'],
@@ -40,6 +53,9 @@ const INDICATOR_EN: Partial<Record<IndicatorId, [string, string]>> = {
   ema20: ['EMA 20', '20-close exponential moving average'], ema50: ['EMA 50', '50-close exponential moving average'],
   bollinger20: ['Bollinger 20', 'Mean and two standard deviation bands'], rsi14: ['RSI 14', 'Relative strength index'],
   macd: ['MACD', '12 / 26 / 9 momentum panel'],
+  stochastic: ['Stochastic', '%K and %D oscillator'], adx: ['ADX / DMI', 'Trend strength and directional movement'], obv: ['OBV', 'Cumulative signed volume; zero starts at the first loaded candle'],
+  atr14: ['ATR 14', 'Wilder average true range, a measure of volatility'],
+  vwap: ['VWAP · UTC', 'Daily UTC session, HLC3 weighted by volume; loads today’s bars as needed'],
 }
 
 /** A per-browser drawing preference, safe when storage is unavailable. */
@@ -78,6 +94,24 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
   const chartTab = s.workspaceSessionId === s.activeSessionId ? s.workspace?.chartTab ?? 'chart' : 'chart'
   const indicators = React.useMemo(() => new Set<IndicatorId>(s.workspaceSessionId === s.activeSessionId ? s.workspace?.indicators ?? ['volume'] : ['volume']), [s.workspace, s.workspaceSessionId, s.activeSessionId])
   const [drawMode, setDrawMode] = React.useState<DrawingKind | null>(null)
+  const [favorites, setFavorites] = usePreference<DrawingKind[]>('favorites', ['trend', 'level', 'fib', 'rect', 'measure', 'long', 'short'], (value) => Array.isArray(value) ? [...new Set(value.filter((kind) => DRAWING_TOOLS.some((tool) => tool.kind === kind)))].slice(0, 12) : [])
+  const chartScope = `${s.activeSessionId}:${coin}:${s.interval}`
+  const [chartCommand, setChartCommand] = React.useState<{ scope: string; command: ChartCommand } | null>(null)
+  const chartType = s.workspace?.chartType ?? 'candles'
+  const studySettings = React.useMemo(() => normalizeIndicatorSettings(s.workspace?.indicatorSettings), [s.workspace?.indicatorSettings])
+  const research = React.useMemo(() => normalizeResearch(s.workspace?.research), [s.workspace?.research])
+  const researchScope = `${s.activeSessionId}:${s.workspaceSessionId}:${s.status?.network}:${coin}`
+  const [cursorEvent, setCursorEvent] = React.useState<{ scope: string; value: NonNullable<ChartLink['cursor']> } | null>(null)
+  const [rangeEvent, setRangeEvent] = React.useState<{ scope: string; value: NonNullable<ChartLink['range']> } | null>(null)
+  const makeLink = (id: string): ChartLink => ({ id,
+    cursor: research.syncCursor && cursorEvent?.scope === researchScope ? cursorEvent.value : null,
+    range: research.syncTime && rangeEvent?.scope === researchScope ? rangeEvent.value : null,
+    onCursor: (time) => { if (research.syncCursor) setCursorEvent((old) => old?.scope === researchScope && old.value.source === id && old.value.time === time ? old : { scope: researchScope, value: { source: id, time, at: performance.now() } }) },
+    onRange: (range) => { if (research.syncTime) setRangeEvent({ scope: researchScope, value: { source: id, at: performance.now(), ...range } }) },
+  })
+  const researchCount = research.layout === 'quad' ? 3 : research.layout === 'dual' ? 1 : 0
+
+
   const drawMenu = React.useRef<HTMLDetailsElement>(null)
   // Tool preferences are per browser (TradingView keeps them global); drawings themselves are per session.
   const [magnet, setMagnet] = usePreference<MagnetMode>('magnet', 'off', (value) => value === 'weak' || value === 'strong' ? value : 'off')
@@ -171,23 +205,50 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
   }, [pickerOpen])
   React.useEffect(() => {
     if (!chartExpanded) return undefined
+    // Esc peels one layer at a time: cancel drawing → deselect (both consume the key) → leave the expanded chart.
     const onEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !pickerOpen) { event.preventDefault(); setChartExpanded(false) }
+      if (event.key === 'Escape' && !pickerOpen && !event.defaultPrevented) { event.preventDefault(); setChartExpanded(false) }
     }
     window.addEventListener('keydown', onEscape)
     return () => window.removeEventListener('keydown', onEscape)
   }, [chartExpanded, pickerOpen])
+  // TradingView drawing shortcuts (physical keys, so Option+letter works on macOS).
+  React.useEffect(() => {
+    const keys: Record<string, DrawingKind> = { KeyT: 'trend', KeyH: 'level', KeyJ: 'hray', KeyV: 'vline', KeyC: 'crossline', KeyF: 'fib' }
+    const onKey = (event: KeyboardEvent) => {
+      if (!event.altKey || event.ctrlKey || event.metaKey || chartTab !== 'chart') return
+      const element = event.target as HTMLElement | null
+      if (element?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element?.tagName ?? '')) return
+      const kind = event.shiftKey ? (event.code === 'KeyR' ? 'rect' : undefined) : keys[event.code]
+      if (!kind) return
+      event.preventDefault()
+      setDrawMode(kind)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [chartTab])
   React.useEffect(() => {
     if (!drawMode) return undefined
-    const cancel = (event: KeyboardEvent) => { if (event.key === 'Escape') setDrawMode(null) }
-    window.addEventListener('keydown', cancel)
-    return () => window.removeEventListener('keydown', cancel)
+    const cancel = (event: KeyboardEvent) => { if (event.key === 'Escape') { event.preventDefault(); setDrawMode(null) } }
+    window.addEventListener('keydown', cancel, true)
+    return () => window.removeEventListener('keydown', cancel, true)
   }, [drawMode])
 
   React.useEffect(() => {
     if (chartTab === 'funding' && row?.kind !== 'spot' && row?.kind !== 'outcome' && store.get().fundingCoin !== coin) void loadFunding()
     if (chartTab === 'funding' && (row?.kind === 'spot' || row?.kind === 'outcome')) saveSessionWorkspace({ chartTab: 'chart' })
   }, [chartTab, coin, row?.kind])
+  React.useEffect(() => {
+    if (!indicators.has('vwap') || s.candlesOlder !== 'idle' || s.candles.length < 2) return
+    const start = Math.floor(s.candles.at(-1)!.t / 86_400_000) * 86_400_000
+    if (s.candles[0].t > start) void loadOlderCandles()
+  }, [indicators, s.candles, s.candlesOlder])
+  // Range studies (volume profile, regression) need every bar in their range: page in history they start before.
+  React.useEffect(() => {
+    if (s.candlesOlder !== 'idle' || s.candles.length < 2) return
+    const earliest = Math.min(...s.chartMarks.filter((mark) => !mark.hidden && (mark.kind === 'vprofile' || mark.kind === 'regression')).map((mark) => Math.min(...(mark.points ?? []).map((point) => point.time))))
+    if (Number.isFinite(earliest) && s.candles[0].t > earliest) void loadOlderCandles()
+  }, [s.chartMarks, s.candles, s.candlesOlder])
   React.useEffect(() => { void loadChartMarks() }, [s.activeSessionId, coin, s.interval])
   React.useEffect(() => { void loadTradeHistory() }, [s.status?.network, s.status?.tradingMode])
   const changeInterval = React.useCallback((next: Interval) => {
@@ -251,6 +312,9 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
                   </Select>
                 </div>
                 <div className="dhl-chart-actions">
+                  <Select aria-label={tr('图表类型', 'Chart type')} value={chartType} onChange={(event) => saveSessionWorkspace({ chartType: event.target.value as ChartType })}>
+                    {([['candles', '蜡烛图', 'Candles'], ['bars', '美国线', 'OHLC bars'], ['line', '折线图', 'Line'], ['area', '面积图', 'Area'], ['heikinAshi', '平均K线', 'Heikin Ashi']] as const).map(([value, zh, en]) => <option key={value} value={value}>{tr(zh, en)}</option>)}
+                  </Select>
                   <details className="dhl-layer-menu">
                     <summary>{tr('显示', 'Show')}<UiIcon name="chevronDown" size={12} /></summary>
                     <div className="dhl-layer-popover">
@@ -263,19 +327,30 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
                       <strong>{tr('图表指标', 'Chart indicators')}</strong>
                       {INDICATOR_CHOICES.map(([id, label, description]) => <button type="button" key={id} className={indicators.has(id) ? 'on' : ''} aria-pressed={indicators.has(id)} onClick={() => toggleIndicator(id)}>
                         <span className="dhl-indicator-check" aria-hidden="true">{indicators.has(id) ? <UiIcon name="check" size={13} /> : null}</span>
-                        <span><b>{tr(label, INDICATOR_EN[id]?.[0] ?? label)}</b><small>{tr(description, INDICATOR_EN[id]?.[1] ?? description)}</small></span>
+                        <span><b>{id === 'rsi14' ? `RSI ${studySettings.rsi.period}` : id === 'bollinger20' ? `BOLL ${studySettings.bollinger.period} × ${studySettings.bollinger.multiplier}` : tr(label, INDICATOR_EN[id]?.[0] ?? label)}</b><small>{id === 'macd' ? `${studySettings.macd.fast} / ${studySettings.macd.slow} / ${studySettings.macd.signal}` : id === 'bollinger20' ? tr('均线与标准差通道', 'Mean and standard deviation bands') : tr(description, INDICATOR_EN[id]?.[1] ?? description)}</small></span>
                       </button>)}
+                      <IndicatorEditor key={s.activeSessionId} settings={s.workspace?.indicatorSettings} indicators={[...indicators]} maLines={maLines} onApply={saveSessionWorkspace} />
                       <MaEditor lines={maLines} onChange={(next) => saveSessionWorkspace({ maLines: next })} />
                     </div>
                   </details>
+                  <button type="button" className={s.workspace?.showDataWindow ? 'on' : ''} aria-pressed={s.workspace?.showDataWindow ?? false} onClick={() => saveSessionWorkspace({ showDataWindow: !s.workspace?.showDataWindow })}>{tr('数据窗口', 'Data window')}</button>
                   <StrategyMenu candles={s.candles} coin={coin} interval={s.interval} />
                   <details className={'dhl-draw-menu' + (drawMode ? ' active' : '')} ref={drawMenu}>
                     <summary aria-label={tr('画线工具', 'Drawing tools')}>{drawMode ? <><ToolIcon kind={drawMode} size={14} />{tr(toolOf(drawMode).zh, toolOf(drawMode).en)}</> : tr('画线', 'Draw')}<UiIcon name="chevronDown" size={12} /></summary>
                     <div className="dhl-draw-popover" role="menu" aria-label={tr('画线工具', 'Drawing tools')}>
-                      {DRAWING_TOOLS.map((tool, index) => <React.Fragment key={tool.kind}>{index > 0 && DRAWING_TOOLS[index - 1].group !== tool.group ? <hr /> : null}<button type="button" role="menuitemradio" key={tool.kind} aria-checked={drawMode === tool.kind} className={drawMode === tool.kind ? 'on' : ''}
-                        onClick={() => { setDrawMode(drawMode === tool.kind ? null : tool.kind); drawMenu.current?.removeAttribute('open') }}>
-                        <ToolIcon kind={tool.kind} /><span><b>{tr(tool.zh, tool.en)}</b><small>{tr(tool.hintZh, tool.hintEn)}</small></span>
-                      </button></React.Fragment>)}
+                      {DRAWING_TOOLS.map((tool, index) => <React.Fragment key={tool.kind}>
+                        {index > 0 && DRAWING_TOOLS[index - 1].group !== tool.group ? <hr /> : null}
+                        <div className="dhl-draw-tool-row">
+                          <button type="button" role="menuitemradio" aria-checked={drawMode === tool.kind} className={drawMode === tool.kind ? 'on' : ''}
+                            onClick={() => { setDrawMode(drawMode === tool.kind ? null : tool.kind); drawMenu.current?.removeAttribute('open') }}>
+                            <ToolIcon kind={tool.kind} /><span><b>{tr(tool.zh, tool.en)}</b><small>{tr(tool.hintZh, tool.hintEn)}</small></span>
+                          </button>
+                          <button type="button" className="dhl-draw-favorite" aria-label={`${favorites.includes(tool.kind) ? tr('取消收藏', 'Unfavorite') : tr('收藏', 'Favorite')} ${tr(tool.zh, tool.en)}`} aria-pressed={favorites.includes(tool.kind)} disabled={!favorites.includes(tool.kind) && favorites.length >= 12}
+                            onClick={() => setFavorites(favorites.includes(tool.kind) ? favorites.filter((kind) => kind !== tool.kind) : [...favorites, tool.kind])}>
+                            <UiIcon name="star" filled={favorites.includes(tool.kind)} size={14} />
+                          </button>
+                        </div>
+                      </React.Fragment>)}
                       <div className="dhl-draw-settings">
                         <div className="dhl-draw-setting"><span>{tr('磁吸', 'Magnet')}</span>
                           <span className="dhl-draw-seg" role="radiogroup" aria-label={tr('磁吸', 'Magnet')}>
@@ -311,21 +386,43 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
                   </button>
                 </div>
               </div>
+              <div className="dhl-favorite-tools" role="toolbar" aria-label={tr('常用画线', 'Favorite drawing tools')}>
+                <button type="button" aria-label={tr('光标（取消绘制）', 'Cursor (cancel drawing)')} title={tr('光标 · Esc 取消绘制', 'Cursor · Esc cancels drawing')} aria-pressed={!drawMode} className={!drawMode ? 'on' : ''} onClick={() => setDrawMode(null)}><UiIcon name="cursor" size={16} /></button>
+                <span className="dhl-chart-action-separator" aria-hidden="true" />
+                {favorites.map((kind) => <button key={kind} type="button" title={tr(toolOf(kind).zh, toolOf(kind).en)} aria-label={`${tr('常用', 'Favorite')} ${tr(toolOf(kind).zh, toolOf(kind).en)}`} aria-pressed={drawMode === kind} className={drawMode === kind ? 'on' : ''} onClick={() => setDrawMode(drawMode === kind ? null : kind)}><ToolIcon kind={kind} size={16} /></button>)}
+                <small>{tr('在画线菜单中收藏常用工具', 'Star tools in the Draw menu')}</small>
+              </div>
+              <div className="dhl-research-controls">
+                <Select aria-label={tr('多周期布局', 'Research layout')} value={research.layout} onChange={(e) => saveSessionWorkspace({ research: { ...research, layout: e.target.value as 'single' | 'dual' | 'quad' } })}><option value="single">{tr('单图', 'Single chart')}</option><option value="dual">{tr('双图研究', 'Two charts')}</option><option value="quad">{tr('四图研究', 'Four charts')}</option></Select>
+                <label><input type="checkbox" checked={research.syncTime} onChange={(e) => { setRangeEvent(null); saveSessionWorkspace({ research: { ...research, syncTime: e.target.checked } }) }} />{tr('时间联动', 'Sync time')}</label>
+                <label><input type="checkbox" checked={research.syncCursor} onChange={(e) => { setCursorEvent(null); saveSessionWorkspace({ research: { ...research, syncCursor: e.target.checked } }) }} />{tr('光标联动', 'Sync cursor')}</label>
+                {researchCount > 0 ? <button type="button" className="dhl-ghost" onClick={() => queueToAgent(tr(`请研究 ${coin} 的 ${[s.interval, ...research.intervals.slice(0, researchCount)].join('、')} 多周期结构。先读取 hyper_context 的指标参数，再逐周期调用 hyper_market action=indicators；只对已收盘 K 线作比较，说明大周期趋势、小周期动量与冲突，以及数据时效。`, `Research ${coin} across ${[s.interval, ...research.intervals.slice(0, researchCount)].join(', ')}. Read hyper_context for configured indicators, then query hyper_market action=indicators for each interval. Compare closed bars, trend, momentum, conflicts and freshness.`))}>{tr('讨论多周期', 'Discuss timeframes')}</button> : null}
+              </div>
               <div className="dhl-chart">
-                <CandleChart candles={s.candles} marks={layers.drawings ? marks : []} tradeEvents={tradeEvents} indicators={indicators} expanded={chartExpanded} resetToken={chartResetToken}
+                <div className={`dhl-research-grid ${research.layout}`}>
+                <section className="dhl-research-pane dhl-primary-pane">
+                {researchCount > 0 ? <header><b>{coin} · {s.interval}</b><small>{tr('主图 · 编辑画线', 'Main chart · edit drawings')}</small></header> : null}
+                <CandleChart link={researchCount > 0 ? makeLink('primary') : undefined} compact={researchCount > 0} indicatorSettings={s.workspace?.indicatorSettings} showDataWindow={s.workspace?.showDataWindow ?? false} chartType={chartType} command={chartCommand?.scope === chartScope ? chartCommand.command : null} caption={`${coin} ${s.interval} · ${chartType}`} candles={s.candles} marks={layers.drawings ? marks : []} tradeEvents={tradeEvents} indicators={indicators} expanded={chartExpanded} resetToken={chartResetToken}
                   drawMode={drawMode} onDraw={draw} onSelect={(selection) => insertChartReference(selection, coin, s.interval)} onNeedOlder={loadOlderCandles} olderState={s.candlesOlder}
                   showReasons={layers.fills && layers.reasons} onAnalyzeFill={analyzeFill}
                   onCloneMark={cloneMark} selectRequest={selectRequest}
-                  magnet={magnet} drawingsLocked={drawingsLocked} onEditMark={(id, patch) => void editMark(id, patch)} onRemoveMark={(id) => void erase(id)}
+                  magnet={magnet} drawingsLocked={drawingsLocked} onEditMark={(id, patch) => void editMark(id, patch)} onRemoveMark={(id) => void erase(id)} onRemoveMarks={(ids) => void history.removeMany(ids)} onEditMarks={(ids, patch) => void history.editMany(ids, patch)} onEditEach={(patches) => void history.editEach(patches)}
                   focus={s.chartFocus && s.chartFocus.coin === coin && s.chartFocus.interval === s.interval ? s.chartFocus : null} maLines={maLines} priceScale={s.workspace?.priceScale ?? 'normal'}
                   visibleRange={s.workspace?.chartRanges?.[`${coin}:${s.interval}`] ?? null}
                   onVisibleRange={(range) => saveSessionWorkspace({ chartRanges: { [`${coin}:${s.interval}`]: range } })}
                   key={`${s.activeSessionId ?? ''}:${s.workspaceSessionId === s.activeSessionId ? 'ready' : 'pending'}:${coin}:${s.interval}`} />
+                </section>
+                {research.intervals.slice(0, researchCount).map((iv, index) => <ResearchPane key={`${researchScope}:${index}`} coin={coin} interval={iv} indicators={indicators} marks={layers.drawings ? marks : []} chartType={chartType} link={makeLink(`secondary-${index}`)} onAnalyzeFill={analyzeFill}
+                  onInterval={(next) => saveSessionWorkspace({ research: { ...research, intervals: research.intervals.map((value, i) => i === index ? next : value) } })} />)}
+                </div>
                 <div className="dhl-chart-click-hint">{drawMode
                   ? `${tr(toolOf(drawMode).zh, toolOf(drawMode).en)}：${tr(toolOf(drawMode).hintZh, toolOf(drawMode).hintEn)} · ${tr('Esc 取消', 'Esc to cancel')}`
                   : tr('点击 K 线、成交量柱或指标线，将该点数据加入聊天输入框', 'Click a candle, volume bar or study line to add its data to the chat draft')}</div>
                 {marks.length > 0 ? <DrawingList marks={marks} locked={drawingsLocked} onSelect={(id) => setSelectRequest({ id, at: Date.now() })}
                   onEdit={(id, patch) => void editMark(id, patch)} onRemove={(id) => void erase(id)} /> : null}
+                <ChartNavigation disabled={s.candles.length < 2}
+                  onNavigate={(action) => setChartCommand({ scope: chartScope, command: { ...action, at: performance.now() } })}
+                  onCsv={() => downloadBlob(new Blob([candlesCsv(s.candles, coin, s.interval)], { type: 'text/csv;charset=utf-8' }), `${coin.replace(/[^a-zA-Z0-9_-]/g, '_')}_${s.interval}.csv`)} />
                 {s.candlesState === 'error' ? <div className="dhl-inline-error">{tr('K 线暂时不可用。切换周期可重试。', 'Chart data is unavailable. Change interval to retry.')}</div> : null}
               </div>
             </div>
