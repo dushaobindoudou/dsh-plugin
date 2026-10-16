@@ -899,3 +899,19 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 /* Touch: the chart owns every gesture inside it (anchor and drawing drags, pans), as TradingView does;
    otherwise the browser claims a finger drag for scrolling and cancels the pointer mid-drag. */
 .dhl-chart, .dhl-chart-drawing-overlay, .dhl-chart-drawing-overlay * { touch-action: none; }
+
+/* 0.5.0 tools: curves, ellipses, Fibonacci rings, notes and signposts. */
+.dhl-drawing .dhl-curve, .dhl-drawing .dhl-fib-ring { fill: none; stroke: currentColor; stroke-width: var(--dhl-line-width, 1.6); stroke-dasharray: var(--dhl-dash, none); }
+.dhl-drawing .dhl-fib-ring { stroke-width: 1.2; opacity: .85; }
+.dhl-drawing ellipse.dhl-drawing-fill { fill: currentColor; fill-opacity: var(--dhl-fill-opacity, .08); stroke: currentColor; stroke-width: var(--dhl-line-width, 1.5); stroke-dasharray: var(--dhl-dash, none); }
+.dhl-drawing rect.dhl-drawing-mid { fill: none; stroke: currentColor; }
+.dhl-drawing-hit .dhl-curve, .dhl-drawing-hit .dhl-fib-ring { pointer-events: stroke; }
+.dhl-drawing .dhl-note-box { fill: color-mix(in srgb, #e2b93b 22%, var(--dsw-alias-bg-layer-1)); stroke: color-mix(in srgb, #e2b93b 70%, transparent); }
+.dhl-drawing .dhl-signpost > line { stroke-width: 1.6; }
+
+/* Moved below the drawing when the top position would cover its anchors (above the time axis). */
+.dhl-draw-toolbar.at-bottom { top: auto; bottom: 40px; }
+
+/* Search at the top of the drawing menu (stays visible while the list scrolls). */
+.dhl-draw-popover .dhl-draw-search { position: sticky; top: -6px; z-index: 1; width: 100%; box-sizing: border-box; margin: -6px 0 4px; padding: 8px 10px; border: 0; border-bottom: 1px solid var(--dsw-alias-border-l1); background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-primary); font: inherit; font-size: 12px; outline: none; }
+.dhl-draw-popover .dhl-draw-empty { margin: 10px 8px; color: var(--dsw-alias-label-secondary); font-size: 11.5px; }

@@ -47,6 +47,7 @@ run basics.mjs
 run settings.mjs
 run research.mjs
 run phase3.mjs
+run tools2.mjs
 run fills.mjs
 run phase4.mjs
 run phase5.mjs

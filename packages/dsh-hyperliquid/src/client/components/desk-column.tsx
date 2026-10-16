@@ -120,6 +120,8 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
   const [textAt, setTextAt] = React.useState<{ kind: DrawingKind; points: DrawPoint[] } | null>(null)
   const [selectRequest, setSelectRequest] = React.useState<{ id: string; at: number } | null>(null)
   const [textValue, setTextValue] = React.useState('')
+  // 66 tools: a search box narrows the menu by Chinese name, English name or kind.
+  const [toolQuery, setToolQuery] = React.useState('')
   const [confirmClear, setConfirmClear] = React.useState(false)
   const [pickerOpen, setPickerOpen] = React.useState(false)
   const [chartExpanded, setChartExpanded] = React.useState(false)
@@ -254,10 +256,10 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
     const start = Math.floor(s.candles.at(-1)!.t / 86_400_000) * 86_400_000
     if (s.candles[0].t > start) void loadOlderCandles()
   }, [indicators, s.candles, s.candlesOlder])
-  // Range studies (volume profile, regression) need every bar in their range: page in history they start before.
+  // Range studies (volume profile, regression, anchored VWAP / profile) need every bar in their range: page in history they start before.
   React.useEffect(() => {
     if (s.candlesOlder !== 'idle' || s.candles.length < 2) return
-    const earliest = Math.min(...s.chartMarks.filter((mark) => !mark.hidden && (mark.kind === 'vprofile' || mark.kind === 'regression')).map((mark) => Math.min(...(mark.points ?? []).map((point) => point.time))))
+    const earliest = Math.min(...s.chartMarks.filter((mark) => !mark.hidden && ['vprofile', 'regression', 'avwap', 'avprofile'].includes(mark.kind)).map((mark) => Math.min(...(mark.points ?? []).map((point) => point.time))))
     if (Number.isFinite(earliest) && s.candles[0].t > earliest) void loadOlderCandles()
   }, [s.chartMarks, s.candles, s.candlesOlder])
   React.useEffect(() => { void loadChartMarks() }, [s.activeSessionId, coin, s.interval])
@@ -349,8 +351,15 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
                   <details className={'dhl-draw-menu' + (drawMode ? ' active' : '')} ref={drawMenu}>
                     <summary aria-label={tr('画线工具', 'Drawing tools')}>{drawMode ? <><ToolIcon kind={drawMode} size={14} />{tr(toolOf(drawMode).zh, toolOf(drawMode).en)}</> : tr('画线', 'Draw')}<UiIcon name="chevronDown" size={12} /></summary>
                     <div className="dhl-draw-popover" role="menu" aria-label={tr('画线工具', 'Drawing tools')}>
-                      {DRAWING_TOOLS.map((tool, index) => <React.Fragment key={tool.kind}>
-                        {index > 0 && DRAWING_TOOLS[index - 1].group !== tool.group ? <hr /> : null}
+                      <input className="dhl-draw-search" type="search" value={toolQuery} placeholder={tr(`搜索 ${DRAWING_TOOLS.length} 种画线工具`, `Search ${DRAWING_TOOLS.length} drawing tools`)} aria-label={tr('搜索画线工具', 'Search drawing tools')}
+                        onChange={(event) => setToolQuery(event.target.value)} onKeyDown={(event) => { if (event.key === 'Escape' && toolQuery) { event.stopPropagation(); setToolQuery('') } }} />
+                      {(() => {
+                        const query = toolQuery.trim().toLowerCase()
+                        const shown = query ? DRAWING_TOOLS.filter((tool) => `${tool.zh} ${tool.en} ${tool.kind}`.toLowerCase().includes(query)) : DRAWING_TOOLS
+                        return shown.length ? null : <p className="dhl-draw-empty">{tr('没有匹配的画线工具', 'No matching tools')}</p>
+                      })()}
+                      {DRAWING_TOOLS.filter((tool) => { const query = toolQuery.trim().toLowerCase(); return !query || `${tool.zh} ${tool.en} ${tool.kind}`.toLowerCase().includes(query) }).map((tool, index, shown) => <React.Fragment key={tool.kind}>
+                        {index > 0 && shown[index - 1].group !== tool.group ? <hr /> : null}
                         <div className="dhl-draw-tool-row">
                           <button type="button" role="menuitemradio" aria-checked={drawMode === tool.kind} className={drawMode === tool.kind ? 'on' : ''}
                             onClick={() => { setDrawMode(drawMode === tool.kind ? null : tool.kind); drawMenu.current?.removeAttribute('open') }}>

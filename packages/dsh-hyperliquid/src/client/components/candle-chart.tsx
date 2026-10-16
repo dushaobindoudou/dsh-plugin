@@ -177,7 +177,10 @@ interface ChartProps {
 /** Drawings that end at their anchors (no ray, line or fan running to the plot edge), so they can be culled. */
 // Not here: anything that can reach past its anchors — circles (radius), fib extensions (projection), the
 // head-and-shoulders neckline, callouts (long text) — or runs to the plot edge (lines, rays, channels, fans).
-const FINITE_KINDS = new Set(['trend', 'rect', 'measure', 'fib', 'long', 'short', 'text', 'arrow', 'triangle', 'brush',
+/** Overlay height the top toolbar occupies (top offset + one row + margin). */
+const TOOLBAR_CLEARANCE = 84
+// Only drawings whose geometry stays within their anchors (plus the margin): rotated rectangles and arcs do not.
+const FINITE_KINDS = new Set(['ellipse', 'curve', 'note', 'pricenote', 'signpost', 'forecast', 'cypher', 'threedrives', 'elliotttri', 'elliottwxy', 'elliottwxyxz', 'trend', 'rect', 'measure', 'fib', 'long', 'short', 'text', 'arrow', 'triangle', 'brush',
   'infoline', 'trendangle', 'pricerange', 'daterange', 'elliott', 'elliottabc', 'xabcd', 'abcd', 'gannbox', 'gannsquare', 'icon', 'vprofile', 'regression'])
 /** Every anchor beyond the same side of the plot (with a margin for labels and handles). */
 function offscreen(points: DrawPoint[], view: { project: (time: number, price: number) => { x: number } | null; width: number }): boolean {
@@ -910,6 +913,15 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
 
   const warming = candles.length < 2
 
+  /** The floating toolbar sits at the top; it moves to the bottom when it would cover the selected drawing's anchors. */
+  const toolbarPlacement = (mark: ChartMark): 'top' | 'bottom' => {
+    if (!view) return 'top'
+    const ys = markPoints(mark).map((point) => view.project(point.time, point.price)?.y).filter((y): y is number => y != null)
+    // Anchors under each position; take the side that covers fewer (top on a tie).
+    const top = ys.filter((y) => y < TOOLBAR_CLEARANCE).length, bottom = ys.filter((y) => y > view.height - TOOLBAR_CLEARANCE).length
+    return bottom < top ? 'bottom' : 'top'
+  }
+
   // ── drawings: projection, selection and direct manipulation ─────────
   const markById = React.useMemo(() => new Map(marks.map((mark) => [mark.id, mark])), [marks])
   const markByIdRef = React.useRef(markById)
@@ -1276,7 +1288,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
             const clampedDecoration = !(mark.source === 'user' || mark.kind === 'level') || Boolean(mark.alert) || Boolean(mark.shared)
             if (!selected && !clampedDecoration && !mark.extendLeft && !mark.extendRight && FINITE_KINDS.has(mark.kind) && offscreen(shown, view)) return null
             return <DrawingShape key={mark.id} id={mark.id} kind={mark.kind} points={shown} view={view} text={mark.label}
-              dataVersion={mark.kind === 'vprofile' || mark.kind === 'regression' ? candles : undefined}
+              dataVersion={mark.kind === 'vprofile' || mark.kind === 'regression' || mark.kind === 'avwap' || mark.kind === 'avprofile' ? candles : undefined}
               className={`dhl-drawing ${roleClass(mark)}${mark.kind === 'level' ? ' is-level' : ''}${selected ? ' selected' : ''}${mark.locked || drawingsLocked ? ' locked' : ''}`}
               label={mark.source === 'user' || mark.kind === 'level' ? undefined : mark.label} anchors={selected} interactive={!drawMode}
               color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} alert={mark.alert} shared={mark.shared} rows={mark.rows} valueArea={mark.valueArea} levels={mark.levels} fontSize={mark.fontSize} bold={mark.bold} italic={mark.italic} fillOpacity={mark.fillOpacity} extendLeft={mark.extendLeft} extendRight={mark.extendRight} />
@@ -1330,7 +1342,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
           </span>
         </div>
       })() : null}
-      {selectedMark && !drawMode && !readOnly ? <DrawToolbar mark={selectedMark} globallyLocked={drawingsLocked}
+      {selectedMark && !drawMode && !readOnly ? <DrawToolbar mark={selectedMark} globallyLocked={drawingsLocked} placement={toolbarPlacement(selectedMark)}
         onCoordinates={() => setEditingId(selectedMark.id)}
         onEdit={(patch) => onEditMark(selectedMark.id, patch)} onClone={() => onCloneMark(cloneOf(selectedMark))} onRemove={() => { onRemoveMark(selectedMark.id); setSelectedId(null) }} onClose={() => setSelectedId(null)} /> : null}
       {editingMark ? <DrawingEditor key={editingMark.id} mark={editingMark} onApply={(patch) => { if (!drawingsLocked && !editingMark.locked) onEditMark(editingMark.id, patch) }} onClose={() => setEditingId(null)} /> : null}

@@ -12,7 +12,7 @@ import { buildToolDefinitions } from '../lib/tools.js'
 
 const now = Date.UTC(2026, 9, 15)
 const pt = (hours, price) => ({ time: now - hours * 3600_000, price })
-assert.equal(DRAWING_KINDS.length, 41)
+assert.equal(DRAWING_KINDS.length, 66)
 assert.deepEqual(drawingGeometry('hray', { points: [pt(5, 100)] }, now), { points: [pt(5, 100)] })
 assert.equal(drawingGeometry('channel', { points: [pt(9, 100), pt(3, 110), pt(6, 95)] }, now).points.length, 3)
 assert.deepEqual(drawingGeometry('trend', { fromTime: pt(400 * 24, 1).time, fromPrice: 1, toTime: pt(1, 2).time, toPrice: 2 }, now).fromPrice, 1, 'trend lines may start long before the old 90-day window')
@@ -181,6 +181,45 @@ try {
   const x2 = (svg) => Number(/<line[^>]*x2="([\d.-]+)"/.exec(svg)?.[1])
   const pts = [{ time: now - 7200_000, price: 100 }, { time: now - 3600_000, price: 105 }]
   assert.ok(x2(render('trend', pts, { extendRight: true })) > x2(render('trend', pts)), 'extendRight draws past the second anchor')
+
+  // 0.5.0 tools: every new kind renders from its full anchor count.
+  const fresh = { flatchannel: 3, disjoint: 3, fibfan: 2, fibcircles: 2, fibarcs: 2, fibwedge: 3, fibtrendtime: 3, cypher: 5, threedrives: 6, tripattern: 4, elliotttri: 6, elliottwxy: 4, elliottwxyxz: 6, cycles: 2, sine: 2, ellipse: 2, rotrect: 3, arc: 3, curve: 3, note: 1, pricenote: 2, signpost: 1, forecast: 2 }
+  for (const [kind, n] of Object.entries(fresh)) {
+    const anchors = Array.from({ length: n }, (_, i) => ({ time: now - (n - i) * 3600_000, price: 100 + (i % 2 ? 40 : 0) + i * 5 }))
+    assert.equal(drawingGeometry(kind, { points: anchors }, now).points.length, n, `${kind} validates`)
+    assert.ok(render(kind, anchors, { text: '说明' }).includes('<g'), `${kind} renders`)
+  }
+  // Flat channel: the second side is horizontal at the third point's price (y = 500 - 90 = 410).
+  assert.ok(render('flatchannel', [{ time: now - 7200_000, price: 100 }, { time: now, price: 120 }, { time: now - 3600_000, price: 90 }]).includes('x1="180" y1="410" x2="200" y2="410"'), 'flat side')
+  // Disjoint: the second side mirrors the slope from the third point.
+  assert.ok(render('disjoint', [{ time: now - 7200_000, price: 100 }, { time: now, price: 120 }, { time: now - 7200_000, price: 140 }]).includes('x1="180" y1="360" x2="200" y2="380"'), 'mirrored side')
+  // Rotated rectangle: a horizontal side and a third point 30px below gives a 30px-wide box.
+  assert.ok(render('rotrect', [{ time: now - 7200_000, price: 100 }, { time: now, price: 100 }, { time: now - 3600_000, price: 70 }]).includes('points="180,400 200,400 200,430 180,430"'), 'rotated rectangle width')
+  // Arc passes through the third point: control = 2·mid − (start+end)/2.
+  assert.ok(render('arc', [{ time: now - 7200_000, price: 100 }, { time: now, price: 100 }, { time: now - 3600_000, price: 120 }]).includes('M180 400Q190 360 200 400'), 'arc control point')
+  // Cypher: B at 0.618 of XA, C at 1.272 of XA, D retraces 0.786 of XC.
+  const cy = render('cypher', [[0, 100], [1, 200], [2, 138.2], [3, 227.2], [4, 227.2 - 0.786 * 127.2]].map(([i, price]) => ({ time: now + i * 3600_000, price })))
+  assert.ok(cy.includes('>0.618<') && cy.includes('>1.272<') && cy.includes('>0.786<'), 'cypher ratios')
+  // Fib circles: radius 1 is the distance between the points (30px), so 0.5 is 15px.
+  assert.ok(render('fibcircles', [{ time: now, price: 100 }, { time: now, price: 130 }]).includes('r="15"'), 'fib circle 0.5')
+  // Cycles repeat the period across the plot; a sine runs the full width.
+  assert.ok((render('cycles', [{ time: now - 7200_000, price: 100 }, { time: now - 3600_000, price: 100 }]).match(/<line/g) ?? []).length >= 3, 'cyclic lines repeat')
+  // Scrolled 1000 periods past the anchor, the cycles still fill the plot (40 lines at 10px each).
+  assert.ok((render('cycles', [{ time: now - 1000 * 3600_000, price: 100 }, { time: now - 999 * 3600_000, price: 100 }]).match(/<line/g) ?? []).length >= 40, 'cycles far from the anchor')
+  assert.ok(render('sine', [{ time: now - 3600_000, price: 120 }, { time: now, price: 100 }]).includes('points="0.0,'), 'sine spans the plot')
+  // Text kinds take free text and a font size.
+  assert.ok(render('note', [{ time: now, price: 100 }], { text: '等回踩' }).includes('>等回踩<') && render('signpost', [{ time: now, price: 100 }], { text: '财报' }).includes('>财报<'), 'note and signpost text')
+  assert.ok(render('pricenote', [{ time: now, price: 100 }, { time: now + 3600_000, price: 120 }], { text: '目标' }).includes('100.000 · 目标'), 'price note shows the anchored price')
+  // Anchored VWAP: HLC3 × volume from the anchor to the last bar.
+  const vbars = [[0, 10, 8, 9, 1], [1, 12, 10, 11, 3]].map(([i, high, low, close, volume]) => ({ time: now + i * 3600_000, open: close, high, low, close, volume }))
+  const vview = { ...view, candles: (from) => vbars.filter((bar) => bar.time >= from) }
+  const vwap = renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'avwap', points: [{ time: now, price: 9 }], view: vview }))
+  assert.ok(vwap.includes('VWAP 10.500'), `VWAP = (9·1 + 11·3) / 4 = 10.5: ${vwap}`)
+  assert.ok(renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'avwap', points: [{ time: now + 9 * 3600_000, price: 9 }], view: vview })).includes('暂无成交量'), 'no bars after the anchor')
+  const early = renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'avwap', points: [{ time: now - 3 * 3600_000, price: 9 }], view: { ...vview, firstTime: now, barMs: 3600_000 } }))
+  assert.ok(early.includes('暂不完整'), 'an anchor before the loaded history is flagged')
+  const forecast = render('forecast', [{ time: now - 3 * 3600_000, price: 100 }, { time: now, price: 110 }])
+  assert.ok(forecast.includes('+10.00%') && forecast.includes('3 根'), 'forecast change and bars')
   assert.ok(render('text', [{ time: now, price: 100 }], { text: 'x', bold: true, italic: true }).includes('--dhl-font-weight:700'), 'bold reaches the text')
   const small = render('text', [{ time: now, price: 100 }], { text: '突破' }), big = render('text', [{ time: now, price: 100 }], { text: '突破', fontSize: 24 })
   const boxWidth = (svg) => Number(/dhl-text-box[^>]*width="([\d.]+)"/.exec(svg)?.[1])
@@ -224,4 +263,4 @@ try {
   assert.ok(render('icon', [{ time: now, price: 100 }], { text: 'emoji:🚀' }).includes('>🚀<'), 'stickers render their emoji')
   assert.ok(render('brush', Array.from({ length: 30 }, (_, i) => ({ time: now + i * 600_000, price: 100 + i }))).includes('<polyline'))
 } finally { rmSync(file, { force: true }) }
-console.log('画线工具（41 种）校验、编辑与锁定、agent 路径、头寸与 SVG 几何通过')
+console.log('画线工具（66 种）校验、编辑与锁定、agent 路径、头寸与 SVG 几何通过')

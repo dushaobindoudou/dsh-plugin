@@ -1,6 +1,6 @@
 // Phase 1: drawing interactions in a real DSH host.
 import { writeFileSync } from 'node:fs'
-import { chromium, CHROME, STATE_FILE, readUrl, openDesk, store, waitCandles, check } from './common.mjs'
+import { chromium, CHROME, STATE_FILE, readUrl, openDesk, store, waitCandles, check, toolItem } from './common.mjs'
 
 const url = await readUrl()
 const browser = await chromium.launch({ headless: true, executablePath: CHROME })
@@ -20,7 +20,7 @@ try {
   const clickAt = async (fx, fy) => { const p = at(fx, fy); await page.mouse.move(p.x, p.y); await page.waitForTimeout(80); await page.mouse.click(p.x, p.y); await page.waitForTimeout(200) }
   const pick = async (name) => {
     await page.locator('.dhl-draw-menu summary').click()
-    await page.getByRole('menuitemradio', { name: new RegExp('^' + name) }).click()
+    await toolItem(page, name).click()
   }
   const settle = () => page.waitForTimeout(1600) // host event → desk reload
   const marks = async () => (await store(page)).chartMarks
@@ -75,7 +75,7 @@ try {
   // ── strong magnet ──
   await page.locator('.dhl-draw-menu summary').click()
   await page.getByRole('radio', { name: '强' }).click()
-  await page.getByRole('menuitemradio', { name: /^水平射线/ }).click()
+  await toolItem(page, '水平射线').click()
   await clickAt(.45, .37); await settle()
   const hray = (await marks()).find((m) => m.kind === 'hray')
   const bar = await page.evaluate((time) => window.__dhlStore.get().candles.find((c) => Math.floor(c.t / 1000) === Math.floor(time / 1000)), hray.points[0].time)

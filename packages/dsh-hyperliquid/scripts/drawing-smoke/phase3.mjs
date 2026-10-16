@@ -1,4 +1,4 @@
-import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check } from './common.mjs'
+import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, toolItem } from './common.mjs'
 const url = await readUrl()
 const browser = await chromium.launch({ headless: true, executablePath: CHROME })
 try {
@@ -10,7 +10,7 @@ try {
   const box = await page.locator('.dhl-chart canvas').first().boundingBox()
   const at = (fx, fy) => ({ x: box.x + box.width * fx, y: box.y + box.height * fy })
   const clickAt = async (fx, fy) => { const p = at(fx, fy); await page.mouse.move(p.x, p.y); await page.waitForTimeout(60); await page.mouse.click(p.x, p.y); await page.waitForTimeout(160) }
-  const pick = async (name) => { await page.locator('.dhl-draw-menu summary').click(); await page.getByRole('menuitemradio', { name: new RegExp('^' + name) }).click() }
+  const pick = async (name) => { await page.locator('.dhl-draw-menu summary').click(); await toolItem(page, name).click() }
   const marks = async () => (await store(page)).chartMarks
   const settle = () => page.waitForTimeout(1500)
   const mod = process.platform === 'darwin' ? 'Meta' : 'Control'

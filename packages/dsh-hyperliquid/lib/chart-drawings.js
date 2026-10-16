@@ -23,6 +23,13 @@ export const DRAWING_POINTS = {
   // Advanced: Elliott waves, harmonic / chart patterns, Gann box & square, pitchfork variants, icons.
   elliott: 6, elliottabc: 4, xabcd: 5, abcd: 4, headshoulders: 7,
   gannbox: 2, gannsquare: 2, schiff: 3, modschiff: 3, icon: 1,
+  // TradingView's remaining common tools (0.5.0).
+  flatchannel: 3, disjoint: 3,
+  fibfan: 2, fibcircles: 2, fibarcs: 2, fibwedge: 3, fibtrendtime: 3,
+  cypher: 5, threedrives: 6, tripattern: 4, elliotttri: 6, elliottwxy: 4, elliottwxyxz: 6, cycles: 2, sine: 2,
+  ellipse: 2, rotrect: 3, arc: 3, curve: 3,
+  note: 1, pricenote: 2, signpost: 1,
+  avwap: 1, avprofile: 1, forecast: 2,
 }
 /** Icon stickers (the drawing's label holds the icon name). */
 export const ICON_NAMES = ['flag', 'star', 'up', 'down', 'warning', 'check', 'cross', 'fire', 'target', 'bell', 'pin', 'clock', 'dollar', 'shield', 'bolt', 'heart', 'question', 'info']
@@ -55,9 +62,9 @@ export function isSingleEmoji(value) {
 /** Chart intervals a drawing can be limited to (same set as the desk). */
 export const INTERVALS = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '8h', '12h', '1d', '3d', '1w', '1M']
 /** Text drawings whose font size can be set. */
-export const FONT_KINDS = ['text', 'callout']
+export const FONT_KINDS = ['text', 'callout', 'note', 'pricenote', 'signpost']
 /** Drawings with a background fill whose opacity can be set. */
-export const FILL_KINDS = ['rect', 'circle', 'triangle', 'channel', 'fib', 'regression', 'gannbox', 'pricerange', 'daterange', 'measure']
+export const FILL_KINDS = ['rect', 'circle', 'triangle', 'channel', 'fib', 'regression', 'gannbox', 'pricerange', 'daterange', 'measure', 'flatchannel', 'disjoint', 'ellipse', 'rotrect']
 /** Fibonacci drawings whose levels can be customised. */
 export const FIB_LEVEL_KINDS = ['fib', 'fibext', 'fibchannel']
 export const PROFILE_ROWS_MIN = 6
@@ -115,7 +122,7 @@ export function linePriceAt(mark, time) {
 export const BRUSH_MIN = 2
 export const BRUSH_MAX = 500
 /** Kinds whose label is free text shown on the chart (up to 200 characters). */
-export const TEXT_KINDS = ['text', 'callout']
+export const TEXT_KINDS = ['text', 'callout', 'note', 'pricenote', 'signpost']
 /** Clicks that create a drawing when they differ from its stored anchor count. */
 export const DRAWING_CLICKS = { ...Object.fromEntries(Object.entries(DRAWING_POINTS)), long: 2, short: 2 }
 export const DRAWING_KINDS = Object.keys(DRAWING_POINTS)
@@ -160,7 +167,8 @@ export function drawingGeometry(kind, request, now = Date.now()) {
     if (!Array.isArray(raw) || raw.length < BRUSH_MIN || raw.length > BRUSH_MAX) throw new Error(`brush 需要 ${BRUSH_MIN}-${BRUSH_MAX} 个 points`)
   } else if (!Array.isArray(raw) || raw.length !== need) throw new Error(`${kind} 需要 ${need} 个 points（{ time, price }）`)
   const points = raw.map((item, index) => point(item?.time, item?.price, `第 ${index + 1} 个点`))
-  if (['trend', 'ray', 'extended', 'channel', 'fibchannel', 'gannfan', 'regression', 'fibtime', 'infoline', 'trendangle'].includes(kind) && points[0].time === points[1].time) throw new Error('前两个点的时间不能相同')
+  if (['trend', 'ray', 'extended', 'channel', 'fibchannel', 'gannfan', 'regression', 'fibtime', 'infoline', 'trendangle', 'flatchannel', 'disjoint', 'fibfan', 'fibtrendtime', 'cycles', 'sine', 'forecast'].includes(kind) && points[0].time === points[1].time) throw new Error('前两个点的时间不能相同')
+  if ((kind === 'cycles' || kind === 'sine' || kind === 'fibtrendtime') && points[1].time < points[0].time) throw new Error('第二个点必须晚于第一个点')
   if (kind === 'vprofile') {
     if (points[0].time === points[1].time) throw new Error('成交量分布需要一个时间区间')
     // Only the time range matters, so either drawing direction is fine.

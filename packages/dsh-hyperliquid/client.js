@@ -952,6 +952,22 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 /* Touch: the chart owns every gesture inside it (anchor and drawing drags, pans), as TradingView does;
    otherwise the browser claims a finger drag for scrolling and cancels the pointer mid-drag. */
 .dhl-chart, .dhl-chart-drawing-overlay, .dhl-chart-drawing-overlay * { touch-action: none; }
+
+/* 0.5.0 tools: curves, ellipses, Fibonacci rings, notes and signposts. */
+.dhl-drawing .dhl-curve, .dhl-drawing .dhl-fib-ring { fill: none; stroke: currentColor; stroke-width: var(--dhl-line-width, 1.6); stroke-dasharray: var(--dhl-dash, none); }
+.dhl-drawing .dhl-fib-ring { stroke-width: 1.2; opacity: .85; }
+.dhl-drawing ellipse.dhl-drawing-fill { fill: currentColor; fill-opacity: var(--dhl-fill-opacity, .08); stroke: currentColor; stroke-width: var(--dhl-line-width, 1.5); stroke-dasharray: var(--dhl-dash, none); }
+.dhl-drawing rect.dhl-drawing-mid { fill: none; stroke: currentColor; }
+.dhl-drawing-hit .dhl-curve, .dhl-drawing-hit .dhl-fib-ring { pointer-events: stroke; }
+.dhl-drawing .dhl-note-box { fill: color-mix(in srgb, #e2b93b 22%, var(--dsw-alias-bg-layer-1)); stroke: color-mix(in srgb, #e2b93b 70%, transparent); }
+.dhl-drawing .dhl-signpost > line { stroke-width: 1.6; }
+
+/* Moved below the drawing when the top position would cover its anchors (above the time axis). */
+.dhl-draw-toolbar.at-bottom { top: auto; bottom: 40px; }
+
+/* Search at the top of the drawing menu (stays visible while the list scrolls). */
+.dhl-draw-popover .dhl-draw-search { position: sticky; top: -6px; z-index: 1; width: 100%; box-sizing: border-box; margin: -6px 0 4px; padding: 8px 10px; border: 0; border-bottom: 1px solid var(--dsw-alias-border-l1); background: var(--dsw-alias-bg-layer-1); color: var(--dsw-alias-label-primary); font: inherit; font-size: 12px; outline: none; }
+.dhl-draw-popover .dhl-draw-empty { margin: 10px 8px; color: var(--dsw-alias-label-secondary); font-size: 11.5px; }
 `;
 
 // src/client/locale.ts
@@ -17695,7 +17711,33 @@ var DRAWING_POINTS = {
   gannsquare: 2,
   schiff: 3,
   modschiff: 3,
-  icon: 1
+  icon: 1,
+  // TradingView's remaining common tools (0.5.0).
+  flatchannel: 3,
+  disjoint: 3,
+  fibfan: 2,
+  fibcircles: 2,
+  fibarcs: 2,
+  fibwedge: 3,
+  fibtrendtime: 3,
+  cypher: 5,
+  threedrives: 6,
+  tripattern: 4,
+  elliotttri: 6,
+  elliottwxy: 4,
+  elliottwxyxz: 6,
+  cycles: 2,
+  sine: 2,
+  ellipse: 2,
+  rotrect: 3,
+  arc: 3,
+  curve: 3,
+  note: 1,
+  pricenote: 2,
+  signpost: 1,
+  avwap: 1,
+  avprofile: 1,
+  forecast: 2
 };
 var ICON_NAMES = ["flag", "star", "up", "down", "warning", "check", "cross", "fire", "target", "bell", "pin", "clock", "dollar", "shield", "bolt", "heart", "question", "info"];
 var STICKERS = {
@@ -17708,8 +17750,8 @@ function isSingleEmoji(value) {
   if (typeof value !== "string" || !value || value.length > 32 || !/\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(value)) return false;
   return [...new Intl.Segmenter(void 0, { granularity: "grapheme" }).segment(value)].length === 1;
 }
-var FONT_KINDS = ["text", "callout"];
-var FILL_KINDS = ["rect", "circle", "triangle", "channel", "fib", "regression", "gannbox", "pricerange", "daterange", "measure"];
+var FONT_KINDS = ["text", "callout", "note", "pricenote", "signpost"];
+var FILL_KINDS = ["rect", "circle", "triangle", "channel", "fib", "regression", "gannbox", "pricerange", "daterange", "measure", "flatchannel", "disjoint", "ellipse", "rotrect"];
 var FIB_LEVEL_KINDS = ["fib", "fibext", "fibchannel"];
 function volumeProfile(bars, { rows = 48, valueArea = 0.7 } = {}) {
   const valid = bars.filter((bar) => [bar.open, bar.high, bar.low, bar.close, bar.volume].every(Number.isFinite) && bar.high >= bar.low && bar.volume >= 0);
@@ -17755,7 +17797,7 @@ var GANN_BOX_LEVELS = [0, 0.25, 0.382, 0.5, 0.618, 0.75, 1];
 var ALERT_KINDS = ["level", "hray", "trend", "ray", "extended"];
 var BRUSH_MIN = 2;
 var BRUSH_MAX = 500;
-var TEXT_KINDS = ["text", "callout"];
+var TEXT_KINDS = ["text", "callout", "note", "pricenote", "signpost"];
 var DRAWING_CLICKS = { ...Object.fromEntries(Object.entries(DRAWING_POINTS)), long: 2, short: 2 };
 var DRAWING_KINDS = Object.keys(DRAWING_POINTS);
 var FIB_LEVELS = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1];
@@ -17789,7 +17831,8 @@ function drawingGeometry(kind, request, now = Date.now()) {
     if (!Array.isArray(raw) || raw.length < BRUSH_MIN || raw.length > BRUSH_MAX) throw new Error(`brush \u9700\u8981 ${BRUSH_MIN}-${BRUSH_MAX} \u4E2A points`);
   } else if (!Array.isArray(raw) || raw.length !== need) throw new Error(`${kind} \u9700\u8981 ${need} \u4E2A points\uFF08{ time, price }\uFF09`);
   const points2 = raw.map((item, index) => point(item?.time, item?.price, `\u7B2C ${index + 1} \u4E2A\u70B9`));
-  if (["trend", "ray", "extended", "channel", "fibchannel", "gannfan", "regression", "fibtime", "infoline", "trendangle"].includes(kind) && points2[0].time === points2[1].time) throw new Error("\u524D\u4E24\u4E2A\u70B9\u7684\u65F6\u95F4\u4E0D\u80FD\u76F8\u540C");
+  if (["trend", "ray", "extended", "channel", "fibchannel", "gannfan", "regression", "fibtime", "infoline", "trendangle", "flatchannel", "disjoint", "fibfan", "fibtrendtime", "cycles", "sine", "forecast"].includes(kind) && points2[0].time === points2[1].time) throw new Error("\u524D\u4E24\u4E2A\u70B9\u7684\u65F6\u95F4\u4E0D\u80FD\u76F8\u540C");
+  if ((kind === "cycles" || kind === "sine" || kind === "fibtrendtime") && points2[1].time < points2[0].time) throw new Error("\u7B2C\u4E8C\u4E2A\u70B9\u5FC5\u987B\u665A\u4E8E\u7B2C\u4E00\u4E2A\u70B9");
   if (kind === "vprofile") {
     if (points2[0].time === points2[1].time) throw new Error("\u6210\u4EA4\u91CF\u5206\u5E03\u9700\u8981\u4E00\u4E2A\u65F6\u95F4\u533A\u95F4");
     if (points2[1].time < points2[0].time) points2.reverse();
@@ -17817,6 +17860,8 @@ var DRAWING_TOOLS = [
   { group: "lines", kind: "crossline", zh: "\u5341\u5B57\u7EBF", en: "Cross line", hintZh: "\u5355\u51FB\u653E\u7F6E\u6C34\u5E73\u4E0E\u5782\u76F4\u4EA4\u53C9\u7EBF\uFF08Alt+C\uFF09", hintEn: "Click to place a horizontal and vertical cross (Alt+C)", icon: "M12 3v18M3 12h18" },
   { group: "lines", kind: "vline", zh: "\u5782\u76F4\u7EBF", en: "Vertical line", hintZh: "\u5355\u51FB\u6807\u8BB0\u65F6\u95F4\uFF08Alt+V\uFF09", hintEn: "Click to mark a time (Alt+V)", icon: "M12 3v18" },
   { group: "channels", kind: "channel", zh: "\u5E73\u884C\u901A\u9053", en: "Parallel channel", hintZh: "\u70B9\u51FB\u4E24\u70B9\u753B\u57FA\u7EBF\uFF0C\u7B2C\u4E09\u70B9\u8BBE\u7F6E\u901A\u9053\u5BBD\u5EA6", hintEn: "Two points for the base, a third for width", icon: "M3 15 15 5M9 19 21 9" },
+  { group: "channels", kind: "flatchannel", zh: "\u5E73\u9876/\u5E73\u5E95\u901A\u9053", en: "Flat top/bottom", hintZh: "\u4E24\u70B9\u753B\u8D8B\u52BF\u8FB9\uFF0C\u7B2C\u4E09\u70B9\u8BBE\u7F6E\u6C34\u5E73\u8FB9\u7684\u4EF7\u683C", hintEn: "Two points for the sloped side, a third for the flat side", icon: "M3 18 21 8M3 5h18" },
+  { group: "channels", kind: "disjoint", zh: "\u5206\u79BB\u901A\u9053", en: "Disjoint channel", hintZh: "\u4E24\u70B9\u753B\u7B2C\u4E00\u6761\u8FB9\uFF0C\u7B2C\u4E09\u70B9\u653E\u7F6E\u659C\u7387\u76F8\u53CD\u7684\u7B2C\u4E8C\u6761\u8FB9", hintEn: "Two points for one side; a third places the mirrored side", icon: "M3 16 21 6M3 9l18 10" },
   { group: "channels", kind: "pitchfork", zh: "\u5B89\u5FB7\u9C81\u53C9\u5B50\u7EBF", en: "Pitchfork", hintZh: "\u70B9\u51FB\u67A2\u8F74\u70B9\uFF0C\u518D\u70B9\u51FB\u6CE2\u6BB5\u9AD8\u70B9\u4E0E\u4F4E\u70B9", hintEn: "Click the pivot, then the swing high and low", icon: "M4 20 12 4M12 4l8 8M12 4 4 12M8 16l12-4" },
   { group: "channels", kind: "schiff", zh: "Schiff \u53C9\u5B50\u7EBF", en: "Schiff pitchfork", hintZh: "\u540C\u53C9\u5B50\u7EBF\uFF0C\u8D77\u70B9\u79FB\u5230 A\u3001B \u4EF7\u683C\u4E2D\u70B9", hintEn: "Pitchfork with the handle at A\u2013B price midpoint", icon: "M4 14 12 4M12 4l8 8M12 4 4 12M8 16l12-4" },
   { group: "channels", kind: "modschiff", zh: "\u6539\u826F Schiff \u53C9\u5B50\u7EBF", en: "Modified Schiff pitchfork", hintZh: "\u540C\u53C9\u5B50\u7EBF\uFF0C\u8D77\u70B9\u79FB\u5230 A\u3001B \u65F6\u95F4\u4E0E\u4EF7\u683C\u4E2D\u70B9", hintEn: "Pitchfork with the handle at the A\u2013B midpoint", icon: "M6 12 12 4M12 4l8 8M12 4 4 12M8 16l12-4" },
@@ -17826,6 +17871,11 @@ var DRAWING_TOOLS = [
   { group: "fib", kind: "fibext", zh: "\u6590\u6CE2\u90A3\u5951\u6269\u5C55", en: "Trend-based fib extension", hintZh: "\u70B9\u51FB\u6CE2\u6BB5\u8D77\u70B9\u3001\u7EC8\u70B9\uFF0C\u518D\u70B9\u51FB\u56DE\u64A4\u70B9\uFF0C\u81EA\u56DE\u64A4\u70B9\u6295\u5C04", hintEn: "Swing start, swing end, then the retracement point", icon: "M3 20 9 6l6 9M15 4h7M15 8h7M15 12h7" },
   { group: "fib", kind: "fibchannel", zh: "\u6590\u6CE2\u90A3\u5951\u901A\u9053", en: "Fib channel", hintZh: "\u4E24\u70B9\u753B\u57FA\u7EBF\uFF0C\u7B2C\u4E09\u70B9\u8BBE\u7F6E\u901A\u9053\u5BBD\u5EA6", hintEn: "Two points for the base, a third for width", icon: "M3 19 21 9M3 15 21 5M3 11 21 1" },
   { group: "fib", kind: "fibtime", zh: "\u6590\u6CE2\u90A3\u5951\u65F6\u95F4\u5468\u671F", en: "Fib time zone", hintZh: "\u70B9\u51FB\u4E24\u70B9\u786E\u5B9A\u5355\u4F4D\u95F4\u9694", hintEn: "Click two points to set the unit spacing", icon: "M4 3v18M7 3v18M10 3v18M15 3v18M22 3v18" },
+  { group: "fib", kind: "fibfan", zh: "\u6590\u6CE2\u90A3\u5951\u901F\u5EA6\u963B\u529B\u6247", en: "Fib speed resistance fan", hintZh: "\u70B9\u51FB\u539F\u70B9\uFF0C\u518D\u70B9\u51FB\u5BF9\u89D2\uFF0C\u6309\u4EF7\u683C\u4E0E\u65F6\u95F4\u6BD4\u4F8B\u753B\u6247\u7EBF", hintEn: "Click the origin, then the opposite corner", icon: "M3 21 21 3M3 21 21 9M3 21 21 15M3 21 9 3M3 21 15 3" },
+  { group: "fib", kind: "fibcircles", zh: "\u6590\u6CE2\u90A3\u5951\u5706", en: "Fib circles", hintZh: "\u70B9\u51FB\u5706\u5FC3\uFF0C\u518D\u70B9\u51FB\u786E\u5B9A 1.0 \u534A\u5F84", hintEn: "Click the center, then the 1.0 radius", icon: "M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" },
+  { group: "fib", kind: "fibarcs", zh: "\u6590\u6CE2\u90A3\u5951\u5F27", en: "Fib speed resistance arcs", hintZh: "\u70B9\u51FB\u6CE2\u6BB5\u8D77\u70B9\uFF0C\u518D\u70B9\u51FB\u7EC8\u70B9\uFF0C\u4EE5\u7EC8\u70B9\u4E3A\u5706\u5FC3\u753B\u5F27", hintEn: "Click the swing start, then the end (arcs center on the end)", icon: "M4 20a8 8 0 0 1 16 0M8 20a4 4 0 0 1 8 0" },
+  { group: "fib", kind: "fibwedge", zh: "\u6590\u6CE2\u90A3\u5951\u6954\u5F62", en: "Fib wedge", hintZh: "\u70B9\u51FB\u9876\u70B9\uFF0C\u518D\u70B9\u51FB\u4E24\u6761\u8FB9\u7684\u7AEF\u70B9", hintEn: "Click the apex, then the ends of the two sides", icon: "M3 12 21 4M3 12l18 8M15 6.7a7 7 0 0 1 0 10.6" },
+  { group: "fib", kind: "fibtrendtime", zh: "\u57FA\u4E8E\u8D8B\u52BF\u7684\u6590\u6CE2\u90A3\u5951\u65F6\u95F4", en: "Trend-based fib time", hintZh: "\u4E24\u70B9\u786E\u5B9A\u8D8B\u52BF\u65F6\u957F\uFF0C\u7B2C\u4E09\u70B9\u8D77\u6309\u6BD4\u4F8B\u753B\u65F6\u95F4\u7EBF", hintEn: "Two points set the trend duration; lines start at the third", icon: "M3 18 9 6M12 3v18M16 3v18M21 3v18" },
   { group: "fib", kind: "gannbox", zh: "\u6C5F\u6069\u7BB1", en: "Gann box", hintZh: "\u70B9\u51FB\u4E24\u4E2A\u5BF9\u89D2\uFF0C\u6309 0.25/0.382/0.5/0.618/0.75 \u5206\u5272", hintEn: "Click two corners; divided at Gann levels", icon: "M4 4h16v16H4zM4 12h16M12 4v16M4 4l16 16" },
   { group: "fib", kind: "gannsquare", zh: "\u6C5F\u6069\u65B9\u683C", en: "Gann square", hintZh: "\u70B9\u51FB\u4E24\u4E2A\u5BF9\u89D2\uFF0C\u753B\u56DB\u5206\u7F51\u683C\u3001\u5BF9\u89D2\u7EBF\u4E0E\u6247\u7EBF", hintEn: "Click two corners; quarters, diagonals and fans", icon: "M4 4h16v16H4zM4 4l16 16M20 4 4 20M4 12h16M12 4v16" },
   { group: "fib", kind: "gannfan", zh: "\u6C5F\u6069\u6247\u5F62", en: "Gann fan", hintZh: "\u70B9\u51FB\u539F\u70B9\uFF0C\u518D\u70B9\u51FB\u786E\u5B9A 1\xD71 \u7EBF", hintEn: "Click the origin, then a point on the 1\xD71 line", icon: "M3 21 21 3M3 21 21 12M3 21 12 3M3 21h18" },
@@ -17833,19 +17883,37 @@ var DRAWING_TOOLS = [
   { group: "patterns", kind: "elliottabc", zh: "\u827E\u7565\u7279\u8C03\u6574\u6D6A", en: "Elliott correction wave", hintZh: "\u4F9D\u6B21\u70B9\u51FB 0\u3001A\u3001B\u3001C \u56DB\u4E2A\u70B9", hintEn: "Click 0, A, B, C", icon: "M3 6l6 10 5-6 7 10" },
   { group: "patterns", kind: "xabcd", zh: "XABCD \u8C10\u6CE2", en: "XABCD pattern", hintZh: "\u4F9D\u6B21\u70B9\u51FB X\u3001A\u3001B\u3001C\u3001D\uFF0C\u663E\u793A\u6590\u6CE2\u90A3\u5951\u6BD4\u503C", hintEn: "Click X, A, B, C, D; shows Fibonacci ratios", icon: "M2 18 7 5l4 9 5-7 6 12M2 18l9-4M11 14l11 5" },
   { group: "patterns", kind: "abcd", zh: "ABCD \u5F62\u6001", en: "ABCD pattern", hintZh: "\u4F9D\u6B21\u70B9\u51FB A\u3001B\u3001C\u3001D", hintEn: "Click A, B, C, D", icon: "M3 19 9 6l5 8 7-10" },
+  { group: "patterns", kind: "cypher", zh: "Cypher \u5F62\u6001", en: "Cypher pattern", hintZh: "\u4F9D\u6B21\u70B9\u51FB X\u3001A\u3001B\u3001C\u3001D\uFF0C\u663E\u793A B \u56DE\u64A4\u3001C \u6269\u5C55\u4E0E D \u5BF9 XC \u7684\u56DE\u64A4", hintEn: "Click X, A, B, C, D; shows B, C and XC ratios", icon: "M2 17 7 5l4 8 4-10 7 15M2 17l9-4" },
+  { group: "patterns", kind: "threedrives", zh: "\u4E09\u9A71\u5F62\u6001", en: "Three drives pattern", hintZh: "\u4F9D\u6B21\u70B9\u51FB\u8D77\u70B9\u3001\u9A71\u52A8 1\u3001A\u3001\u9A71\u52A8 2\u3001B\u3001\u9A71\u52A8 3", hintEn: "Click start, drive 1, A, drive 2, B, drive 3", icon: "M2 20 6 13l3 3 4-8 3 3 5-8" },
+  { group: "patterns", kind: "tripattern", zh: "\u4E09\u89D2\u5F62\u6001", en: "Triangle pattern", hintZh: "\u4F9D\u6B21\u70B9\u51FB A\u3001B\u3001C\u3001D\uFF0C\u8FDE\u7EBF\u5E76\u5EF6\u957F\u4E0A\u4E0B\u8FB9", hintEn: "Click A, B, C, D; the sides extend to the apex", icon: "M3 4 9 18l5-10 4 6M3 4l18 6M9 18l12-6" },
+  { group: "patterns", kind: "elliotttri", zh: "\u827E\u7565\u7279\u4E09\u89D2\u6D6A", en: "Elliott triangle wave", hintZh: "\u4F9D\u6B21\u70B9\u51FB 0\u3001A\u3001B\u3001C\u3001D\u3001E", hintEn: "Click 0, A, B, C, D, E", icon: "M2 5l4 14 4-11 4 8 4-5 4 3" },
+  { group: "patterns", kind: "elliottwxy", zh: "\u827E\u7565\u7279\u53CC\u91CD\u7EC4\u5408", en: "Elliott double combo", hintZh: "\u4F9D\u6B21\u70B9\u51FB 0\u3001W\u3001X\u3001Y", hintEn: "Click 0, W, X, Y", icon: "M3 6l6 10 5-6 7 10" },
+  { group: "patterns", kind: "elliottwxyxz", zh: "\u827E\u7565\u7279\u4E09\u91CD\u7EC4\u5408", en: "Elliott triple combo", hintZh: "\u4F9D\u6B21\u70B9\u51FB 0\u3001W\u3001X\u3001Y\u3001X\u3001Z", hintEn: "Click 0, W, X, Y, X, Z", icon: "M2 6l4 8 3-4 4 7 3-4 6 9" },
+  { group: "patterns", kind: "cycles", zh: "\u5468\u671F\u7EBF", en: "Cyclic lines", hintZh: "\u70B9\u51FB\u4E24\u70B9\u786E\u5B9A\u5468\u671F\uFF0C\u5411\u540E\u7B49\u8DDD\u753B\u5782\u76F4\u7EBF", hintEn: "Click two points to set the period", icon: "M5 3v18M10 3v18M15 3v18M20 3v18" },
+  { group: "patterns", kind: "sine", zh: "\u6B63\u5F26\u7EBF", en: "Sine line", hintZh: "\u70B9\u51FB\u6CE2\u5CF0\uFF0C\u518D\u70B9\u51FB\u76F8\u90BB\u6CE2\u8C37", hintEn: "Click a peak, then the next trough", icon: "M2 12c2.5-8 5-8 7.5 0s5 8 7.5 0 3-5 5-4" },
   { group: "patterns", kind: "headshoulders", zh: "\u5934\u80A9\u5F62\u6001", en: "Head and shoulders", hintZh: "\u4F9D\u6B21\u70B9\u51FB\u5DE6\u5E95\u3001\u5DE6\u80A9\u3001\u9888\u7EBF\u70B9\u3001\u5934\u3001\u9888\u7EBF\u70B9\u3001\u53F3\u80A9\u3001\u53F3\u5E95", hintEn: "Click 7 points from left base to right base", icon: "M2 18l3-6 3 3 4-10 4 10 3-3 3 6M5 15h14" },
   { group: "shapes", kind: "rect", zh: "\u77E9\u5F62", en: "Rectangle", hintZh: "\u70B9\u51FB\u4E24\u4E2A\u5BF9\u89D2\uFF08Alt+Shift+R\uFF09", hintEn: "Click two opposite corners (Alt+Shift+R)", icon: "M4 6h16v12H4z" },
   { group: "shapes", kind: "circle", zh: "\u5706\u5F62", en: "Circle", hintZh: "\u70B9\u51FB\u5706\u5FC3\uFF0C\u518D\u70B9\u51FB\u8FB9\u7F18", hintEn: "Click the center, then the edge", icon: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" },
   { group: "shapes", kind: "triangle", zh: "\u4E09\u89D2\u5F62", en: "Triangle", hintZh: "\u4F9D\u6B21\u70B9\u51FB\u4E09\u4E2A\u9876\u70B9", hintEn: "Click three corners", icon: "M12 4 21 20H3z" },
+  { group: "shapes", kind: "ellipse", zh: "\u692D\u5706", en: "Ellipse", hintZh: "\u70B9\u51FB\u5916\u63A5\u77E9\u5F62\u7684\u4E24\u4E2A\u5BF9\u89D2", hintEn: "Click two corners of its bounding box", icon: "M12 6c5 0 9 2.7 9 6s-4 6-9 6-9-2.7-9-6 4-6 9-6z" },
+  { group: "shapes", kind: "rotrect", zh: "\u65CB\u8F6C\u77E9\u5F62", en: "Rotated rectangle", hintZh: "\u4E24\u70B9\u753B\u4E00\u6761\u8FB9\uFF0C\u7B2C\u4E09\u70B9\u8BBE\u7F6E\u5BBD\u5EA6", hintEn: "Two points for one side, a third for the width", icon: "M4 14 14 4l6 6-10 10z" },
+  { group: "shapes", kind: "arc", zh: "\u5F27\u7EBF", en: "Arc", hintZh: "\u70B9\u51FB\u8D77\u70B9\u3001\u7EC8\u70B9\uFF0C\u518D\u70B9\u51FB\u5F27\u7EBF\u7ECF\u8FC7\u7684\u70B9", hintEn: "Click start, end, then a point on the arc", icon: "M3 18c3-10 15-10 18 0" },
+  { group: "shapes", kind: "curve", zh: "\u66F2\u7EBF", en: "Curve", hintZh: "\u70B9\u51FB\u8D77\u70B9\u3001\u7EC8\u70B9\uFF0C\u518D\u70B9\u51FB\u63A7\u5236\u70B9", hintEn: "Click start, end, then the control point", icon: "M3 18C8 2 14 22 21 6" },
   { group: "shapes", kind: "brush", zh: "\u753B\u7B14", en: "Brush", hintZh: "\u6309\u4F4F\u9F20\u6807\u62D6\u52A8\u81EA\u7531\u7ED8\u5236", hintEn: "Press and drag to draw freehand", icon: "M3 17c3-6 5 2 8-3s4-6 7-4 3 4 3 4" },
   { group: "annotation", kind: "text", zh: "\u6587\u672C", en: "Text", hintZh: "\u5355\u51FB\u4F4D\u7F6E\u540E\u8F93\u5165\u6587\u5B57", hintEn: "Click a spot, then type", icon: "M5 6h14M12 6v13M9 19h6" },
   { group: "annotation", kind: "callout", zh: "\u6807\u6CE8\u6C14\u6CE1", en: "Callout", hintZh: "\u70B9\u51FB\u8981\u6807\u6CE8\u7684\u4F4D\u7F6E\uFF0C\u518D\u70B9\u51FB\u6587\u672C\u6846\u4F4D\u7F6E\uFF0C\u7136\u540E\u8F93\u5165\u6587\u5B57", hintEn: "Click the target, then the box, then type", icon: "M4 4h16v10H10l-4 5v-5H4z" },
+  { group: "annotation", kind: "note", zh: "\u4FBF\u7B7E", en: "Note", hintZh: "\u5355\u51FB\u4F4D\u7F6E\u540E\u8F93\u5165\u4FBF\u7B7E\u5185\u5BB9", hintEn: "Click a spot, then type the note", icon: "M5 4h14v11l-5 5H5zM14 20v-5h5" },
+  { group: "annotation", kind: "pricenote", zh: "\u4EF7\u683C\u4FBF\u7B7E", en: "Price note", hintZh: "\u70B9\u51FB\u8981\u6807\u6CE8\u7684\u4EF7\u683C\uFF0C\u518D\u70B9\u51FB\u4FBF\u7B7E\u4F4D\u7F6E\uFF0C\u7136\u540E\u8F93\u5165\u6587\u5B57", hintEn: "Click the price, then the note position, then type", icon: "M3 16h6M9 16l4-6h8v8h-8z" },
+  { group: "annotation", kind: "signpost", zh: "\u8DEF\u6807", en: "Signpost", hintZh: "\u5355\u51FB K \u7EBF\u4F4D\u7F6E\u540E\u8F93\u5165\u8DEF\u6807\u6587\u5B57", hintEn: "Click a bar, then type the signpost text", icon: "M8 21V4M8 4h11l-2 3 2 3H8" },
   { group: "annotation", kind: "pricelabel", zh: "\u4EF7\u683C\u6807\u7B7E", en: "Price label", hintZh: "\u5355\u51FB\u5728\u8BE5\u4EF7\u683C\u5904\u653E\u7F6E\u6807\u7B7E", hintEn: "Click to tag a price", icon: "M3 12l5-6h13v12H8z" },
   { group: "annotation", kind: "icon", zh: "\u56FE\u6807", en: "Icon", hintZh: "\u5355\u51FB\u4F4D\u7F6E\u540E\u9009\u62E9\u56FE\u6807", hintEn: "Click a spot, then pick an icon", icon: "M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.6 6.7 19.4l1.2-6L3.4 9.3l6-.7z" },
   { group: "annotation", kind: "arrow", zh: "\u7BAD\u5934", en: "Arrow", hintZh: "\u70B9\u51FB\u8D77\u70B9\u548C\u7BAD\u5934\u6307\u5411\u7684\u4F4D\u7F6E", hintEn: "Click tail, then head", icon: "M4 20 20 4M12 4h8v8" },
   { group: "measure", kind: "pricerange", zh: "\u4EF7\u683C\u533A\u95F4", en: "Price range", hintZh: "\u70B9\u51FB\u4E24\u70B9\uFF0C\u6D4B\u91CF\u4EF7\u683C\u5DEE\u4E0E\u767E\u5206\u6BD4", hintEn: "Click two points to measure price change", icon: "M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4M5 3h14M5 21h14" },
   { group: "measure", kind: "daterange", zh: "\u65E5\u671F\u533A\u95F4", en: "Date range", hintZh: "\u70B9\u51FB\u4E24\u70B9\uFF0C\u6D4B\u91CF K \u7EBF\u6839\u6570\u4E0E\u65F6\u957F", hintEn: "Click two points to measure bars and time", icon: "M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4M3 5v14M21 5v14" },
   { group: "measure", kind: "measure", zh: "\u65E5\u671F\u4E0E\u4EF7\u683C\u533A\u95F4", en: "Date & price range", hintZh: "\u70B9\u51FB\u8D77\u70B9\u548C\u7EC8\u70B9\uFF0C\u663E\u793A\u6DA8\u8DCC\u3001\u6839\u6570\u4E0E\u65F6\u957F", hintEn: "Click two points to measure change, bars and time", icon: "M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4" },
+  { group: "measure", kind: "forecast", zh: "\u9884\u6D4B", en: "Forecast", hintZh: "\u70B9\u51FB\u8D77\u70B9\uFF0C\u518D\u70B9\u51FB\u9884\u6D4B\u76EE\u6807\uFF0C\u663E\u793A\u6DA8\u8DCC\u4E0E\u65F6\u957F", hintEn: "Click the source, then the target; shows change and time", icon: "M3 17 10 12M10 12l11-7M17 5h4v4M10 12v.01" },
+  { group: "measure", kind: "avwap", zh: "\u951A\u5B9A VWAP", en: "Anchored VWAP", hintZh: "\u5355\u51FB\u951A\u5B9A\u7684 K \u7EBF\uFF0C\u4ECE\u8BE5\u5904\u7D2F\u8BA1\u5230\u6700\u65B0 K \u7EBF", hintEn: "Click the anchor bar; accumulates to the latest bar", icon: "M4 4v16M4 16c4-1 6-6 10-7s5 2 6 0" },
+  { group: "measure", kind: "avprofile", zh: "\u951A\u5B9A\u6210\u4EA4\u91CF\u5206\u5E03", en: "Anchored volume profile", hintZh: "\u5355\u51FB\u951A\u5B9A\u7684 K \u7EBF\uFF0C\u7EDF\u8BA1\u4ECE\u8BE5\u5904\u5230\u6700\u65B0\u7684\u6210\u4EA4\u91CF\u5206\u5E03", hintEn: "Click the anchor bar; volume by price up to the latest bar", icon: "M4 3v18M4 6h7M4 10h12M4 14h9M4 18h5" },
   { group: "measure", kind: "long", zh: "\u591A\u5934\u5934\u5BF8", en: "Long position", hintZh: "\u70B9\u51FB\u5165\u573A\u4EF7\uFF0C\u518D\u70B9\u51FB\u6B62\u635F\u4EF7\uFF08\u6B62\u76C8\u9ED8\u8BA4 2R\uFF0C\u53EF\u62D6\u52A8\uFF09", hintEn: "Click entry, then stop (target defaults to 2R)", icon: "M4 4h16v8H4zM4 12h16v8H4zM4 12h16" },
   { group: "measure", kind: "short", zh: "\u7A7A\u5934\u5934\u5BF8", en: "Short position", hintZh: "\u70B9\u51FB\u5165\u573A\u4EF7\uFF0C\u518D\u70B9\u51FB\u6B62\u635F\u4EF7\uFF08\u6B62\u76C8\u9ED8\u8BA4 2R\uFF0C\u53EF\u62D6\u52A8\uFF09", hintEn: "Click entry, then stop (target defaults to 2R)", icon: "M4 4h16v8H4zM4 12h16v8H4zM4 12h16" }
 ];
@@ -18255,16 +18323,24 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
       handles = [c0, c1];
       break;
     }
+    case "avprofile":
     case "vprofile": {
-      if (!p[1]) break;
-      const [from, to] = points2[0].time <= points2[1].time ? points2 : [points2[1], points2[0]];
-      const x0 = Math.min(p[0].x, p[1].x), x1 = Math.max(p[0].x, p[1].x);
+      const lastBar = kind === "avprofile" ? view.candles?.(points2[0].time, Number.MAX_SAFE_INTEGER).at(-1) : void 0;
+      const endPoint = kind === "avprofile" ? lastBar ? view.project(lastBar.time, points2[0].price) : null : p[1];
+      if (!endPoint) {
+        if (kind === "avprofile") {
+          body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, x2: p[0].x, y1: "0", y2: h }), text(p[0].x + 4, 16, tr("\u951A\u70B9\u4E4B\u540E\u6682\u65E0 K \u7EBF", "No bars after the anchor"), "start"));
+        }
+        break;
+      }
+      const [from, to] = kind === "avprofile" ? [points2[0], { time: lastBar.time, price: points2[0].price }] : points2[0].time <= points2[1].time ? points2 : [points2[1], points2[0]];
+      const x0 = Math.min(p[0].x, endPoint.x), x1 = Math.max(p[0].x, endPoint.x);
       const settings = { rows: rows ?? 48, valueArea: valueArea ?? 0.7 };
       const profile = view.profile ? view.profile(from.time, to.time, settings) : volumeProfile(view.candles?.(from.time, to.time) ?? [], settings);
       const partial = view.firstTime != null && view.barMs != null && view.firstTime - from.time >= view.barMs;
       if (!profile) {
         body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-drawing-fill", x: x0, y: 0, width: Math.max(1, x1 - x0), height: h }), text(x0 + 4, 16, tr("\u533A\u95F4\u5185\u6682\u65E0\u6210\u4EA4\u91CF\u6570\u636E", "No volume in this range"), "start"));
-        handles = [p[0], p[1]];
+        handles = kind === "avprofile" ? [p[0]] : [p[0], p[1]];
         break;
       }
       const y = (price) => view.project(from.time, price)?.y;
@@ -18282,7 +18358,201 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
         paths2[inValue ? "valueDown" : "outDown"] += rectPath(x0 + upWidth, top, downWidth, height);
       });
       body = /* @__PURE__ */ React7.createElement("g", { className: "dhl-vprofile", "data-rows": profile.rows.length }, yTop != null && yBottom != null ? /* @__PURE__ */ React7.createElement("rect", { className: "dhl-vprofile-range", x: x0, y: yTop, width: Math.max(1, x1 - x0), height: Math.max(1, yBottom - yTop) }) : null, /* @__PURE__ */ React7.createElement("g", { className: "dhl-vprofile-va" }, /* @__PURE__ */ React7.createElement("path", { className: "dhl-vprofile-up", d: paths2.valueUp }), /* @__PURE__ */ React7.createElement("path", { className: "dhl-vprofile-down", d: paths2.valueDown })), /* @__PURE__ */ React7.createElement("g", { className: "dhl-vprofile-out" }, /* @__PURE__ */ React7.createElement("path", { className: "dhl-vprofile-up", d: paths2.outUp }), /* @__PURE__ */ React7.createElement("path", { className: "dhl-vprofile-down", d: paths2.outDown })), yPoc != null ? /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { className: "dhl-vprofile-poc", x1: x0, y1: yPoc, x2: x1, y2: yPoc }), text(x1 - 4, yPoc - 4, `POC ${fmtPrice(profile.poc)}`, "end")) : null, yVah != null ? /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: x0, y1: yVah, x2: x1, y2: yVah }), text(x1 - 4, yVah - 4, `VAH ${fmtPrice(profile.vah)}`, "end")) : null, yVal != null ? /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: x0, y1: yVal, x2: x1, y2: yVal }), text(x1 - 4, yVal + 12, `VAL ${fmtPrice(profile.val)}`, "end")) : null, yBottom != null ? text(x0 + 4, Math.min(h - 4, yBottom + 14), partial ? tr("K \u7EBF\u4F30\u7B97 \xB7 \u533A\u95F4\u524D\u6BB5\u5386\u53F2\u672A\u52A0\u8F7D", "Estimated from bars \xB7 early range not loaded") : tr("K \u7EBF\u4F30\u7B97", "Estimated from bars"), "start", partial ? "dhl-drawing-text dhl-vprofile-warn" : "dhl-drawing-text") : null);
+      handles = kind === "avprofile" ? [p[0]] : [p[0], p[1]];
+      break;
+    }
+    case "avwap": {
+      const bars = view.candles?.(points2[0].time, Number.MAX_SAFE_INTEGER) ?? [];
+      let pv = 0, vol = 0;
+      const path = [];
+      for (const bar of bars) {
+        pv += (bar.high + bar.low + bar.close) / 3 * bar.volume;
+        vol += bar.volume;
+        const point = vol > 0 ? view.project(bar.time, pv / vol) : null;
+        if (point) path.push(point);
+      }
+      if (path.length < 1 || vol <= 0) {
+        body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, x2: p[0].x, y1: "0", y2: h }), text(p[0].x + 4, 16, tr("\u951A\u70B9\u4E4B\u540E\u6682\u65E0\u6210\u4EA4\u91CF", "No volume after the anchor"), "start"));
+        break;
+      }
+      const last = path.at(-1);
+      const partial = view.firstTime != null && view.barMs != null && view.firstTime - points2[0].time >= view.barMs;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("polyline", { className: "dhl-pattern", points: path.map((point) => `${point.x},${point.y}`).join(" ") }), /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, x2: p[0].x, y1: p[0].y - 14, y2: p[0].y + 14 }), text(Math.min(last.x + 4, w - 110), last.y - 5, `VWAP ${fmtPrice(pv / vol)}`), partial ? text(Math.min(last.x + 4, w - 160), last.y + 12, tr("\u951A\u70B9\u524D\u6BB5\u5386\u53F2\u672A\u52A0\u8F7D\uFF0C\u6570\u503C\u6682\u4E0D\u5B8C\u6574", "Early history not loaded; value incomplete"), "start", "dhl-drawing-text dhl-vprofile-warn") : null);
+      handles = [p[0]];
+      break;
+    }
+    case "forecast": {
+      if (!p[1]) break;
+      const [a, b] = points2;
+      const change = b.price - a.price, pct = a.price > 0 ? change / a.price * 100 : 0;
+      const up = change >= 0;
+      const boxY = up ? p[1].y - 44 : p[1].y + 8;
+      body = /* @__PURE__ */ React7.createElement("g", { className: `dhl-measure ${up ? "up" : "down"}` }, /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y }), /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-arrow-head", points: arrowHead(p[0], p[1]) }), /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, x2: p[1].x, y1: p[0].y, y2: p[0].y }), /* @__PURE__ */ React7.createElement("rect", { className: "dhl-measure-box", x: p[1].x - 78, y: boxY, width: "156", height: "36", rx: "4" }), text(p[1].x, boxY + 15, `${tr("\u76EE\u6807", "Target")} ${fmtPrice(b.price)} (${up ? "+" : ""}${pct.toFixed(2)}%)`, "middle"), text(p[1].x, boxY + 29, `${Math.abs(Math.round(view.bars(a.time, b.time)))} ${tr("\u6839", "bars")} \xB7 ${duration(b.time - a.time)}`, "middle"));
+      break;
+    }
+    case "note":
+    case "signpost": {
+      const value = textValue || label || (kind === "note" ? tr("\u4FBF\u7B7E", "Note") : tr("\u8DEF\u6807", "Signpost"));
+      const lines = wrapText(value, 220);
+      const width = (16 + Math.max(...lines.map(textWidth))) * k, height = (10 + lines.length * 16) * k;
+      const top = kind === "note" ? p[0].y - height / 2 : p[0].y - 46 - height;
+      const left = kind === "note" ? p[0].x + 12 : p[0].x - 4;
+      body = /* @__PURE__ */ React7.createElement("g", { className: kind === "note" ? "dhl-note" : "dhl-signpost" }, kind === "signpost" ? /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, x2: p[0].x, y1: p[0].y, y2: top + height }) : /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, y1: p[0].y, x2: left, y2: p[0].y }), /* @__PURE__ */ React7.createElement("circle", { className: "dhl-callout-dot", cx: p[0].x, cy: p[0].y, r: "3" }), /* @__PURE__ */ React7.createElement("rect", { className: "dhl-text-box dhl-note-box", x: left, y: top, width, height, rx: "4" }), lines.map((line, index) => /* @__PURE__ */ React7.createElement(React7.Fragment, { key: index }, text(left + 8 * k, top + (17 + index * 16) * k - 2, line, "start", "dhl-drawing-text dhl-text-value"))));
+      handles = [p[0]];
+      break;
+    }
+    case "pricenote": {
+      if (!p[1]) break;
+      const value = `${fmtPrice(points2[0].price)} \xB7 ${textValue || label || tr("\u4EF7\u683C\u4FBF\u7B7E", "Price note")}`;
+      const width = Math.min(300, 16 + textWidth(value)) * k;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y + 13 * k }), /* @__PURE__ */ React7.createElement("circle", { className: "dhl-callout-dot", cx: p[0].x, cy: p[0].y, r: "3" }), /* @__PURE__ */ React7.createElement("rect", { className: "dhl-text-box dhl-note-box", x: p[1].x, y: p[1].y, width, height: 26 * k, rx: "4" }), text(p[1].x + 8 * k, p[1].y + 17 * k, value, "start", "dhl-drawing-text dhl-text-value"));
+      break;
+    }
+    case "flatchannel":
+    case "disjoint": {
+      if (!p[1]) break;
+      const base = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+      if (!p[2]) {
+        body = base;
+        break;
+      }
+      const a2 = kind === "flatchannel" ? { x: p[0].x, y: p[2].y } : p[2];
+      const b2 = kind === "flatchannel" ? { x: p[1].x, y: p[2].y } : { x: p[2].x + (p[1].x - p[0].x), y: p[2].y - (p[1].y - p[0].y) };
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-drawing-fill", points: `${p[0].x},${p[0].y} ${p[1].x},${p[1].y} ${b2.x},${b2.y} ${a2.x},${a2.y}` }), base, /* @__PURE__ */ React7.createElement("line", { x1: a2.x, y1: a2.y, x2: b2.x, y2: b2.y }));
+      break;
+    }
+    case "fibfan": {
+      if (!p[1]) break;
+      const dx = p[1].x - p[0].x, dy = p[1].y - p[0].y;
+      const ratios = [0.25, 0.382, 0.5, 0.618, 0.75];
+      const ray = (end, key3, value) => {
+        const seg = clipLine(p[0], end, w, h, 0);
+        return seg ? /* @__PURE__ */ React7.createElement("g", { key: key3 }, /* @__PURE__ */ React7.createElement("line", { x1: seg[0].x, y1: seg[0].y, x2: seg[1].x, y2: seg[1].y }), text(end.x + 3, end.y - 3, value)) : null;
+      };
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-drawing-mid", x: Math.min(p[0].x, p[1].x), y: Math.min(p[0].y, p[1].y), width: Math.abs(dx), height: Math.abs(dy), fill: "none" }), ratios.map((r) => ray({ x: p[1].x, y: p[0].y + dy * r }, `p${r}`, String(r))), ratios.map((r) => ray({ x: p[0].x + dx * r, y: p[1].y }, `t${r}`, String(r))), ray(p[1], "one", "1"));
+      break;
+    }
+    case "fibcircles":
+    case "fibarcs": {
+      if (!p[1]) break;
+      const center = kind === "fibcircles" ? p[0] : p[1];
+      const radius2 = Math.hypot(p[1].x - p[0].x, p[1].y - p[0].y);
+      const levels2 = kind === "fibcircles" ? [0.382, 0.5, 0.618, 1, 1.618, 2.618] : [0.382, 0.5, 0.618, 1];
+      const sweep = p[0].y > p[1].y ? 1 : 0;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, levels2.map((level) => {
+        const r = radius2 * level;
+        return /* @__PURE__ */ React7.createElement("g", { key: level }, kind === "fibcircles" ? /* @__PURE__ */ React7.createElement("circle", { className: "dhl-fib-ring", cx: center.x, cy: center.y, r }) : /* @__PURE__ */ React7.createElement("path", { className: "dhl-fib-ring", d: `M${center.x - r} ${center.y}A${r} ${r} 0 0 ${sweep} ${center.x + r} ${center.y}` }), text(center.x + 3, center.y + (sweep ? -r : r) + (sweep ? 12 : -4), String(level)));
+      }), /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y }));
+      break;
+    }
+    case "fibwedge": {
+      if (!p[1]) break;
+      if (!p[2]) {
+        body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+        break;
+      }
+      const radius2 = Math.hypot(p[1].x - p[0].x, p[1].y - p[0].y);
+      const a1 = Math.atan2(p[1].y - p[0].y, p[1].x - p[0].x), a2 = Math.atan2(p[2].y - p[0].y, p[2].x - p[0].x);
+      const span = Math.atan2(Math.sin(a2 - a1), Math.cos(a2 - a1));
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[0].x + Math.cos(a1) * radius2, y2: p[0].y + Math.sin(a1) * radius2 }), /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[0].x + Math.cos(a2) * radius2, y2: p[0].y + Math.sin(a2) * radius2 }), [0.236, 0.382, 0.5, 0.618, 0.786, 1].map((level) => {
+        const r = radius2 * level;
+        const s = { x: p[0].x + Math.cos(a1) * r, y: p[0].y + Math.sin(a1) * r }, e = { x: p[0].x + Math.cos(a1 + span) * r, y: p[0].y + Math.sin(a1 + span) * r };
+        return /* @__PURE__ */ React7.createElement("g", { key: level }, /* @__PURE__ */ React7.createElement("path", { className: "dhl-fib-ring", d: `M${s.x} ${s.y}A${r} ${r} 0 0 ${span > 0 ? 1 : 0} ${e.x} ${e.y}` }), text(s.x + 3, s.y - 3, String(level)));
+      }));
+      break;
+    }
+    case "fibtrendtime": {
+      if (!p[1]) break;
+      if (!p[2]) {
+        body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+        break;
+      }
+      const unit = points2[1].time - points2[0].time;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y }), [0, 0.382, 0.5, 0.618, 1, 1.382, 1.618, 2, 2.618].map((level) => {
+        const x = view.project(points2[2].time + unit * level, points2[2].price)?.x;
+        return x == null || x < -2 || x > w + 2 ? null : /* @__PURE__ */ React7.createElement("g", { key: level }, /* @__PURE__ */ React7.createElement("line", { className: level === 0 || level === 1 ? "dhl-fib-key" : void 0, x1: x, x2: x, y1: "0", y2: h }), text(x + 3, 12, String(level)));
+      }));
+      break;
+    }
+    case "cypher": {
+      const [X, A, B, C, D] = points2;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, p[2] ? /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-drawing-fill", points: `${p[0].x},${p[0].y} ${p[1].x},${p[1].y} ${p[2].x},${p[2].y}` }) : null, p[4] ? /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-drawing-fill", points: `${p[2].x},${p[2].y} ${p[3].x},${p[3].y} ${p[4].x},${p[4].y}` }) : null, wave(p, ["X", "A", "B", "C", "D"], text), p[2] ? guide(p[0], p[2], ratio(B.price - A.price, A.price - X.price), "xb", text) : null, p[3] ? guide(p[1], p[3], ratio(C.price - X.price, A.price - X.price), "xc", text) : null, p[4] ? guide(p[0], p[4], ratio(C.price - D.price, C.price - X.price), "xd", text) : null);
+      break;
+    }
+    case "threedrives": {
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, wave(p, ["", "1", "A", "2", "B", "3"], text), p[2] ? guide(p[0], p[2], ratio(points2[2].price - points2[1].price, points2[1].price - points2[0].price), "a", text) : null, p[3] ? guide(p[1], p[3], ratio(points2[3].price - points2[2].price, points2[1].price - points2[2].price), "d2", text) : null, p[4] ? guide(p[2], p[4], ratio(points2[4].price - points2[3].price, points2[3].price - points2[2].price), "b", text) : null, p[5] ? guide(p[3], p[5], ratio(points2[5].price - points2[4].price, points2[3].price - points2[4].price), "d3", text) : null);
+      break;
+    }
+    case "tripattern": {
+      const upper = p[2] ? clipLine(p[0], p[2], w, h, 0) : null, lower = p[3] ? clipLine(p[1], p[3], w, h, 0) : null;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, wave(p, ["A", "B", "C", "D"], text), upper ? /* @__PURE__ */ React7.createElement("line", { className: "dhl-neckline", x1: upper[0].x, y1: upper[0].y, x2: upper[1].x, y2: upper[1].y }) : null, lower ? /* @__PURE__ */ React7.createElement("line", { className: "dhl-neckline", x1: lower[0].x, y1: lower[0].y, x2: lower[1].x, y2: lower[1].y }) : null);
+      break;
+    }
+    case "elliotttri":
+      body = wave(p, ["0", "(A)", "(B)", "(C)", "(D)", "(E)"], text);
+      break;
+    case "elliottwxy":
+      body = wave(p, ["0", "(W)", "(X)", "(Y)"], text);
+      break;
+    case "elliottwxyxz":
+      body = wave(p, ["0", "(W)", "(X)", "(Y)", "(X)", "(Z)"], text);
+      break;
+    case "cycles": {
+      if (!p[1]) break;
+      const step = points2[1].time - points2[0].time;
+      const xs = [];
+      const spacing = (view.project(points2[0].time + step, points2[0].price)?.x ?? NaN) - p[0].x;
+      const first = Number.isFinite(spacing) && spacing > 0 ? Math.max(0, Math.floor(-p[0].x / spacing) - 1) : 0;
+      for (let n2 = first; n2 < first + 400; n2 += 1) {
+        const x = view.project(points2[0].time + step * n2, points2[0].price)?.x;
+        if (x == null || x > w + 2) break;
+        if (x >= -2) xs.push(x);
+      }
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, xs.map((x, index) => /* @__PURE__ */ React7.createElement("line", { key: index, className: index === 0 ? "dhl-fib-key" : void 0, x1: x, x2: x, y1: "0", y2: h })));
       handles = [p[0], p[1]];
+      break;
+    }
+    case "sine": {
+      if (!p[1]) break;
+      const half = p[1].x - p[0].x;
+      if (Math.abs(half) < 2) {
+        body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+        break;
+      }
+      const mid = (p[0].y + p[1].y) / 2, amp = (p[0].y - p[1].y) / 2;
+      const step = Math.max(2, Math.abs(half) / 16);
+      const pts = [];
+      for (let x = 0; x <= w; x += step) pts.push(`${x.toFixed(1)},${(mid + amp * Math.cos(Math.PI * (x - p[0].x) / half)).toFixed(1)}`);
+      body = /* @__PURE__ */ React7.createElement("polyline", { className: "dhl-pattern", points: pts.join(" ") });
+      break;
+    }
+    case "ellipse": {
+      if (!p[1]) break;
+      body = /* @__PURE__ */ React7.createElement("ellipse", { className: "dhl-drawing-fill", cx: (p[0].x + p[1].x) / 2, cy: (p[0].y + p[1].y) / 2, rx: Math.abs(p[1].x - p[0].x) / 2, ry: Math.abs(p[1].y - p[0].y) / 2 });
+      break;
+    }
+    case "rotrect": {
+      if (!p[1]) break;
+      if (!p[2]) {
+        body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+        break;
+      }
+      const ux = p[1].x - p[0].x, uy = p[1].y - p[0].y, len = Math.hypot(ux, uy) || 1;
+      const nx = -uy / len, ny = ux / len;
+      const d = (p[2].x - p[0].x) * nx + (p[2].y - p[0].y) * ny;
+      const c = { x: p[1].x + nx * d, y: p[1].y + ny * d }, e = { x: p[0].x + nx * d, y: p[0].y + ny * d };
+      body = /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-drawing-fill", points: `${p[0].x},${p[0].y} ${p[1].x},${p[1].y} ${c.x},${c.y} ${e.x},${e.y}` });
+      break;
+    }
+    case "arc":
+    case "curve": {
+      if (!p[1]) break;
+      if (!p[2]) {
+        body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+        break;
+      }
+      const control = kind === "arc" ? { x: 2 * p[2].x - (p[0].x + p[1].x) / 2, y: 2 * p[2].y - (p[0].y + p[1].y) / 2 } : p[2];
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("path", { className: "dhl-curve", d: `M${p[0].x} ${p[0].y}Q${control.x} ${control.y} ${p[1].x} ${p[1].y}` }), kind === "curve" && anchors ? /* @__PURE__ */ React7.createElement("polyline", { className: "dhl-drawing-mid", points: `${p[0].x},${p[0].y} ${p[2].x},${p[2].y} ${p[1].x},${p[1].y}` }) : null);
       break;
     }
     case "text": {
@@ -18360,7 +18630,7 @@ function saveStyleTemplate(kind, style) {
 // src/client/components/draw-toolbar.tsx
 var DRAW_COLORS = ["#4c82d8", "#2fd3a0", "#ef5f6c", "#e2a943", "#9b86db", "#26b5c8", "#8a8f98"];
 var STYLES = [["solid", "\u5B9E\u7EBF", "Solid"], ["dashed", "\u865A\u7EBF", "Dashed"], ["dotted", "\u70B9\u7EBF", "Dotted"]];
-function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone, onCoordinates }) {
+function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone, onCoordinates, placement = "top" }) {
   const [savedDefault, setSavedDefault] = React8.useState(false);
   React8.useEffect(() => {
     setSavedDefault(false);
@@ -18391,7 +18661,7 @@ function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone,
   const style = mark.lineStyle ?? "solid";
   const tool = toolOf(mark.kind);
   const stop = (event) => event.stopPropagation();
-  return /* @__PURE__ */ React8.createElement("div", { className: "dhl-draw-toolbar", role: "toolbar", "aria-label": tr("\u753B\u7EBF\u6837\u5F0F", "Drawing style"), onPointerDown: stop, onClick: stop }, /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-name" }, tr(tool.zh, tool.en)), isTextKind(mark.kind) ? /* @__PURE__ */ React8.createElement(
+  return /* @__PURE__ */ React8.createElement("div", { className: "dhl-draw-toolbar" + (placement === "bottom" ? " at-bottom" : ""), role: "toolbar", "aria-label": tr("\u753B\u7EBF\u6837\u5F0F", "Drawing style"), onPointerDown: stop, onClick: stop }, /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-name" }, tr(tool.zh, tool.en)), isTextKind(mark.kind) ? /* @__PURE__ */ React8.createElement(
     "input",
     {
       className: "dhl-draw-toolbar-text",
@@ -18728,7 +18998,19 @@ function cssVar(el, name, fallback) {
 function chartData(points2) {
   return points2.map((point) => ({ time: point.time, value: point.value }));
 }
+var TOOLBAR_CLEARANCE = 84;
 var FINITE_KINDS = /* @__PURE__ */ new Set([
+  "ellipse",
+  "curve",
+  "note",
+  "pricenote",
+  "signpost",
+  "forecast",
+  "cypher",
+  "threedrives",
+  "elliotttri",
+  "elliottwxy",
+  "elliottwxyxz",
   "trend",
   "rect",
   "measure",
@@ -19521,6 +19803,12 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     window.__dhlPriceLines = () => priceLines.current.size;
   }, [marks, themeVersion, chartType, interval]);
   const warming = candles.length < 2;
+  const toolbarPlacement = (mark) => {
+    if (!view) return "top";
+    const ys = markPoints(mark).map((point) => view.project(point.time, point.price)?.y).filter((y) => y != null);
+    const top = ys.filter((y) => y < TOOLBAR_CLEARANCE).length, bottom = ys.filter((y) => y > view.height - TOOLBAR_CLEARANCE).length;
+    return bottom < top ? "bottom" : "top";
+  };
   const markById = React10.useMemo(() => new Map(marks.map((mark) => [mark.id, mark])), [marks]);
   const markByIdRef = React10.useRef(markById);
   markByIdRef.current = markById;
@@ -19945,7 +20233,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         points: shown,
         view,
         text: mark.label,
-        dataVersion: mark.kind === "vprofile" || mark.kind === "regression" ? candles : void 0,
+        dataVersion: mark.kind === "vprofile" || mark.kind === "regression" || mark.kind === "avwap" || mark.kind === "avprofile" ? candles : void 0,
         className: `dhl-drawing ${roleClass(mark)}${mark.kind === "level" ? " is-level" : ""}${selected ? " selected" : ""}${mark.locked || drawingsLocked ? " locked" : ""}`,
         label: mark.source === "user" || mark.kind === "level" ? void 0 : mark.label,
         anchors: selected,
@@ -20006,6 +20294,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     {
       mark: selectedMark,
       globallyLocked: drawingsLocked,
+      placement: toolbarPlacement(selectedMark),
       onCoordinates: () => setEditingId(selectedMark.id),
       onEdit: (patch) => onEditMark(selectedMark.id, patch),
       onClone: () => onCloneMark(cloneOf(selectedMark)),
@@ -21379,6 +21668,7 @@ function DeskColumn({ onCollapse }) {
   const [textAt, setTextAt] = React26.useState(null);
   const [selectRequest, setSelectRequest] = React26.useState(null);
   const [textValue, setTextValue] = React26.useState("");
+  const [toolQuery, setToolQuery] = React26.useState("");
   const [confirmClear, setConfirmClear] = React26.useState(false);
   const [pickerOpen, setPickerOpen] = React26.useState(false);
   const [chartExpanded, setChartExpanded] = React26.useState(false);
@@ -21542,7 +21832,7 @@ function DeskColumn({ onCollapse }) {
   }, [indicators, s.candles, s.candlesOlder]);
   React26.useEffect(() => {
     if (s.candlesOlder !== "idle" || s.candles.length < 2) return;
-    const earliest = Math.min(...s.chartMarks.filter((mark2) => !mark2.hidden && (mark2.kind === "vprofile" || mark2.kind === "regression")).map((mark2) => Math.min(...(mark2.points ?? []).map((point) => point.time))));
+    const earliest = Math.min(...s.chartMarks.filter((mark2) => !mark2.hidden && ["vprofile", "regression", "avwap", "avprofile"].includes(mark2.kind)).map((mark2) => Math.min(...(mark2.points ?? []).map((point) => point.time))));
     if (Number.isFinite(earliest) && s.candles[0].t > earliest) void loadOlderCandles();
   }, [s.chartMarks, s.candles, s.candlesOlder]);
   React26.useEffect(() => {
@@ -21599,7 +21889,30 @@ function DeskColumn({ onCollapse }) {
         }
       }
     )
-  ), pickerOpen ? /* @__PURE__ */ React26.createElement(MarketPicker, { activeCoin: coin, onClose: () => setPickerOpen(false) }) : null, /* @__PURE__ */ React26.createElement("div", { className: "dhl-market-workspace" + (s.tapePlacement === "below" ? " dhl-tape-below" : "") }, /* @__PURE__ */ React26.createElement("section", { className: "dhl-chart-panel" + (chartExpanded ? " dhl-chart-panel-expanded" : ""), "aria-label": tr("\u884C\u60C5\u56FE\u8868", "Market chart") }, /* @__PURE__ */ React26.createElement("div", { className: "dhl-chart-tabs", role: "tablist", "aria-label": tr("\u56FE\u8868\u5185\u5BB9", "Chart content") }, /* @__PURE__ */ React26.createElement("button", { type: "button", role: "tab", "aria-selected": chartTab === "chart", className: chartTab === "chart" ? "on" : "", onClick: () => saveSessionWorkspace({ chartTab: "chart" }) }, tr("K \u7EBF", "Chart")), row?.kind !== "spot" && row?.kind !== "outcome" ? /* @__PURE__ */ React26.createElement("button", { type: "button", role: "tab", "aria-selected": chartTab === "funding", className: chartTab === "funding" ? "on" : "", onClick: () => saveSessionWorkspace({ chartTab: "funding" }) }, tr("\u8D44\u91D1\u8D39\u5386\u53F2", "Funding history")) : null), chartTab === "chart" ? /* @__PURE__ */ React26.createElement("div", { role: "tabpanel" }, /* @__PURE__ */ React26.createElement("div", { className: "dhl-chart-tools" }, /* @__PURE__ */ React26.createElement("div", { className: "dhl-intervals", "aria-label": tr("K \u7EBF\u5468\u671F", "Chart interval") }, INTERVALS.map((iv) => /* @__PURE__ */ React26.createElement("button", { key: iv, type: "button", className: s.interval === iv ? "on" : "", onClick: () => changeInterval(iv) }, iv)), /* @__PURE__ */ React26.createElement(Select, { "aria-label": tr("\u66F4\u591A K \u7EBF\u5468\u671F", "More chart intervals"), value: MORE_INTERVALS.includes(s.interval) ? s.interval : "", onChange: (event) => changeInterval(event.target.value) }, /* @__PURE__ */ React26.createElement("option", { value: "", disabled: true }, tr("\u66F4\u591A", "More")), MORE_INTERVALS.map((iv) => /* @__PURE__ */ React26.createElement("option", { key: iv, value: iv }, iv)))), /* @__PURE__ */ React26.createElement("div", { className: "dhl-chart-actions" }, /* @__PURE__ */ React26.createElement(Select, { "aria-label": tr("\u56FE\u8868\u7C7B\u578B", "Chart type"), value: chartType, onChange: (event) => saveSessionWorkspace({ chartType: event.target.value }) }, [["candles", "\u8721\u70DB\u56FE", "Candles"], ["bars", "\u7F8E\u56FD\u7EBF", "OHLC bars"], ["line", "\u6298\u7EBF\u56FE", "Line"], ["area", "\u9762\u79EF\u56FE", "Area"], ["heikinAshi", "\u5E73\u5747K\u7EBF", "Heikin Ashi"]].map(([value, zh, en]) => /* @__PURE__ */ React26.createElement("option", { key: value, value }, tr(zh, en)))), /* @__PURE__ */ React26.createElement("details", { className: "dhl-layer-menu" }, /* @__PURE__ */ React26.createElement("summary", null, tr("\u663E\u793A", "Show"), /* @__PURE__ */ React26.createElement(UiIcon, { name: "chevronDown", size: 12 })), /* @__PURE__ */ React26.createElement("div", { className: "dhl-layer-popover" }, [["orders", tr("\u59D4\u6258", "Orders")], ["fills", tr("\u6210\u4EA4", "Fills")], ["reasons", tr("\u6210\u4EA4\u539F\u56E0", "Fill reasons")], ["drawings", tr("\u753B\u7EBF", "Drawings")]].map(([id, label]) => /* @__PURE__ */ React26.createElement("label", { key: id }, /* @__PURE__ */ React26.createElement("input", { type: "checkbox", checked: layers[id], onChange: (event) => saveSessionWorkspace({ chartLayers: { ...layers, [id]: event.target.checked } }) }), label)))), /* @__PURE__ */ React26.createElement("details", { className: "dhl-indicator-menu" }, /* @__PURE__ */ React26.createElement("summary", { "aria-label": tr("\u9009\u62E9\u56FE\u8868\u6307\u6807", "Choose chart indicators") }, tr("\u6307\u6807", "Indicators"), " ", /* @__PURE__ */ React26.createElement("span", { className: "dhl-indicator-count" }, indicators.size + maLines.length)), /* @__PURE__ */ React26.createElement("div", { className: "dhl-indicator-popover", role: "group", "aria-label": tr("\u56FE\u8868\u6307\u6807", "Chart indicators") }, /* @__PURE__ */ React26.createElement("strong", null, tr("\u56FE\u8868\u6307\u6807", "Chart indicators")), INDICATOR_CHOICES.map(([id, label, description]) => /* @__PURE__ */ React26.createElement("button", { type: "button", key: id, className: indicators.has(id) ? "on" : "", "aria-pressed": indicators.has(id), onClick: () => toggleIndicator(id) }, /* @__PURE__ */ React26.createElement("span", { className: "dhl-indicator-check", "aria-hidden": "true" }, indicators.has(id) ? /* @__PURE__ */ React26.createElement(UiIcon, { name: "check", size: 13 }) : null), /* @__PURE__ */ React26.createElement("span", null, /* @__PURE__ */ React26.createElement("b", null, id === "rsi14" ? `RSI ${studySettings.rsi.period}` : id === "bollinger20" ? `BOLL ${studySettings.bollinger.period} \xD7 ${studySettings.bollinger.multiplier}` : tr(label, INDICATOR_EN[id]?.[0] ?? label)), /* @__PURE__ */ React26.createElement("small", null, id === "macd" ? `${studySettings.macd.fast} / ${studySettings.macd.slow} / ${studySettings.macd.signal}` : id === "bollinger20" ? tr("\u5747\u7EBF\u4E0E\u6807\u51C6\u5DEE\u901A\u9053", "Mean and standard deviation bands") : tr(description, INDICATOR_EN[id]?.[1] ?? description))))), /* @__PURE__ */ React26.createElement(IndicatorEditor, { key: s.activeSessionId, settings: s.workspace?.indicatorSettings, indicators: [...indicators], maLines, onApply: saveSessionWorkspace }), /* @__PURE__ */ React26.createElement(MaEditor, { lines: maLines, onChange: (next) => saveSessionWorkspace({ maLines: next }) }))), /* @__PURE__ */ React26.createElement("button", { type: "button", className: s.workspace?.showDataWindow ? "on" : "", "aria-pressed": s.workspace?.showDataWindow ?? false, onClick: () => saveSessionWorkspace({ showDataWindow: !s.workspace?.showDataWindow }) }, tr("\u6570\u636E\u7A97\u53E3", "Data window")), /* @__PURE__ */ React26.createElement(StrategyMenu, { candles: s.candles, coin, interval: s.interval }), /* @__PURE__ */ React26.createElement("details", { className: "dhl-draw-menu" + (drawMode ? " active" : ""), ref: drawMenu }, /* @__PURE__ */ React26.createElement("summary", { "aria-label": tr("\u753B\u7EBF\u5DE5\u5177", "Drawing tools") }, drawMode ? /* @__PURE__ */ React26.createElement(React26.Fragment, null, /* @__PURE__ */ React26.createElement(ToolIcon, { kind: drawMode, size: 14 }), tr(toolOf(drawMode).zh, toolOf(drawMode).en)) : tr("\u753B\u7EBF", "Draw"), /* @__PURE__ */ React26.createElement(UiIcon, { name: "chevronDown", size: 12 })), /* @__PURE__ */ React26.createElement("div", { className: "dhl-draw-popover", role: "menu", "aria-label": tr("\u753B\u7EBF\u5DE5\u5177", "Drawing tools") }, DRAWING_TOOLS.map((tool, index) => /* @__PURE__ */ React26.createElement(React26.Fragment, { key: tool.kind }, index > 0 && DRAWING_TOOLS[index - 1].group !== tool.group ? /* @__PURE__ */ React26.createElement("hr", null) : null, /* @__PURE__ */ React26.createElement("div", { className: "dhl-draw-tool-row" }, /* @__PURE__ */ React26.createElement(
+  ), pickerOpen ? /* @__PURE__ */ React26.createElement(MarketPicker, { activeCoin: coin, onClose: () => setPickerOpen(false) }) : null, /* @__PURE__ */ React26.createElement("div", { className: "dhl-market-workspace" + (s.tapePlacement === "below" ? " dhl-tape-below" : "") }, /* @__PURE__ */ React26.createElement("section", { className: "dhl-chart-panel" + (chartExpanded ? " dhl-chart-panel-expanded" : ""), "aria-label": tr("\u884C\u60C5\u56FE\u8868", "Market chart") }, /* @__PURE__ */ React26.createElement("div", { className: "dhl-chart-tabs", role: "tablist", "aria-label": tr("\u56FE\u8868\u5185\u5BB9", "Chart content") }, /* @__PURE__ */ React26.createElement("button", { type: "button", role: "tab", "aria-selected": chartTab === "chart", className: chartTab === "chart" ? "on" : "", onClick: () => saveSessionWorkspace({ chartTab: "chart" }) }, tr("K \u7EBF", "Chart")), row?.kind !== "spot" && row?.kind !== "outcome" ? /* @__PURE__ */ React26.createElement("button", { type: "button", role: "tab", "aria-selected": chartTab === "funding", className: chartTab === "funding" ? "on" : "", onClick: () => saveSessionWorkspace({ chartTab: "funding" }) }, tr("\u8D44\u91D1\u8D39\u5386\u53F2", "Funding history")) : null), chartTab === "chart" ? /* @__PURE__ */ React26.createElement("div", { role: "tabpanel" }, /* @__PURE__ */ React26.createElement("div", { className: "dhl-chart-tools" }, /* @__PURE__ */ React26.createElement("div", { className: "dhl-intervals", "aria-label": tr("K \u7EBF\u5468\u671F", "Chart interval") }, INTERVALS.map((iv) => /* @__PURE__ */ React26.createElement("button", { key: iv, type: "button", className: s.interval === iv ? "on" : "", onClick: () => changeInterval(iv) }, iv)), /* @__PURE__ */ React26.createElement(Select, { "aria-label": tr("\u66F4\u591A K \u7EBF\u5468\u671F", "More chart intervals"), value: MORE_INTERVALS.includes(s.interval) ? s.interval : "", onChange: (event) => changeInterval(event.target.value) }, /* @__PURE__ */ React26.createElement("option", { value: "", disabled: true }, tr("\u66F4\u591A", "More")), MORE_INTERVALS.map((iv) => /* @__PURE__ */ React26.createElement("option", { key: iv, value: iv }, iv)))), /* @__PURE__ */ React26.createElement("div", { className: "dhl-chart-actions" }, /* @__PURE__ */ React26.createElement(Select, { "aria-label": tr("\u56FE\u8868\u7C7B\u578B", "Chart type"), value: chartType, onChange: (event) => saveSessionWorkspace({ chartType: event.target.value }) }, [["candles", "\u8721\u70DB\u56FE", "Candles"], ["bars", "\u7F8E\u56FD\u7EBF", "OHLC bars"], ["line", "\u6298\u7EBF\u56FE", "Line"], ["area", "\u9762\u79EF\u56FE", "Area"], ["heikinAshi", "\u5E73\u5747K\u7EBF", "Heikin Ashi"]].map(([value, zh, en]) => /* @__PURE__ */ React26.createElement("option", { key: value, value }, tr(zh, en)))), /* @__PURE__ */ React26.createElement("details", { className: "dhl-layer-menu" }, /* @__PURE__ */ React26.createElement("summary", null, tr("\u663E\u793A", "Show"), /* @__PURE__ */ React26.createElement(UiIcon, { name: "chevronDown", size: 12 })), /* @__PURE__ */ React26.createElement("div", { className: "dhl-layer-popover" }, [["orders", tr("\u59D4\u6258", "Orders")], ["fills", tr("\u6210\u4EA4", "Fills")], ["reasons", tr("\u6210\u4EA4\u539F\u56E0", "Fill reasons")], ["drawings", tr("\u753B\u7EBF", "Drawings")]].map(([id, label]) => /* @__PURE__ */ React26.createElement("label", { key: id }, /* @__PURE__ */ React26.createElement("input", { type: "checkbox", checked: layers[id], onChange: (event) => saveSessionWorkspace({ chartLayers: { ...layers, [id]: event.target.checked } }) }), label)))), /* @__PURE__ */ React26.createElement("details", { className: "dhl-indicator-menu" }, /* @__PURE__ */ React26.createElement("summary", { "aria-label": tr("\u9009\u62E9\u56FE\u8868\u6307\u6807", "Choose chart indicators") }, tr("\u6307\u6807", "Indicators"), " ", /* @__PURE__ */ React26.createElement("span", { className: "dhl-indicator-count" }, indicators.size + maLines.length)), /* @__PURE__ */ React26.createElement("div", { className: "dhl-indicator-popover", role: "group", "aria-label": tr("\u56FE\u8868\u6307\u6807", "Chart indicators") }, /* @__PURE__ */ React26.createElement("strong", null, tr("\u56FE\u8868\u6307\u6807", "Chart indicators")), INDICATOR_CHOICES.map(([id, label, description]) => /* @__PURE__ */ React26.createElement("button", { type: "button", key: id, className: indicators.has(id) ? "on" : "", "aria-pressed": indicators.has(id), onClick: () => toggleIndicator(id) }, /* @__PURE__ */ React26.createElement("span", { className: "dhl-indicator-check", "aria-hidden": "true" }, indicators.has(id) ? /* @__PURE__ */ React26.createElement(UiIcon, { name: "check", size: 13 }) : null), /* @__PURE__ */ React26.createElement("span", null, /* @__PURE__ */ React26.createElement("b", null, id === "rsi14" ? `RSI ${studySettings.rsi.period}` : id === "bollinger20" ? `BOLL ${studySettings.bollinger.period} \xD7 ${studySettings.bollinger.multiplier}` : tr(label, INDICATOR_EN[id]?.[0] ?? label)), /* @__PURE__ */ React26.createElement("small", null, id === "macd" ? `${studySettings.macd.fast} / ${studySettings.macd.slow} / ${studySettings.macd.signal}` : id === "bollinger20" ? tr("\u5747\u7EBF\u4E0E\u6807\u51C6\u5DEE\u901A\u9053", "Mean and standard deviation bands") : tr(description, INDICATOR_EN[id]?.[1] ?? description))))), /* @__PURE__ */ React26.createElement(IndicatorEditor, { key: s.activeSessionId, settings: s.workspace?.indicatorSettings, indicators: [...indicators], maLines, onApply: saveSessionWorkspace }), /* @__PURE__ */ React26.createElement(MaEditor, { lines: maLines, onChange: (next) => saveSessionWorkspace({ maLines: next }) }))), /* @__PURE__ */ React26.createElement("button", { type: "button", className: s.workspace?.showDataWindow ? "on" : "", "aria-pressed": s.workspace?.showDataWindow ?? false, onClick: () => saveSessionWorkspace({ showDataWindow: !s.workspace?.showDataWindow }) }, tr("\u6570\u636E\u7A97\u53E3", "Data window")), /* @__PURE__ */ React26.createElement(StrategyMenu, { candles: s.candles, coin, interval: s.interval }), /* @__PURE__ */ React26.createElement("details", { className: "dhl-draw-menu" + (drawMode ? " active" : ""), ref: drawMenu }, /* @__PURE__ */ React26.createElement("summary", { "aria-label": tr("\u753B\u7EBF\u5DE5\u5177", "Drawing tools") }, drawMode ? /* @__PURE__ */ React26.createElement(React26.Fragment, null, /* @__PURE__ */ React26.createElement(ToolIcon, { kind: drawMode, size: 14 }), tr(toolOf(drawMode).zh, toolOf(drawMode).en)) : tr("\u753B\u7EBF", "Draw"), /* @__PURE__ */ React26.createElement(UiIcon, { name: "chevronDown", size: 12 })), /* @__PURE__ */ React26.createElement("div", { className: "dhl-draw-popover", role: "menu", "aria-label": tr("\u753B\u7EBF\u5DE5\u5177", "Drawing tools") }, /* @__PURE__ */ React26.createElement(
+    "input",
+    {
+      className: "dhl-draw-search",
+      type: "search",
+      value: toolQuery,
+      placeholder: tr(`\u641C\u7D22 ${DRAWING_TOOLS.length} \u79CD\u753B\u7EBF\u5DE5\u5177`, `Search ${DRAWING_TOOLS.length} drawing tools`),
+      "aria-label": tr("\u641C\u7D22\u753B\u7EBF\u5DE5\u5177", "Search drawing tools"),
+      onChange: (event) => setToolQuery(event.target.value),
+      onKeyDown: (event) => {
+        if (event.key === "Escape" && toolQuery) {
+          event.stopPropagation();
+          setToolQuery("");
+        }
+      }
+    }
+  ), (() => {
+    const query = toolQuery.trim().toLowerCase();
+    const shown = query ? DRAWING_TOOLS.filter((tool) => `${tool.zh} ${tool.en} ${tool.kind}`.toLowerCase().includes(query)) : DRAWING_TOOLS;
+    return shown.length ? null : /* @__PURE__ */ React26.createElement("p", { className: "dhl-draw-empty" }, tr("\u6CA1\u6709\u5339\u914D\u7684\u753B\u7EBF\u5DE5\u5177", "No matching tools"));
+  })(), DRAWING_TOOLS.filter((tool) => {
+    const query = toolQuery.trim().toLowerCase();
+    return !query || `${tool.zh} ${tool.en} ${tool.kind}`.toLowerCase().includes(query);
+  }).map((tool, index, shown) => /* @__PURE__ */ React26.createElement(React26.Fragment, { key: tool.kind }, index > 0 && shown[index - 1].group !== tool.group ? /* @__PURE__ */ React26.createElement("hr", null) : null, /* @__PURE__ */ React26.createElement("div", { className: "dhl-draw-tool-row" }, /* @__PURE__ */ React26.createElement(
     "button",
     {
       type: "button",

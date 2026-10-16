@@ -34,6 +34,8 @@ export const DRAWING_TOOLS: DrawingTool[] = [
   { group: 'lines', kind: 'crossline', zh: '十字线', en: 'Cross line', hintZh: '单击放置水平与垂直交叉线（Alt+C）', hintEn: 'Click to place a horizontal and vertical cross (Alt+C)', icon: 'M12 3v18M3 12h18' },
   { group: 'lines', kind: 'vline', zh: '垂直线', en: 'Vertical line', hintZh: '单击标记时间（Alt+V）', hintEn: 'Click to mark a time (Alt+V)', icon: 'M12 3v18' },
   { group: 'channels', kind: 'channel', zh: '平行通道', en: 'Parallel channel', hintZh: '点击两点画基线，第三点设置通道宽度', hintEn: 'Two points for the base, a third for width', icon: 'M3 15 15 5M9 19 21 9' },
+  { group: 'channels', kind: 'flatchannel', zh: '平顶/平底通道', en: 'Flat top/bottom', hintZh: '两点画趋势边，第三点设置水平边的价格', hintEn: 'Two points for the sloped side, a third for the flat side', icon: 'M3 18 21 8M3 5h18' },
+  { group: 'channels', kind: 'disjoint', zh: '分离通道', en: 'Disjoint channel', hintZh: '两点画第一条边，第三点放置斜率相反的第二条边', hintEn: 'Two points for one side; a third places the mirrored side', icon: 'M3 16 21 6M3 9l18 10' },
   { group: 'channels', kind: 'pitchfork', zh: '安德鲁叉子线', en: 'Pitchfork', hintZh: '点击枢轴点，再点击波段高点与低点', hintEn: 'Click the pivot, then the swing high and low', icon: 'M4 20 12 4M12 4l8 8M12 4 4 12M8 16l12-4' },
   { group: 'channels', kind: 'schiff', zh: 'Schiff 叉子线', en: 'Schiff pitchfork', hintZh: '同叉子线，起点移到 A、B 价格中点', hintEn: 'Pitchfork with the handle at A–B price midpoint', icon: 'M4 14 12 4M12 4l8 8M12 4 4 12M8 16l12-4' },
   { group: 'channels', kind: 'modschiff', zh: '改良 Schiff 叉子线', en: 'Modified Schiff pitchfork', hintZh: '同叉子线，起点移到 A、B 时间与价格中点', hintEn: 'Pitchfork with the handle at the A–B midpoint', icon: 'M6 12 12 4M12 4l8 8M12 4 4 12M8 16l12-4' },
@@ -43,6 +45,11 @@ export const DRAWING_TOOLS: DrawingTool[] = [
   { group: 'fib', kind: 'fibext', zh: '斐波那契扩展', en: 'Trend-based fib extension', hintZh: '点击波段起点、终点，再点击回撤点，自回撤点投射', hintEn: 'Swing start, swing end, then the retracement point', icon: 'M3 20 9 6l6 9M15 4h7M15 8h7M15 12h7' },
   { group: 'fib', kind: 'fibchannel', zh: '斐波那契通道', en: 'Fib channel', hintZh: '两点画基线，第三点设置通道宽度', hintEn: 'Two points for the base, a third for width', icon: 'M3 19 21 9M3 15 21 5M3 11 21 1' },
   { group: 'fib', kind: 'fibtime', zh: '斐波那契时间周期', en: 'Fib time zone', hintZh: '点击两点确定单位间隔', hintEn: 'Click two points to set the unit spacing', icon: 'M4 3v18M7 3v18M10 3v18M15 3v18M22 3v18' },
+  { group: 'fib', kind: 'fibfan', zh: '斐波那契速度阻力扇', en: 'Fib speed resistance fan', hintZh: '点击原点，再点击对角，按价格与时间比例画扇线', hintEn: 'Click the origin, then the opposite corner', icon: 'M3 21 21 3M3 21 21 9M3 21 21 15M3 21 9 3M3 21 15 3' },
+  { group: 'fib', kind: 'fibcircles', zh: '斐波那契圆', en: 'Fib circles', hintZh: '点击圆心，再点击确定 1.0 半径', hintEn: 'Click the center, then the 1.0 radius', icon: 'M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z' },
+  { group: 'fib', kind: 'fibarcs', zh: '斐波那契弧', en: 'Fib speed resistance arcs', hintZh: '点击波段起点，再点击终点，以终点为圆心画弧', hintEn: 'Click the swing start, then the end (arcs center on the end)', icon: 'M4 20a8 8 0 0 1 16 0M8 20a4 4 0 0 1 8 0' },
+  { group: 'fib', kind: 'fibwedge', zh: '斐波那契楔形', en: 'Fib wedge', hintZh: '点击顶点，再点击两条边的端点', hintEn: 'Click the apex, then the ends of the two sides', icon: 'M3 12 21 4M3 12l18 8M15 6.7a7 7 0 0 1 0 10.6' },
+  { group: 'fib', kind: 'fibtrendtime', zh: '基于趋势的斐波那契时间', en: 'Trend-based fib time', hintZh: '两点确定趋势时长，第三点起按比例画时间线', hintEn: 'Two points set the trend duration; lines start at the third', icon: 'M3 18 9 6M12 3v18M16 3v18M21 3v18' },
   { group: 'fib', kind: 'gannbox', zh: '江恩箱', en: 'Gann box', hintZh: '点击两个对角，按 0.25/0.382/0.5/0.618/0.75 分割', hintEn: 'Click two corners; divided at Gann levels', icon: 'M4 4h16v16H4zM4 12h16M12 4v16M4 4l16 16' },
   { group: 'fib', kind: 'gannsquare', zh: '江恩方格', en: 'Gann square', hintZh: '点击两个对角，画四分网格、对角线与扇线', hintEn: 'Click two corners; quarters, diagonals and fans', icon: 'M4 4h16v16H4zM4 4l16 16M20 4 4 20M4 12h16M12 4v16' },
   { group: 'fib', kind: 'gannfan', zh: '江恩扇形', en: 'Gann fan', hintZh: '点击原点，再点击确定 1×1 线', hintEn: 'Click the origin, then a point on the 1×1 line', icon: 'M3 21 21 3M3 21 21 12M3 21 12 3M3 21h18' },
@@ -50,19 +57,37 @@ export const DRAWING_TOOLS: DrawingTool[] = [
   { group: 'patterns', kind: 'elliottabc', zh: '艾略特调整浪', en: 'Elliott correction wave', hintZh: '依次点击 0、A、B、C 四个点', hintEn: 'Click 0, A, B, C', icon: 'M3 6l6 10 5-6 7 10' },
   { group: 'patterns', kind: 'xabcd', zh: 'XABCD 谐波', en: 'XABCD pattern', hintZh: '依次点击 X、A、B、C、D，显示斐波那契比值', hintEn: 'Click X, A, B, C, D; shows Fibonacci ratios', icon: 'M2 18 7 5l4 9 5-7 6 12M2 18l9-4M11 14l11 5' },
   { group: 'patterns', kind: 'abcd', zh: 'ABCD 形态', en: 'ABCD pattern', hintZh: '依次点击 A、B、C、D', hintEn: 'Click A, B, C, D', icon: 'M3 19 9 6l5 8 7-10' },
+  { group: 'patterns', kind: 'cypher', zh: 'Cypher 形态', en: 'Cypher pattern', hintZh: '依次点击 X、A、B、C、D，显示 B 回撤、C 扩展与 D 对 XC 的回撤', hintEn: 'Click X, A, B, C, D; shows B, C and XC ratios', icon: 'M2 17 7 5l4 8 4-10 7 15M2 17l9-4' },
+  { group: 'patterns', kind: 'threedrives', zh: '三驱形态', en: 'Three drives pattern', hintZh: '依次点击起点、驱动 1、A、驱动 2、B、驱动 3', hintEn: 'Click start, drive 1, A, drive 2, B, drive 3', icon: 'M2 20 6 13l3 3 4-8 3 3 5-8' },
+  { group: 'patterns', kind: 'tripattern', zh: '三角形态', en: 'Triangle pattern', hintZh: '依次点击 A、B、C、D，连线并延长上下边', hintEn: 'Click A, B, C, D; the sides extend to the apex', icon: 'M3 4 9 18l5-10 4 6M3 4l18 6M9 18l12-6' },
+  { group: 'patterns', kind: 'elliotttri', zh: '艾略特三角浪', en: 'Elliott triangle wave', hintZh: '依次点击 0、A、B、C、D、E', hintEn: 'Click 0, A, B, C, D, E', icon: 'M2 5l4 14 4-11 4 8 4-5 4 3' },
+  { group: 'patterns', kind: 'elliottwxy', zh: '艾略特双重组合', en: 'Elliott double combo', hintZh: '依次点击 0、W、X、Y', hintEn: 'Click 0, W, X, Y', icon: 'M3 6l6 10 5-6 7 10' },
+  { group: 'patterns', kind: 'elliottwxyxz', zh: '艾略特三重组合', en: 'Elliott triple combo', hintZh: '依次点击 0、W、X、Y、X、Z', hintEn: 'Click 0, W, X, Y, X, Z', icon: 'M2 6l4 8 3-4 4 7 3-4 6 9' },
+  { group: 'patterns', kind: 'cycles', zh: '周期线', en: 'Cyclic lines', hintZh: '点击两点确定周期，向后等距画垂直线', hintEn: 'Click two points to set the period', icon: 'M5 3v18M10 3v18M15 3v18M20 3v18' },
+  { group: 'patterns', kind: 'sine', zh: '正弦线', en: 'Sine line', hintZh: '点击波峰，再点击相邻波谷', hintEn: 'Click a peak, then the next trough', icon: 'M2 12c2.5-8 5-8 7.5 0s5 8 7.5 0 3-5 5-4' },
   { group: 'patterns', kind: 'headshoulders', zh: '头肩形态', en: 'Head and shoulders', hintZh: '依次点击左底、左肩、颈线点、头、颈线点、右肩、右底', hintEn: 'Click 7 points from left base to right base', icon: 'M2 18l3-6 3 3 4-10 4 10 3-3 3 6M5 15h14' },
   { group: 'shapes', kind: 'rect', zh: '矩形', en: 'Rectangle', hintZh: '点击两个对角（Alt+Shift+R）', hintEn: 'Click two opposite corners (Alt+Shift+R)', icon: 'M4 6h16v12H4z' },
   { group: 'shapes', kind: 'circle', zh: '圆形', en: 'Circle', hintZh: '点击圆心，再点击边缘', hintEn: 'Click the center, then the edge', icon: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z' },
   { group: 'shapes', kind: 'triangle', zh: '三角形', en: 'Triangle', hintZh: '依次点击三个顶点', hintEn: 'Click three corners', icon: 'M12 4 21 20H3z' },
+  { group: 'shapes', kind: 'ellipse', zh: '椭圆', en: 'Ellipse', hintZh: '点击外接矩形的两个对角', hintEn: 'Click two corners of its bounding box', icon: 'M12 6c5 0 9 2.7 9 6s-4 6-9 6-9-2.7-9-6 4-6 9-6z' },
+  { group: 'shapes', kind: 'rotrect', zh: '旋转矩形', en: 'Rotated rectangle', hintZh: '两点画一条边，第三点设置宽度', hintEn: 'Two points for one side, a third for the width', icon: 'M4 14 14 4l6 6-10 10z' },
+  { group: 'shapes', kind: 'arc', zh: '弧线', en: 'Arc', hintZh: '点击起点、终点，再点击弧线经过的点', hintEn: 'Click start, end, then a point on the arc', icon: 'M3 18c3-10 15-10 18 0' },
+  { group: 'shapes', kind: 'curve', zh: '曲线', en: 'Curve', hintZh: '点击起点、终点，再点击控制点', hintEn: 'Click start, end, then the control point', icon: 'M3 18C8 2 14 22 21 6' },
   { group: 'shapes', kind: 'brush', zh: '画笔', en: 'Brush', hintZh: '按住鼠标拖动自由绘制', hintEn: 'Press and drag to draw freehand', icon: 'M3 17c3-6 5 2 8-3s4-6 7-4 3 4 3 4' },
   { group: 'annotation', kind: 'text', zh: '文本', en: 'Text', hintZh: '单击位置后输入文字', hintEn: 'Click a spot, then type', icon: 'M5 6h14M12 6v13M9 19h6' },
   { group: 'annotation', kind: 'callout', zh: '标注气泡', en: 'Callout', hintZh: '点击要标注的位置，再点击文本框位置，然后输入文字', hintEn: 'Click the target, then the box, then type', icon: 'M4 4h16v10H10l-4 5v-5H4z' },
+  { group: 'annotation', kind: 'note', zh: '便签', en: 'Note', hintZh: '单击位置后输入便签内容', hintEn: 'Click a spot, then type the note', icon: 'M5 4h14v11l-5 5H5zM14 20v-5h5' },
+  { group: 'annotation', kind: 'pricenote', zh: '价格便签', en: 'Price note', hintZh: '点击要标注的价格，再点击便签位置，然后输入文字', hintEn: 'Click the price, then the note position, then type', icon: 'M3 16h6M9 16l4-6h8v8h-8z' },
+  { group: 'annotation', kind: 'signpost', zh: '路标', en: 'Signpost', hintZh: '单击 K 线位置后输入路标文字', hintEn: 'Click a bar, then type the signpost text', icon: 'M8 21V4M8 4h11l-2 3 2 3H8' },
   { group: 'annotation', kind: 'pricelabel', zh: '价格标签', en: 'Price label', hintZh: '单击在该价格处放置标签', hintEn: 'Click to tag a price', icon: 'M3 12l5-6h13v12H8z' },
   { group: 'annotation', kind: 'icon', zh: '图标', en: 'Icon', hintZh: '单击位置后选择图标', hintEn: 'Click a spot, then pick an icon', icon: 'M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.6 6.7 19.4l1.2-6L3.4 9.3l6-.7z' },
   { group: 'annotation', kind: 'arrow', zh: '箭头', en: 'Arrow', hintZh: '点击起点和箭头指向的位置', hintEn: 'Click tail, then head', icon: 'M4 20 20 4M12 4h8v8' },
   { group: 'measure', kind: 'pricerange', zh: '价格区间', en: 'Price range', hintZh: '点击两点，测量价格差与百分比', hintEn: 'Click two points to measure price change', icon: 'M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4M5 3h14M5 21h14' },
   { group: 'measure', kind: 'daterange', zh: '日期区间', en: 'Date range', hintZh: '点击两点，测量 K 线根数与时长', hintEn: 'Click two points to measure bars and time', icon: 'M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4M3 5v14M21 5v14' },
   { group: 'measure', kind: 'measure', zh: '日期与价格区间', en: 'Date & price range', hintZh: '点击起点和终点，显示涨跌、根数与时长', hintEn: 'Click two points to measure change, bars and time', icon: 'M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4' },
+  { group: 'measure', kind: 'forecast', zh: '预测', en: 'Forecast', hintZh: '点击起点，再点击预测目标，显示涨跌与时长', hintEn: 'Click the source, then the target; shows change and time', icon: 'M3 17 10 12M10 12l11-7M17 5h4v4M10 12v.01' },
+  { group: 'measure', kind: 'avwap', zh: '锚定 VWAP', en: 'Anchored VWAP', hintZh: '单击锚定的 K 线，从该处累计到最新 K 线', hintEn: 'Click the anchor bar; accumulates to the latest bar', icon: 'M4 4v16M4 16c4-1 6-6 10-7s5 2 6 0' },
+  { group: 'measure', kind: 'avprofile', zh: '锚定成交量分布', en: 'Anchored volume profile', hintZh: '单击锚定的 K 线，统计从该处到最新的成交量分布', hintEn: 'Click the anchor bar; volume by price up to the latest bar', icon: 'M4 3v18M4 6h7M4 10h12M4 14h9M4 18h5' },
   { group: 'measure', kind: 'long', zh: '多头头寸', en: 'Long position', hintZh: '点击入场价，再点击止损价（止盈默认 2R，可拖动）', hintEn: 'Click entry, then stop (target defaults to 2R)', icon: 'M4 4h16v8H4zM4 12h16v8H4zM4 12h16' },
   { group: 'measure', kind: 'short', zh: '空头头寸', en: 'Short position', hintZh: '点击入场价，再点击止损价（止盈默认 2R，可拖动）', hintEn: 'Click entry, then stop (target defaults to 2R)', icon: 'M4 4h16v8H4zM4 12h16v8H4zM4 12h16' },
 ]
@@ -599,16 +624,20 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
       handles = [c0, c1]
       break
     }
+    case 'avprofile':
     case 'vprofile': {
-      if (!p[1]) break
-      const [from, to] = points[0].time <= points[1].time ? points : [points[1], points[0]]
-      const x0 = Math.min(p[0].x, p[1].x), x1 = Math.max(p[0].x, p[1].x)
+      // Anchored: the range runs from the anchor to the latest loaded bar.
+      const lastBar = kind === 'avprofile' ? view.candles?.(points[0].time, Number.MAX_SAFE_INTEGER).at(-1) : undefined
+      const endPoint = kind === 'avprofile' ? (lastBar ? view.project(lastBar.time, points[0].price) : null) : p[1]
+      if (!endPoint) { if (kind === 'avprofile') { body = <><line x1={p[0].x} x2={p[0].x} y1="0" y2={h} />{text(p[0].x + 4, 16, tr('锚点之后暂无 K 线', 'No bars after the anchor'), 'start')}</> } break }
+      const [from, to] = kind === 'avprofile' ? [points[0], { time: lastBar!.time, price: points[0].price }] : points[0].time <= points[1].time ? points : [points[1], points[0]]
+      const x0 = Math.min(p[0].x, endPoint.x), x1 = Math.max(p[0].x, endPoint.x)
       const settings = { rows: rows ?? 48, valueArea: valueArea ?? 0.7 }
       const profile = view.profile ? view.profile(from.time, to.time, settings) : volumeProfile(view.candles?.(from.time, to.time) ?? [], settings)
       const partial = view.firstTime != null && view.barMs != null && view.firstTime - from.time >= view.barMs
       if (!profile) {
         body = <><rect className="dhl-drawing-fill" x={x0} y={0} width={Math.max(1, x1 - x0)} height={h} />{text(x0 + 4, 16, tr('区间内暂无成交量数据', 'No volume in this range'), 'start')}</>
-        handles = [p[0], p[1]]
+        handles = kind === 'avprofile' ? [p[0]] : [p[0], p[1]]
         break
       }
       const y = (price: number) => view.project(from.time, price)?.y
@@ -637,7 +666,243 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
         {yVal != null ? <><line className="dhl-drawing-mid" x1={x0} y1={yVal} x2={x1} y2={yVal} />{text(x1 - 4, yVal + 12, `VAL ${fmtPrice(profile.val)}`, 'end')}</> : null}
         {yBottom != null ? text(x0 + 4, Math.min(h - 4, yBottom + 14), partial ? tr('K 线估算 · 区间前段历史未加载', 'Estimated from bars · early range not loaded') : tr('K 线估算', 'Estimated from bars'), 'start', partial ? 'dhl-drawing-text dhl-vprofile-warn' : 'dhl-drawing-text') : null}
       </g>
+      handles = kind === 'avprofile' ? [p[0]] : [p[0], p[1]]
+      break
+    }
+    case 'avwap': {
+      // Volume-weighted average of HLC3 from the anchor bar to the latest loaded bar.
+      const bars = view.candles?.(points[0].time, Number.MAX_SAFE_INTEGER) ?? []
+      let pv = 0, vol = 0
+      const path: Pt[] = []
+      for (const bar of bars) {
+        pv += (bar.high + bar.low + bar.close) / 3 * bar.volume; vol += bar.volume
+        const point = vol > 0 ? view.project(bar.time, pv / vol) : null
+        if (point) path.push(point)
+      }
+      if (path.length < 1 || vol <= 0) { body = <><line x1={p[0].x} x2={p[0].x} y1="0" y2={h} />{text(p[0].x + 4, 16, tr('锚点之后暂无成交量', 'No volume after the anchor'), 'start')}</>; break }
+      const last = path.at(-1)!
+      // History before the anchor not loaded yet: the sum starts late, so say so until it pages in.
+      const partial = view.firstTime != null && view.barMs != null && view.firstTime - points[0].time >= view.barMs
+      body = <>
+        <polyline className="dhl-pattern" points={path.map((point) => `${point.x},${point.y}`).join(' ')} />
+        <line className="dhl-drawing-mid" x1={p[0].x} x2={p[0].x} y1={p[0].y - 14} y2={p[0].y + 14} />
+        {text(Math.min(last.x + 4, w - 110), last.y - 5, `VWAP ${fmtPrice(pv / vol)}`)}
+        {partial ? text(Math.min(last.x + 4, w - 160), last.y + 12, tr('锚点前段历史未加载，数值暂不完整', 'Early history not loaded; value incomplete'), 'start', 'dhl-drawing-text dhl-vprofile-warn') : null}
+      </>
+      handles = [p[0]]
+      break
+    }
+    case 'forecast': {
+      if (!p[1]) break
+      const [a, b] = points
+      const change = b.price - a.price, pct = a.price > 0 ? change / a.price * 100 : 0
+      const up = change >= 0
+      const boxY = up ? p[1].y - 44 : p[1].y + 8
+      body = <g className={`dhl-measure ${up ? 'up' : 'down'}`}>
+        <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} /><polygon className="dhl-arrow-head" points={arrowHead(p[0], p[1])} />
+        <line className="dhl-drawing-mid" x1={p[0].x} x2={p[1].x} y1={p[0].y} y2={p[0].y} />
+        <rect className="dhl-measure-box" x={p[1].x - 78} y={boxY} width="156" height="36" rx="4" />
+        {text(p[1].x, boxY + 15, `${tr('目标', 'Target')} ${fmtPrice(b.price)} (${up ? '+' : ''}${pct.toFixed(2)}%)`, 'middle')}
+        {text(p[1].x, boxY + 29, `${Math.abs(Math.round(view.bars(a.time, b.time)))} ${tr('根', 'bars')} · ${duration(b.time - a.time)}`, 'middle')}
+      </g>
+      break
+    }
+    case 'note':
+    case 'signpost': {
+      const value = textValue || label || (kind === 'note' ? tr('便签', 'Note') : tr('路标', 'Signpost'))
+      const lines = wrapText(value, 220)
+      const width = (16 + Math.max(...lines.map(textWidth))) * k, height = (10 + lines.length * 16) * k
+      // A note sits beside its anchor; a signpost stands on a pole above the bar.
+      const top = kind === 'note' ? p[0].y - height / 2 : p[0].y - 46 - height
+      const left = kind === 'note' ? p[0].x + 12 : p[0].x - 4
+      body = <g className={kind === 'note' ? 'dhl-note' : 'dhl-signpost'}>
+        {kind === 'signpost' ? <line x1={p[0].x} x2={p[0].x} y1={p[0].y} y2={top + height} /> : <line className="dhl-drawing-mid" x1={p[0].x} y1={p[0].y} x2={left} y2={p[0].y} />}
+        <circle className="dhl-callout-dot" cx={p[0].x} cy={p[0].y} r="3" />
+        <rect className="dhl-text-box dhl-note-box" x={left} y={top} width={width} height={height} rx="4" />
+        {lines.map((line, index) => <React.Fragment key={index}>{text(left + 8 * k, top + (17 + index * 16) * k - 2, line, 'start', 'dhl-drawing-text dhl-text-value')}</React.Fragment>)}
+      </g>
+      handles = [p[0]]
+      break
+    }
+    case 'pricenote': {
+      if (!p[1]) break
+      const value = `${fmtPrice(points[0].price)} · ${textValue || label || tr('价格便签', 'Price note')}`
+      const width = Math.min(300, 16 + textWidth(value)) * k
+      body = <>
+        <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y + 13 * k} />
+        <circle className="dhl-callout-dot" cx={p[0].x} cy={p[0].y} r="3" />
+        <rect className="dhl-text-box dhl-note-box" x={p[1].x} y={p[1].y} width={width} height={26 * k} rx="4" />
+        {text(p[1].x + 8 * k, p[1].y + 17 * k, value, 'start', 'dhl-drawing-text dhl-text-value')}
+      </>
+      break
+    }
+    case 'flatchannel':
+    case 'disjoint': {
+      if (!p[1]) break
+      const base = <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />
+      if (!p[2]) { body = base; break }
+      // Flat: the second side is horizontal at the third point's price. Disjoint: it mirrors the slope from the third point.
+      const a2 = kind === 'flatchannel' ? { x: p[0].x, y: p[2].y } : p[2]
+      const b2 = kind === 'flatchannel' ? { x: p[1].x, y: p[2].y } : { x: p[2].x + (p[1].x - p[0].x), y: p[2].y - (p[1].y - p[0].y) }
+      body = <>
+        <polygon className="dhl-drawing-fill" points={`${p[0].x},${p[0].y} ${p[1].x},${p[1].y} ${b2.x},${b2.y} ${a2.x},${a2.y}`} />
+        {base}<line x1={a2.x} y1={a2.y} x2={b2.x} y2={b2.y} />
+      </>
+      break
+    }
+    case 'fibfan': {
+      if (!p[1]) break
+      const dx = p[1].x - p[0].x, dy = p[1].y - p[0].y
+      const ratios = [0.25, 0.382, 0.5, 0.618, 0.75]
+      const ray = (end: Pt, key: string, value: string) => {
+        const seg = clipLine(p[0], end, w, h, 0)
+        return seg ? <g key={key}><line x1={seg[0].x} y1={seg[0].y} x2={seg[1].x} y2={seg[1].y} />{text(end.x + 3, end.y - 3, value)}</g> : null
+      }
+      body = <>
+        <rect className="dhl-drawing-mid" x={Math.min(p[0].x, p[1].x)} y={Math.min(p[0].y, p[1].y)} width={Math.abs(dx)} height={Math.abs(dy)} fill="none" />
+        {/* Price fans through the far edge at each level; time fans through the far price edge. */}
+        {ratios.map((r) => ray({ x: p[1].x, y: p[0].y + dy * r }, `p${r}`, String(r)))}
+        {ratios.map((r) => ray({ x: p[0].x + dx * r, y: p[1].y }, `t${r}`, String(r)))}
+        {ray(p[1], 'one', '1')}
+      </>
+      break
+    }
+    case 'fibcircles':
+    case 'fibarcs': {
+      if (!p[1]) break
+      const center = kind === 'fibcircles' ? p[0] : p[1]
+      const radius = Math.hypot(p[1].x - p[0].x, p[1].y - p[0].y)
+      const levels = kind === 'fibcircles' ? [0.382, 0.5, 0.618, 1, 1.618, 2.618] : [0.382, 0.5, 0.618, 1]
+      // Arcs open away from the swing start, like TradingView's speed resistance arcs.
+      const sweep = p[0].y > p[1].y ? 1 : 0
+      body = <>
+        {levels.map((level) => {
+          const r = radius * level
+          return <g key={level}>
+            {kind === 'fibcircles' ? <circle className="dhl-fib-ring" cx={center.x} cy={center.y} r={r} />
+              : <path className="dhl-fib-ring" d={`M${center.x - r} ${center.y}A${r} ${r} 0 0 ${sweep} ${center.x + r} ${center.y}`} />}
+            {text(center.x + 3, center.y + (sweep ? -r : r) + (sweep ? 12 : -4), String(level))}
+          </g>
+        })}
+        <line className="dhl-drawing-mid" x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />
+      </>
+      break
+    }
+    case 'fibwedge': {
+      if (!p[1]) break
+      if (!p[2]) { body = <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />; break }
+      const radius = Math.hypot(p[1].x - p[0].x, p[1].y - p[0].y)
+      const a1 = Math.atan2(p[1].y - p[0].y, p[1].x - p[0].x), a2 = Math.atan2(p[2].y - p[0].y, p[2].x - p[0].x)
+      const span = Math.atan2(Math.sin(a2 - a1), Math.cos(a2 - a1))
+      body = <>
+        <line x1={p[0].x} y1={p[0].y} x2={p[0].x + Math.cos(a1) * radius} y2={p[0].y + Math.sin(a1) * radius} />
+        <line x1={p[0].x} y1={p[0].y} x2={p[0].x + Math.cos(a2) * radius} y2={p[0].y + Math.sin(a2) * radius} />
+        {[0.236, 0.382, 0.5, 0.618, 0.786, 1].map((level) => {
+          const r = radius * level
+          const s = { x: p[0].x + Math.cos(a1) * r, y: p[0].y + Math.sin(a1) * r }, e = { x: p[0].x + Math.cos(a1 + span) * r, y: p[0].y + Math.sin(a1 + span) * r }
+          return <g key={level}><path className="dhl-fib-ring" d={`M${s.x} ${s.y}A${r} ${r} 0 0 ${span > 0 ? 1 : 0} ${e.x} ${e.y}`} />{text(s.x + 3, s.y - 3, String(level))}</g>
+        })}
+      </>
+      break
+    }
+    case 'fibtrendtime': {
+      if (!p[1]) break
+      if (!p[2]) { body = <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />; break }
+      const unit = points[1].time - points[0].time
+      body = <>
+        <line className="dhl-drawing-mid" x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />
+        {[0, 0.382, 0.5, 0.618, 1, 1.382, 1.618, 2, 2.618].map((level) => {
+          const x = view.project(points[2].time + unit * level, points[2].price)?.x
+          return x == null || x < -2 || x > w + 2 ? null : <g key={level}><line className={level === 0 || level === 1 ? 'dhl-fib-key' : undefined} x1={x} x2={x} y1="0" y2={h} />{text(x + 3, 12, String(level))}</g>
+        })}
+      </>
+      break
+    }
+    case 'cypher': {
+      const [X, A, B, C, D] = points
+      body = <>
+        {p[2] ? <polygon className="dhl-drawing-fill" points={`${p[0].x},${p[0].y} ${p[1].x},${p[1].y} ${p[2].x},${p[2].y}`} /> : null}
+        {p[4] ? <polygon className="dhl-drawing-fill" points={`${p[2].x},${p[2].y} ${p[3].x},${p[3].y} ${p[4].x},${p[4].y}`} /> : null}
+        {wave(p, ['X', 'A', 'B', 'C', 'D'], text)}
+        {p[2] ? guide(p[0], p[2], ratio(B.price - A.price, A.price - X.price), 'xb', text) : null}
+        {/* C extends beyond A relative to XA; D retraces XC. */}
+        {p[3] ? guide(p[1], p[3], ratio(C.price - X.price, A.price - X.price), 'xc', text) : null}
+        {p[4] ? guide(p[0], p[4], ratio(C.price - D.price, C.price - X.price), 'xd', text) : null}
+      </>
+      break
+    }
+    case 'threedrives': {
+      // Retracements (A, B) relative to the drive before them; drives 2 and 3 as extensions of that retracement.
+      body = <>{wave(p, ['', '1', 'A', '2', 'B', '3'], text)}
+        {p[2] ? guide(p[0], p[2], ratio(points[2].price - points[1].price, points[1].price - points[0].price), 'a', text) : null}
+        {p[3] ? guide(p[1], p[3], ratio(points[3].price - points[2].price, points[1].price - points[2].price), 'd2', text) : null}
+        {p[4] ? guide(p[2], p[4], ratio(points[4].price - points[3].price, points[3].price - points[2].price), 'b', text) : null}
+        {p[5] ? guide(p[3], p[5], ratio(points[5].price - points[4].price, points[3].price - points[4].price), 'd3', text) : null}</>
+      break
+    }
+    case 'tripattern': {
+      const upper = p[2] ? clipLine(p[0], p[2], w, h, 0) : null, lower = p[3] ? clipLine(p[1], p[3], w, h, 0) : null
+      body = <>{wave(p, ['A', 'B', 'C', 'D'], text)}
+        {upper ? <line className="dhl-neckline" x1={upper[0].x} y1={upper[0].y} x2={upper[1].x} y2={upper[1].y} /> : null}
+        {lower ? <line className="dhl-neckline" x1={lower[0].x} y1={lower[0].y} x2={lower[1].x} y2={lower[1].y} /> : null}</>
+      break
+    }
+    case 'elliotttri': body = wave(p, ['0', '(A)', '(B)', '(C)', '(D)', '(E)'], text); break
+    case 'elliottwxy': body = wave(p, ['0', '(W)', '(X)', '(Y)'], text); break
+    case 'elliottwxyxz': body = wave(p, ['0', '(W)', '(X)', '(Y)', '(X)', '(Z)'], text); break
+    case 'cycles': {
+      if (!p[1]) break
+      const step = points[1].time - points[0].time
+      const xs: number[] = []
+      // Start at the first period on screen (the chart may be scrolled far past the anchor), at most 400 lines.
+      const spacing = (view.project(points[0].time + step, points[0].price)?.x ?? NaN) - p[0].x
+      const first = Number.isFinite(spacing) && spacing > 0 ? Math.max(0, Math.floor(-p[0].x / spacing) - 1) : 0
+      for (let n = first; n < first + 400; n += 1) {
+        const x = view.project(points[0].time + step * n, points[0].price)?.x
+        if (x == null || x > w + 2) break
+        if (x >= -2) xs.push(x)
+      }
+      body = <>{xs.map((x, index) => <line key={index} className={index === 0 ? 'dhl-fib-key' : undefined} x1={x} x2={x} y1="0" y2={h} />)}</>
       handles = [p[0], p[1]]
+      break
+    }
+    case 'sine': {
+      if (!p[1]) break
+      const half = p[1].x - p[0].x
+      if (Math.abs(half) < 2) { body = <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />; break }
+      const mid = (p[0].y + p[1].y) / 2, amp = (p[0].y - p[1].y) / 2
+      const step = Math.max(2, Math.abs(half) / 16)
+      const pts: string[] = []
+      for (let x = 0; x <= w; x += step) pts.push(`${x.toFixed(1)},${(mid + amp * Math.cos(Math.PI * (x - p[0].x) / half)).toFixed(1)}`)
+      body = <polyline className="dhl-pattern" points={pts.join(' ')} />
+      break
+    }
+    case 'ellipse': {
+      if (!p[1]) break
+      body = <ellipse className="dhl-drawing-fill" cx={(p[0].x + p[1].x) / 2} cy={(p[0].y + p[1].y) / 2} rx={Math.abs(p[1].x - p[0].x) / 2} ry={Math.abs(p[1].y - p[0].y) / 2} />
+      break
+    }
+    case 'rotrect': {
+      if (!p[1]) break
+      if (!p[2]) { body = <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />; break }
+      // Width: the third point's distance from the first side, on its side.
+      const ux = p[1].x - p[0].x, uy = p[1].y - p[0].y, len = Math.hypot(ux, uy) || 1
+      const nx = -uy / len, ny = ux / len
+      const d = (p[2].x - p[0].x) * nx + (p[2].y - p[0].y) * ny
+      const c = { x: p[1].x + nx * d, y: p[1].y + ny * d }, e = { x: p[0].x + nx * d, y: p[0].y + ny * d }
+      body = <polygon className="dhl-drawing-fill" points={`${p[0].x},${p[0].y} ${p[1].x},${p[1].y} ${c.x},${c.y} ${e.x},${e.y}`} />
+      break
+    }
+    case 'arc':
+    case 'curve': {
+      if (!p[1]) break
+      if (!p[2]) { body = <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />; break }
+      // An arc passes through its third point (the quadratic's midpoint); a curve uses it as the control point.
+      const control = kind === 'arc' ? { x: 2 * p[2].x - (p[0].x + p[1].x) / 2, y: 2 * p[2].y - (p[0].y + p[1].y) / 2 } : p[2]
+      body = <>
+        <path className="dhl-curve" d={`M${p[0].x} ${p[0].y}Q${control.x} ${control.y} ${p[1].x} ${p[1].y}`} />
+        {kind === 'curve' && anchors ? <polyline className="dhl-drawing-mid" points={`${p[0].x},${p[0].y} ${p[2].x},${p[2].y} ${p[1].x},${p[1].y}`} /> : null}
+      </>
       break
     }
     case 'text': {

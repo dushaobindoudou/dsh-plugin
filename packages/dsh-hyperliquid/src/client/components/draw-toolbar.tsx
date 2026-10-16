@@ -12,7 +12,9 @@ import { Select } from './select'
 export const DRAW_COLORS = ['#4c82d8', '#2fd3a0', '#ef5f6c', '#e2a943', '#9b86db', '#26b5c8', '#8a8f98']
 const STYLES: Array<['solid' | 'dashed' | 'dotted', string, string]> = [['solid', '实线', 'Solid'], ['dashed', '虚线', 'Dashed'], ['dotted', '点线', 'Dotted']]
 
-export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone, onCoordinates }: {
+export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone, onCoordinates, placement = 'top' }: {
+  /** Bottom when the top position would cover the drawing being edited. */
+  placement?: 'top' | 'bottom'
   mark: ChartMark; globallyLocked: boolean; onEdit: (patch: Record<string, unknown>) => void; onRemove: () => void; onClose: () => void; onClone: () => void; onCoordinates: () => void
 }) {
   const [savedDefault, setSavedDefault] = React.useState(false)
@@ -37,7 +39,7 @@ export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, o
   // Keep the chart from treating toolbar presses as chart clicks or drags.
   const stop = (event: React.SyntheticEvent) => event.stopPropagation()
   return (
-    <div className="dhl-draw-toolbar" role="toolbar" aria-label={tr('画线样式', 'Drawing style')} onPointerDown={stop} onClick={stop}>
+    <div className={'dhl-draw-toolbar' + (placement === 'bottom' ? ' at-bottom' : '')} role="toolbar" aria-label={tr('画线样式', 'Drawing style')} onPointerDown={stop} onClick={stop}>
       <span className="dhl-draw-toolbar-name">{tr(tool.zh, tool.en)}</span>
       {isTextKind(mark.kind) ? <input className="dhl-draw-toolbar-text" value={text} maxLength={200} disabled={locked} aria-label={tr('文本内容', 'Text')}
         onChange={(event) => setText(event.target.value)}

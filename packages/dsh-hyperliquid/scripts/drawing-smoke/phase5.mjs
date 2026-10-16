@@ -1,6 +1,6 @@
 // Phase 5: multi-select with batch delete + one-step undo, undo of a first-time lock, TradingView
 // shortcuts, Esc peeling one layer at a time, and the Ctrl/⌘ magnet inversion with its snap ring.
-import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check } from './common.mjs'
+import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, toolItem } from './common.mjs'
 const url = await readUrl()
 const browser = await chromium.launch({ headless: true, executablePath: CHROME })
 try {
@@ -12,7 +12,7 @@ try {
   const box = await page.locator('.dhl-chart canvas').first().boundingBox()
   const at = (fx, fy) => ({ x: box.x + box.width * fx, y: box.y + box.height * fy })
   const clickXY = async ({ x, y }, modifiers = []) => { await page.mouse.move(x, y); await page.waitForTimeout(60); for (const key of modifiers) await page.keyboard.down(key); await page.mouse.click(x, y); for (const key of modifiers) await page.keyboard.up(key); await page.waitForTimeout(200) }
-  const pick = async (name) => { await page.locator('.dhl-draw-menu summary').click(); await page.getByRole('menuitemradio', { name: new RegExp('^' + name) }).click() }
+  const pick = async (name) => { await page.locator('.dhl-draw-menu summary').click(); await toolItem(page, name).click() }
   // Earlier phases leave drawings synced to every BTC session; count only this session's own.
   const marks = async () => (await store(page)).chartMarks.filter((m) => !m.shared)
   const settle = () => page.waitForTimeout(1500)
@@ -120,7 +120,7 @@ try {
 
   // ── volume profile settings from the toolbar ──
   await page.keyboard.press('Escape')
-  await page.locator('.dhl-draw-menu summary').click(); await page.getByRole('menuitemradio', { name: /^固定范围成交量分布/ }).click()
+  await page.locator('.dhl-draw-menu summary').click(); await toolItem(page, '固定范围成交量分布').click()
   await clickXY({ x: box2.x + box2.width * .3, y: box2.y + box2.height * .5 }); await clickXY({ x: box2.x + box2.width * .6, y: box2.y + box2.height * .5 }); await settle()
   const vp = (await marks()).find((m) => m.kind === 'vprofile')
   check(Boolean(vp), 'volume profile drawn')

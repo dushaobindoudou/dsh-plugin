@@ -1,5 +1,5 @@
 // Touch: draw, select, drag an anchor and pan with a finger (emulated touch via CDP).
-import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check } from './common.mjs'
+import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, toolItem } from './common.mjs'
 
 const url = await readUrl()
 const browser = await chromium.launch({ headless: true, executablePath: CHROME })
@@ -28,7 +28,7 @@ try {
 
   // Choose the trend tool from the menu with taps, then place two anchors with taps.
   await page.locator('.dhl-draw-menu summary').tap()
-  await page.getByRole('menuitemradio', { name: /^趋势线/ }).tap()
+  await toolItem(page, '趋势线').tap()
   await tap(at(.3, .62)); await tap(at(.5, .42)); await settle()
   const trend = (await marks()).find((m) => m.kind === 'trend')
   check(Boolean(trend), 'touch: two taps draw a trend line')

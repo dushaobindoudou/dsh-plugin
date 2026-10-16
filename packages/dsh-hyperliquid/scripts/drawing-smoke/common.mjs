@@ -26,3 +26,7 @@ export async function openDesk(page, url) {
 export const store = (page) => page.evaluate(() => { const s = window.__dhlStore.get(); return { activeSessionId: s.activeSessionId, chartMarks: s.chartMarks, maLines: s.workspace?.maLines ?? [], candles: s.candles.length } })
 export async function waitCandles(page) { await page.waitForFunction(() => window.__dhlStore.get().candles.length > 100 && window.__dhlStore.get().workspace, null, { timeout: 30_000 }); await page.waitForTimeout(1200) }
 export function check(ok, message, detail) { if (!ok) throw new Error('FAIL ' + message + (detail ? ' :: ' + JSON.stringify(detail).slice(0, 600) : '')); console.log('PASS ' + message) }
+
+/** A drawing-menu item by its exact tool name (the menu item's accessible name also carries the hint,
+ * so a prefix match would confuse 三角形 with 三角形态). */
+export const toolItem = (page, name) => page.getByRole('menuitemradio').filter({ has: page.locator('b', { hasText: new RegExp('^' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$') }) })

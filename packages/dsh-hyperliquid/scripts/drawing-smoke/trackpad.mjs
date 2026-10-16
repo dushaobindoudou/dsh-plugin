@@ -1,6 +1,6 @@
 // Trackpad: pinch (wheel + ctrlKey, as Chrome reports it) zooms the chart, not the page;
 // a two-finger horizontal swipe (wheel deltaX) pans; drawings stay attached to their bars.
-import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check } from './common.mjs'
+import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, toolItem } from './common.mjs'
 
 const url = await readUrl()
 const browser = await chromium.launch({ headless: true, executablePath: CHROME })
@@ -16,7 +16,7 @@ try {
   const at = (fx, fy) => ({ x: box.x + box.width * fx, y: box.y + box.height * fy })
   const click = async (p) => { await page.mouse.move(p.x, p.y); await page.waitForTimeout(60); await page.mouse.click(p.x, p.y); await page.waitForTimeout(200) }
   await page.locator('.dhl-draw-menu summary').click()
-  await page.getByRole('menuitemradio', { name: /^趋势线/ }).click()
+  await toolItem(page, '趋势线').click()
   await click(at(.35, .6)); await click(at(.55, .4)); await page.waitForTimeout(1600)
   const trend = (await store(page)).chartMarks.find((m) => m.kind === 'trend')
   check(Boolean(trend), 'trackpad: trend drawn')
