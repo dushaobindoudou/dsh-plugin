@@ -575,7 +575,7 @@ export class HyperRemote extends TypertRemoteService {
     const fields = { ...drawingStyle({ ...patch, kind: current.kind }) }
     if (patch?.alert === true) fields.alertTriggeredAt = undefined
     // null clears a style back to its default (undo of a first restyle relies on this).
-    for (const key of ['color', 'lineWidth', 'lineStyle', 'rows', 'valueArea', 'levels', 'visibleIntervals', 'fontSize', 'fillOpacity', 'bold', 'italic', 'extendLeft', 'extendRight']) if (key in patch && patch[key] === null) fields[key] = undefined
+    for (const key of ['color', 'lineWidth', 'lineStyle', 'rows', 'valueArea', 'levels', 'visibleIntervals', 'fontSize', 'fillOpacity', 'bold', 'italic', 'extendLeft', 'extendRight', 'screenX', 'screenY']) if (key in patch && patch[key] === null) fields[key] = undefined
     if (geometryKeys.some((key) => key in patch)) Object.assign(fields, drawingGeometry(current.kind, merged))
     if ('label' in patch) {
       const label = String(patch.label ?? '').trim()

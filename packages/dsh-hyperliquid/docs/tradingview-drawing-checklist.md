@@ -1,6 +1,6 @@
 # 画线工具 · TradingView 逐项对照
 
-核对日期：2026-10-17（0.5.2）。对照对象是 TradingView 网页版的画线面板与画线对象设置。「已做」以源码和测试为依据：单元测试 `test/chart-drawings.test.mjs`，真实宿主冒烟 `npm run smoke:drawing`（`scripts/drawing-smoke/` 下的 basics、phase1–5、perf）；依据列引号内是冒烟里 check 的原文。没有自动化测试的项单独注明。
+核对日期：2026-10-17（0.5.3）。对照对象是 TradingView 网页版的画线面板与画线对象设置。「已做」以源码和测试为依据：单元测试 `test/chart-drawings.test.mjs`，真实宿主冒烟 `npm run smoke:drawing`（`scripts/drawing-smoke/` 下的 basics、phase1–5、perf）；依据列引号内是冒烟里 check 的原文。没有自动化测试的项单独注明。
 
 结论：通用交互与对象属性两节列出的项全部已做；每个工具分组的常用工具已做；第三节「未做」列是各分组里较少用的工具，不属于本轮「基础能力」范围。
 
@@ -29,7 +29,7 @@
 | 画线价格提醒（穿越触发一次） | 已做 | phase4「price alert armed」与触发检查；HIP-3 行情同样参与提醒 |
 | 快速连续点击不丢锚点 | 已做 | 原生 click 路径。0.1.0 对照：两次点击间隔 100/300/450ms 均漏画 20/20，550/700ms 0/20（图表库 500ms 双击窗口）；当前版本 100/300/450/900ms 各 20 次 0 漏画 |
 | 触摸：点两下画线、点线选中、手指拖锚点、单指平移 | 已做（0.4.4） | touch「touch: two taps draw a trend line」「touch: dragging an anchor reshapes the line」「touch: a one-finger swipe pans the chart」（Chrome 手势管线模拟，非真机） |
-| 触控板：双指缩放只缩放图表（不缩放页面）、双指横滑平移，画线随 K 线移动 | 已做 | trackpad「pinch-out zooms the chart (not the page)」「a two-finger horizontal swipe pans」 |
+| 触控板：双指缩放只缩放图表（不缩放页面）、双指横滑平移，画线随 K 线移动；指针停在画线上时手势同样作用于图表（0.5.3 修复） | 已做 | trackpad「pinch-out zooms the chart (not the page)」「a two-finger horizontal swipe pans」「a swipe with the pointer on a drawing still pans the chart」 |
 | 屏幕外画线不渲染 | 已做 | perf「a drawing far off-screen is not rendered」 |
 
 ## 二、对象属性
@@ -59,9 +59,9 @@
 | 形态 | XABCD、ABCD、头肩、艾略特推动浪 / 调整浪、**Cypher**、**三驱**、**三角形态**、**艾略特三角浪 / 双重组合 / 三重组合**、**周期线**、**正弦线** | — |
 | 预测与测量 | 多头 / 空头头寸、日期区间、价格区间、日期与价格区间、固定范围成交量分布、**预测**、**锚定 VWAP**、**锚定成交量分布**、**K 线形态**、**投影**（按 TradingView 说明：起点、未来点、估计价格三点的扇形）、**幽灵 K 线**（官方未公开生成算法，本实现为近似：沿点击路径每个 K 线周期一根，高低差取实体与「起点前 20 根平均高低差 × 0.6–1.4」中的较大者） | — |
 | 几何形状 | 画笔、箭头、矩形、圆形、三角形、**椭圆**、**旋转矩形**、**弧线**、**曲线**、**荧光笔**、**路径**（双击或 Enter 结束）、**折线** | — |
-| 注释 | 文本、标注气泡、价格标签、图标 / 贴纸（含任意 emoji）、**便签**、**价格便签**、**路标**、**图钉** | 锚定文本（固定在屏幕位置，与按时间 / 价格存储的画线模型不同）、表格 |
+| 注释 | 文本、标注气泡、价格标签、图标 / 贴纸（含任意 emoji）、**便签**、**价格便签**、**路标**、**图钉**、**锚定文本**（固定在屏幕位置，平移图表时不动）、**表格**（| 分隔单元格、; 分隔行，可从工具条固定到屏幕或取消固定） | — |
 
-共 74 种画线工具；0.5.x 新增 33 种的依据：单元测试（每种按完整锚点数校验并渲染，平顶边、分离边、旋转矩形宽度、弧线控制点、Cypher 比值、斐波那契圆半径、锚定 VWAP 数值等几何断言）与冒烟 tools2（每种用鼠标真实绘制并渲染）。画线菜单顶部有搜索框（冒烟「searching the drawing menu for "vwap" leaves only anchored VWAP」）。
+共 76 种画线工具；0.5.x 新增 35 种的依据：单元测试（每种按完整锚点数校验并渲染，平顶边、分离边、旋转矩形宽度、弧线控制点、Cypher 比值、斐波那契圆半径、锚定 VWAP 数值等几何断言）与冒烟 tools2（每种用鼠标真实绘制并渲染）。画线菜单顶部有搜索框（冒烟「searching the drawing menu for "vwap" leaves only anchored VWAP」）。
 
 ## 仍需人工观察
 
@@ -75,3 +75,5 @@
 - [Projection / Sector（TradingView 帮助）](https://www.tradingview.com/support/solutions/43000516995-projection/)
 - [Ghost Feed（TradingView 帮助）](https://www.tradingview.com/support/solutions/43000748168-ghost-feed-a-drawing-tool-to-study-your-chart/)
 - [Drawing tools available on TradingView](https://www.tradingview.com/support/solutions/43000703396-drawing-tools-available-on-tradingview/)（固定江恩方格只出现在列表中）
+- [Anchored Text（TradingView 帮助）](https://in.tradingview.com/support/solutions/43000516974-anchored-text/)
+- [Table drawing tool（TradingView 帮助）](https://www.tradingview.com/support/solutions/43000744162-table/)

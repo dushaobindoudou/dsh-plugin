@@ -81,6 +81,9 @@ export interface ChartMark {
   fontSize?: number
   bold?: boolean
   italic?: boolean
+  /** Pinned to the screen (fractions of the plot), for anchored text and tables. */
+  screenX?: number
+  screenY?: number
   /** Trend line extended past its anchors. */
   extendLeft?: boolean
   extendRight?: boolean

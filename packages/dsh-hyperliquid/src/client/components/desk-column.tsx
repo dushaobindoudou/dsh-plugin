@@ -117,7 +117,7 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
   const [magnet, setMagnet] = usePreference<MagnetMode>('magnet', 'off', (value) => value === 'weak' || value === 'strong' ? value : 'off')
   const [stayDrawing, setStayDrawing] = usePreference<boolean>('stayDrawing', false, (value) => value === true)
   const [drawingsLocked, setDrawingsLocked] = usePreference<boolean>('drawingsLocked', false, (value) => value === true)
-  const [textAt, setTextAt] = React.useState<{ kind: DrawingKind; points: DrawPoint[] } | null>(null)
+  const [textAt, setTextAt] = React.useState<{ kind: DrawingKind; points: DrawPoint[]; screenX?: number; screenY?: number } | null>(null)
   const [selectRequest, setSelectRequest] = React.useState<{ id: string; at: number } | null>(null)
   const [textValue, setTextValue] = React.useState('')
   // 66 tools: a search box narrows the menu by Chinese name, English name or kind.
@@ -150,7 +150,7 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
   }, [])
   const draw = React.useCallback((mark: DrawPayload) => {
     if (!stayRef.current) setDrawMode(null)
-    if ((isTextKind(mark.kind) || mark.kind === 'icon') && 'points' in mark) { setTextValue(''); setTextAt({ kind: mark.kind, points: mark.points }); return }
+    if ((isTextKind(mark.kind) || mark.kind === 'icon') && 'points' in mark) { setTextValue(''); setTextAt({ kind: mark.kind, points: mark.points, screenX: mark.screenX, screenY: mark.screenY }); return }
     void save(mark, mark.kind === 'level' ? drawingLabel('level', [], mark.price)
       : mark.kind === 'trend' ? drawingLabel('trend', [{ time: mark.fromTime, price: mark.fromPrice }])
         : drawingLabel(mark.kind, mark.points))
@@ -301,10 +301,10 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
         </div>
         <button className="dhl-panel-iconbtn" type="button" onClick={onCollapse} aria-label={tr('收起行情区', 'Collapse market panel')} title={tr('收起行情区', 'Collapse market panel')}><FoldIcon direction="right" /></button>
       </header>
-      <Modal open={Boolean(textAt)} onClose={() => setTextAt(null)} title={textAt?.kind === 'icon' ? tr('选择图标', 'Pick an icon') : textAt?.kind === 'callout' ? tr('添加标注', 'Add callout') : tr('添加文本', 'Add text')} closeLabel={tr('关闭', 'Close')} className="dhl-rename-modal"
-        footer={<><Button variant="outline" onClick={() => setTextAt(null)}>{tr('取消', 'Cancel')}</Button><Button variant="primary" disabled={!textValue.trim()} onClick={() => { if (textAt && textValue.trim()) void save({ kind: textAt.kind as 'text', points: textAt.points }, textValue.trim()); setTextAt(null) }}>{tr('添加', 'Add')}</Button></>}>
+      <Modal open={Boolean(textAt)} onClose={() => setTextAt(null)} title={textAt?.kind === 'icon' ? tr('选择图标', 'Pick an icon') : textAt?.kind === 'callout' ? tr('添加标注', 'Add callout') : textAt?.kind === 'table' ? tr('添加表格（| 分隔单元格，; 分隔行）', 'Add table (| between cells, ; between rows)') : tr('添加文本', 'Add text')} closeLabel={tr('关闭', 'Close')} className="dhl-rename-modal"
+        footer={<><Button variant="outline" onClick={() => setTextAt(null)}>{tr('取消', 'Cancel')}</Button><Button variant="primary" disabled={!textValue.trim()} onClick={() => { if (textAt && textValue.trim()) void save({ kind: textAt.kind as 'text', points: textAt.points, ...(textAt.screenX != null ? { screenX: textAt.screenX, screenY: textAt.screenY } : {}) }, textValue.trim()); setTextAt(null) }}>{tr('添加', 'Add')}</Button></>}>
         {textAt?.kind === 'icon' ? <StickerPicker onPick={(name) => { if (textAt) void save({ kind: 'icon', points: textAt.points }, name); setTextAt(null) }} /> :         <Input data-modal-autofocus className="dhl-rename-input" value={textValue} maxLength={200} placeholder={tr('输入要标在图上的文字', 'Text to place on the chart')} aria-label={tr('文本内容', 'Text')}
-          onChange={(event) => setTextValue(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && textAt && textValue.trim()) { event.preventDefault(); void save({ kind: textAt.kind as 'text', points: textAt.points }, textValue.trim()); setTextAt(null) } }} />}
+          onChange={(event) => setTextValue(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && textAt && textValue.trim()) { event.preventDefault(); void save({ kind: textAt.kind as 'text', points: textAt.points, ...(textAt.screenX != null ? { screenX: textAt.screenX, screenY: textAt.screenY } : {}) }, textValue.trim()); setTextAt(null) } }} />}
       </Modal>
       {pickerOpen ? <MarketPicker activeCoin={coin} onClose={() => setPickerOpen(false)} /> : null}
 

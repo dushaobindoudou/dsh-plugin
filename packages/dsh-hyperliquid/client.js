@@ -980,6 +980,11 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-drawing .dhl-ghost-up { fill: color-mix(in srgb, var(--dsw-alias-state-success-primary) 45%, transparent); stroke: var(--dsw-alias-state-success-primary); stroke-width: 1; opacity: .7; }
 .dhl-drawing .dhl-ghost-down { fill: color-mix(in srgb, var(--dsw-alias-state-error-primary) 45%, transparent); stroke: var(--dsw-alias-state-error-primary); stroke-width: 1; opacity: .7; }
 .dhl-drawing-hit .dhl-ghost path, .dhl-drawing-hit .dhl-sector { pointer-events: all; }
+
+/* 0.5.3: tables and screen-pinned annotations. */
+.dhl-drawing .dhl-table-rule { stroke: currentColor; stroke-width: 1; opacity: .35; }
+.dhl-drawing .dhl-table-head { font-weight: 650; }
+.dhl-drawing-hit .dhl-table-box { pointer-events: all; }
 `;
 
 // src/client/locale.ts
@@ -17759,8 +17764,12 @@ var DRAWING_POINTS = {
   barspattern: 3,
   // Projection (TradingView's sector: origin, a future point, an estimated price); ghost feed is drawn like a path.
   projection: 3,
-  ghostfeed: 0
+  ghostfeed: 0,
+  // Screen-anchored text (TradingView's anchored text) and a table (cells split by |, rows by ; or a new line).
+  anchoredtext: 1,
+  table: 1
 };
+var SCREEN_KINDS = ["anchoredtext", "table"];
 var FREEHAND_KINDS = ["brush", "highlighter"];
 var MULTI_KINDS = ["path", "polyline", "ghostfeed"];
 var PATH_MAX = 50;
@@ -17775,7 +17784,7 @@ function isSingleEmoji(value) {
   if (typeof value !== "string" || !value || value.length > 32 || !/\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(value)) return false;
   return [...new Intl.Segmenter(void 0, { granularity: "grapheme" }).segment(value)].length === 1;
 }
-var FONT_KINDS = ["text", "callout", "note", "pricenote", "signpost"];
+var FONT_KINDS = ["text", "callout", "note", "pricenote", "signpost", "anchoredtext", "table"];
 var FILL_KINDS = ["rect", "circle", "triangle", "channel", "fib", "regression", "gannbox", "pricerange", "daterange", "measure", "flatchannel", "disjoint", "ellipse", "rotrect"];
 var FIB_LEVEL_KINDS = ["fib", "fibext", "fibchannel"];
 function volumeProfile(bars, { rows = 48, valueArea = 0.7 } = {}) {
@@ -17822,7 +17831,7 @@ var GANN_BOX_LEVELS = [0, 0.25, 0.382, 0.5, 0.618, 0.75, 1];
 var ALERT_KINDS = ["level", "hray", "trend", "ray", "extended"];
 var BRUSH_MIN = 2;
 var BRUSH_MAX = 500;
-var TEXT_KINDS = ["text", "callout", "note", "pricenote", "signpost", "pin"];
+var TEXT_KINDS = ["text", "callout", "note", "pricenote", "signpost", "pin", "anchoredtext", "table"];
 var DRAWING_CLICKS = { ...Object.fromEntries(Object.entries(DRAWING_POINTS)), long: 2, short: 2 };
 var DRAWING_KINDS = Object.keys(DRAWING_POINTS);
 var FIB_LEVELS = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1];
@@ -17939,6 +17948,8 @@ var DRAWING_TOOLS = [
   { group: "annotation", kind: "note", zh: "\u4FBF\u7B7E", en: "Note", hintZh: "\u5355\u51FB\u4F4D\u7F6E\u540E\u8F93\u5165\u4FBF\u7B7E\u5185\u5BB9", hintEn: "Click a spot, then type the note", icon: "M5 4h14v11l-5 5H5zM14 20v-5h5" },
   { group: "annotation", kind: "pricenote", zh: "\u4EF7\u683C\u4FBF\u7B7E", en: "Price note", hintZh: "\u70B9\u51FB\u8981\u6807\u6CE8\u7684\u4EF7\u683C\uFF0C\u518D\u70B9\u51FB\u4FBF\u7B7E\u4F4D\u7F6E\uFF0C\u7136\u540E\u8F93\u5165\u6587\u5B57", hintEn: "Click the price, then the note position, then type", icon: "M3 16h6M9 16l4-6h8v8h-8z" },
   { group: "annotation", kind: "signpost", zh: "\u8DEF\u6807", en: "Signpost", hintZh: "\u5355\u51FB K \u7EBF\u4F4D\u7F6E\u540E\u8F93\u5165\u8DEF\u6807\u6587\u5B57", hintEn: "Click a bar, then type the signpost text", icon: "M8 21V4M8 4h11l-2 3 2 3H8" },
+  { group: "annotation", kind: "anchoredtext", zh: "\u951A\u5B9A\u6587\u672C", en: "Anchored text", hintZh: "\u5355\u51FB\u4F4D\u7F6E\u540E\u8F93\u5165\u6587\u5B57\uFF1B\u56FA\u5B9A\u5728\u5C4F\u5E55\u4E0A\uFF0C\u5E73\u79FB\u56FE\u8868\u65F6\u4E0D\u52A8", hintEn: "Click a spot, then type; pinned to the screen while the chart scrolls", icon: "M5 6h14M12 6v13M9 19h6M18 15l3 3-3 3" },
+  { group: "annotation", kind: "table", zh: "\u8868\u683C", en: "Table", hintZh: "\u5355\u51FB\u4F4D\u7F6E\u540E\u8F93\u5165\u5185\u5BB9\uFF1A| \u5206\u9694\u5355\u5143\u683C\uFF0C; \u5206\u9694\u884C\uFF1B\u53EF\u5728\u5DE5\u5177\u6761\u56FA\u5B9A\u5230\u5C4F\u5E55", hintEn: "Click, then type: | between cells, ; between rows; pin it from the toolbar", icon: "M4 5h16v14H4zM4 10h16M4 15h16M10 5v14" },
   { group: "annotation", kind: "pin", zh: "\u56FE\u9489", en: "Pin", hintZh: "\u5355\u51FB\u4F4D\u7F6E\u540E\u8F93\u5165\u8BF4\u660E\uFF0C\u56FE\u4E0A\u663E\u793A\u56FE\u9489\u548C\u8BF4\u660E", hintEn: "Click a spot, then type; shows a pin with its note", icon: "M12 21s-6-5.6-6-10a6 6 0 0 1 12 0c0 4.4-6 10-6 10zM12 8.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z" },
   { group: "annotation", kind: "pricelabel", zh: "\u4EF7\u683C\u6807\u7B7E", en: "Price label", hintZh: "\u5355\u51FB\u5728\u8BE5\u4EF7\u683C\u5904\u653E\u7F6E\u6807\u7B7E", hintEn: "Click to tag a price", icon: "M3 12l5-6h13v12H8z" },
   { group: "annotation", kind: "icon", zh: "\u56FE\u6807", en: "Icon", hintZh: "\u5355\u51FB\u4F4D\u7F6E\u540E\u9009\u62E9\u56FE\u6807", hintEn: "Click a spot, then pick an icon", icon: "M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.6 6.7 19.4l1.2-6L3.4 9.3l6-.7z" },
@@ -18091,6 +18102,9 @@ function regressionFit(bars) {
   const variance = bars.reduce((sum, bar, i) => sum + (bar.price - (intercept + slope * i)) ** 2, 0) / n2;
   return { slope, intercept, sigma: Math.sqrt(variance) };
 }
+function tableRows(value) {
+  return value.split(/[;\n]/).map((row) => row.split("|").map((cell) => cell.trim())).filter((row) => row.some(Boolean)).slice(0, 12).map((row) => row.slice(0, 8));
+}
 function wave(p, labels, text) {
   return /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("polyline", { className: "dhl-pattern", points: p.map((point) => `${point.x},${point.y}`).join(" ") }), p.map((point, index) => {
     const up = index === 0 ? p[1] ? p[1].y > point.y : true : point.y < p[index - 1].y;
@@ -18103,11 +18117,12 @@ function guide(a, b, value, key3, text) {
 }
 var BADGE_PATHS = { alert: "M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0", shared: "M4 9h13l-3-3M20 15H7l3 3" };
 var DASH = { solid: void 0, dashed: "7 5", dotted: "1.5 4" };
-var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels, fontSize, bold, italic, fillOpacity, extendLeft, extendRight }) {
+var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels, fontSize, bold, italic, fillOpacity, extendLeft, extendRight, screenX, screenY }) {
   const k = (fontSize ?? 12) / 12;
   const badges = [...alert ? ["alert"] : [], ...shared ? ["shared"] : []];
   const { width: w, height: h } = view;
-  const px = points2.map((point) => view.project(point.time, point.price));
+  const pinned = screenX != null && screenY != null;
+  const px = pinned ? [{ x: screenX * w, y: screenY * h }] : points2.map((point) => view.project(point.time, point.price));
   if (!px.length || px.some((point) => point == null)) return null;
   const p = px;
   const text = (x, y, value, anchor = "start", cls = "dhl-drawing-text") => /* @__PURE__ */ React7.createElement("text", { className: cls, x, y, textAnchor: anchor }, value);
@@ -18237,6 +18252,28 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
     case "polyline": {
       if (p.length < 2) break;
       body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("polyline", { className: "dhl-pattern", points: p.map((point) => `${point.x},${point.y}`).join(" ") }), kind === "path" ? /* @__PURE__ */ React7.createElement("polygon", { className: "dhl-arrow-head", points: arrowHead(p[p.length - 2], p[p.length - 1]) }) : null);
+      break;
+    }
+    case "anchoredtext": {
+      const value = textValue || label || tr("\u951A\u5B9A\u6587\u672C", "Anchored text");
+      const lines = wrapText(value, 300);
+      const width = (14 + Math.max(...lines.map(textWidth))) * k;
+      body = /* @__PURE__ */ React7.createElement("g", { className: pinned ? "dhl-anchored" : void 0 }, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-text-box", x: p[0].x, y: p[0].y - 20 * k, width, height: (8 + lines.length * 16) * k, rx: "4" }), lines.map((line, index) => /* @__PURE__ */ React7.createElement(React7.Fragment, { key: index }, text(p[0].x + 7 * k, p[0].y + (-4 + index * 16) * k, line, "start", "dhl-drawing-text dhl-text-value"))));
+      handles = [p[0]];
+      break;
+    }
+    case "table": {
+      const rows2 = tableRows(textValue || label || "");
+      if (!rows2.length) break;
+      const cols = Math.max(...rows2.map((row) => row.length));
+      const widths = Array.from({ length: cols }, (_, c) => (16 + Math.max(...rows2.map((row) => textWidth(row[c] ?? "")))) * k);
+      const rowH = 22 * k, x0 = p[0].x, y0 = p[0].y;
+      const total = widths.reduce((sum, value) => sum + value, 0);
+      body = /* @__PURE__ */ React7.createElement("g", { className: "dhl-table", "data-rows": rows2.length, "data-cols": cols }, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-text-box dhl-table-box", x: x0, y: y0, width: total, height: rows2.length * rowH, rx: "3" }), rows2.map((_, r) => r > 0 ? /* @__PURE__ */ React7.createElement("line", { key: `r${r}`, className: "dhl-table-rule", x1: x0, x2: x0 + total, y1: y0 + r * rowH, y2: y0 + r * rowH }) : null), widths.slice(0, -1).map((_, c) => {
+        const x = x0 + widths.slice(0, c + 1).reduce((sum, value) => sum + value, 0);
+        return /* @__PURE__ */ React7.createElement("line", { key: `c${c}`, className: "dhl-table-rule", x1: x, x2: x, y1: y0, y2: y0 + rows2.length * rowH });
+      }), rows2.flatMap((row, r) => row.map((cell, c) => /* @__PURE__ */ React7.createElement(React7.Fragment, { key: `${r}-${c}` }, text(x0 + widths.slice(0, c).reduce((sum, value) => sum + value, 0) + 8 * k, y0 + r * rowH + 15 * k, cell, "start", r === 0 ? "dhl-drawing-text dhl-text-value dhl-table-head" : "dhl-drawing-text dhl-text-value")))));
+      handles = [p[0]];
       break;
     }
     case "pin": {
@@ -18766,7 +18803,7 @@ function saveStyleTemplate(kind, style) {
 // src/client/components/draw-toolbar.tsx
 var DRAW_COLORS = ["#4c82d8", "#2fd3a0", "#ef5f6c", "#e2a943", "#9b86db", "#26b5c8", "#8a8f98"];
 var STYLES = [["solid", "\u5B9E\u7EBF", "Solid"], ["dashed", "\u865A\u7EBF", "Dashed"], ["dotted", "\u70B9\u7EBF", "Dotted"]];
-function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone, onCoordinates, placement = "top" }) {
+function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone, onCoordinates, placement = "top", onTogglePin }) {
   const [savedDefault, setSavedDefault] = React8.useState(false);
   React8.useEffect(() => {
     setSavedDefault(false);
@@ -18867,7 +18904,19 @@ function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone,
       },
       onBlur: applyLevels
     }
-  )) : null, mark.kind === "vprofile" ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6210\u4EA4\u91CF\u5206\u5E03\u8BBE\u7F6E", "Volume profile settings") }, /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u4EF7\u683C\u884C\u6570", "Rows"), title: tr("\u4EF7\u683C\u884C\u6570", "Rows"), value: String(mark.rows ?? 48), disabled: locked, onChange: (event) => onEdit({ rows: Number(event.target.value) }) }, [24, 48, 96, 150].map((value) => /* @__PURE__ */ React8.createElement("option", { key: value, value }, tr(`${value} \u884C`, `${value} rows`)))), /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u4EF7\u503C\u533A\u6BD4\u4F8B", "Value area"), title: tr("\u4EF7\u503C\u533A\u6210\u4EA4\u91CF\u5360\u6BD4", "Value area volume"), value: String(mark.valueArea ?? 0.7), disabled: locked, onChange: (event) => onEdit({ valueArea: Number(event.target.value) }) }, [0.68, 0.7, 0.8].map((value) => /* @__PURE__ */ React8.createElement("option", { key: value, value }, `VA ${Math.round(value * 100)}%`)))) : null, /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group" }, /* @__PURE__ */ React8.createElement(
+  )) : null, mark.kind === "vprofile" ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6210\u4EA4\u91CF\u5206\u5E03\u8BBE\u7F6E", "Volume profile settings") }, /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u4EF7\u683C\u884C\u6570", "Rows"), title: tr("\u4EF7\u683C\u884C\u6570", "Rows"), value: String(mark.rows ?? 48), disabled: locked, onChange: (event) => onEdit({ rows: Number(event.target.value) }) }, [24, 48, 96, 150].map((value) => /* @__PURE__ */ React8.createElement("option", { key: value, value }, tr(`${value} \u884C`, `${value} rows`)))), /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u4EF7\u503C\u533A\u6BD4\u4F8B", "Value area"), title: tr("\u4EF7\u503C\u533A\u6210\u4EA4\u91CF\u5360\u6BD4", "Value area volume"), value: String(mark.valueArea ?? 0.7), disabled: locked, onChange: (event) => onEdit({ valueArea: Number(event.target.value) }) }, [0.68, 0.7, 0.8].map((value) => /* @__PURE__ */ React8.createElement("option", { key: value, value }, `VA ${Math.round(value * 100)}%`)))) : null, /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group" }, onTogglePin ? /* @__PURE__ */ React8.createElement(
+    "button",
+    {
+      type: "button",
+      className: mark.screenX != null ? "on" : "",
+      "aria-pressed": mark.screenX != null,
+      disabled: locked,
+      "aria-label": mark.screenX != null ? tr("\u53D6\u6D88\u56FA\u5B9A\u5230\u5C4F\u5E55", "Unpin from the screen") : tr("\u56FA\u5B9A\u5230\u5C4F\u5E55", "Pin to the screen"),
+      title: mark.screenX != null ? tr("\u53D6\u6D88\u56FA\u5B9A\uFF1A\u56DE\u5230\u56FE\u4E0A\u5F53\u524D\u4F4D\u7F6E\u5BF9\u5E94\u7684\u65F6\u95F4\u548C\u4EF7\u683C", "Unpin: attach to the time and price under it") : tr("\u56FA\u5B9A\u5728\u5C4F\u5E55\u5F53\u524D\u4F4D\u7F6E\uFF0C\u5E73\u79FB\u56FE\u8868\u65F6\u4E0D\u52A8", "Pin to this spot on screen while the chart scrolls"),
+      onClick: onTogglePin
+    },
+    /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("path", { d: "M9 4h6l-1 6 3 3H7l3-3zM12 13v7" }))
+  ) : null, /* @__PURE__ */ React8.createElement(
     "button",
     {
       type: "button",
@@ -19481,6 +19530,11 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
           onDrawRef.current({ kind: "level", price: point.price });
           return;
         }
+        if (mode === "anchoredtext") {
+          const v = viewRef.current, at = v?.project(point.time, point.price);
+          onDrawRef.current({ kind: "anchoredtext", points: [point], ...v && at && v.width && v.height ? { screenX: Math.min(1, Math.max(0, at.x / v.width)), screenY: Math.min(1, Math.max(0, at.y / v.height)) } : {} });
+          return;
+        }
         if (isMultiKind(mode)) {
           const now = performance.now(), here = { x: event.clientX, y: event.clientY };
           const near = (other, within = Infinity) => Boolean(other && now - other.at < within && Math.hypot(here.x - other.x, here.y - other.y) <= 6);
@@ -19567,6 +19621,31 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     box.addEventListener("pointerdown", scaleDown, { passive: true });
     box.addEventListener("pointermove", scaleDrag, { passive: true });
     box.addEventListener("wheel", refreshOverlay, { passive: true });
+    const forwardWheel = (event) => {
+      const target = event.target;
+      if (!target?.closest?.(".dhl-chart-drawing-overlay")) return;
+      const canvas = document.elementsFromPoint(event.clientX, event.clientY).find((element) => element instanceof HTMLCanvasElement && box.contains(element));
+      if (!canvas) return;
+      event.preventDefault();
+      event.stopPropagation();
+      canvas.dispatchEvent(new WheelEvent("wheel", {
+        deltaX: event.deltaX,
+        deltaY: event.deltaY,
+        deltaZ: event.deltaZ,
+        deltaMode: event.deltaMode,
+        clientX: event.clientX,
+        clientY: event.clientY,
+        screenX: event.screenX,
+        screenY: event.screenY,
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        shiftKey: event.shiftKey,
+        altKey: event.altKey,
+        bubbles: true,
+        cancelable: true
+      }));
+    };
+    box.addEventListener("wheel", forwardWheel, { capture: true, passive: false });
     box.addEventListener("dblclick", refreshOverlay);
     const sizeObserver = new ResizeObserver(refreshOverlay);
     sizeObserver.observe(box);
@@ -19621,6 +19700,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
       endCanvasGesture();
       box.removeEventListener("pointerdown", scaleDown);
       box.removeEventListener("wheel", refreshOverlay);
+      box.removeEventListener("wheel", forwardWheel, { capture: true });
       box.removeEventListener("dblclick", refreshOverlay);
       sizeObserver.disconnect();
       if (viewportFrame) cancelAnimationFrame(viewportFrame);
@@ -20043,6 +20123,20 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
       barMs: candlesRef.current.length > 1 ? candlesRef.current[1].t - candlesRef.current[0].t : void 0
     };
   }, [viewportVersion, timeline, themeVersion, expanded, indicators, priceScale]);
+  const viewRef = React10.useRef(view);
+  viewRef.current = view;
+  const pinPatch = (mark) => {
+    const v = viewRef.current, api = refs.current;
+    if (!v || !api || !v.width || !v.height) return null;
+    if (mark.screenX != null && mark.screenY != null) {
+      const logical = api.chart.timeScale().coordinateToLogical(mark.screenX * v.width);
+      const price = Number(api.candles.coordinateToPrice(mark.screenY * v.height));
+      if (logical == null || !Number.isFinite(price) || price <= 0) return { screenX: null, screenY: null };
+      return { screenX: null, screenY: null, points: [{ time: timelineRef.current.toTime(Number(logical)), price }] };
+    }
+    const at = v.project(markPoints(mark)[0].time, markPoints(mark)[0].price);
+    return at ? { screenX: Math.min(1, Math.max(0, at.x / v.width)), screenY: Math.min(1, Math.max(0, at.y / v.height)) } : null;
+  };
   React10.useEffect(() => {
     if (selectedId && !markById.has(selectedId)) setSelectedId(null);
   }, [markById, selectedId]);
@@ -20117,6 +20211,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
   const abortGesture = React10.useRef(null);
   React10.useEffect(() => () => abortGesture.current?.(), []);
   const [brushPoints, setBrushPoints] = React10.useState([]);
+  const [screenDraft, setScreenDraft] = React10.useState(null);
   const beginBrush = (event, freehandKind) => {
     const snap = snapRef.current;
     const first = snap?.(event.nativeEvent, void 0, false);
@@ -20253,7 +20348,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
       const startGroup = snapGroup(event.nativeEvent, void 0, false);
       if (!startGroup) return;
       const line2 = timelineRef.current, startLogical2 = line2.toLogical(startGroup.time);
-      const originals = new Map(groupRef.current.map((member) => markByIdRef.current.get(member)).filter((item) => Boolean(item) && !item.locked).map((item) => [item.id, item]));
+      const originals = new Map(groupRef.current.map((member) => markByIdRef.current.get(member)).filter((item) => Boolean(item) && !item.locked && item.screenX == null).map((item) => [item.id, item]));
       const origin2 = { x: event.clientX, y: event.clientY };
       let moved2 = false, frame2 = 0, latest2 = null;
       const compute2 = (ev) => {
@@ -20314,6 +20409,39 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     setSelectedId(id);
     const snap = snapRef.current;
     if (mark.locked || lockedRef.current || !snap) return;
+    if (mark.screenX != null && mark.screenY != null) {
+      const v = viewRef.current;
+      if (!v || !v.width || !v.height) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const origin2 = { x: event.clientX, y: event.clientY }, sx = mark.screenX, sy = mark.screenY;
+      let latest2 = null;
+      const move2 = (ev) => {
+        latest2 = { id, x: Math.min(1, Math.max(0, sx + (ev.clientX - origin2.x) / v.width)), y: Math.min(1, Math.max(0, sy + (ev.clientY - origin2.y) / v.height)) };
+        setScreenDraft(latest2);
+      };
+      const detach2 = () => {
+        window.removeEventListener("pointermove", move2);
+        window.removeEventListener("pointerup", up2);
+        window.removeEventListener("pointercancel", cancel2);
+        abortGesture.current = null;
+      };
+      const cancel2 = () => {
+        detach2();
+        setScreenDraft(null);
+      };
+      const up2 = (ev) => {
+        detach2();
+        if (latest2 && Math.hypot(ev.clientX - origin2.x, ev.clientY - origin2.y) >= 3) onEditRef.current(id, { screenX: latest2.x, screenY: latest2.y });
+        setScreenDraft(null);
+      };
+      abortGesture.current?.();
+      abortGesture.current = cancel2;
+      window.addEventListener("pointermove", move2);
+      window.addEventListener("pointerup", up2);
+      window.addEventListener("pointercancel", cancel2);
+      return;
+    }
     const anchorAttr = target.getAttribute("data-anchor");
     const anchor = anchorAttr == null ? null : Number(anchorAttr);
     const startPoint = snap(event.nativeEvent, void 0, false);
@@ -20413,6 +20541,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
   const paneCount = ["rsi14", "macd", "atr14", "stochastic", "adx", "obv"].filter((id) => indicators.has(id)).length;
   return /* @__PURE__ */ React10.createElement(React10.Fragment, null, /* @__PURE__ */ React10.createElement("div", { className: "dhl-chartbox", ref: boxRef, style: { height: expanded && !compact ? void 0 : (compact ? 310 : CHART_HEIGHT) + paneCount * (compact ? 65 : 125) } }, view ? /* @__PURE__ */ React10.createElement("svg", { className: "dhl-chart-drawing-overlay" + (drawMode ? " drawing" : "") + (drawMode && FREEHAND_KINDS.includes(drawMode) ? " brushing" : ""), "aria-hidden": "true", onPointerDown: beginDrag }, /* @__PURE__ */ React10.createElement("defs", null, /* @__PURE__ */ React10.createElement("clipPath", { id: clipId.current }, /* @__PURE__ */ React10.createElement("rect", { x: "0", y: "0", width: view.width, height: view.height })), /* @__PURE__ */ React10.createElement("marker", { id: `${clipId.current}-arrow`, viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "7", markerHeight: "7", orient: "auto-start-reverse" }, /* @__PURE__ */ React10.createElement("path", { d: "M0 0 10 5 0 10z", fill: "currentColor" }))), /* @__PURE__ */ React10.createElement("g", { clipPath: `url(#${clipId.current})` }, shapes.map(({ mark, points: points2 }) => {
     const live = draft?.id === mark.id ? draft.points : groupDraft?.get(mark.id) ?? points2;
+    const screen = screenDraft?.id === mark.id ? screenDraft : mark.screenX != null && mark.screenY != null ? { x: mark.screenX, y: mark.screenY } : null;
     const shown = mark.kind === "level" ? [{ time: lastTime, price: live[0].price }] : live;
     const selected = selectedId === mark.id || group.includes(mark.id);
     if (interval && mark.visibleIntervals?.length && !mark.visibleIntervals.includes(interval)) return null;
@@ -20445,7 +20574,9 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         italic: mark.italic,
         fillOpacity: mark.fillOpacity,
         extendLeft: mark.extendLeft,
-        extendRight: mark.extendRight
+        extendRight: mark.extendRight,
+        screenX: screen?.x,
+        screenY: screen?.y
       }
     );
   }), /* @__PURE__ */ React10.createElement("g", { className: "dhl-fills" }, fills.map((event) => {
@@ -20489,6 +20620,10 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
       mark: selectedMark,
       globallyLocked: drawingsLocked,
       placement: toolbarPlacement(selectedMark),
+      onTogglePin: SCREEN_KINDS.includes(selectedMark.kind) ? () => {
+        const patch = pinPatch(selectedMark);
+        if (patch) onEditMark(selectedMark.id, patch);
+      } : void 0,
       onCoordinates: () => setEditingId(selectedMark.id),
       onEdit: (patch) => onEditMark(selectedMark.id, patch),
       onClone: () => onCloneMark(cloneOf(selectedMark)),
@@ -20522,7 +20657,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
 var React11 = __toESM(require("react"), 1);
 var HISTORY_LIMIT = 100;
 var GEOMETRY = ["price", "fromTime", "fromPrice", "toTime", "toPrice", "points"];
-var STYLE = ["color", "lineWidth", "lineStyle", "locked", "hidden", "shared", "alert", "rows", "valueArea", "levels", "visibleIntervals", "fontSize", "fillOpacity", "bold", "italic", "extendLeft", "extendRight"];
+var STYLE = ["color", "lineWidth", "lineStyle", "locked", "hidden", "shared", "alert", "rows", "valueArea", "levels", "visibleIntervals", "fontSize", "fillOpacity", "bold", "italic", "extendLeft", "extendRight", "screenX", "screenY"];
 var FLAGS = /* @__PURE__ */ new Set(["locked", "hidden", "shared", "alert"]);
 function recreateRequest(mark) {
   const out = { kind: mark.kind, label: mark.label, role: mark.role, coin: mark.coin, interval: mark.interval };
@@ -21902,7 +22037,7 @@ function DeskColumn({ onCollapse }) {
     if (!stayRef.current) setDrawMode(null);
     if ((isTextKind(mark2.kind) || mark2.kind === "icon") && "points" in mark2) {
       setTextValue("");
-      setTextAt({ kind: mark2.kind, points: mark2.points });
+      setTextAt({ kind: mark2.kind, points: mark2.points, screenX: mark2.screenX, screenY: mark2.screenY });
       return;
     }
     void save(mark2, mark2.kind === "level" ? drawingLabel("level", [], mark2.price) : mark2.kind === "trend" ? drawingLabel("trend", [{ time: mark2.fromTime, price: mark2.fromPrice }]) : drawingLabel(mark2.kind, mark2.points));
@@ -22053,11 +22188,11 @@ function DeskColumn({ onCollapse }) {
     {
       open: Boolean(textAt),
       onClose: () => setTextAt(null),
-      title: textAt?.kind === "icon" ? tr("\u9009\u62E9\u56FE\u6807", "Pick an icon") : textAt?.kind === "callout" ? tr("\u6DFB\u52A0\u6807\u6CE8", "Add callout") : tr("\u6DFB\u52A0\u6587\u672C", "Add text"),
+      title: textAt?.kind === "icon" ? tr("\u9009\u62E9\u56FE\u6807", "Pick an icon") : textAt?.kind === "callout" ? tr("\u6DFB\u52A0\u6807\u6CE8", "Add callout") : textAt?.kind === "table" ? tr("\u6DFB\u52A0\u8868\u683C\uFF08| \u5206\u9694\u5355\u5143\u683C\uFF0C; \u5206\u9694\u884C\uFF09", "Add table (| between cells, ; between rows)") : tr("\u6DFB\u52A0\u6587\u672C", "Add text"),
       closeLabel: tr("\u5173\u95ED", "Close"),
       className: "dhl-rename-modal",
       footer: /* @__PURE__ */ React26.createElement(React26.Fragment, null, /* @__PURE__ */ React26.createElement(import_dsh_client_ui_primitives6.Button, { variant: "outline", onClick: () => setTextAt(null) }, tr("\u53D6\u6D88", "Cancel")), /* @__PURE__ */ React26.createElement(import_dsh_client_ui_primitives6.Button, { variant: "primary", disabled: !textValue.trim(), onClick: () => {
-        if (textAt && textValue.trim()) void save({ kind: textAt.kind, points: textAt.points }, textValue.trim());
+        if (textAt && textValue.trim()) void save({ kind: textAt.kind, points: textAt.points, ...textAt.screenX != null ? { screenX: textAt.screenX, screenY: textAt.screenY } : {} }, textValue.trim());
         setTextAt(null);
       } }, tr("\u6DFB\u52A0", "Add")))
     },
@@ -22077,7 +22212,7 @@ function DeskColumn({ onCollapse }) {
         onKeyDown: (event) => {
           if (event.key === "Enter" && textAt && textValue.trim()) {
             event.preventDefault();
-            void save({ kind: textAt.kind, points: textAt.points }, textValue.trim());
+            void save({ kind: textAt.kind, points: textAt.points, ...textAt.screenX != null ? { screenX: textAt.screenX, screenY: textAt.screenY } : {} }, textValue.trim());
             setTextAt(null);
           }
         }

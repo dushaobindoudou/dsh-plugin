@@ -34,7 +34,11 @@ export const DRAWING_POINTS = {
   highlighter: 0, path: 0, polyline: 0, pin: 1, fibspiral: 2, barspattern: 3,
   // Projection (TradingView's sector: origin, a future point, an estimated price); ghost feed is drawn like a path.
   projection: 3, ghostfeed: 0,
+  // Screen-anchored text (TradingView's anchored text) and a table (cells split by |, rows by ; or a new line).
+  anchoredtext: 1, table: 1,
 }
+/** Kinds that can be pinned to a screen position (screenX / screenY, 0-1 of the plot). */
+export const SCREEN_KINDS = ['anchoredtext', 'table']
 /** Freehand kinds drawn by dragging. */
 export const FREEHAND_KINDS = ['brush', 'highlighter']
 /** Kinds drawn click by click until a double-click or Enter. */
@@ -71,7 +75,7 @@ export function isSingleEmoji(value) {
 /** Chart intervals a drawing can be limited to (same set as the desk). */
 export const INTERVALS = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '8h', '12h', '1d', '3d', '1w', '1M']
 /** Text drawings whose font size can be set. */
-export const FONT_KINDS = ['text', 'callout', 'note', 'pricenote', 'signpost']
+export const FONT_KINDS = ['text', 'callout', 'note', 'pricenote', 'signpost', 'anchoredtext', 'table']
 /** Drawings with a background fill whose opacity can be set. */
 export const FILL_KINDS = ['rect', 'circle', 'triangle', 'channel', 'fib', 'regression', 'gannbox', 'pricerange', 'daterange', 'measure', 'flatchannel', 'disjoint', 'ellipse', 'rotrect']
 /** Fibonacci drawings whose levels can be customised. */
@@ -131,7 +135,7 @@ export function linePriceAt(mark, time) {
 export const BRUSH_MIN = 2
 export const BRUSH_MAX = 500
 /** Kinds whose label is free text shown on the chart (up to 200 characters). */
-export const TEXT_KINDS = ['text', 'callout', 'note', 'pricenote', 'signpost', 'pin']
+export const TEXT_KINDS = ['text', 'callout', 'note', 'pricenote', 'signpost', 'pin', 'anchoredtext', 'table']
 /** Clicks that create a drawing when they differ from its stored anchor count. */
 export const DRAWING_CLICKS = { ...Object.fromEntries(Object.entries(DRAWING_POINTS)), long: 2, short: 2 }
 export const DRAWING_KINDS = Object.keys(DRAWING_POINTS)
@@ -228,6 +232,14 @@ export function drawingStyle(request) {
     const size = Number(request.fontSize)
     if (!Number.isInteger(size) || size < 10 || size > 32) throw new Error('字号必须为 10-32 的整数')
     style.fontSize = size
+  }
+  // Pinned to the screen: both fractions together, or null (via update) to unpin.
+  if (request?.screenX != null || request?.screenY != null) {
+    if (request?.kind != null && !SCREEN_KINDS.includes(request.kind)) throw new Error(`screenX/screenY 只适用于 ${SCREEN_KINDS.join('/')}`)
+    // Both must be real numbers (Number(null) would read as 0); unpinning passes both as null.
+    const x = request.screenX == null ? NaN : Number(request.screenX), y = request.screenY == null ? NaN : Number(request.screenY)
+    if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || x > 1 || y < 0 || y > 1) throw new Error('screenX/screenY 必须同时提供，且在 0-1 之间（图表宽高的比例）')
+    style.screenX = x; style.screenY = y
   }
   for (const flag of ['extendLeft', 'extendRight']) {
     if (request?.[flag] == null) continue

@@ -39,7 +39,7 @@ import { selectChartCandle, type ChartHit, type ChartSelection } from '../chart-
 import type { TradeEvent } from '../trade-events'
 import { maLabel, maSeries, type MaLine } from '../../../lib/moving-average.js'
 import { DrawingShape, isMultiKind, clicksNeeded, completePoints, constrainPoints, geometryPatch, markPoints, type DrawPoint, type DrawingKind, type Projector } from '../drawing-tools'
-import { BRUSH_MAX, FREEHAND_KINDS, PATH_MAX, volumeProfile } from '../../../lib/chart-drawings.js'
+import { BRUSH_MAX, FREEHAND_KINDS, PATH_MAX, SCREEN_KINDS, volumeProfile } from '../../../lib/chart-drawings.js'
 import { DrawToolbar, DRAW_COLORS } from './draw-toolbar'
 import { DrawingEditor } from './drawing-editor'
 import { UiIcon } from './panel-icons'
@@ -55,7 +55,7 @@ export type MagnetMode = 'off' | 'weak' | 'strong'
 const MAGNET_PX = 14
 
 /** What a finished drawing hands back: level a price, trend its flat fields, the rest anchor points. */
-export type DrawPayload = { kind: 'level'; price: number } | { kind: 'trend'; fromTime: number; fromPrice: number; toTime: number; toPrice: number } | { kind: Exclude<DrawingKind, 'level' | 'trend'>; points: DrawPoint[] }
+export type DrawPayload = { kind: 'level'; price: number } | { kind: 'trend'; fromTime: number; fromPrice: number; toTime: number; toPrice: number } | { kind: Exclude<DrawingKind, 'level' | 'trend'>; points: DrawPoint[]; screenX?: number; screenY?: number }
 /** A copy of an existing drawing: geometry already shifted, style and label kept. */
 export type ClonePayload = { kind: DrawingKind; geometry: Record<string, unknown>; style: Record<string, unknown>; label: string }
 
@@ -486,6 +486,12 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
         const point = pointAt(event, pending.current.at(-1))
         if (!point) return
         if (mode === 'level') { onDrawRef.current({ kind: 'level', price: point.price }); return }
+        if (mode === 'anchoredtext') {
+          // Anchored text is pinned to where it was placed on screen.
+          const v = viewRef.current, at = v?.project(point.time, point.price)
+          onDrawRef.current({ kind: 'anchoredtext', points: [point], ...(v && at && v.width && v.height ? { screenX: Math.min(1, Math.max(0, at.x / v.width)), screenY: Math.min(1, Math.max(0, at.y / v.height)) } : {}) })
+          return
+        }
         if (isMultiKind(mode)) {
           // Path / polyline: a second click within 6px of the previous one (raw pointer positions, so the
           // magnet cannot move it out of range) is the double-click that finishes. The click after that
@@ -560,6 +566,18 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     box.addEventListener('pointerdown', scaleDown, { passive: true })
     box.addEventListener('pointermove', scaleDrag, { passive: true })
     box.addEventListener('wheel', refreshOverlay, { passive: true })
+    // A wheel / trackpad gesture over a drawing lands on the SVG overlay, which the chart does not
+    // listen to: hand it to the chart canvas underneath so zooming and panning work everywhere.
+    const forwardWheel = (event: WheelEvent) => {
+      const target = event.target as Element | null
+      if (!target?.closest?.('.dhl-chart-drawing-overlay')) return
+      const canvas = document.elementsFromPoint(event.clientX, event.clientY).find((element) => element instanceof HTMLCanvasElement && box.contains(element))
+      if (!canvas) return
+      event.preventDefault(); event.stopPropagation()
+      canvas.dispatchEvent(new WheelEvent('wheel', { deltaX: event.deltaX, deltaY: event.deltaY, deltaZ: event.deltaZ, deltaMode: event.deltaMode, clientX: event.clientX, clientY: event.clientY,
+        screenX: event.screenX, screenY: event.screenY, ctrlKey: event.ctrlKey, metaKey: event.metaKey, shiftKey: event.shiftKey, altKey: event.altKey, bubbles: true, cancelable: true }))
+    }
+    box.addEventListener('wheel', forwardWheel, { capture: true, passive: false })
     box.addEventListener('dblclick', refreshOverlay)
     const sizeObserver = new ResizeObserver(refreshOverlay)
     sizeObserver.observe(box)
@@ -616,7 +634,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       window.removeEventListener('blur', endCanvasGesture)
       endCanvasGesture()
       box.removeEventListener('pointerdown', scaleDown)
-      box.removeEventListener('wheel', refreshOverlay)
+      box.removeEventListener('wheel', refreshOverlay); box.removeEventListener('wheel', forwardWheel, { capture: true })
       box.removeEventListener('dblclick', refreshOverlay)
       sizeObserver.disconnect()
       if (viewportFrame) cancelAnimationFrame(viewportFrame)
@@ -1005,6 +1023,21 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       barMs: candlesRef.current.length > 1 ? candlesRef.current[1].t - candlesRef.current[0].t : undefined,
     }
   }, [viewportVersion, timeline, themeVersion, expanded, indicators, priceScale])
+  const viewRef = React.useRef(view)
+  viewRef.current = view
+  /** Pinning converts between a screen spot (fractions of the plot) and the time / price under it. */
+  const pinPatch = (mark: ChartMark): Record<string, unknown> | null => {
+    const v = viewRef.current, api = refs.current
+    if (!v || !api || !v.width || !v.height) return null
+    if (mark.screenX != null && mark.screenY != null) {
+      const logical = api.chart.timeScale().coordinateToLogical(mark.screenX * v.width)
+      const price = Number(api.candles.coordinateToPrice(mark.screenY * v.height))
+      if (logical == null || !Number.isFinite(price) || price <= 0) return { screenX: null, screenY: null }
+      return { screenX: null, screenY: null, points: [{ time: timelineRef.current.toTime(Number(logical)), price }] }
+    }
+    const at = v.project(markPoints(mark)[0].time, markPoints(mark)[0].price)
+    return at ? { screenX: Math.min(1, Math.max(0, at.x / v.width)), screenY: Math.min(1, Math.max(0, at.y / v.height)) } : null
+  }
 
   React.useEffect(() => { if (selectedId && !markById.has(selectedId)) setSelectedId(null) }, [markById, selectedId])
   // A drawing limited to other intervals is not drawn here, so it cannot stay selected either.
@@ -1059,6 +1092,8 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   const abortGesture = React.useRef<(() => void) | null>(null)
   React.useEffect(() => () => abortGesture.current?.(), [])
   const [brushPoints, setBrushPoints] = React.useState<DrawPoint[]>([])
+  /** Live position of a screen-pinned drawing while it is dragged. */
+  const [screenDraft, setScreenDraft] = React.useState<{ id: string; x: number; y: number } | null>(null)
   /** Freehand: the overlay captures the pointer (so the chart does not pan) and samples every ~4px. */
   const beginBrush = (event: React.PointerEvent<SVGSVGElement>, freehandKind: DrawingKind) => {
     const snap = snapRef.current
@@ -1165,13 +1200,13 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     }
     const anchorHit = target.getAttribute('data-anchor') != null
     if (groupRef.current.includes(id) && groupRef.current.length >= 2 && !anchorHit) {
-      // Drag the whole group by one time/price offset; locked members stay put.
+      // Drag the whole group by one time/price offset; locked members and drawings pinned to the screen stay put.
       const snapGroup = snapRef.current
       if (lockedRef.current || !snapGroup) return
       const startGroup = snapGroup(event.nativeEvent, undefined, false)
       if (!startGroup) return
       const line = timelineRef.current, startLogical = line.toLogical(startGroup.time)
-      const originals = new Map(groupRef.current.map((member) => markByIdRef.current.get(member)).filter((item): item is ChartMark => Boolean(item) && !item!.locked).map((item) => [item.id, item] as const))
+      const originals = new Map(groupRef.current.map((member) => markByIdRef.current.get(member)).filter((item): item is ChartMark => Boolean(item) && !item!.locked && item!.screenX == null).map((item) => [item.id, item] as const))
       const origin = { x: event.clientX, y: event.clientY }
       let moved = false, frame = 0, latest: Map<string, DrawPoint[]> | null = null
       const compute = (ev: PointerEvent) => {
@@ -1219,6 +1254,28 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     setSelectedId(id)
     const snap = snapRef.current
     if (mark.locked || lockedRef.current || !snap) return
+    if (mark.screenX != null && mark.screenY != null) {
+      // Pinned to the screen: dragging moves its spot on the plot, not its time / price.
+      const v = viewRef.current
+      if (!v || !v.width || !v.height) return
+      event.preventDefault(); event.stopPropagation()
+      const origin = { x: event.clientX, y: event.clientY }, sx = mark.screenX, sy = mark.screenY
+      let latest: { id: string; x: number; y: number } | null = null
+      const move = (ev: PointerEvent) => {
+        latest = { id, x: Math.min(1, Math.max(0, sx + (ev.clientX - origin.x) / v.width)), y: Math.min(1, Math.max(0, sy + (ev.clientY - origin.y) / v.height)) }
+        setScreenDraft(latest)
+      }
+      const detach = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); abortGesture.current = null }
+      const cancel = () => { detach(); setScreenDraft(null) }
+      const up = (ev: PointerEvent) => {
+        detach()
+        if (latest && Math.hypot(ev.clientX - origin.x, ev.clientY - origin.y) >= 3) onEditRef.current(id, { screenX: latest.x, screenY: latest.y })
+        setScreenDraft(null)
+      }
+      abortGesture.current?.(); abortGesture.current = cancel
+      window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', cancel)
+      return
+    }
     const anchorAttr = target.getAttribute('data-anchor')
     const anchor = anchorAttr == null ? null : Number(anchorAttr)
     const startPoint = snap(event.nativeEvent, undefined, false)
@@ -1320,6 +1377,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
         <g clipPath={`url(#${clipId.current})`}>
           {shapes.map(({ mark, points }) => {
             const live = draft?.id === mark.id ? draft.points : groupDraft?.get(mark.id) ?? points
+            const screen = screenDraft?.id === mark.id ? screenDraft : mark.screenX != null && mark.screenY != null ? { x: mark.screenX, y: mark.screenY } : null
             const shown = mark.kind === 'level' ? [{ time: lastTime, price: live[0].price }] : live
             const selected = selectedId === mark.id || group.includes(mark.id)
             if (interval && mark.visibleIntervals?.length && !mark.visibleIntervals.includes(interval)) return null
@@ -1331,7 +1389,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
               dataVersion={mark.kind === 'vprofile' || mark.kind === 'regression' || mark.kind === 'avwap' || mark.kind === 'avprofile' || mark.kind === 'barspattern' || mark.kind === 'ghostfeed' ? candles : undefined}
               className={`dhl-drawing ${roleClass(mark)}${mark.kind === 'level' ? ' is-level' : ''}${selected ? ' selected' : ''}${mark.locked || drawingsLocked ? ' locked' : ''}`}
               label={mark.source === 'user' || mark.kind === 'level' ? undefined : mark.label} anchors={selected} interactive={!drawMode}
-              color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} alert={mark.alert} shared={mark.shared} rows={mark.rows} valueArea={mark.valueArea} levels={mark.levels} fontSize={mark.fontSize} bold={mark.bold} italic={mark.italic} fillOpacity={mark.fillOpacity} extendLeft={mark.extendLeft} extendRight={mark.extendRight} />
+              color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} alert={mark.alert} shared={mark.shared} rows={mark.rows} valueArea={mark.valueArea} levels={mark.levels} fontSize={mark.fontSize} bold={mark.bold} italic={mark.italic} fillOpacity={mark.fillOpacity} extendLeft={mark.extendLeft} extendRight={mark.extendRight} screenX={screen?.x} screenY={screen?.y} />
           })}
           <g className="dhl-fills">
             {fills.map((event) => {
@@ -1382,7 +1440,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
           </span>
         </div>
       })() : null}
-      {selectedMark && !drawMode && !readOnly ? <DrawToolbar mark={selectedMark} globallyLocked={drawingsLocked} placement={toolbarPlacement(selectedMark)}
+      {selectedMark && !drawMode && !readOnly ? <DrawToolbar mark={selectedMark} globallyLocked={drawingsLocked} placement={toolbarPlacement(selectedMark)} onTogglePin={(SCREEN_KINDS as string[]).includes(selectedMark.kind) ? () => { const patch = pinPatch(selectedMark); if (patch) onEditMark(selectedMark.id, patch) } : undefined}
         onCoordinates={() => setEditingId(selectedMark.id)}
         onEdit={(patch) => onEditMark(selectedMark.id, patch)} onClone={() => onCloneMark(cloneOf(selectedMark))} onRemove={() => { onRemoveMark(selectedMark.id); setSelectedId(null) }} onClose={() => setSelectedId(null)} /> : null}
       {editingMark ? <DrawingEditor key={editingMark.id} mark={editingMark} onApply={(patch) => { if (!drawingsLocked && !editingMark.locked) onEditMark(editingMark.id, patch) }} onClose={() => setEditingId(null)} /> : null}

@@ -105,8 +105,49 @@ try {
   const copied = await page.locator('.dhl-chart-drawing-overlay .dhl-bars-copy').first().getAttribute('data-bars')
   check(Number(copied) >= 3, `K 线形态 copies the source bars (${copied})`)
 
+  // Anchored text stays put on screen while the chart pans; dragging it moves its screen spot.
+  const boxOf = (id) => page.evaluate((markId) => { const r = document.querySelector(`.dhl-drawing[data-mark-id="${markId}"] > g > .dhl-text-box, .dhl-drawing[data-mark-id="${markId}"] .dhl-table-box`)?.getBoundingClientRect(); return r ? { x: Math.round(r.left), y: Math.round(r.top) } : null }, id)
+  // Pan back into history with a horizontal two-finger scroll (a mouse drag here could grab a drawing;
+  // scrolling forward does nothing at the latest bar).
+  const pan = async (direction = -1) => {
+    // The drawing list, once expanded with dozens of rows, covers the middle of the chart: collapse it first.
+    const head = page.locator('.dhl-drawing-list-head')
+    if (await head.getAttribute('aria-expanded') === 'true') { await head.click(); await page.waitForTimeout(200) }
+    const c = at(.5, .5); await page.mouse.move(c.x, c.y); for (let i = 0; i < 6; i += 1) { await page.mouse.wheel(80 * direction, 0); await page.waitForTimeout(30) } await page.waitForTimeout(600) }
+  await pick('锚定文本'); await clickAt(.2, .45)
+  await page.getByRole('dialog').getByRole('textbox').fill('今日计划'); await page.getByRole('dialog').getByRole('button', { name: '添加' }).click(); await settle()
+  const anchored = (await marks()).find((m) => m.kind === 'anchoredtext')
+  check(anchored?.screenX > 0 && anchored?.screenY > 0, 'anchored text is saved with its screen spot', anchored)
+  const before0 = await boxOf(anchored.id)
+  // A time/price drawing as the control: it must move, or the pan did not happen.
+  const pathX = () => page.evaluate((id) => document.querySelector(`.dhl-drawing[data-mark-id="${id}"] > polyline`)?.getBoundingClientRect().left ?? null, path.id)
+  const pathBefore = await pathX()
+  await page.keyboard.press('Escape'); await pan()
+  check(pathBefore != null && Math.abs((await pathX()) - pathBefore) > 30, 'the pan moved a time-anchored drawing (control)', { pathBefore, after: await pathX() })
+  check(JSON.stringify(await boxOf(anchored.id)) === JSON.stringify(before0), 'anchored text does not move when the chart pans', { before0, after: await boxOf(anchored.id) })
+  // Table: grid from | and ;, then pinned from the toolbar so it stays put too, then unpinned.
+  await pick('表格'); await clickAt(.6, .15)
+  await page.getByRole('dialog').getByRole('textbox').fill('品种|方向|止损;BTC|多|81000;ETH|空|2400'); await page.getByRole('dialog').getByRole('button', { name: '添加' }).click(); await settle()
+  const table = (await marks()).find((m) => m.kind === 'table')
+  check(await page.locator(`.dhl-drawing[data-mark-id="${table.id}"] > .dhl-table[data-rows="3"][data-cols="3"]`).count() === 1, 'table renders a 3×3 grid')
+  { const b = await boxOf(table.id); await page.mouse.click(b.x + 12, b.y + 8); await page.waitForTimeout(400) }
+  await page.getByRole('toolbar', { name: '画线样式' }).getByRole('button', { name: '固定到屏幕' }).click(); await settle()
+  check((await marks()).find((m) => m.id === table.id)?.screenX != null, 'the toolbar pins the table to the screen')
+  await page.keyboard.press('Escape')
+  // Back toward the latest bars this time: the first pan may have reached the start of the loaded history.
+  const tableBefore = await boxOf(table.id), path2 = await pathX(); await pan(1)
+  check(Math.abs((await pathX()) - path2) > 30, 'the second pan moved the chart too (control)', { path2, after: await pathX() })
+  check(JSON.stringify(await boxOf(table.id)) === JSON.stringify(tableBefore), 'a pinned table stays put while the chart pans', { tableBefore, after: await boxOf(table.id) })
+  // Select it on the chart (the drawing list would first scroll the chart back to the table's stored time).
+  { const b = await boxOf(table.id); await page.mouse.click(b.x + 12, b.y + 8); await page.waitForTimeout(400) }
+  await page.getByRole('toolbar', { name: '画线样式' }).getByRole('button', { name: '取消固定到屏幕' }).click(); await settle()
+  const unpinned = (await marks()).find((m) => m.id === table.id)
+  check(unpinned.screenX == null && unpinned.points[0].time !== table.points[0].time, 'unpinning attaches the table to the time and price under it', { screenX: unpinned.screenX, before: table.points[0], after: unpinned.points[0] })
+  await page.keyboard.press('Escape')
+
   // Editing works on the new kinds too: drag the ellipse's second anchor.
   const ellipse = (await marks()).find((m) => m.kind === 'ellipse')
+  { const head = page.locator('.dhl-drawing-list-head'); if (await head.getAttribute('aria-expanded') !== 'true') { await head.click(); await page.waitForTimeout(200) } }
   await page.locator(`.dhl-drawing-list [data-mark-id="${ellipse.id}"] .dhl-drawing-list-name`).click(); await page.waitForTimeout(300)
   // Selecting from the list pans the chart to the drawing: read the anchor once it stops moving.
   const anchorAt = () => page.evaluate((id) => { const c = document.querySelector(`circle.dhl-chart-anchor[data-mark-id="${id}"][data-anchor="1"]`); const r = c?.getBoundingClientRect(); return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null }, ellipse.id)

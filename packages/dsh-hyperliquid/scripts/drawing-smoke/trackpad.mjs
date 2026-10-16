@@ -36,5 +36,19 @@ try {
   await page.waitForTimeout(500)
   const g2 = await geometry()
   check(Math.abs((g2.x2 - g2.x1) - (g1.x2 - g1.x1)) < 2 && Math.abs(g2.x1 - g1.x1) > 20, 'trackpad: a two-finger horizontal swipe pans and the drawing moves with the bars', { g1, g2 })
+  // With the pointer on the drawing itself (its hit stroke is on top), the gesture must still reach the chart.
+  // A second line in the current view (the first one was zoomed and panned away).
+  await page.locator('.dhl-draw-menu summary').click(); await toolItem(page, '趋势线').click()
+  await click(at(.4, .65)); await click(at(.6, .45)); await page.waitForTimeout(1600)
+  const second = (await store(page)).chartMarks.find((m) => m.kind === 'trend' && m.id !== trend.id)
+  const geometry2 = () => page.evaluate((id) => { const line = document.querySelector(`.dhl-drawing[data-mark-id="${id}"] > line`); return { x1: Number(line?.getAttribute('x1')) } }, second.id)
+  const mid = await page.evaluate((id) => { const line = document.querySelector(`.dhl-drawing[data-mark-id="${id}"] > line`), o = document.querySelector('.dhl-chart-drawing-overlay').getBoundingClientRect(); return { x: o.left + (+line.getAttribute('x1') + +line.getAttribute('x2')) / 2, y: o.top + (+line.getAttribute('y1') + +line.getAttribute('y2')) / 2 } }, second.id)
+  const onTop = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest('.dhl-chart-drawing-overlay') != null, [mid.x, mid.y])
+  const g3 = await geometry2()
+  await page.mouse.move(mid.x, mid.y)
+  for (let i = 0; i < 6; i += 1) { await page.mouse.wheel(-60, 0); await page.waitForTimeout(30) }
+  await page.waitForTimeout(500)
+  const g4 = await geometry2()
+  check(onTop && Math.abs(g4.x1 - g3.x1) > 20, 'trackpad: a swipe with the pointer on a drawing still pans the chart', { onTop, g3, g4 })
   check(errors.length === 0, 'trackpad: no page errors', errors)
 } finally { await browser.close() }

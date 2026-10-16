@@ -22,7 +22,7 @@ type Op =
 
 const HISTORY_LIMIT = 100
 const GEOMETRY = ['price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'points'] as const
-const STYLE = ['color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert', 'rows', 'valueArea', 'levels', 'visibleIntervals', 'fontSize', 'fillOpacity', 'bold', 'italic', 'extendLeft', 'extendRight'] as const
+const STYLE = ['color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert', 'rows', 'valueArea', 'levels', 'visibleIntervals', 'fontSize', 'fillOpacity', 'bold', 'italic', 'extendLeft', 'extendRight', 'screenX', 'screenY'] as const
 /** Flags the host treats as "absent = false"; undo must send false, since null leaves them unchanged. */
 const FLAGS = new Set(['locked', 'hidden', 'shared', 'alert'])
 

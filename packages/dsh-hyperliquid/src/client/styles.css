@@ -927,3 +927,8 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-drawing .dhl-ghost-up { fill: color-mix(in srgb, var(--dsw-alias-state-success-primary) 45%, transparent); stroke: var(--dsw-alias-state-success-primary); stroke-width: 1; opacity: .7; }
 .dhl-drawing .dhl-ghost-down { fill: color-mix(in srgb, var(--dsw-alias-state-error-primary) 45%, transparent); stroke: var(--dsw-alias-state-error-primary); stroke-width: 1; opacity: .7; }
 .dhl-drawing-hit .dhl-ghost path, .dhl-drawing-hit .dhl-sector { pointer-events: all; }
+
+/* 0.5.3: tables and screen-pinned annotations. */
+.dhl-drawing .dhl-table-rule { stroke: currentColor; stroke-width: 1; opacity: .35; }
+.dhl-drawing .dhl-table-head { font-weight: 650; }
+.dhl-drawing-hit .dhl-table-box { pointer-events: all; }

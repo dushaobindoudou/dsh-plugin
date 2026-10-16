@@ -12,7 +12,7 @@ import { buildToolDefinitions } from '../lib/tools.js'
 
 const now = Date.UTC(2026, 9, 15)
 const pt = (hours, price) => ({ time: now - hours * 3600_000, price })
-assert.equal(DRAWING_KINDS.length, 74)
+assert.equal(DRAWING_KINDS.length, 76)
 assert.deepEqual(drawingGeometry('hray', { points: [pt(5, 100)] }, now), { points: [pt(5, 100)] })
 assert.equal(drawingGeometry('channel', { points: [pt(9, 100), pt(3, 110), pt(6, 95)] }, now).points.length, 3)
 assert.deepEqual(drawingGeometry('trend', { fromTime: pt(400 * 24, 1).time, fromPrice: 1, toTime: pt(1, 2).time, toPrice: 2 }, now).fromPrice, 1, 'trend lines may start long before the old 90-day window')
@@ -72,6 +72,15 @@ assert.equal(reloaded.lineStyle, 'dashed'); assert.equal(reloaded.locked, false)
 assert.equal(store.events.at(-1).kind, 'chart.mark', 'edits notify open desks')
 const viaAgent = await chart.execute({ action: 'update', id: user.id, color: '#9b86db', label: '主通道' }, { agent: { id: 's1' } })
 assert.match(viaAgent.text, /已更新平行通道：主通道/)
+// Pinned tables: created on a screen spot, unpinned by the agent with both fractions null.
+const pinnedTable = await remote.drawChartMark({ sessionId: 's1', coin: 'BTC', interval: '1h', kind: 'table', label: '品种|方向;BTC|多', points: [{ time: Date.now() - 3600_000, price: 81000 }], screenX: 0.7, screenY: 0.1 })
+assert.equal(pinnedTable.screenX, 0.7)
+await assert.rejects(remote.updateChartMark({ sessionId: 's1', id: pinnedTable.id, patch: { screenX: 0.2, screenY: null } }), /同时提供/)
+// Unpinning goes through a plain boolean (no union types in the tool schema).
+assert.equal(chart.parameters.properties.unpin.type, 'boolean')
+await chart.execute({ action: 'update', id: pinnedTable.id, unpin: true }, { agent: { id: 's1' } })
+const unpinnedTable = new HyperStore(dir).listChartMarks('s1', 'BTC', null).find((mark) => mark.id === pinnedTable.id)
+assert.ok(unpinnedTable.screenX == null && unpinnedTable.screenY == null && unpinnedTable.points[0].price === 81000, 'the agent unpins a table back to its stored time and price')
 await assert.rejects(remote.updateChartMark({ sessionId: 's2', id: user.id, patch: { color: '#ffffff' } }), /交易会话|不存在/)
 const callout = await remote.drawChartMark({ sessionId: 's1', coin: 'BTC', interval: '1h', kind: 'callout', label: '这里是假突破：放量后迅速收回，注意多头陷阱，等待回踩确认再考虑入场'.repeat(2), points: [{ time: Date.now() - 7200_000, price: 81000 }, { time: Date.now() - 3600_000, price: 82000 }] })
 assert.equal(callout.kind, 'callout', 'callouts accept long text')
@@ -93,7 +102,7 @@ const out = await build({ stdin: { contents: "export * from './src/client/drawin
 const file = fileURLToPath(new URL('./.drawing-tools.bundle.mjs', import.meta.url))
 writeFileSync(file, out.outputFiles[0].text)
 try {
-  const { DrawingShape, DRAWING_TOOLS, renderToStaticMarkup, React } = await import(file)
+  const { DrawingShape, DRAWING_TOOLS, tableRows, renderToStaticMarkup, React } = await import(file)
   assert.deepEqual(DRAWING_TOOLS.map((tool) => tool.kind).sort(), [...DRAWING_KINDS].sort(), 'every host kind has a menu entry')
   // 1 hour = 10px, price 100 → y=500 (1px per unit, inverted); plot 400×500
   const view = { width: 400, height: 500, project: (time, price) => ({ x: (time - now) / 360_000 + 200, y: 500 - price }), bars: (a, b) => (b - a) / 3600_000, closes: () => [] }
@@ -249,6 +258,18 @@ try {
   const ghostLong = renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'ghostfeed', points: [{ time: now, price: 100 }, { time: now + 1000 * 3600_000, price: 120 }, { time: now + 3000 * 3600_000, price: 110 }], view: gview }))
   assert.ok(ghostLong.includes('data-candles="2000"'), 'capped at 2000 candles')
   assert.ok(ghost.includes('data-candles="6"') && /dhl-ghost-up" d="M/.test(ghost) && /dhl-ghost-down" d="M/.test(ghost), `one candle per bar along the path, up then down: ${ghost.slice(0, 200)}`)
+  // 0.5.3: screen-pinned anchored text and tables.
+  assert.deepEqual(drawingStyle({ kind: 'anchoredtext', screenX: 0.25, screenY: 0.5 }), { screenX: 0.25, screenY: 0.5 })
+  assert.throws(() => drawingStyle({ kind: 'text', screenX: 0.2, screenY: 0.2 }), /只适用于/)
+  assert.throws(() => drawingStyle({ kind: 'table', screenX: 0.2 }), /同时提供/)
+  assert.throws(() => drawingStyle({ kind: 'table', screenX: 0.2, screenY: null }), /同时提供/)
+  assert.throws(() => drawingStyle({ kind: 'table', screenX: 1.2, screenY: 0.1 }), /0-1/)
+  // Pinned: placed at 25% / 50% of the 400×500 plot whatever its time and price.
+  const pinnedText = render('anchoredtext', [{ time: now - 999 * 3600_000, price: 1 }], { text: '计划', screenX: 0.25, screenY: 0.5 })
+  assert.ok(pinnedText.includes('x="100" y="230"') && pinnedText.includes('>计划<'), `anchored text sits on the screen spot: ${pinnedText.slice(0, 200)}`)
+  assert.deepEqual(tableRows('品种|方向|止损; BTC | 多 | 81000\nETH|空|'), [['品种', '方向', '止损'], ['BTC', '多', '81000'], ['ETH', '空', '']])
+  const tableSvg = render('table', [{ time: now, price: 100 }], { text: '品种|方向;BTC|多;ETH|空' })
+  assert.ok(tableSvg.includes('data-rows="3"') && tableSvg.includes('data-cols="2"') && tableSvg.includes('>ETH<'), 'table grid')
   const forecast = render('forecast', [{ time: now - 3 * 3600_000, price: 100 }, { time: now, price: 110 }])
   assert.ok(forecast.includes('+10.00%') && forecast.includes('3 根'), 'forecast change and bars')
   assert.ok(render('text', [{ time: now, price: 100 }], { text: 'x', bold: true, italic: true }).includes('--dhl-font-weight:700'), 'bold reaches the text')
@@ -294,4 +315,4 @@ try {
   assert.ok(render('icon', [{ time: now, price: 100 }], { text: 'emoji:🚀' }).includes('>🚀<'), 'stickers render their emoji')
   assert.ok(render('brush', Array.from({ length: 30 }, (_, i) => ({ time: now + i * 600_000, price: 100 + i }))).includes('<polyline'))
 } finally { rmSync(file, { force: true }) }
-console.log('画线工具（74 种）校验、编辑与锁定、agent 路径、头寸与 SVG 几何通过')
+console.log('画线工具（76 种）校验、编辑与锁定、agent 路径、头寸与 SVG 几何通过')

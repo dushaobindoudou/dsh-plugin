@@ -83,6 +83,8 @@ export const DRAWING_TOOLS: DrawingTool[] = [
   { group: 'annotation', kind: 'note', zh: '便签', en: 'Note', hintZh: '单击位置后输入便签内容', hintEn: 'Click a spot, then type the note', icon: 'M5 4h14v11l-5 5H5zM14 20v-5h5' },
   { group: 'annotation', kind: 'pricenote', zh: '价格便签', en: 'Price note', hintZh: '点击要标注的价格，再点击便签位置，然后输入文字', hintEn: 'Click the price, then the note position, then type', icon: 'M3 16h6M9 16l4-6h8v8h-8z' },
   { group: 'annotation', kind: 'signpost', zh: '路标', en: 'Signpost', hintZh: '单击 K 线位置后输入路标文字', hintEn: 'Click a bar, then type the signpost text', icon: 'M8 21V4M8 4h11l-2 3 2 3H8' },
+  { group: 'annotation', kind: 'anchoredtext', zh: '锚定文本', en: 'Anchored text', hintZh: '单击位置后输入文字；固定在屏幕上，平移图表时不动', hintEn: 'Click a spot, then type; pinned to the screen while the chart scrolls', icon: 'M5 6h14M12 6v13M9 19h6M18 15l3 3-3 3' },
+  { group: 'annotation', kind: 'table', zh: '表格', en: 'Table', hintZh: '单击位置后输入内容：| 分隔单元格，; 分隔行；可在工具条固定到屏幕', hintEn: 'Click, then type: | between cells, ; between rows; pin it from the toolbar', icon: 'M4 5h16v14H4zM4 10h16M4 15h16M10 5v14' },
   { group: 'annotation', kind: 'pin', zh: '图钉', en: 'Pin', hintZh: '单击位置后输入说明，图上显示图钉和说明', hintEn: 'Click a spot, then type; shows a pin with its note', icon: 'M12 21s-6-5.6-6-10a6 6 0 0 1 12 0c0 4.4-6 10-6 10zM12 8.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z' },
   { group: 'annotation', kind: 'pricelabel', zh: '价格标签', en: 'Price label', hintZh: '单击在该价格处放置标签', hintEn: 'Click to tag a price', icon: 'M3 12l5-6h13v12H8z' },
   { group: 'annotation', kind: 'icon', zh: '图标', en: 'Icon', hintZh: '单击位置后选择图标', hintEn: 'Click a spot, then pick an icon', icon: 'M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.6 6.7 19.4l1.2-6L3.4 9.3l6-.7z' },
@@ -261,6 +263,11 @@ export function regressionFit(bars: DrawPoint[]): { slope: number; intercept: nu
   return { slope, intercept, sigma: Math.sqrt(variance) }
 }
 
+/** Table text → rows of cells: rows split by ; or a new line, cells by |. */
+export function tableRows(value: string): string[][] {
+  return value.split(/[;\n]/).map((row) => row.split('|').map((cell) => cell.trim())).filter((row) => row.some(Boolean)).slice(0, 12).map((row) => row.slice(0, 8))
+}
+
 /** Polyline through the clicked points with a label at each. */
 function wave(p: Pt[], labels: string[], text: (x: number, y: number, value: string, anchor?: 'start' | 'end' | 'middle', cls?: string) => React.ReactNode) {
   return <>
@@ -317,14 +324,19 @@ export interface ShapeProps {
   /** Trend line extension. */
   extendLeft?: boolean
   extendRight?: boolean
+  /** Pinned to the screen: fractions of the plot width / height. */
+  screenX?: number
+  screenY?: number
 }
 
 /** One drawing as SVG; `points` are in click order (a preview passes clicks + hover). */
-export const DrawingShape = React.memo(function DrawingShape({ kind, points, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels, fontSize, bold, italic, fillOpacity, extendLeft, extendRight }: ShapeProps) {
+export const DrawingShape = React.memo(function DrawingShape({ kind, points, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels, fontSize, bold, italic, fillOpacity, extendLeft, extendRight, screenX, screenY }: ShapeProps) {
   const k = (fontSize ?? 12) / 12
   const badges = [...(alert ? ['alert' as const] : []), ...(shared ? ['shared' as const] : [])]
   const { width: w, height: h } = view
-  const px = points.map((point) => view.project(point.time, point.price))
+  // A screen-pinned drawing ignores its time / price and sits at a fixed spot on the plot.
+  const pinned = screenX != null && screenY != null
+  const px = pinned ? [{ x: screenX * w, y: screenY * h }] : points.map((point) => view.project(point.time, point.price))
   if (!px.length || px.some((point) => point == null)) return null
   const p = px as Pt[]
   const text = (x: number, y: number, value: string, anchor: 'start' | 'end' | 'middle' = 'start', cls = 'dhl-drawing-text') =>
@@ -477,6 +489,34 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
         <polyline className="dhl-pattern" points={p.map((point) => `${point.x},${point.y}`).join(' ')} />
         {kind === 'path' ? <polygon className="dhl-arrow-head" points={arrowHead(p[p.length - 2], p[p.length - 1])} /> : null}
       </>
+      break
+    }
+    case 'anchoredtext': {
+      const value = textValue || label || tr('锚定文本', 'Anchored text')
+      const lines = wrapText(value, 300)
+      const width = (14 + Math.max(...lines.map(textWidth))) * k
+      body = <g className={pinned ? 'dhl-anchored' : undefined}>
+        <rect className="dhl-text-box" x={p[0].x} y={p[0].y - 20 * k} width={width} height={(8 + lines.length * 16) * k} rx="4" />
+        {lines.map((line, index) => <React.Fragment key={index}>{text(p[0].x + 7 * k, p[0].y + (-4 + index * 16) * k, line, 'start', 'dhl-drawing-text dhl-text-value')}</React.Fragment>)}
+      </g>
+      handles = [p[0]]
+      break
+    }
+    case 'table': {
+      // Cells split by |, rows by ; or a new line; columns as wide as their widest cell.
+      const rows = tableRows(textValue || label || '')
+      if (!rows.length) break
+      const cols = Math.max(...rows.map((row) => row.length))
+      const widths = Array.from({ length: cols }, (_, c) => (16 + Math.max(...rows.map((row) => textWidth(row[c] ?? '')))) * k)
+      const rowH = 22 * k, x0 = p[0].x, y0 = p[0].y
+      const total = widths.reduce((sum, value) => sum + value, 0)
+      body = <g className="dhl-table" data-rows={rows.length} data-cols={cols}>
+        <rect className="dhl-text-box dhl-table-box" x={x0} y={y0} width={total} height={rows.length * rowH} rx="3" />
+        {rows.map((_, r) => r > 0 ? <line key={`r${r}`} className="dhl-table-rule" x1={x0} x2={x0 + total} y1={y0 + r * rowH} y2={y0 + r * rowH} /> : null)}
+        {widths.slice(0, -1).map((_, c) => { const x = x0 + widths.slice(0, c + 1).reduce((sum, value) => sum + value, 0); return <line key={`c${c}`} className="dhl-table-rule" x1={x} x2={x} y1={y0} y2={y0 + rows.length * rowH} /> })}
+        {rows.flatMap((row, r) => row.map((cell, c) => <React.Fragment key={`${r}-${c}`}>{text(x0 + widths.slice(0, c).reduce((sum, value) => sum + value, 0) + 8 * k, y0 + r * rowH + 15 * k, cell, 'start', r === 0 ? 'dhl-drawing-text dhl-text-value dhl-table-head' : 'dhl-drawing-text dhl-text-value')}</React.Fragment>))}
+      </g>
+      handles = [p[0]]
       break
     }
     case 'pin': {

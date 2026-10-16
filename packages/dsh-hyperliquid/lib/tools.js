@@ -12,7 +12,7 @@ import { INDICATOR_IDS, computeStudies, normalizeIndicatorSettings, studyDefinit
 import { reviewLedger } from './review.js'
 import { DRAWING_KINDS, DRAWING_POINTS, TEXT_KINDS, drawingStyle, volumeProfile } from './chart-drawings.js'
 
-const DRAWING_NAMES = { projection: '投影', ghostfeed: '幽灵 K 线', highlighter: '荧光笔', path: '路径', polyline: '折线', pin: '图钉', fibspiral: '斐波那契螺旋', barspattern: 'K 线形态', flatchannel: '平顶/平底通道', disjoint: '分离通道', fibfan: '斐波那契速度阻力扇', fibcircles: '斐波那契圆', fibarcs: '斐波那契弧', fibwedge: '斐波那契楔形', fibtrendtime: '基于趋势的斐波那契时间',
+const DRAWING_NAMES = { anchoredtext: '锚定文本', table: '表格', projection: '投影', ghostfeed: '幽灵 K 线', highlighter: '荧光笔', path: '路径', polyline: '折线', pin: '图钉', fibspiral: '斐波那契螺旋', barspattern: 'K 线形态', flatchannel: '平顶/平底通道', disjoint: '分离通道', fibfan: '斐波那契速度阻力扇', fibcircles: '斐波那契圆', fibarcs: '斐波那契弧', fibwedge: '斐波那契楔形', fibtrendtime: '基于趋势的斐波那契时间',
   cypher: 'Cypher 形态', threedrives: '三驱形态', tripattern: '三角形态', elliotttri: '艾略特三角浪', elliottwxy: '艾略特双重组合', elliottwxyxz: '艾略特三重组合', cycles: '周期线', sine: '正弦线',
   ellipse: '椭圆', rotrect: '旋转矩形', arc: '弧线', curve: '曲线', note: '便签', pricenote: '价格便签', signpost: '路标', avwap: '锚定 VWAP', avprofile: '锚定成交量分布', forecast: '预测', vprofile: '固定范围成交量分布', level: '水平线', hray: '水平射线', vline: '垂直线', text: '文本', trend: '趋势线', ray: '射线', extended: '延长线', channel: '平行通道', fib: '斐波那契回撤', rect: '矩形', measure: '价格区间', long: '多头头寸', short: '空头头寸', fibext: '斐波那契扩展', fibchannel: '斐波那契通道', fibtime: '斐波那契时间周期', gannfan: '江恩扇形', pitchfork: '安德鲁叉子线', regression: '回归趋势', arrow: '箭头', callout: '标注气泡', circle: '圆形', triangle: '三角形', brush: '画笔', crossline: '十字线', pricelabel: '价格标签', infoline: '信息线', trendangle: '趋势角度', pricerange: '价格区间', daterange: '日期区间', elliott: '艾略特推动浪', elliottabc: '艾略特调整浪', xabcd: 'XABCD 谐波', abcd: 'ABCD 形态', headshoulders: '头肩形态', gannbox: '江恩箱', gannsquare: '江恩方格', schiff: 'Schiff 叉子线', modschiff: '改良 Schiff 叉子线', icon: '图标' }
 import { canonicalMarketCoin } from './market-symbol.js'
@@ -246,7 +246,7 @@ function buildTools(remote) {
           coin: { type: 'string', description: '默认会话绑定币对' },
           interval: { type: 'string', description: '默认当前交易台周期' },
           kind: { type: 'string', enum: [...DRAWING_KINDS, 'ma'], description: 'add 必填：画线类型或 ma 均线' },
-          points: { type: 'array', description: `除 level（price）、trend（fromTime…toPrice）外各类型的锚点，按点击顺序。点数：${Object.entries(DRAWING_POINTS).filter(([kind]) => kind !== 'level' && kind !== 'trend').map(([kind, n]) => `${kind}=${n || (kind === 'path' || kind === 'polyline' || kind === 'ghostfeed' ? '2-50' : '2-500')}`).join(' ')}。long/short=[入场,止损,止盈]；${TEXT_KINDS.join('/')} 的文字放 label；avwap/avprofile 的唯一锚点是起算 K 线；barspattern=[源区间起点, 源区间终点, 粘贴位置（首根开盘价对齐此价）]`, items: { type: 'object', properties: { time: { type: 'number', description: 'K 线时间 epoch ms' }, price: { type: 'number' } }, required: ['time', 'price'] } },
+          points: { type: 'array', description: `除 level（price）、trend（fromTime…toPrice）外各类型的锚点，按点击顺序。点数：${Object.entries(DRAWING_POINTS).filter(([kind]) => kind !== 'level' && kind !== 'trend').map(([kind, n]) => `${kind}=${n || (kind === 'path' || kind === 'polyline' || kind === 'ghostfeed' ? '2-50' : '2-500')}`).join(' ')}。long/short=[入场,止损,止盈]；${TEXT_KINDS.join('/')} 的文字放 label；avwap/avprofile 的唯一锚点是起算 K 线；barspattern=[源区间起点, 源区间终点, 粘贴位置（首根开盘价对齐此价）]；table 的 label 用 | 分隔单元格、; 或换行分隔行`, items: { type: 'object', properties: { time: { type: 'number', description: 'K 线时间 epoch ms' }, price: { type: 'number' } }, required: ['time', 'price'] } },
           maType: { type: 'string', enum: MA_KINDS, description: 'kind=ma：均线类型；smma 即平滑均线（RMA）' },
           period: { type: 'number', description: 'kind=ma：周期，1-500 的整数' },
           source: { type: 'string', enum: MA_SOURCES, description: 'kind=ma：价格源，默认 close' },
@@ -256,6 +256,8 @@ function buildTools(remote) {
           lineWidth: { type: 'number', description: '画线线宽 1-4' },
           visibleIntervals: { type: 'array', items: { type: 'string' }, description: '只在这些周期显示（如 ["4h","1d"]）；省略=所有周期' },
           fontSize: { type: 'number', description: 'kind=text/callout：字号 10-32' },
+          screenX: { type: 'number', description: 'kind=anchoredtext/table：固定在屏幕的横向位置 0-1（与 screenY 同时给）' }, screenY: { type: 'number', description: '固定在屏幕的纵向位置 0-1' },
+          unpin: { type: 'boolean', description: 'action=update：true 取消固定到屏幕，画线回到它保存的 points 时间与价格' },
           extendLeft: { type: 'boolean', description: 'kind=trend：向左延长' }, extendRight: { type: 'boolean', description: 'kind=trend：向右延长' },
           bold: { type: 'boolean', description: 'kind=text/callout：粗体' }, italic: { type: 'boolean', description: 'kind=text/callout：斜体' },
           fillOpacity: { type: 'number', description: '矩形/圆/三角形/通道/斐波那契/区间等的背景填充透明度 0-0.6（0=无填充）' },
@@ -313,7 +315,8 @@ function buildTools(remote) {
           return { text: `已移除均线：${maLabel(removed)}（${removed.id}）`, line: removed }
         }
         if (args?.action === 'update') {
-          const patch = Object.fromEntries(['points', 'price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'label', 'color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert', 'rows', 'valueArea', 'levels', 'visibleIntervals', 'fontSize', 'fillOpacity', 'bold', 'italic', 'extendLeft', 'extendRight'].filter((key) => args?.[key] != null).map((key) => [key, args[key]]))
+          const patch = Object.fromEntries(['points', 'price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'label', 'color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert', 'rows', 'valueArea', 'levels', 'visibleIntervals', 'fontSize', 'fillOpacity', 'bold', 'italic', 'extendLeft', 'extendRight', 'screenX', 'screenY'].filter((key) => args?.[key] != null).map((key) => [key, args[key]]))
+          if (args?.unpin === true) { patch.screenX = null; patch.screenY = null }
           const mark = remote.editChartMark(args?.id, patch, sessionId)
           return { text: `已更新${DRAWING_NAMES[mark.kind] ?? mark.kind}：${mark.label}（${mark.id}）`, mark }
         }

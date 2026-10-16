@@ -12,7 +12,9 @@ import { Select } from './select'
 export const DRAW_COLORS = ['#4c82d8', '#2fd3a0', '#ef5f6c', '#e2a943', '#9b86db', '#26b5c8', '#8a8f98']
 const STYLES: Array<['solid' | 'dashed' | 'dotted', string, string]> = [['solid', '实线', 'Solid'], ['dashed', '虚线', 'Dashed'], ['dotted', '点线', 'Dotted']]
 
-export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone, onCoordinates, placement = 'top' }: {
+export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone, onCoordinates, placement = 'top', onTogglePin }: {
+  /** Pin to / unpin from the screen (anchored text, tables). */
+  onTogglePin?: () => void
   /** Bottom when the top position would cover the drawing being edited. */
   placement?: 'top' | 'bottom'
   mark: ChartMark; globallyLocked: boolean; onEdit: (patch: Record<string, unknown>) => void; onRemove: () => void; onClose: () => void; onClone: () => void; onCoordinates: () => void
@@ -95,6 +97,11 @@ export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, o
         </Select>
       </span> : null}
       <span className="dhl-draw-toolbar-group">
+        {onTogglePin ? <button type="button" className={mark.screenX != null ? 'on' : ''} aria-pressed={mark.screenX != null} disabled={locked}
+          aria-label={mark.screenX != null ? tr('取消固定到屏幕', 'Unpin from the screen') : tr('固定到屏幕', 'Pin to the screen')}
+          title={mark.screenX != null ? tr('取消固定：回到图上当前位置对应的时间和价格', 'Unpin: attach to the time and price under it') : tr('固定在屏幕当前位置，平移图表时不动', 'Pin to this spot on screen while the chart scrolls')} onClick={onTogglePin}>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M9 4h6l-1 6 3 3H7l3-3zM12 13v7" /></svg>
+        </button> : null}
         <button type="button" className={onlyHere ? 'on' : ''} aria-pressed={onlyHere} disabled={locked}
           title={onlyHere ? tr(`仅在 ${mark.visibleIntervals!.join('、')} 显示；点击改为所有周期`, `Shown on ${mark.visibleIntervals!.join(', ')} only; click to show on all`) : tr(`只在当前周期（${interval}）显示`, `Show on the current interval (${interval}) only`)}
           aria-label={onlyHere ? tr('改为所有周期显示', 'Show on all intervals') : tr('仅本周期显示', 'Show on this interval only')}
