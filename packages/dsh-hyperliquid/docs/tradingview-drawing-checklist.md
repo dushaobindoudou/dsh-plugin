@@ -29,6 +29,7 @@
 | 画线价格提醒（穿越触发一次） | 已做 | phase4「price alert armed」与触发检查；HIP-3 行情同样参与提醒 |
 | 快速连续点击不丢锚点 | 已做 | 原生 click 路径。0.1.0 对照：两次点击间隔 100/300/450ms 均漏画 20/20，550/700ms 0/20（图表库 500ms 双击窗口）；当前版本 100/300/450/900ms 各 20 次 0 漏画 |
 | 触摸：点两下画线、点线选中、手指拖锚点、单指平移 | 已做（0.4.4） | touch「touch: two taps draw a trend line」「touch: dragging an anchor reshapes the line」「touch: a one-finger swipe pans the chart」（Chrome 手势管线模拟，非真机） |
+| 触控板：双指缩放只缩放图表（不缩放页面）、双指横滑平移，画线随 K 线移动 | 已做 | trackpad「pinch-out zooms the chart (not the page)」「a two-finger horizontal swipe pans」 |
 | 屏幕外画线不渲染 | 已做 | perf「a drawing far off-screen is not rendered」 |
 
 ## 二、对象属性
@@ -64,5 +65,5 @@
 
 ## 仍需人工观察
 
-- 触摸已用 Chrome 手势管线模拟验收；真机（iPad / 安卓）与触控板双指缩放未验收。
+- 触摸与触控板已用 Chrome 模拟验收（触摸走手势管线，触控板为 Chrome 上报的 wheel 事件）；iPad / 安卓真机与 Safari 未验收。
 - 性能数字来自无头 Chrome（100 条画线、5000 根 K 线下 p95 约 16.7ms），实际机器上以使用体验为准。

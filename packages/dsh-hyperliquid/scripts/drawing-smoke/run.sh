@@ -51,5 +51,6 @@ run fills.mjs
 run phase4.mjs
 run phase5.mjs
 run touch.mjs
+run trackpad.mjs
 run perf.mjs
 echo "drawing smoke: all phases passed"

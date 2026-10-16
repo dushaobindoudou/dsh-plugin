@@ -20,8 +20,14 @@ try {
   const hostMarks = () => page.evaluate(() => { const s = window.__dhlStore.get(); return window.__dhlCall('chartMarks', { sessionId: s.activeSessionId, coin: s.activeCoin, allIntervals: true }).then((r) => r.marks.filter((m) => !m.shared)) })
 
   // ── two drawings, Shift-click group, batch delete, one undo restores both ──
-  await pick('水平线'); await clickXY(at(.5, .3)); await settle()
-  await pick('水平线'); await clickXY(at(.5, .65)); await settle()
+  // Lines synced from phase4 sit on this chart too: draw ours away from them, otherwise a Shift-click
+  // can land on a synced line at the same price (this was the occasional "Delete removes the whole group" failure).
+  const syncedYs = await page.evaluate(() => [...document.querySelectorAll('.dhl-chart-drawing-overlay .dhl-drawing')]
+    .filter((g) => window.__dhlStore.get().chartMarks.find((m) => m.id === g.getAttribute('data-mark-id'))?.shared)
+    .map((g) => g.getBoundingClientRect()).flatMap((r) => [r.top, r.bottom]))
+  const [fyA, fyB] = [.3, .65, .2, .45, .8, .55].filter((fy) => syncedYs.every((y) => Math.abs(y - at(.5, fy).y) > 30))
+  await pick('水平线'); await clickXY(at(.5, fyA)); await settle()
+  await pick('水平线'); await clickXY(at(.5, fyB)); await settle()
   check((await marks()).length === 2, 'two horizontal lines drawn')
   const lineYs = async () => page.evaluate((ids) => ids.map((id) => document.querySelector(`.dhl-chart-drawing-overlay [data-mark-id="${id}"] line`)?.getBoundingClientRect().top).filter((y) => y != null), (await marks()).map((m) => m.id))
   const ys = await lineYs()
@@ -30,12 +36,13 @@ try {
   await clickXY({ x: at(.4, 0).x, y: ys[ys.length - 1] }, ['Shift'])
   await page.getByRole('toolbar', { name: '批量编辑画线' }).waitFor({ state: 'visible', timeout: 5000 })
   check(await page.getByText('已选 2 条画线').isVisible(), 'Shift-click builds a two-drawing selection with a batch toolbar')
+  const groupIds = (await marks()).map((m) => m.id)
   await page.keyboard.press('Delete')
   // The host round trip can take longer than a fixed settle under a full smoke run: wait for the outcome.
   const deleteAt = Date.now()
   for (let t = 0; t < 25 && ((await marks()).length || (await hostMarks()).length); t += 1) await page.waitForTimeout(200)
   console.log(`group delete reached the host after ${Date.now() - deleteAt}ms`)
-  check((await marks()).length === 0 && (await hostMarks()).length === 0, 'Delete removes the whole group', { local: (await marks()).length, host: (await hostMarks()).length })
+  check((await marks()).length === 0 && (await hostMarks()).length === 0, 'Delete removes the whole group', { groupIds, local: (await marks()).map((m) => [m.id, m.kind, m.source, m.shared ?? false, m.sessionId?.slice(-6)]), host: (await hostMarks()).map((m) => [m.id, m.kind, m.source, m.shared ?? false]), session: (await store(page)).activeSessionId?.slice(-6), notice: await page.locator('[role=status], [role=alert]').allInnerTexts().catch(() => []) })
   await page.keyboard.press(`${mod}+z`); await page.waitForTimeout(2500)
   check((await marks()).length === 2 && (await hostMarks()).length === 2, 'one undo restores the whole group', { local: (await marks()).length, host: (await hostMarks()).length })
 
