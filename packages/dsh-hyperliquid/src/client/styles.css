@@ -896,3 +896,6 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 
 /* One row like TradingView's floating toolbar: a wrapped toolbar covered drawings near the top of a narrow chart. */
 .dhl-draw-toolbar > * { flex: none; }
+/* Touch: the chart owns every gesture inside it (anchor and drawing drags, pans), as TradingView does;
+   otherwise the browser claims a finger drag for scrolling and cancels the pointer mid-drag. */
+.dhl-chart, .dhl-chart-drawing-overlay, .dhl-chart-drawing-overlay * { touch-action: none; }

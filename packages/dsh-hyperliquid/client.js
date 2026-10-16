@@ -949,6 +949,9 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 
 /* One row like TradingView's floating toolbar: a wrapped toolbar covered drawings near the top of a narrow chart. */
 .dhl-draw-toolbar > * { flex: none; }
+/* Touch: the chart owns every gesture inside it (anchor and drawing drags, pans), as TradingView does;
+   otherwise the browser claims a finger drag for scrolling and cancels the pointer mid-drag. */
+.dhl-chart, .dhl-chart-drawing-overlay, .dhl-chart-drawing-overlay * { touch-action: none; }
 `;
 
 // src/client/locale.ts
@@ -19018,13 +19021,16 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     box.addEventListener("pointermove", move, true);
     box.addEventListener("pointerup", move, true);
     box.addEventListener("pointercancel", cancel, true);
+    let touchTapAt = -Infinity;
+    const fromTouch = (event) => event.pointerType === "touch" || Boolean(event.sourceCapabilities?.firesTouchEvents);
     const chartClick = (event) => {
+      if (event.type === "click" && fromTouch(event) && performance.now() - touchTapAt < 800) return false;
       const visible = chart.timeScale().getVisibleLogicalRange();
       const panned = !pressStillAClick(press?.range ?? null, visible ? { from: visible.from, to: visible.to } : null);
       const clicked = Boolean(press && !press.dragged && !panned && event.button === 0);
       press = null;
-      if (!clicked) return;
-      if (!(event.target instanceof HTMLCanvasElement)) return;
+      if (!clicked) return false;
+      if (!(event.target instanceof HTMLCanvasElement)) return false;
       const rect = box.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
@@ -19075,6 +19081,11 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
       }
     };
     box.addEventListener("click", chartClick);
+    const touchTap = (event) => {
+      if (event.pointerType !== "touch" || press?.id !== event.pointerId) return;
+      if (chartClick(event) !== false) touchTapAt = performance.now();
+    };
+    box.addEventListener("pointerup", touchTap);
     let rangeTimer = null;
     let viewportFrame = 0;
     const refreshOverlay = () => {
@@ -19144,6 +19155,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
       box.removeEventListener("pointerup", move, true);
       box.removeEventListener("pointercancel", cancel, true);
       box.removeEventListener("click", chartClick);
+      box.removeEventListener("pointerup", touchTap);
       chart.timeScale().unsubscribeVisibleLogicalRangeChange(refreshOverlay);
       box.removeEventListener("pointermove", scaleDrag);
       box.removeEventListener("pointerdown", beginCanvasGesture);

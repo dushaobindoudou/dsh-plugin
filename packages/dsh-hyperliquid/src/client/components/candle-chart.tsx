@@ -450,14 +450,21 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     // double-click window and fires no click callback for the second one (a dblclick only if
     // within 5px). The second anchor of a quickly drawn line was dropped that way (verified
     // against 0.1.0: 100ms between clicks missed 20/20, 700ms missed 0/20).
-    const chartClick = (event: MouseEvent) => {
+    let touchTapAt = -Infinity
+    /** Whether a click came from a finger (Chrome reports it as a touch PointerEvent). */
+    const fromTouch = (event: MouseEvent) => (event as PointerEvent).pointerType === 'touch' ||
+      Boolean((event as MouseEvent & { sourceCapabilities?: { firesTouchEvents?: boolean } }).sourceCapabilities?.firesTouchEvents)
+    /** Returns false when the event did not count as a click on the chart. */
+    const chartClick = (event: MouseEvent): false | void => {
+      // A touch tap was already handled on pointerup; ignore only the click that tap may still produce.
+      if (event.type === 'click' && fromTouch(event) && performance.now() - touchTapAt < 800) return false
       const visible = chart.timeScale().getVisibleLogicalRange()
       // A live bar arriving mid-click must not cancel it (see click-guard).
       const panned = !pressStillAClick(press?.range ?? null, visible ? { from: visible.from, to: visible.to } : null)
       const clicked = Boolean(press && !press.dragged && !panned && event.button === 0)
       press = null
-      if (!clicked) return
-      if (!(event.target instanceof HTMLCanvasElement)) return
+      if (!clicked) return false
+      if (!(event.target instanceof HTMLCanvasElement)) return false
       const rect = box.getBoundingClientRect()
       const x = event.clientX - rect.left
       const y = event.clientY - rect.top
@@ -489,6 +496,15 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       if (selection) { setSelectedTime(selection.candle.t); onSelectRef.current(selection) }
     }
     box.addEventListener('click', chartClick)
+    // Touch: lightweight-charts calls preventDefault on touchend when it handles a tap, which
+    // suppresses the click a finger tap would produce (see its MouseEventHandler). Treat a
+    // touch pointerup that did not drag as the click.
+    const touchTap = (event: PointerEvent) => {
+      if (event.pointerType !== 'touch' || press?.id !== event.pointerId) return
+      // Only a tap that counted as a click suppresses the browser's follow-up click.
+      if (chartClick(event) !== false) touchTapAt = performance.now()
+    }
+    box.addEventListener('pointerup', touchTap)
     let rangeTimer: ReturnType<typeof setTimeout> | null = null
     let viewportFrame = 0
     const refreshOverlay = () => {
@@ -567,7 +583,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       box.removeEventListener('pointermove', move, true)
       box.removeEventListener('pointerup', move, true)
       box.removeEventListener('pointercancel', cancel, true)
-      box.removeEventListener('click', chartClick)
+      box.removeEventListener('click', chartClick); box.removeEventListener('pointerup', touchTap)
       chart.timeScale().unsubscribeVisibleLogicalRangeChange(refreshOverlay)
       box.removeEventListener('pointermove', scaleDrag)
       box.removeEventListener('pointerdown', beginCanvasGesture)

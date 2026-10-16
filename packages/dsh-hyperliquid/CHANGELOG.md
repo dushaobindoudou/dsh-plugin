@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.4 — 2026-10-17
+
+- 修复：触摸屏上无法画线。lightweight-charts 处理轻点时会在 touchend 上 preventDefault，浏览器不再补发 click，而落锚点依赖原生 click；现在未拖动的触摸 pointerup 直接按点击处理（同一轻点之后若仍有 click 会被忽略）。
+- 修复：手指拖动锚点或画线时被浏览器当作页面滚动而中途取消（pointercancel）；图表区域设为 `touch-action: none`，与 TradingView 一致由图表处理全部手势。
+- 冒烟新增 touch 阶段（点画、选中、拖锚点、单指平移）。
+
 ## 0.4.3 — 2026-10-17
 
 - 趋势线可分别向左、向右延长（浮动工具条两个开关，agent 工具 `extendLeft` / `extendRight`）；价格提醒按延长后的线判断，延长的线不参与屏幕外剔除。
