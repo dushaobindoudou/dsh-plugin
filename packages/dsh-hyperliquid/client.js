@@ -691,10 +691,10 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 /* Drawings: projected SVG over the price pane. */
 .dhl-drawing line, .dhl-drawing polygon { stroke: currentColor; stroke-width: var(--dhl-line-width, 1.8); stroke-dasharray: var(--dhl-dash, none); fill: none; vector-effect: non-scaling-stroke; }
 .dhl-drawing.role-support line, .dhl-drawing.role-resistance line, .dhl-drawing.role-neutral line { stroke-dasharray: var(--dhl-dash, 6 4); }
-.dhl-drawing .dhl-drawing-fill { fill: currentColor; fill-opacity: .08; stroke: currentColor; stroke-width: 1.2; }
+.dhl-drawing .dhl-drawing-fill { fill: currentColor; fill-opacity: var(--dhl-fill-opacity, .08); stroke: currentColor; stroke-width: 1.2; }
 .dhl-drawing .dhl-drawing-mid { stroke-dasharray: 4 4; stroke-width: 1; opacity: .7; }
 .dhl-drawing-text { fill: currentColor; stroke: none; font-size: 10.5px; font-variant-numeric: tabular-nums; paint-order: stroke; }
-.dhl-drawing .dhl-fib-band { stroke: none; fill-opacity: .07; }
+.dhl-drawing .dhl-fib-band { stroke: none; fill-opacity: var(--dhl-fill-opacity, .07); }
 .dhl-drawing .dhl-fib-band.band-0 { fill: #ef6f6c; } .dhl-drawing .dhl-fib-band.band-1 { fill: #e2a943; } .dhl-drawing .dhl-fib-band.band-2 { fill: #3b9c6d; }
 .dhl-drawing .dhl-fib-key { stroke-width: 2.2; }
 .dhl-measure.up { color: var(--dsw-alias-state-success-primary); } .dhl-measure.down { color: var(--dsw-alias-state-error-primary); }
@@ -716,14 +716,14 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-drawing.locked .dhl-chart-anchor { cursor: default; }
 .dhl-chart-anchor:hover { fill: currentColor; }
 .dhl-text-box { fill: var(--dsw-alias-bg-layer-1); fill-opacity: .92; stroke: currentColor; stroke-width: 1; }
-.dhl-drawing .dhl-text-value { fill: var(--dsw-alias-label-primary); font-size: 12px; }
+.dhl-drawing .dhl-text-value { fill: var(--dsw-alias-label-primary); font-size: var(--dhl-font-size, 12px); font-weight: var(--dhl-font-weight, 400); font-style: var(--dhl-font-style, normal); }
 .dhl-position .dhl-position-stop { fill: var(--dsw-alias-state-error-primary); fill-opacity: .16; stroke: none; }
 .dhl-position .dhl-position-target { fill: var(--dsw-alias-state-success-primary); fill-opacity: .16; stroke: none; }
 .dhl-drawing .dhl-position .dhl-position-entry { stroke: var(--dsw-alias-label-secondary); stroke-width: 1.5; stroke-dasharray: none; }
 .dhl-drawing .dhl-position-text { fill: var(--dsw-alias-label-primary); font-size: 11px; font-weight: 600; }
 
 /* Floating style toolbar for the selected drawing. */
-.dhl-draw-toolbar { position: absolute; z-index: 6; top: 30px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; max-width: calc(100% - 80px); flex-wrap: wrap; justify-content: center; padding: 5px 8px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px; background: var(--dsw-alias-bg-layer-1); box-shadow: 0 8px 24px color-mix(in srgb, var(--dsw-alias-bg-base) 45%, transparent); font-size: 12px; }
+.dhl-draw-toolbar { position: absolute; z-index: 6; top: 30px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; max-width: calc(100% - 80px); flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; justify-content: flex-start; padding: 5px 8px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px; background: var(--dsw-alias-bg-layer-1); box-shadow: 0 8px 24px color-mix(in srgb, var(--dsw-alias-bg-base) 45%, transparent); font-size: 12px; }
 .dhl-draw-toolbar-name { color: var(--dsw-alias-label-secondary); padding: 0 4px; white-space: nowrap; }
 .dhl-draw-toolbar-group { display: inline-flex; align-items: center; gap: 2px; padding-left: 6px; border-left: 1px solid var(--dsw-alias-border-l1); }
 .dhl-draw-toolbar button { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 4px; border: 0; border-radius: 5px; background: transparent; color: var(--dsw-alias-label-secondary); cursor: pointer; font: inherit; }
@@ -770,7 +770,7 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-drawing .dhl-brush { fill: none; stroke: currentColor; stroke-width: var(--dhl-line-width, 2); stroke-dasharray: var(--dhl-dash, none); stroke-linecap: round; stroke-linejoin: round; }
 .dhl-drawing-hit .dhl-brush { pointer-events: stroke; }
 .dhl-drawing .dhl-arrow-head, .dhl-drawing .dhl-callout-dot { fill: currentColor; stroke: none; }
-.dhl-drawing circle.dhl-drawing-fill { fill: currentColor; fill-opacity: .08; stroke: currentColor; stroke-width: var(--dhl-line-width, 1.5); stroke-dasharray: var(--dhl-dash, none); }
+.dhl-drawing circle.dhl-drawing-fill { fill: currentColor; fill-opacity: var(--dhl-fill-opacity, .08); stroke: currentColor; stroke-width: var(--dhl-line-width, 1.5); stroke-dasharray: var(--dhl-dash, none); }
 .dhl-drawing polyline.dhl-drawing-mid { fill: none; stroke: currentColor; }
 
 /* Drawings object list (under the chart). */
@@ -946,6 +946,9 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-limits-hint { display: block; margin-top: 2px; color: var(--dsw-alias-label-secondary); font-size: 12px; }
 .dhl-limits-scroll .dhl-risk-error { margin: 10px 0 0; }
 .dhl-wallet-form ~ .dhl-limits-facts { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--dsw-alias-border-l1); }
+
+/* One row like TradingView's floating toolbar: a wrapped toolbar covered drawings near the top of a narrow chart. */
+.dhl-draw-toolbar > * { flex: none; }
 `;
 
 // src/client/locale.ts
@@ -17702,6 +17705,8 @@ function isSingleEmoji(value) {
   if (typeof value !== "string" || !value || value.length > 32 || !/\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(value)) return false;
   return [...new Intl.Segmenter(void 0, { granularity: "grapheme" }).segment(value)].length === 1;
 }
+var FONT_KINDS = ["text", "callout"];
+var FILL_KINDS = ["rect", "circle", "triangle", "channel", "fib", "regression", "gannbox", "pricerange", "daterange", "measure"];
 var FIB_LEVEL_KINDS = ["fib", "fibext", "fibchannel"];
 function volumeProfile(bars, { rows = 48, valueArea = 0.7 } = {}) {
   const valid = bars.filter((bar) => [bar.open, bar.high, bar.low, bar.close, bar.volume].every(Number.isFinite) && bar.high >= bar.low && bar.volume >= 0);
@@ -17987,7 +17992,8 @@ function guide(a, b, value, key3, text) {
 }
 var BADGE_PATHS = { alert: "M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0", shared: "M4 9h13l-3-3M20 15H7l3 3" };
 var DASH = { solid: void 0, dashed: "7 5", dotted: "1.5 4" };
-var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels }) {
+var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels, fontSize, bold, italic, fillOpacity }) {
+  const k = (fontSize ?? 12) / 12;
   const badges = [...alert ? ["alert"] : [], ...shared ? ["shared"] : []];
   const { width: w, height: h } = view;
   const px = points2.map((point) => view.project(point.time, point.price));
@@ -18025,8 +18031,8 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
         body = base;
         break;
       }
-      const k = points2[1].time === points2[0].time ? 0 : (points2[2].time - points2[0].time) / (points2[1].time - points2[0].time);
-      const offset = points2[2].price - (points2[0].price + (points2[1].price - points2[0].price) * k);
+      const k2 = points2[1].time === points2[0].time ? 0 : (points2[2].time - points2[0].time) / (points2[1].time - points2[0].time);
+      const offset = points2[2].price - (points2[0].price + (points2[1].price - points2[0].price) * k2);
       const a2 = view.project(points2[0].time, points2[0].price + offset), b2 = view.project(points2[1].time, points2[1].price + offset);
       const am = view.project(points2[0].time, points2[0].price + offset / 2), bm = view.project(points2[1].time, points2[1].price + offset / 2);
       if (!a2 || !b2 || !am || !bm) {
@@ -18110,8 +18116,8 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
     case "callout": {
       if (!p[1]) break;
       const value = textValue || label || tr("\u6807\u6CE8", "Note");
-      const width = Math.min(280, 16 + [...value].reduce((sum, ch) => sum + (ch.charCodeAt(0) > 255 ? 12 : 6.6), 0));
-      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y + 12 }), /* @__PURE__ */ React7.createElement("circle", { className: "dhl-callout-dot", cx: p[0].x, cy: p[0].y, r: "3" }), /* @__PURE__ */ React7.createElement("rect", { className: "dhl-text-box", x: p[1].x, y: p[1].y, width, height: "26", rx: "6" }), text(p[1].x + 8, p[1].y + 17, value, "start", "dhl-drawing-text dhl-text-value"));
+      const width = Math.min(280, 16 + [...value].reduce((sum, ch) => sum + (ch.charCodeAt(0) > 255 ? 12 : 6.6), 0)) * k;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y + 13 * k }), /* @__PURE__ */ React7.createElement("circle", { className: "dhl-callout-dot", cx: p[0].x, cy: p[0].y, r: "3" }), /* @__PURE__ */ React7.createElement("rect", { className: "dhl-text-box", x: p[1].x, y: p[1].y, width, height: 26 * k, rx: "6" }), text(p[1].x + 8 * k, p[1].y + 17 * k, value, "start", "dhl-drawing-text dhl-text-value"));
       break;
     }
     case "fibext": {
@@ -18132,8 +18138,8 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
         body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
         break;
       }
-      const k = (points2[2].time - points2[0].time) / (points2[1].time - points2[0].time || 1);
-      const offset = points2[2].price - (points2[0].price + (points2[1].price - points2[0].price) * k);
+      const k2 = (points2[2].time - points2[0].time) / (points2[1].time - points2[0].time || 1);
+      const offset = points2[2].price - (points2[0].price + (points2[1].price - points2[0].price) * k2);
       body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, (levels ?? FIB_LEVELS).map((level) => {
         const a2 = view.project(points2[0].time, points2[0].price + offset * level), b2 = view.project(points2[1].time, points2[1].price + offset * level);
         const seg = a2 && b2 ? clipLine(a2, b2, w, h, 0) : null;
@@ -18271,8 +18277,8 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
     case "text": {
       const value = textValue || label || tr("\u6587\u672C", "Text");
       const lines = wrapText(value, 300);
-      const width = 14 + Math.max(...lines.map(textWidth));
-      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-text-box", x: p[0].x, y: p[0].y - 20, width, height: 8 + lines.length * 16, rx: "4" }), lines.map((line, index) => /* @__PURE__ */ React7.createElement(React7.Fragment, { key: index }, text(p[0].x + 7, p[0].y - 4 + index * 16, line, "start", "dhl-drawing-text dhl-text-value"))));
+      const width = (14 + Math.max(...lines.map(textWidth))) * k;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-text-box", x: p[0].x, y: p[0].y - 20 * k, width, height: (8 + lines.length * 16) * k, rx: "4" }), lines.map((line, index) => /* @__PURE__ */ React7.createElement(React7.Fragment, { key: index }, text(p[0].x + 7 * k, p[0].y + (-4 + index * 16) * k, line, "start", "dhl-drawing-text dhl-text-value"))));
       break;
     }
     case "measure": {
@@ -18302,7 +18308,15 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
     }
   }
   if (body == null) return null;
-  const style = { color, "--dhl-line-width": lineWidth ? String(lineWidth) : void 0, "--dhl-dash": lineStyle ? DASH[lineStyle] ?? "none" : void 0 };
+  const style = {
+    color,
+    "--dhl-line-width": lineWidth ? String(lineWidth) : void 0,
+    "--dhl-dash": lineStyle ? DASH[lineStyle] ?? "none" : void 0,
+    "--dhl-fill-opacity": fillOpacity != null ? String(fillOpacity) : void 0,
+    "--dhl-font-size": fontSize ? `${fontSize}px` : void 0,
+    "--dhl-font-weight": bold ? "700" : void 0,
+    "--dhl-font-style": italic ? "italic" : void 0
+  };
   return /* @__PURE__ */ React7.createElement("g", { className, style, "data-mark-id": id }, body, label && !isTextKind(kind) && kind !== "icon" && p[0] ? text(Math.min(Math.max(p[0].x + 6, 4), w - 120), p[0].y - 6, label) : null, badges?.length && p[0] ? badges.map((badge, index) => /* @__PURE__ */ React7.createElement("svg", { key: badge, className: "dhl-drawing-badge", x: Math.min(Math.max(p[0].x + 6, 4), w - 40) + index * 16, y: p[0].y + 5, width: "13", height: "13", viewBox: "0 0 24 24" }, /* @__PURE__ */ React7.createElement("path", { d: BADGE_PATHS[badge], fill: "none", stroke: "currentColor", strokeWidth: "2.2", strokeLinecap: "round", strokeLinejoin: "round" }))) : null, interactive ? /* @__PURE__ */ React7.createElement("g", { className: "dhl-drawing-hit", "data-mark-id": id, "data-hit": "body" }, body) : null, anchors ? handles.map((point, index) => /* @__PURE__ */ React7.createElement("circle", { key: index, className: "dhl-chart-anchor", "data-mark-id": id, "data-anchor": index, cx: point.x, cy: point.y, r: "5" })) : null);
 });
 
@@ -18345,6 +18359,8 @@ function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone,
     setText(mark.label);
   }, [mark.id, mark.label]);
   const locked = Boolean(mark.locked) || globallyLocked;
+  const interval = useStore().interval;
+  const onlyHere = Boolean(mark.visibleIntervals?.length);
   const defaultLevels = (mark.levels ?? (mark.kind === "fibext" ? FIB_EXT_LEVELS : FIB_LEVELS)).join(", ");
   const [levelsText, setLevelsText] = React8.useState(defaultLevels);
   React8.useEffect(() => {
@@ -18419,7 +18435,7 @@ function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone,
       onClick: () => onEdit({ lineStyle: value })
     },
     /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 18 18", width: "16", height: "16", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("line", { x1: "2", x2: "16", y1: "9", y2: "9", stroke: "currentColor", strokeWidth: "2", strokeDasharray: value === "dashed" ? "4 3" : value === "dotted" ? "1 3" : void 0, strokeLinecap: "round" }))
-  ))) : null, FIB_LEVEL_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6590\u6CE2\u90A3\u5951\u5C42\u7EA7", "Fibonacci levels") }, /* @__PURE__ */ React8.createElement(
+  ))) : null, FONT_KINDS.includes(mark.kind) || FILL_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6587\u5B57\u4E0E\u586B\u5145", "Text and fill") }, FONT_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u5B57\u53F7", "Font size"), title: tr("\u5B57\u53F7", "Font size"), value: String(mark.fontSize ?? 12), disabled: locked, onChange: (event) => onEdit({ fontSize: Number(event.target.value) }) }, [10, 12, 14, 18, 24, 32].map((size3) => /* @__PURE__ */ React8.createElement("option", { key: size3, value: size3 }, `${size3}px`))) : null, FONT_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement(React8.Fragment, null, /* @__PURE__ */ React8.createElement("button", { type: "button", className: mark.bold ? "on" : "", "aria-pressed": Boolean(mark.bold), disabled: locked, "aria-label": tr("\u7C97\u4F53", "Bold"), title: tr("\u7C97\u4F53", "Bold"), onClick: () => onEdit({ bold: !mark.bold }) }, /* @__PURE__ */ React8.createElement("b", null, "B")), /* @__PURE__ */ React8.createElement("button", { type: "button", className: mark.italic ? "on" : "", "aria-pressed": Boolean(mark.italic), disabled: locked, "aria-label": tr("\u659C\u4F53", "Italic"), title: tr("\u659C\u4F53", "Italic"), onClick: () => onEdit({ italic: !mark.italic }) }, /* @__PURE__ */ React8.createElement("i", null, "I"))) : null, FILL_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u80CC\u666F\u586B\u5145", "Background fill"), title: tr("\u80CC\u666F\u586B\u5145", "Background fill"), value: String(mark.fillOpacity ?? (mark.kind === "fib" ? 0.07 : 0.08)), disabled: locked, onChange: (event) => onEdit({ fillOpacity: Number(event.target.value) }) }, [[0, "\u65E0\u586B\u5145", "No fill"], [mark.kind === "fib" ? 0.07 : 0.08, "\u6DE1", "Light"], [0.18, "\u4E2D", "Medium"], [0.32, "\u6D53", "Strong"]].map(([value, zh, en]) => /* @__PURE__ */ React8.createElement("option", { key: String(value), value: String(value) }, tr(String(zh), String(en))))) : null) : null, FIB_LEVEL_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6590\u6CE2\u90A3\u5951\u5C42\u7EA7", "Fibonacci levels") }, /* @__PURE__ */ React8.createElement(
     "input",
     {
       className: "dhl-draw-toolbar-text dhl-fib-levels",
@@ -18434,7 +18450,19 @@ function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone,
       },
       onBlur: applyLevels
     }
-  )) : null, mark.kind === "vprofile" ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6210\u4EA4\u91CF\u5206\u5E03\u8BBE\u7F6E", "Volume profile settings") }, /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u4EF7\u683C\u884C\u6570", "Rows"), title: tr("\u4EF7\u683C\u884C\u6570", "Rows"), value: String(mark.rows ?? 48), disabled: locked, onChange: (event) => onEdit({ rows: Number(event.target.value) }) }, [24, 48, 96, 150].map((value) => /* @__PURE__ */ React8.createElement("option", { key: value, value }, tr(`${value} \u884C`, `${value} rows`)))), /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u4EF7\u503C\u533A\u6BD4\u4F8B", "Value area"), title: tr("\u4EF7\u503C\u533A\u6210\u4EA4\u91CF\u5360\u6BD4", "Value area volume"), value: String(mark.valueArea ?? 0.7), disabled: locked, onChange: (event) => onEdit({ valueArea: Number(event.target.value) }) }, [0.68, 0.7, 0.8].map((value) => /* @__PURE__ */ React8.createElement("option", { key: value, value }, `VA ${Math.round(value * 100)}%`)))) : null, /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group" }, /* @__PURE__ */ React8.createElement("button", { type: "button", disabled: locked, title: tr("\u7CBE\u786E\u7F16\u8F91\u65F6\u95F4\u3001\u4EF7\u683C\u4E0E\u540D\u79F0", "Edit exact time, price and name"), "aria-label": tr("\u7F16\u8F91\u753B\u7EBF\u5750\u6807", "Edit drawing coordinates"), onClick: onCoordinates }, /* @__PURE__ */ React8.createElement(UiIcon, { name: "settings", size: 15 })), /* @__PURE__ */ React8.createElement(
+  )) : null, mark.kind === "vprofile" ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6210\u4EA4\u91CF\u5206\u5E03\u8BBE\u7F6E", "Volume profile settings") }, /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u4EF7\u683C\u884C\u6570", "Rows"), title: tr("\u4EF7\u683C\u884C\u6570", "Rows"), value: String(mark.rows ?? 48), disabled: locked, onChange: (event) => onEdit({ rows: Number(event.target.value) }) }, [24, 48, 96, 150].map((value) => /* @__PURE__ */ React8.createElement("option", { key: value, value }, tr(`${value} \u884C`, `${value} rows`)))), /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u4EF7\u503C\u533A\u6BD4\u4F8B", "Value area"), title: tr("\u4EF7\u503C\u533A\u6210\u4EA4\u91CF\u5360\u6BD4", "Value area volume"), value: String(mark.valueArea ?? 0.7), disabled: locked, onChange: (event) => onEdit({ valueArea: Number(event.target.value) }) }, [0.68, 0.7, 0.8].map((value) => /* @__PURE__ */ React8.createElement("option", { key: value, value }, `VA ${Math.round(value * 100)}%`)))) : null, /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group" }, /* @__PURE__ */ React8.createElement(
+    "button",
+    {
+      type: "button",
+      className: onlyHere ? "on" : "",
+      "aria-pressed": onlyHere,
+      disabled: locked,
+      title: onlyHere ? tr(`\u4EC5\u5728 ${mark.visibleIntervals.join("\u3001")} \u663E\u793A\uFF1B\u70B9\u51FB\u6539\u4E3A\u6240\u6709\u5468\u671F`, `Shown on ${mark.visibleIntervals.join(", ")} only; click to show on all`) : tr(`\u53EA\u5728\u5F53\u524D\u5468\u671F\uFF08${interval}\uFF09\u663E\u793A`, `Show on the current interval (${interval}) only`),
+      "aria-label": onlyHere ? tr("\u6539\u4E3A\u6240\u6709\u5468\u671F\u663E\u793A", "Show on all intervals") : tr("\u4EC5\u672C\u5468\u671F\u663E\u793A", "Show on this interval only"),
+      onClick: () => onEdit({ visibleIntervals: onlyHere ? null : [interval] })
+    },
+    /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("rect", { x: "4", y: "5", width: "16", height: "15", rx: "2" }), /* @__PURE__ */ React8.createElement("path", { d: "M4 10h16M9 3v4M15 3v4" }))
+  ), /* @__PURE__ */ React8.createElement("button", { type: "button", disabled: locked, title: tr("\u7CBE\u786E\u7F16\u8F91\u65F6\u95F4\u3001\u4EF7\u683C\u4E0E\u540D\u79F0", "Edit exact time, price and name"), "aria-label": tr("\u7F16\u8F91\u753B\u7EBF\u5750\u6807", "Edit drawing coordinates"), onClick: onCoordinates }, /* @__PURE__ */ React8.createElement(UiIcon, { name: "settings", size: 15 })), /* @__PURE__ */ React8.createElement(
     "button",
     {
       type: "button",
@@ -18483,7 +18511,10 @@ function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone,
       onClick: () => onEdit({ locked: !mark.locked })
     },
     /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("rect", { x: "5", y: "11", width: "14", height: "9", rx: "2" }), /* @__PURE__ */ React8.createElement("path", { d: mark.locked ? "M8 11V8a4 4 0 0 1 8 0v3" : "M8 11V8a4 4 0 0 1 7.5-2" }))
-  ), /* @__PURE__ */ React8.createElement("button", { type: "button", disabled: locked, title: tr("\u5220\u9664\uFF08Delete\uFF09", "Delete (Del)"), "aria-label": tr("\u5220\u9664\u753B\u7EBF", "Delete drawing"), onClick: onRemove }, /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("path", { d: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" }))), /* @__PURE__ */ React8.createElement("button", { type: "button", title: tr("\u53D6\u6D88\u9009\u62E9\uFF08Esc\uFF09", "Deselect (Esc)"), "aria-label": tr("\u53D6\u6D88\u9009\u62E9", "Deselect"), onClick: onClose }, /* @__PURE__ */ React8.createElement(UiIcon, { name: "close", size: 14 }))));
+  ), /* @__PURE__ */ React8.createElement("button", { type: "button", title: tr("\u9690\u85CF\uFF08\u5728\u753B\u7EBF\u5217\u8868\u91CC\u53EF\u91CD\u65B0\u663E\u793A\uFF09", "Hide (show it again from the drawing list)"), "aria-label": tr("\u9690\u85CF\u753B\u7EBF", "Hide drawing"), onClick: () => {
+    onEdit({ hidden: true });
+    onClose();
+  } }, /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("path", { d: "M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6zM4 20 20 4" }))), /* @__PURE__ */ React8.createElement("button", { type: "button", disabled: locked, title: tr("\u5220\u9664\uFF08Delete\uFF09", "Delete (Del)"), "aria-label": tr("\u5220\u9664\u753B\u7EBF", "Delete drawing"), onClick: onRemove }, /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 24 24", width: "15", height: "15", fill: "none", stroke: "currentColor", strokeWidth: "1.8", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("path", { d: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" }))), /* @__PURE__ */ React8.createElement("button", { type: "button", title: tr("\u53D6\u6D88\u9009\u62E9\uFF08Esc\uFF09", "Deselect (Esc)"), "aria-label": tr("\u53D6\u6D88\u9009\u62E9", "Deselect"), onClick: onClose }, /* @__PURE__ */ React8.createElement(UiIcon, { name: "close", size: 14 }))));
 }
 
 // src/client/components/drawing-editor.tsx
@@ -18728,7 +18759,7 @@ function cachedProfile(candles, from, to, options = {}) {
   if (!byRange.has(key3)) byRange.set(key3, volumeProfile(candles.filter((c) => c.t >= from && c.t <= to).map((c) => ({ open: c.o, high: c.h, low: c.l, close: c.c, volume: c.v })), options));
   return byRange.get(key3);
 }
-function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMode, onDraw, onSelect, priceScale, visibleRange, onVisibleRange, tradeEvents, onNeedOlder, olderState, focus, maLines, magnet, drawingsLocked, onEditMark, onRemoveMark, onRemoveMarks, onEditMarks, onEditEach, showReasons, onAnalyzeFill, onCloneMark, selectRequest, chartType = "candles", command = null, caption = "", indicatorSettings, showDataWindow = false, link, compact = false, readOnly = false }) {
+function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMode, onDraw, onSelect, priceScale, visibleRange, onVisibleRange, tradeEvents, onNeedOlder, olderState, focus, maLines, magnet, drawingsLocked, onEditMark, onRemoveMark, interval, onRemoveMarks, onEditMarks, onEditEach, showReasons, onAnalyzeFill, onCloneMark, selectRequest, chartType = "candles", command = null, caption = "", indicatorSettings, showDataWindow = false, link, compact = false, readOnly = false }) {
   const boxRef = React10.useRef(null);
   const clipId = React10.useRef("dhl-plot-" + Math.random().toString(36).slice(2));
   const linkRef = React10.useRef(link);
@@ -19456,6 +19487,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     const styleOf = (mark) => mark.lineStyle === "dotted" ? LineStyle.Dotted : mark.lineStyle === "dashed" || !mark.lineStyle && mark.source !== "user" ? LineStyle.Dashed : LineStyle.Solid;
     for (const mark of marks) {
       if (mark.kind !== "level" || mark.hidden || !Number.isFinite(mark.price) || Number(mark.price) <= 0) continue;
+      if (interval && mark.visibleIntervals?.length && !mark.visibleIntervals.includes(interval)) continue;
       priceLines.current.set(mark.id, r.candles.createPriceLine({
         price: Number(mark.price),
         color: colorOf(mark),
@@ -19465,7 +19497,9 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         title: mark.label
       }));
     }
-  }, [marks, themeVersion, chartType]);
+    ;
+    window.__dhlPriceLines = () => priceLines.current.size;
+  }, [marks, themeVersion, chartType, interval]);
   const warming = candles.length < 2;
   const markById = React10.useMemo(() => new Map(marks.map((mark) => [mark.id, mark])), [marks]);
   const markByIdRef = React10.useRef(markById);
@@ -19510,6 +19544,17 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
   React10.useEffect(() => {
     if (selectedId && !markById.has(selectedId)) setSelectedId(null);
   }, [markById, selectedId]);
+  React10.useEffect(() => {
+    const hiddenHere = (id) => {
+      const limit = markById.get(id)?.visibleIntervals;
+      return Boolean(interval && limit?.length && !limit.includes(interval));
+    };
+    if (selectedId && hiddenHere(selectedId)) setSelectedId(null);
+    setGroup((current2) => {
+      const next = current2.filter((id) => !hiddenHere(id));
+      return next.length === current2.length ? current2 : next;
+    });
+  }, [interval, markById, selectedId]);
   React10.useEffect(() => {
     if (drawMode) setSelectedId(null);
   }, [drawMode]);
@@ -19621,7 +19666,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
   const cloneOf = React10.useCallback((mark) => {
     const line = timelineRef.current;
     const shifted = markPoints(mark).map((point) => ({ time: line.toTime(line.toLogical(point.time) + 5), price: point.price }));
-    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle, levels: mark.levels, rows: mark.rows, valueArea: mark.valueArea }).filter(([, value]) => value != null));
+    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle, levels: mark.levels, rows: mark.rows, valueArea: mark.valueArea, fontSize: mark.fontSize, bold: mark.bold, italic: mark.italic, fillOpacity: mark.fillOpacity, visibleIntervals: mark.visibleIntervals }).filter(([, value]) => value != null));
     return { kind: mark.kind, geometry: geometryPatch(mark.kind, shifted), style, label: mark.label };
   }, []);
   const clipboard = React10.useRef(null);
@@ -19868,6 +19913,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     const live = draft?.id === mark.id ? draft.points : groupDraft?.get(mark.id) ?? points2;
     const shown = mark.kind === "level" ? [{ time: lastTime, price: live[0].price }] : live;
     const selected = selectedId === mark.id || group.includes(mark.id);
+    if (interval && mark.visibleIntervals?.length && !mark.visibleIntervals.includes(interval)) return null;
     const clampedDecoration = !(mark.source === "user" || mark.kind === "level") || Boolean(mark.alert) || Boolean(mark.shared);
     if (!selected && !clampedDecoration && FINITE_KINDS.has(mark.kind) && offscreen(shown, view)) return null;
     return /* @__PURE__ */ React10.createElement(
@@ -19891,7 +19937,11 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         shared: mark.shared,
         rows: mark.rows,
         valueArea: mark.valueArea,
-        levels: mark.levels
+        levels: mark.levels,
+        fontSize: mark.fontSize,
+        bold: mark.bold,
+        italic: mark.italic,
+        fillOpacity: mark.fillOpacity
       }
     );
   }), /* @__PURE__ */ React10.createElement("g", { className: "dhl-fills" }, fills.map((event) => {
@@ -19967,7 +20017,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
 var React11 = __toESM(require("react"), 1);
 var HISTORY_LIMIT = 100;
 var GEOMETRY = ["price", "fromTime", "fromPrice", "toTime", "toPrice", "points"];
-var STYLE = ["color", "lineWidth", "lineStyle", "locked", "hidden", "shared", "alert", "rows", "valueArea", "levels"];
+var STYLE = ["color", "lineWidth", "lineStyle", "locked", "hidden", "shared", "alert", "rows", "valueArea", "levels", "visibleIntervals", "fontSize", "fillOpacity", "bold", "italic"];
 var FLAGS = /* @__PURE__ */ new Set(["locked", "hidden", "shared", "alert"]);
 function recreateRequest(mark) {
   const out = { kind: mark.kind, label: mark.label, role: mark.role, coin: mark.coin, interval: mark.interval };
@@ -20170,7 +20220,7 @@ var DrawingList = React12.memo(function DrawingList2({ marks, locked, onSelect, 
   const hidden = marks.filter((mark) => mark.hidden).length;
   return /* @__PURE__ */ React12.createElement("section", { className: "dhl-drawing-list", lang: language, "aria-label": tr("\u753B\u7EBF\u5217\u8868", "Drawings") }, /* @__PURE__ */ React12.createElement("button", { type: "button", className: "dhl-drawing-list-head", "aria-expanded": open, onClick: toggle }, /* @__PURE__ */ React12.createElement("span", null, tr("\u753B\u7EBF", "Drawings"), " ", marks.length, hidden ? tr(` \xB7 \u9690\u85CF ${hidden}`, ` \xB7 ${hidden} hidden`) : ""), /* @__PURE__ */ React12.createElement(UiIcon, { name: open ? "chevronDown" : "chevronRight", size: 14 })), open ? /* @__PURE__ */ React12.createElement("ul", null, marks.map((mark) => {
     const tool = toolOf(mark.kind);
-    return /* @__PURE__ */ React12.createElement("li", { key: mark.id, className: mark.hidden ? "is-hidden" : "" }, /* @__PURE__ */ React12.createElement("button", { type: "button", className: "dhl-drawing-list-name", title: tr("\u5728\u56FE\u4E0A\u5B9A\u4F4D\u5E76\u9009\u4E2D", "Find and select on the chart"), onClick: () => onSelect(mark.id), disabled: mark.hidden }, /* @__PURE__ */ React12.createElement("span", { style: { color: mark.color } }, /* @__PURE__ */ React12.createElement(ToolIcon, { kind: mark.kind, size: 14 })), /* @__PURE__ */ React12.createElement("b", null, mark.label), /* @__PURE__ */ React12.createElement("small", null, mark.alert ? /* @__PURE__ */ React12.createElement("span", { className: "dhl-list-flag", title: tr("\u4EF7\u683C\u63D0\u9192\u5DF2\u5F00\u542F", "Price alert armed") }, /* @__PURE__ */ React12.createElement(UiIcon, { name: "bell", size: 12 })) : null, mark.shared ? /* @__PURE__ */ React12.createElement("span", { className: "dhl-list-flag", title: tr("\u5DF2\u540C\u6B65\u5230\u6240\u6709\u4F1A\u8BDD", "Synced to all sessions") }, /* @__PURE__ */ React12.createElement(UiIcon, { name: "sync", size: 12 })) : null, tr(tool.zh, tool.en), " \xB7 ", mark.interval, mark.source === "agent" ? " \xB7 agent" : "")), /* @__PURE__ */ React12.createElement("button", { type: "button", "aria-pressed": !mark.hidden, title: mark.hidden ? tr("\u663E\u793A", "Show") : tr("\u9690\u85CF", "Hide"), "aria-label": `${mark.hidden ? tr("\u663E\u793A", "Show") : tr("\u9690\u85CF", "Hide")} ${mark.label}`, onClick: () => onEdit(mark.id, { hidden: !mark.hidden }) }, /* @__PURE__ */ React12.createElement(UiIcon, { name: mark.hidden ? "eyeOff" : "eye", size: 14 })), /* @__PURE__ */ React12.createElement("button", { type: "button", className: mark.locked ? "on" : "", "aria-pressed": Boolean(mark.locked), disabled: locked, title: mark.locked ? tr("\u89E3\u9501", "Unlock") : tr("\u9501\u5B9A", "Lock"), "aria-label": `${mark.locked ? tr("\u89E3\u9501", "Unlock") : tr("\u9501\u5B9A", "Lock")} ${mark.label}`, onClick: () => onEdit(mark.id, { locked: !mark.locked }) }, /* @__PURE__ */ React12.createElement(UiIcon, { name: mark.locked ? "lock" : "unlock", size: 14 })), /* @__PURE__ */ React12.createElement("button", { type: "button", disabled: locked || mark.locked, title: tr("\u5220\u9664", "Delete"), "aria-label": `${tr("\u5220\u9664\u753B\u7EBF", "Remove line")} ${mark.label}`, onClick: () => onRemove(mark.id) }, /* @__PURE__ */ React12.createElement(UiIcon, { name: "trash", size: 14 })));
+    return /* @__PURE__ */ React12.createElement("li", { key: mark.id, "data-mark-id": mark.id, className: mark.hidden ? "is-hidden" : "" }, /* @__PURE__ */ React12.createElement("button", { type: "button", className: "dhl-drawing-list-name", title: tr("\u5728\u56FE\u4E0A\u5B9A\u4F4D\u5E76\u9009\u4E2D", "Find and select on the chart"), onClick: () => onSelect(mark.id), disabled: mark.hidden }, /* @__PURE__ */ React12.createElement("span", { style: { color: mark.color } }, /* @__PURE__ */ React12.createElement(ToolIcon, { kind: mark.kind, size: 14 })), /* @__PURE__ */ React12.createElement("b", null, mark.label), /* @__PURE__ */ React12.createElement("small", null, mark.alert ? /* @__PURE__ */ React12.createElement("span", { className: "dhl-list-flag", title: tr("\u4EF7\u683C\u63D0\u9192\u5DF2\u5F00\u542F", "Price alert armed") }, /* @__PURE__ */ React12.createElement(UiIcon, { name: "bell", size: 12 })) : null, mark.shared ? /* @__PURE__ */ React12.createElement("span", { className: "dhl-list-flag", title: tr("\u5DF2\u540C\u6B65\u5230\u6240\u6709\u4F1A\u8BDD", "Synced to all sessions") }, /* @__PURE__ */ React12.createElement(UiIcon, { name: "sync", size: 12 })) : null, tr(tool.zh, tool.en), " \xB7 ", mark.interval, mark.visibleIntervals?.length ? tr(` \xB7 \u4EC5 ${mark.visibleIntervals.join("/")} \u663E\u793A`, ` \xB7 ${mark.visibleIntervals.join("/")} only`) : "", mark.source === "agent" ? " \xB7 agent" : "")), /* @__PURE__ */ React12.createElement("button", { type: "button", "aria-pressed": !mark.hidden, title: mark.hidden ? tr("\u663E\u793A", "Show") : tr("\u9690\u85CF", "Hide"), "aria-label": `${mark.hidden ? tr("\u663E\u793A", "Show") : tr("\u9690\u85CF", "Hide")} ${mark.label}`, onClick: () => onEdit(mark.id, { hidden: !mark.hidden }) }, /* @__PURE__ */ React12.createElement(UiIcon, { name: mark.hidden ? "eyeOff" : "eye", size: 14 })), /* @__PURE__ */ React12.createElement("button", { type: "button", className: mark.locked ? "on" : "", "aria-pressed": Boolean(mark.locked), disabled: locked, title: mark.locked ? tr("\u89E3\u9501", "Unlock") : tr("\u9501\u5B9A", "Lock"), "aria-label": `${mark.locked ? tr("\u89E3\u9501", "Unlock") : tr("\u9501\u5B9A", "Lock")} ${mark.label}`, onClick: () => onEdit(mark.id, { locked: !mark.locked }) }, /* @__PURE__ */ React12.createElement(UiIcon, { name: mark.locked ? "lock" : "unlock", size: 14 })), /* @__PURE__ */ React12.createElement("button", { type: "button", disabled: locked || mark.locked, title: tr("\u5220\u9664", "Delete"), "aria-label": `${tr("\u5220\u9664\u753B\u7EBF", "Remove line")} ${mark.label}`, onClick: () => onRemove(mark.id) }, /* @__PURE__ */ React12.createElement(UiIcon, { name: "trash", size: 14 })));
   })) : null);
 });
 
@@ -21592,6 +21642,7 @@ function DeskColumn({ onCollapse }) {
       indicators,
       expanded: chartExpanded,
       resetToken: chartResetToken,
+      interval: s.interval,
       drawMode,
       onDraw: draw,
       onSelect: (selection) => insertChartReference(selection, coin, s.interval),

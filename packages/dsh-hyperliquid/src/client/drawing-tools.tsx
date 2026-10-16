@@ -272,10 +272,16 @@ export interface ShapeProps {
   valueArea?: number
   /** Custom Fibonacci levels. */
   levels?: number[]
+  /** Text size (text, callout) and background fill opacity. */
+  fontSize?: number
+  bold?: boolean
+  italic?: boolean
+  fillOpacity?: number
 }
 
 /** One drawing as SVG; `points` are in click order (a preview passes clicks + hover). */
-export const DrawingShape = React.memo(function DrawingShape({ kind, points, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels }: ShapeProps) {
+export const DrawingShape = React.memo(function DrawingShape({ kind, points, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels, fontSize, bold, italic, fillOpacity }: ShapeProps) {
+  const k = (fontSize ?? 12) / 12
   const badges = [...(alert ? ['alert' as const] : []), ...(shared ? ['shared' as const] : [])]
   const { width: w, height: h } = view
   const px = points.map((point) => view.project(point.time, point.price))
@@ -418,12 +424,12 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
     case 'callout': {
       if (!p[1]) break
       const value = textValue || label || tr('标注', 'Note')
-      const width = Math.min(280, 16 + [...value].reduce((sum, ch) => sum + (ch.charCodeAt(0) > 255 ? 12 : 6.6), 0))
+      const width = Math.min(280, 16 + [...value].reduce((sum, ch) => sum + (ch.charCodeAt(0) > 255 ? 12 : 6.6), 0)) * k
       body = <>
-        <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y + 12} />
+        <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y + 13 * k} />
         <circle className="dhl-callout-dot" cx={p[0].x} cy={p[0].y} r="3" />
-        <rect className="dhl-text-box" x={p[1].x} y={p[1].y} width={width} height="26" rx="6" />
-        {text(p[1].x + 8, p[1].y + 17, value, 'start', 'dhl-drawing-text dhl-text-value')}
+        <rect className="dhl-text-box" x={p[1].x} y={p[1].y} width={width} height={26 * k} rx="6" />
+        {text(p[1].x + 8 * k, p[1].y + 17 * k, value, 'start', 'dhl-drawing-text dhl-text-value')}
       </>
       break
     }
@@ -625,11 +631,12 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
     }
     case 'text': {
       const value = textValue || label || tr('文本', 'Text')
+      // Wrapped at 12px metrics, then scaled with the font size.
       const lines = wrapText(value, 300)
-      const width = 14 + Math.max(...lines.map(textWidth))
+      const width = (14 + Math.max(...lines.map(textWidth))) * k
       body = <>
-        <rect className="dhl-text-box" x={p[0].x} y={p[0].y - 20} width={width} height={8 + lines.length * 16} rx="4" />
-        {lines.map((line, index) => <React.Fragment key={index}>{text(p[0].x + 7, p[0].y - 4 + index * 16, line, 'start', 'dhl-drawing-text dhl-text-value')}</React.Fragment>)}
+        <rect className="dhl-text-box" x={p[0].x} y={p[0].y - 20 * k} width={width} height={(8 + lines.length * 16) * k} rx="4" />
+        {lines.map((line, index) => <React.Fragment key={index}>{text(p[0].x + 7 * k, p[0].y + (-4 + index * 16) * k, line, 'start', 'dhl-drawing-text dhl-text-value')}</React.Fragment>)}
       </>
       break
     }
@@ -673,7 +680,9 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
     }
   }
   if (body == null) return null
-  const style = { color, '--dhl-line-width': lineWidth ? String(lineWidth) : undefined, '--dhl-dash': lineStyle ? DASH[lineStyle] ?? 'none' : undefined } as React.CSSProperties
+  const style = { color, '--dhl-line-width': lineWidth ? String(lineWidth) : undefined, '--dhl-dash': lineStyle ? DASH[lineStyle] ?? 'none' : undefined,
+    '--dhl-fill-opacity': fillOpacity != null ? String(fillOpacity) : undefined, '--dhl-font-size': fontSize ? `${fontSize}px` : undefined,
+    '--dhl-font-weight': bold ? '700' : undefined, '--dhl-font-style': italic ? 'italic' : undefined } as React.CSSProperties
   return <g className={className} style={style} data-mark-id={id}>
     {body}
     {label && !isTextKind(kind) && kind !== 'icon' && p[0] ? text(Math.min(Math.max(p[0].x + 6, 4), w - 120), p[0].y - 6, label) : null}

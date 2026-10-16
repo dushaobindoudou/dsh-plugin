@@ -252,6 +252,10 @@ function buildTools(remote) {
           smoothingPeriod: { type: 'number', description: 'kind=ma 可选：平滑周期' },
           color: { type: 'string', description: '可选 #RRGGBB 颜色（画线或均线）' },
           lineWidth: { type: 'number', description: '画线线宽 1-4' },
+          visibleIntervals: { type: 'array', items: { type: 'string' }, description: '只在这些周期显示（如 ["4h","1d"]）；省略=所有周期' },
+          fontSize: { type: 'number', description: 'kind=text/callout：字号 10-32' },
+          bold: { type: 'boolean', description: 'kind=text/callout：粗体' }, italic: { type: 'boolean', description: 'kind=text/callout：斜体' },
+          fillOpacity: { type: 'number', description: '矩形/圆/三角形/通道/斐波那契/区间等的背景填充透明度 0-0.6（0=无填充）' },
           levels: { type: 'array', items: { type: 'number' }, description: 'kind=fib/fibext/fibchannel：自定义斐波那契层级，如 [0,0.382,0.5,0.618,1,1.618]' },
           rows: { type: 'number', description: 'kind=vprofile：价格行数 6-200，默认 48' },
           valueArea: { type: 'number', description: 'kind=vprofile：价值区成交量占比 0.5-0.95，默认 0.7' },
@@ -306,7 +310,7 @@ function buildTools(remote) {
           return { text: `已移除均线：${maLabel(removed)}（${removed.id}）`, line: removed }
         }
         if (args?.action === 'update') {
-          const patch = Object.fromEntries(['points', 'price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'label', 'color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert', 'rows', 'valueArea', 'levels'].filter((key) => args?.[key] != null).map((key) => [key, args[key]]))
+          const patch = Object.fromEntries(['points', 'price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'label', 'color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert', 'rows', 'valueArea', 'levels', 'visibleIntervals', 'fontSize', 'fillOpacity', 'bold', 'italic'].filter((key) => args?.[key] != null).map((key) => [key, args[key]]))
           const mark = remote.editChartMark(args?.id, patch, sessionId)
           return { text: `已更新${DRAWING_NAMES[mark.kind] ?? mark.kind}：${mark.label}（${mark.id}）`, mark }
         }

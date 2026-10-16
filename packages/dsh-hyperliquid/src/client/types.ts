@@ -75,6 +75,14 @@ export interface MarketEntry {
 }
 
 export interface ChartMark {
+  /** Shown only on these intervals (all when absent). */
+  visibleIntervals?: string[]
+  /** Text size and emphasis for text / callout. */
+  fontSize?: number
+  bold?: boolean
+  italic?: boolean
+  /** Background fill opacity for shapes. */
+  fillOpacity?: number
   /** Custom Fibonacci levels (fib, fibext, fibchannel). */
   levels?: number[]
   /** Volume profile rows and value-area share (vprofile only). */

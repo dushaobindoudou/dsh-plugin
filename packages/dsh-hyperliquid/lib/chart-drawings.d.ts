@@ -1,6 +1,6 @@
 export type DrawingKind = 'level' | 'hray' | 'vline' | 'text' | 'trend' | 'ray' | 'extended' | 'fib' | 'rect' | 'measure' | 'channel' | 'long' | 'short' | 'fibext' | 'fibchannel' | 'fibtime' | 'gannfan' | 'pitchfork' | 'regression' | 'vprofile' | 'arrow' | 'callout' | 'circle' | 'triangle' | 'brush' | 'crossline' | 'pricelabel' | 'infoline' | 'trendangle' | 'pricerange' | 'daterange' | 'elliott' | 'elliottabc' | 'xabcd' | 'abcd' | 'headshoulders' | 'gannbox' | 'gannsquare' | 'schiff' | 'modschiff' | 'icon'
 export type LineStyleName = 'solid' | 'dashed' | 'dotted'
-export interface DrawingStyle { levels?: number[]; rows?: number; valueArea?: number; color?: string; lineWidth?: number; lineStyle?: LineStyleName; locked?: boolean; hidden?: boolean; shared?: boolean; alert?: boolean }
+export interface DrawingStyle { visibleIntervals?: string[]; fontSize?: number; bold?: boolean; italic?: boolean; fillOpacity?: number; levels?: number[]; rows?: number; valueArea?: number; color?: string; lineWidth?: number; lineStyle?: LineStyleName; locked?: boolean; hidden?: boolean; shared?: boolean; alert?: boolean }
 export declare const DRAWING_POINTS: Record<DrawingKind, number>
 export declare const DRAWING_KINDS: DrawingKind[]
 export declare const DRAWING_CLICKS: Record<DrawingKind, number>
@@ -26,3 +26,6 @@ export declare function volumeProfile(bars: Array<{ open: number; high: number; 
 export declare const PROFILE_ROWS_MIN: number
 export declare const PROFILE_ROWS_MAX: number
 export declare const FIB_LEVEL_KINDS: DrawingKind[]
+export declare const INTERVALS: string[]
+export declare const FONT_KINDS: DrawingKind[]
+export declare const FILL_KINDS: DrawingKind[]

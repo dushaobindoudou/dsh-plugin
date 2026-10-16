@@ -638,10 +638,10 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 /* Drawings: projected SVG over the price pane. */
 .dhl-drawing line, .dhl-drawing polygon { stroke: currentColor; stroke-width: var(--dhl-line-width, 1.8); stroke-dasharray: var(--dhl-dash, none); fill: none; vector-effect: non-scaling-stroke; }
 .dhl-drawing.role-support line, .dhl-drawing.role-resistance line, .dhl-drawing.role-neutral line { stroke-dasharray: var(--dhl-dash, 6 4); }
-.dhl-drawing .dhl-drawing-fill { fill: currentColor; fill-opacity: .08; stroke: currentColor; stroke-width: 1.2; }
+.dhl-drawing .dhl-drawing-fill { fill: currentColor; fill-opacity: var(--dhl-fill-opacity, .08); stroke: currentColor; stroke-width: 1.2; }
 .dhl-drawing .dhl-drawing-mid { stroke-dasharray: 4 4; stroke-width: 1; opacity: .7; }
 .dhl-drawing-text { fill: currentColor; stroke: none; font-size: 10.5px; font-variant-numeric: tabular-nums; paint-order: stroke; }
-.dhl-drawing .dhl-fib-band { stroke: none; fill-opacity: .07; }
+.dhl-drawing .dhl-fib-band { stroke: none; fill-opacity: var(--dhl-fill-opacity, .07); }
 .dhl-drawing .dhl-fib-band.band-0 { fill: #ef6f6c; } .dhl-drawing .dhl-fib-band.band-1 { fill: #e2a943; } .dhl-drawing .dhl-fib-band.band-2 { fill: #3b9c6d; }
 .dhl-drawing .dhl-fib-key { stroke-width: 2.2; }
 .dhl-measure.up { color: var(--dsw-alias-state-success-primary); } .dhl-measure.down { color: var(--dsw-alias-state-error-primary); }
@@ -663,14 +663,14 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-drawing.locked .dhl-chart-anchor { cursor: default; }
 .dhl-chart-anchor:hover { fill: currentColor; }
 .dhl-text-box { fill: var(--dsw-alias-bg-layer-1); fill-opacity: .92; stroke: currentColor; stroke-width: 1; }
-.dhl-drawing .dhl-text-value { fill: var(--dsw-alias-label-primary); font-size: 12px; }
+.dhl-drawing .dhl-text-value { fill: var(--dsw-alias-label-primary); font-size: var(--dhl-font-size, 12px); font-weight: var(--dhl-font-weight, 400); font-style: var(--dhl-font-style, normal); }
 .dhl-position .dhl-position-stop { fill: var(--dsw-alias-state-error-primary); fill-opacity: .16; stroke: none; }
 .dhl-position .dhl-position-target { fill: var(--dsw-alias-state-success-primary); fill-opacity: .16; stroke: none; }
 .dhl-drawing .dhl-position .dhl-position-entry { stroke: var(--dsw-alias-label-secondary); stroke-width: 1.5; stroke-dasharray: none; }
 .dhl-drawing .dhl-position-text { fill: var(--dsw-alias-label-primary); font-size: 11px; font-weight: 600; }
 
 /* Floating style toolbar for the selected drawing. */
-.dhl-draw-toolbar { position: absolute; z-index: 6; top: 30px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; max-width: calc(100% - 80px); flex-wrap: wrap; justify-content: center; padding: 5px 8px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px; background: var(--dsw-alias-bg-layer-1); box-shadow: 0 8px 24px color-mix(in srgb, var(--dsw-alias-bg-base) 45%, transparent); font-size: 12px; }
+.dhl-draw-toolbar { position: absolute; z-index: 6; top: 30px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; max-width: calc(100% - 80px); flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; justify-content: flex-start; padding: 5px 8px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px; background: var(--dsw-alias-bg-layer-1); box-shadow: 0 8px 24px color-mix(in srgb, var(--dsw-alias-bg-base) 45%, transparent); font-size: 12px; }
 .dhl-draw-toolbar-name { color: var(--dsw-alias-label-secondary); padding: 0 4px; white-space: nowrap; }
 .dhl-draw-toolbar-group { display: inline-flex; align-items: center; gap: 2px; padding-left: 6px; border-left: 1px solid var(--dsw-alias-border-l1); }
 .dhl-draw-toolbar button { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 4px; border: 0; border-radius: 5px; background: transparent; color: var(--dsw-alias-label-secondary); cursor: pointer; font: inherit; }
@@ -717,7 +717,7 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-drawing .dhl-brush { fill: none; stroke: currentColor; stroke-width: var(--dhl-line-width, 2); stroke-dasharray: var(--dhl-dash, none); stroke-linecap: round; stroke-linejoin: round; }
 .dhl-drawing-hit .dhl-brush { pointer-events: stroke; }
 .dhl-drawing .dhl-arrow-head, .dhl-drawing .dhl-callout-dot { fill: currentColor; stroke: none; }
-.dhl-drawing circle.dhl-drawing-fill { fill: currentColor; fill-opacity: .08; stroke: currentColor; stroke-width: var(--dhl-line-width, 1.5); stroke-dasharray: var(--dhl-dash, none); }
+.dhl-drawing circle.dhl-drawing-fill { fill: currentColor; fill-opacity: var(--dhl-fill-opacity, .08); stroke: currentColor; stroke-width: var(--dhl-line-width, 1.5); stroke-dasharray: var(--dhl-dash, none); }
 .dhl-drawing polyline.dhl-drawing-mid { fill: none; stroke: currentColor; }
 
 /* Drawings object list (under the chart). */
@@ -893,3 +893,6 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-limits-hint { display: block; margin-top: 2px; color: var(--dsw-alias-label-secondary); font-size: 12px; }
 .dhl-limits-scroll .dhl-risk-error { margin: 10px 0 0; }
 .dhl-wallet-form ~ .dhl-limits-facts { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--dsw-alias-border-l1); }
+
+/* One row like TradingView's floating toolbar: a wrapped toolbar covered drawings near the top of a narrow chart. */
+.dhl-draw-toolbar > * { flex: none; }

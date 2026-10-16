@@ -4,7 +4,8 @@ import { tr } from '../remote'
 import type { ChartMark } from '../types'
 import { isTextKind, toolOf } from '../drawing-tools'
 import { saveStyleTemplate } from '../drawing-templates'
-import { ALERT_KINDS, FIB_EXT_LEVELS, FIB_LEVELS, FIB_LEVEL_KINDS } from '../../../lib/chart-drawings.js'
+import { ALERT_KINDS, FIB_EXT_LEVELS, FIB_LEVELS, FIB_LEVEL_KINDS, FILL_KINDS, FONT_KINDS } from '../../../lib/chart-drawings.js'
+import { useStore } from '../store'
 import { UiIcon } from './panel-icons'
 import { Select } from './select'
 
@@ -19,6 +20,8 @@ export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, o
   const [text, setText] = React.useState(mark.label)
   React.useEffect(() => { setText(mark.label) }, [mark.id, mark.label])
   const locked = Boolean(mark.locked) || globallyLocked
+  const interval = useStore().interval
+  const onlyHere = Boolean(mark.visibleIntervals?.length)
   const defaultLevels = (mark.levels ?? (mark.kind === 'fibext' ? FIB_EXT_LEVELS : FIB_LEVELS)).join(', ')
   const [levelsText, setLevelsText] = React.useState(defaultLevels)
   React.useEffect(() => { setLevelsText(defaultLevels) }, [mark.id, defaultLevels])
@@ -56,6 +59,18 @@ export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, o
           <svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><line x1="2" x2="16" y1="9" y2="9" stroke="currentColor" strokeWidth="2" strokeDasharray={value === 'dashed' ? '4 3' : value === 'dotted' ? '1 3' : undefined} strokeLinecap="round" /></svg>
         </button>)}
       </span> : null}
+      {(FONT_KINDS as string[]).includes(mark.kind) || (FILL_KINDS as string[]).includes(mark.kind) ? <span className="dhl-draw-toolbar-group" role="group" aria-label={tr('文字与填充', 'Text and fill')}>
+        {(FONT_KINDS as string[]).includes(mark.kind) ? <Select aria-label={tr('字号', 'Font size')} title={tr('字号', 'Font size')} value={String(mark.fontSize ?? 12)} disabled={locked} onChange={(event) => onEdit({ fontSize: Number(event.target.value) })}>
+          {[10, 12, 14, 18, 24, 32].map((size) => <option key={size} value={size}>{`${size}px`}</option>)}
+        </Select> : null}
+        {(FONT_KINDS as string[]).includes(mark.kind) ? <>
+          <button type="button" className={mark.bold ? 'on' : ''} aria-pressed={Boolean(mark.bold)} disabled={locked} aria-label={tr('粗体', 'Bold')} title={tr('粗体', 'Bold')} onClick={() => onEdit({ bold: !mark.bold })}><b>B</b></button>
+          <button type="button" className={mark.italic ? 'on' : ''} aria-pressed={Boolean(mark.italic)} disabled={locked} aria-label={tr('斜体', 'Italic')} title={tr('斜体', 'Italic')} onClick={() => onEdit({ italic: !mark.italic })}><i>I</i></button>
+        </> : null}
+        {(FILL_KINDS as string[]).includes(mark.kind) ? <Select aria-label={tr('背景填充', 'Background fill')} title={tr('背景填充', 'Background fill')} value={String(mark.fillOpacity ?? (mark.kind === 'fib' ? 0.07 : 0.08))} disabled={locked} onChange={(event) => onEdit({ fillOpacity: Number(event.target.value) })}>
+          {[[0, '无填充', 'No fill'], [mark.kind === 'fib' ? 0.07 : 0.08, '淡', 'Light'], [0.18, '中', 'Medium'], [0.32, '浓', 'Strong']].map(([value, zh, en]) => <option key={String(value)} value={String(value)}>{tr(String(zh), String(en))}</option>)}
+        </Select> : null}
+      </span> : null}
       {(FIB_LEVEL_KINDS as string[]).includes(mark.kind) ? <span className="dhl-draw-toolbar-group" role="group" aria-label={tr('斐波那契层级', 'Fibonacci levels')}>
         <input className="dhl-draw-toolbar-text dhl-fib-levels" value={levelsText} disabled={locked} aria-label={tr('斐波那契层级（逗号分隔）', 'Fibonacci levels (comma separated)')} title={tr('逗号分隔，回车应用；清空恢复默认', 'Comma separated, Enter applies; empty restores defaults')}
           onChange={(event) => setLevelsText(event.target.value)}
@@ -70,6 +85,12 @@ export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, o
         </Select>
       </span> : null}
       <span className="dhl-draw-toolbar-group">
+        <button type="button" className={onlyHere ? 'on' : ''} aria-pressed={onlyHere} disabled={locked}
+          title={onlyHere ? tr(`仅在 ${mark.visibleIntervals!.join('、')} 显示；点击改为所有周期`, `Shown on ${mark.visibleIntervals!.join(', ')} only; click to show on all`) : tr(`只在当前周期（${interval}）显示`, `Show on the current interval (${interval}) only`)}
+          aria-label={onlyHere ? tr('改为所有周期显示', 'Show on all intervals') : tr('仅本周期显示', 'Show on this interval only')}
+          onClick={() => onEdit({ visibleIntervals: onlyHere ? null : [interval] })}>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2" /><path d="M4 10h16M9 3v4M15 3v4" /></svg>
+        </button>
         <button type="button" disabled={locked} title={tr('精确编辑时间、价格与名称', 'Edit exact time, price and name')} aria-label={tr('编辑画线坐标', 'Edit drawing coordinates')} onClick={onCoordinates}><UiIcon name="settings" size={15} /></button>
         <button type="button" className={savedDefault ? 'on' : ''} title={tr(`设为${tool.zh}的默认样式`, `Use as default ${tool.en} style`)} aria-label={tr('设为默认样式', 'Save as default style')}
           onClick={() => { saveStyleTemplate(mark.kind, { color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle }); setSavedDefault(true) }}>
@@ -91,6 +112,9 @@ export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, o
         <button type="button" className={mark.locked ? 'on' : ''} aria-pressed={Boolean(mark.locked)} disabled={globallyLocked}
           title={mark.locked ? tr('解锁', 'Unlock') : tr('锁定（防止误拖动）', 'Lock (prevent dragging)')} aria-label={mark.locked ? tr('解锁', 'Unlock') : tr('锁定', 'Lock')} onClick={() => onEdit({ locked: !mark.locked })}>
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" /><path d={mark.locked ? 'M8 11V8a4 4 0 0 1 8 0v3' : 'M8 11V8a4 4 0 0 1 7.5-2'} /></svg>
+        </button>
+        <button type="button" title={tr('隐藏（在画线列表里可重新显示）', 'Hide (show it again from the drawing list)')} aria-label={tr('隐藏画线', 'Hide drawing')} onClick={() => { onEdit({ hidden: true }); onClose() }}>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6zM4 20 20 4" /></svg>
         </button>
         <button type="button" disabled={locked} title={tr('删除（Delete）', 'Delete (Del)')} aria-label={tr('删除画线', 'Delete drawing')} onClick={onRemove}>
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" /></svg>

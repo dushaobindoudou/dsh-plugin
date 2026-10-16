@@ -159,6 +159,8 @@ interface ChartProps {
   drawingsLocked: boolean
   onEditMark: (id: string, patch: Record<string, unknown>) => void
   onRemoveMark: (id: string) => void
+  /** Current interval: drawings limited to other intervals are not drawn (they stay in the list). */
+  interval?: string
   /** Batch actions for a multi-selection (one undo step each). */
   onRemoveMarks?: (ids: string[]) => void
   onEditMarks?: (ids: string[], patch: Record<string, unknown>) => void
@@ -195,7 +197,7 @@ function cachedProfile(candles: Candle[], from: number, to: number, options: { r
   return byRange.get(key)!
 }
 
-export function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMode, onDraw, onSelect, priceScale, visibleRange, onVisibleRange, tradeEvents, onNeedOlder, olderState, focus, maLines, magnet, drawingsLocked, onEditMark, onRemoveMark, onRemoveMarks, onEditMarks, onEditEach, showReasons, onAnalyzeFill, onCloneMark, selectRequest, chartType = 'candles', command = null, caption = '', indicatorSettings, showDataWindow = false, link, compact = false, readOnly = false }: ChartProps) {
+export function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMode, onDraw, onSelect, priceScale, visibleRange, onVisibleRange, tradeEvents, onNeedOlder, olderState, focus, maLines, magnet, drawingsLocked, onEditMark, onRemoveMark, interval, onRemoveMarks, onEditMarks, onEditEach, showReasons, onAnalyzeFill, onCloneMark, selectRequest, chartType = 'candles', command = null, caption = '', indicatorSettings, showDataWindow = false, link, compact = false, readOnly = false }: ChartProps) {
   const boxRef = React.useRef<HTMLDivElement>(null)
   const clipId = React.useRef('dhl-plot-' + Math.random().toString(36).slice(2))
   const linkRef = React.useRef(link); linkRef.current = link
@@ -881,11 +883,14 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     // Levels keep an axis price label; every other drawing is projected by the SVG overlay.
     for (const mark of marks) {
       if (mark.kind !== 'level' || mark.hidden || !Number.isFinite(mark.price) || Number(mark.price) <= 0) continue
+      // Limited to other intervals: no axis line or price label here either.
+      if (interval && mark.visibleIntervals?.length && !mark.visibleIntervals.includes(interval)) continue
       priceLines.current.set(mark.id, r.candles.createPriceLine({ price: Number(mark.price), color: colorOf(mark),
         lineWidth: (mark.lineWidth ?? (mark.source === 'user' ? 2 : 1)) as 1 | 2 | 3 | 4, lineStyle: styleOf(mark),
         axisLabelVisible: true, title: mark.label }))
     }
-  }, [marks, themeVersion, chartType])
+    ;(window as unknown as { __dhlPriceLines?: () => number }).__dhlPriceLines = () => priceLines.current.size
+  }, [marks, themeVersion, chartType, interval])
 
   const warming = candles.length < 2
 
@@ -934,6 +939,12 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   }, [viewportVersion, timeline, themeVersion, expanded, indicators, priceScale])
 
   React.useEffect(() => { if (selectedId && !markById.has(selectedId)) setSelectedId(null) }, [markById, selectedId])
+  // A drawing limited to other intervals is not drawn here, so it cannot stay selected either.
+  React.useEffect(() => {
+    const hiddenHere = (id: string) => { const limit = markById.get(id)?.visibleIntervals; return Boolean(interval && limit?.length && !limit.includes(interval)) }
+    if (selectedId && hiddenHere(selectedId)) setSelectedId(null)
+    setGroup((current) => { const next = current.filter((id) => !hiddenHere(id)); return next.length === current.length ? current : next })
+  }, [interval, markById, selectedId])
   React.useEffect(() => { if (drawMode) setSelectedId(null) }, [drawMode])
   // Dragging a level moves its axis price label with it.
   React.useEffect(() => {
@@ -1023,7 +1034,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     const line = timelineRef.current
     const shifted = markPoints(mark).map((point) => ({ time: line.toTime(line.toLogical(point.time) + 5), price: point.price }))
     // Tool settings (fib levels, volume profile rows / value area) travel with the copy.
-    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle, levels: mark.levels, rows: mark.rows, valueArea: mark.valueArea }).filter(([, value]) => value != null))
+    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle, levels: mark.levels, rows: mark.rows, valueArea: mark.valueArea, fontSize: mark.fontSize, bold: mark.bold, italic: mark.italic, fillOpacity: mark.fillOpacity, visibleIntervals: mark.visibleIntervals }).filter(([, value]) => value != null))
     return { kind: mark.kind, geometry: geometryPatch(mark.kind, shifted), style, label: mark.label }
   }, [])
   const clipboard = React.useRef<ChartMark | null>(null)
@@ -1243,6 +1254,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
             const live = draft?.id === mark.id ? draft.points : groupDraft?.get(mark.id) ?? points
             const shown = mark.kind === 'level' ? [{ time: lastTime, price: live[0].price }] : live
             const selected = selectedId === mark.id || group.includes(mark.id)
+            if (interval && mark.visibleIntervals?.length && !mark.visibleIntervals.includes(interval)) return null
             // Off-screen culling: a bounded drawing entirely left or right of the plot renders nothing.
             // Kept: drawings whose label or alert / shared badge is clamped into the plot even when the anchors are not.
             const clampedDecoration = !(mark.source === 'user' || mark.kind === 'level') || Boolean(mark.alert) || Boolean(mark.shared)
@@ -1251,7 +1263,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
               dataVersion={mark.kind === 'vprofile' || mark.kind === 'regression' ? candles : undefined}
               className={`dhl-drawing ${roleClass(mark)}${mark.kind === 'level' ? ' is-level' : ''}${selected ? ' selected' : ''}${mark.locked || drawingsLocked ? ' locked' : ''}`}
               label={mark.source === 'user' || mark.kind === 'level' ? undefined : mark.label} anchors={selected} interactive={!drawMode}
-              color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} alert={mark.alert} shared={mark.shared} rows={mark.rows} valueArea={mark.valueArea} levels={mark.levels} />
+              color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} alert={mark.alert} shared={mark.shared} rows={mark.rows} valueArea={mark.valueArea} levels={mark.levels} fontSize={mark.fontSize} bold={mark.bold} italic={mark.italic} fillOpacity={mark.fillOpacity} />
           })}
           <g className="dhl-fills">
             {fills.map((event) => {

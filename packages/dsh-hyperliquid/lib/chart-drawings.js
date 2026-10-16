@@ -52,6 +52,12 @@ export function isSingleEmoji(value) {
  * from the POC toward the heavier neighbour until it holds `valueArea` of the volume.
  * @param {Array<{ open: number, high: number, low: number, close: number, volume: number }>} bars
  */
+/** Chart intervals a drawing can be limited to (same set as the desk). */
+export const INTERVALS = ['1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '8h', '12h', '1d', '3d', '1w', '1M']
+/** Text drawings whose font size can be set. */
+export const FONT_KINDS = ['text', 'callout']
+/** Drawings with a background fill whose opacity can be set. */
+export const FILL_KINDS = ['rect', 'circle', 'triangle', 'channel', 'fib', 'regression', 'gannbox', 'pricerange', 'daterange', 'measure']
 /** Fibonacci drawings whose levels can be customised. */
 export const FIB_LEVEL_KINDS = ['fib', 'fibext', 'fibchannel']
 export const PROFILE_ROWS_MIN = 6
@@ -187,6 +193,30 @@ export function drawingStyle(request) {
   if (request?.lineStyle != null) {
     if (!LINE_STYLES.includes(request.lineStyle)) throw new Error(`线型必须为 ${LINE_STYLES.join('/')}`)
     style.lineStyle = request.lineStyle
+  }
+  // TradingView object properties: visibility per interval, text size, background fill.
+  if (request?.visibleIntervals != null) {
+    const list = Array.isArray(request.visibleIntervals) ? [...new Set(request.visibleIntervals.map(String))] : []
+    if (!list.length || list.some((iv) => !INTERVALS.includes(iv))) throw new Error(`visibleIntervals 需要 1 个以上周期：${INTERVALS.join('/')}`)
+    style.visibleIntervals = list
+  }
+  if (request?.fontSize != null) {
+    if (request?.kind != null && !FONT_KINDS.includes(request.kind)) throw new Error(`fontSize 只适用于 ${FONT_KINDS.join('/')}`)
+    const size = Number(request.fontSize)
+    if (!Number.isInteger(size) || size < 10 || size > 32) throw new Error('字号必须为 10-32 的整数')
+    style.fontSize = size
+  }
+  for (const flag of ['bold', 'italic']) {
+    if (request?.[flag] == null) continue
+    if (request?.kind != null && !FONT_KINDS.includes(request.kind)) throw new Error(`${flag} 只适用于 ${FONT_KINDS.join('/')}`)
+    if (typeof request[flag] !== 'boolean') throw new Error(`${flag} 必须为布尔值`)
+    style[flag] = request[flag]
+  }
+  if (request?.fillOpacity != null) {
+    if (request?.kind != null && !FILL_KINDS.includes(request.kind)) throw new Error(`fillOpacity 只适用于 ${FILL_KINDS.join('/')}`)
+    const opacity = Number(request.fillOpacity)
+    if (!Number.isFinite(opacity) || opacity < 0 || opacity > 0.6) throw new Error('填充透明度必须在 0-0.6 之间')
+    style.fillOpacity = opacity
   }
   // Custom Fibonacci levels (TradingView lets each fib drawing choose its own).
   if (request?.levels != null) {

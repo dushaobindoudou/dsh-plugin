@@ -414,7 +414,7 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
                 <section className="dhl-research-pane dhl-primary-pane">
                 {researchCount > 0 ? <header><b>{coin} · {s.interval}</b><small>{tr('主图 · 编辑画线', 'Main chart · edit drawings')}</small></header> : null}
                 <CandleChart link={researchCount > 0 ? makeLink('primary') : undefined} compact={researchCount > 0} indicatorSettings={s.workspace?.indicatorSettings} showDataWindow={s.workspace?.showDataWindow ?? false} chartType={chartType} command={chartCommand?.scope === chartScope ? chartCommand.command : null} caption={`${coin} ${s.interval} · ${chartType}`} candles={s.candles} marks={layers.drawings ? marks : []} tradeEvents={tradeEvents} indicators={indicators} expanded={chartExpanded} resetToken={chartResetToken}
-                  drawMode={drawMode} onDraw={draw} onSelect={(selection) => insertChartReference(selection, coin, s.interval)} onNeedOlder={loadOlderCandles} olderState={s.candlesOlder}
+                  interval={s.interval} drawMode={drawMode} onDraw={draw} onSelect={(selection) => insertChartReference(selection, coin, s.interval)} onNeedOlder={loadOlderCandles} olderState={s.candlesOlder}
                   showReasons={layers.fills && layers.reasons} onAnalyzeFill={analyzeFill}
                   onCloneMark={cloneMark} selectRequest={selectRequest}
                   magnet={magnet} drawingsLocked={drawingsLocked} onEditMark={(id, patch) => void editMark(id, patch)} onRemoveMark={(id) => void erase(id)} onRemoveMarks={(ids) => void history.removeMany(ids)} onEditMarks={(ids, patch) => void history.editMany(ids, patch)} onEditEach={(patches) => void history.editEach(patches)}
