@@ -148,7 +148,7 @@ var styles_default = `/**
 .dhl-chat-heading span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--dsw-alias-label-secondary); font-size: 10.5px; }
 .dhl-chat-ticket-toggle { flex: none; border: 1px solid var(--dsw-alias-border-l1); border-radius: 6px; background: transparent; color: var(--dsw-alias-label-secondary); padding: 5px 9px; font: inherit; font-size: 11px; cursor: pointer; }
 .dhl-chat-ticket-toggle:hover { color: var(--dsw-alias-label-primary); background: var(--dsw-alias-interactive-bg-hover); }
-.dhl-chat-prompts { flex: none; display: flex; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
+.dhl-chat-prompts { flex: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
 .dhl-chat-prompts button { border: 1px solid var(--dsw-alias-border-l1); border-radius: 999px; background: transparent; color: var(--dsw-alias-label-secondary); padding: 4px 9px; font: inherit; font-size: 10.5px; cursor: pointer; }
 .dhl-chat-prompts button:hover { color: var(--dsw-alias-brand-primary); border-color: var(--dsw-alias-brand-primary); }
 .dhl-chat-unavailable { margin: 18px; padding: 13px 14px; border: 1px solid var(--dsw-alias-state-warn-primary); border-radius: 8px; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 1.6; }
@@ -471,7 +471,7 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-chart-tools { min-height: 42px; }
 .dhl-chartbox { height: 410px; }
 /* Above Lightweight Charts' own canvases (z-index 1\u20132, later in the DOM) so drawings receive the pointer. */
-.dhl-chart-drawing-overlay { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; overflow: hidden; pointer-events: none; color: #4c82d8; }
+.dhl-chart-drawing-overlay { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; overflow: hidden; pointer-events: none; color: #4c82d8; contain: layout paint; transform: translateZ(0); }
 .dhl-chart-drawing-overlay .role-user { color: #4c82d8; }
 .dhl-chart-drawing-overlay .role-support { color: var(--dsw-alias-state-success-primary); }
 .dhl-chart-drawing-overlay .role-resistance { color: var(--dsw-alias-state-error-primary); }
@@ -707,7 +707,7 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 /* Direct manipulation: a transparent, wide hit layer on strokes (empty chart space still pans). */
 .dhl-drawing-hit * { stroke: transparent !important; fill: transparent !important; stroke-dasharray: none !important; stroke-width: 12px !important; pointer-events: stroke; cursor: move; }
 .dhl-drawing-hit .dhl-text-box, .dhl-drawing-hit .dhl-position rect, .dhl-drawing-hit text { pointer-events: all; }
-.dhl-chart-drawing-overlay.drawing .dhl-drawing-hit { display: none; }
+.dhl-chart-drawing-overlay.drawing .dhl-drawing-hit, .dhl-canvas-gesture .dhl-drawing-hit { display: none; }
 .dhl-drawing.locked .dhl-drawing-hit * { cursor: default; }
 .dhl-drawing:has(> .dhl-drawing-hit:hover) > line, .dhl-drawing:has(> .dhl-drawing-hit:hover) > g > line, .dhl-drawing.selected > line, .dhl-drawing.selected > g > line { stroke-width: calc(var(--dhl-line-width, 1.8) + 1); }
 .dhl-drawing.selected { filter: drop-shadow(0 0 3px color-mix(in srgb, currentColor 55%, transparent)); }
@@ -908,7 +908,7 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 
 /* Fixed range volume profile: up/down volume per price row, value area brighter, POC in the alert red. */
 .dhl-vprofile-range { fill: color-mix(in srgb, currentColor 5%, transparent); stroke: none; }
-.dhl-vprofile rect.dhl-vprofile-up, .dhl-vprofile rect.dhl-vprofile-down { stroke: none; }
+.dhl-vprofile .dhl-vprofile-up, .dhl-vprofile .dhl-vprofile-down { stroke: none; }
 .dhl-vprofile-up { fill: color-mix(in srgb, #4c82d8 62%, transparent); }
 .dhl-vprofile-down { fill: color-mix(in srgb, #e2a943 62%, transparent); }
 .dhl-vprofile-out .dhl-vprofile-up { fill: color-mix(in srgb, #4c82d8 26%, transparent); }
@@ -919,6 +919,33 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 /* Magnet feedback: a ring on the O/H/L/C value the anchor will snap to. */
 .dhl-snap-ring { fill: none; stroke: var(--dsw-alias-brand-primary, #4c82d8); stroke-width: 1.5; pointer-events: none; }
 .dhl-draw-toolbar .dhl-select > select { height: 26px; font-size: 11px; }
+.dhl-draw-toolbar .dhl-fib-levels { width: 190px; }
+
+.dhl-badge.managed { color: var(--dsw-alias-brand-primary, #4c82d8); border-color: color-mix(in srgb, var(--dsw-alias-brand-primary, #4c82d8) 40%, transparent); background: color-mix(in srgb, var(--dsw-alias-brand-primary, #4c82d8) 10%, transparent); }
+.dhl-managed-list { margin: 6px 0 10px; padding-left: 20px; line-height: 1.7; }
+
+/* Trading limits dialog: tabs keep it short; when the viewport is still too small the card caps at the
+   overlay's padding box (DSH Modal contract: max-height 100%) and only the body scrolls \u2014 header and
+   footer (the save button) stay in view. */
+.dhl-limits-modal { max-height: 100%; }
+.dhl-limits-content { flex: 1 1 auto; min-height: 0; }
+.dhl-limits-content > :has(> .dhl-limits-scroll) { flex: 1 1 auto; min-height: 0; overflow: hidden; margin-top: 12px; }
+.dhl-limits-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; margin: 0 -24px; padding: 14px 24px 2px; scrollbar-gutter: stable; }
+.dhl-limits-tabs { flex: none; display: flex; gap: 4px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
+.dhl-limits-tabs button { position: relative; height: 34px; padding: 0 12px; border: 0; background: transparent; color: var(--dsw-alias-label-secondary); font: inherit; font-size: 13px; cursor: pointer; }
+.dhl-limits-tabs button:hover { color: var(--dsw-alias-label-primary); }
+.dhl-limits-tabs button.on { color: var(--dsw-alias-label-primary); font-weight: 600; }
+.dhl-limits-tabs button.on::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; border-radius: 1px; background: var(--dsw-alias-label-primary); }
+.dhl-limits-tabs button:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: -2px; border-radius: 6px; }
+.dhl-limits-section + .dhl-limits-section { margin-top: 0; padding-top: 0; border-top: 0; }
+.dhl-limits-ledger-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 12px; color: var(--dsw-alias-label-secondary); font-size: 12px; }
+.dhl-limits-scroll .dhl-limits-note { margin-top: 10px; font-size: 12px; line-height: 18px; }
+.dhl-limits-facts { display: grid; grid-template-columns: auto 1fr; gap: 10px 14px; margin: 0; font-size: 13px; line-height: 20px; }
+.dhl-limits-facts dt { color: var(--dsw-alias-label-secondary); white-space: nowrap; }
+.dhl-limits-facts dd { margin: 0; color: var(--dsw-alias-label-primary); }
+.dhl-limits-hint { display: block; margin-top: 2px; color: var(--dsw-alias-label-secondary); font-size: 12px; }
+.dhl-limits-scroll .dhl-risk-error { margin: 10px 0 0; }
+.dhl-wallet-form ~ .dhl-limits-facts { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--dsw-alias-border-l1); }
 `;
 
 // src/client/locale.ts
@@ -1297,8 +1324,15 @@ function t(key3, fallback) {
   return localeT(key3, fallback);
 }
 function tr(zh, en) {
-  return ctxRef?.get?.("locale")?.getLocale?.()?.active === "en" ? en : zh;
+  const now = Date.now();
+  if (now - localeReadAt > 250) {
+    localeReadAt = now;
+    english = ctxRef?.get?.("locale")?.getLocale?.()?.active === "en";
+  }
+  return english ? en : zh;
 }
+var localeReadAt = -Infinity;
+var english = false;
 async function hyperCall(method, request = null) {
   if (!conn) throw new Error(t("error.noConnection", "\u65E0\u8FDE\u63A5"));
   if (typeof conn.rpc?.call !== "function") throw new Error(t("error.callFailed", "\u8FDC\u7AEF\u8C03\u7528\u5931\u8D25") + `: hyper.${method}`);
@@ -1647,23 +1681,23 @@ function selectChartCandle(candles, time, active, hit, maLines = [], settings) {
   const priorVolumeMean20 = previous.length === 20 ? previous.reduce((sum, value) => sum + value, 0) / 20 : null;
   return { candle, hit, values, priorVolumeMean20, settings };
 }
-function formatChartReference(selection, coin, interval, english = false) {
+function formatChartReference(selection, coin, interval, english2 = false) {
   const { candle, hit, values, priorVolumeMean20 } = selection;
   const number = (value) => String(value);
   const computed = (value) => String(Number(value.toPrecision(10)));
   const time = new Date(candle.t).toISOString().replace("T", " ").replace(".000Z", " UTC");
   const hitLabel = {
-    volume: english ? "Volume" : "\u6210\u4EA4\u91CF",
+    volume: english2 ? "Volume" : "\u6210\u4EA4\u91CF",
     sma20: "SMA20",
     sma60: "MA60",
     ema20: "EMA20",
     ema50: "EMA50",
-    bollingerUpper: english ? "BOLL upper" : "BOLL\u4E0A\u8F68",
-    bollingerLower: english ? "BOLL lower" : "BOLL\u4E0B\u8F68",
+    bollingerUpper: english2 ? "BOLL upper" : "BOLL\u4E0A\u8F68",
+    bollingerLower: english2 ? "BOLL lower" : "BOLL\u4E0B\u8F68",
     rsi14: `RSI${selection.settings?.rsi.period ?? 14}`,
     macd: "MACD",
-    macdSignal: english ? "MACD signal" : "\u4FE1\u53F7\u7EBF",
-    macdHistogram: english ? "MACD histogram" : "MACD\u67F1",
+    macdSignal: english2 ? "MACD signal" : "\u4FE1\u53F7\u7EBF",
+    macdHistogram: english2 ? "MACD histogram" : "MACD\u67F1",
     atr14: "ATR14",
     vwap: "VWAP (UTC HLC3)",
     stochastic: "Stochastic",
@@ -1671,17 +1705,17 @@ function formatChartReference(selection, coin, interval, english = false) {
     obv: "OBV"
   };
   const lines = [
-    english ? `[Chart point] ${coin} ${interval} candle opened ${time}` : `\u3010\u56FE\u8868\u70B9\u4F4D\u3011${coin} ${interval} K \u7EBF\u5F00\u76D8 ${time}`,
-    english ? `OHLC: ${number(candle.o)} / ${number(candle.h)} / ${number(candle.l)} / ${number(candle.c)}` : `\u5F00/\u9AD8/\u4F4E/\u6536\uFF1A${number(candle.o)} / ${number(candle.h)} / ${number(candle.l)} / ${number(candle.c)}`,
-    english ? `Volume: ${number(candle.v)}` : `\u6210\u4EA4\u91CF\uFF1A${number(candle.v)}`
+    english2 ? `[Chart point] ${coin} ${interval} candle opened ${time}` : `\u3010\u56FE\u8868\u70B9\u4F4D\u3011${coin} ${interval} K \u7EBF\u5F00\u76D8 ${time}`,
+    english2 ? `OHLC: ${number(candle.o)} / ${number(candle.h)} / ${number(candle.l)} / ${number(candle.c)}` : `\u5F00/\u9AD8/\u4F4E/\u6536\uFF1A${number(candle.o)} / ${number(candle.h)} / ${number(candle.l)} / ${number(candle.c)}`,
+    english2 ? `Volume: ${number(candle.v)}` : `\u6210\u4EA4\u91CF\uFF1A${number(candle.v)}`
   ];
   if (priorVolumeMean20 != null && priorVolumeMean20 > 0) {
-    lines.push(english ? `Previous 20-candle mean volume: ${computed(priorVolumeMean20)}; current/mean: ${(candle.v / priorVolumeMean20).toFixed(2)}x` : `\u524D 20 \u6839\u5747\u91CF\uFF1A${computed(priorVolumeMean20)}\uFF1B\u5F53\u524D/\u5747\u91CF\uFF1A${(candle.v / priorVolumeMean20).toFixed(2)} \u500D`);
+    lines.push(english2 ? `Previous 20-candle mean volume: ${computed(priorVolumeMean20)}; current/mean: ${(candle.v / priorVolumeMean20).toFixed(2)}x` : `\u524D 20 \u6839\u5747\u91CF\uFF1A${computed(priorVolumeMean20)}\uFF1B\u5F53\u524D/\u5747\u91CF\uFF1A${(candle.v / priorVolumeMean20).toFixed(2)} \u500D`);
   }
-  if (selection.settings) lines.push(`${english ? "Study parameters" : "\u6307\u6807\u53C2\u6570"}\uFF1A${JSON.stringify(selection.settings)}`);
-  if (values.some((row) => row.label === "OBV")) lines.push(english ? "OBV starts at zero on the first loaded candle; its absolute value depends on the window." : "OBV \u4EE5\u5DF2\u52A0\u8F7D\u9996\u6839\u4E3A\u96F6\u70B9\uFF0C\u7EDD\u5BF9\u503C\u53D6\u51B3\u4E8E\u5386\u53F2\u7A97\u53E3\u3002");
-  if (values.length) lines.push(`${english ? "Displayed studies" : "\u5DF2\u663E\u793A\u6307\u6807"}\uFF1A${values.map(({ label, value }) => `${label}=${computed(value)}`).join("\uFF0C")}`);
-  if (hit && hit !== "volume") lines.push(`${english ? "Selected study" : "\u70B9\u51FB\u6307\u6807"}\uFF1A${hitLabel[hit] ?? hit}`);
+  if (selection.settings) lines.push(`${english2 ? "Study parameters" : "\u6307\u6807\u53C2\u6570"}\uFF1A${JSON.stringify(selection.settings)}`);
+  if (values.some((row) => row.label === "OBV")) lines.push(english2 ? "OBV starts at zero on the first loaded candle; its absolute value depends on the window." : "OBV \u4EE5\u5DF2\u52A0\u8F7D\u9996\u6839\u4E3A\u96F6\u70B9\uFF0C\u7EDD\u5BF9\u503C\u53D6\u51B3\u4E8E\u5386\u53F2\u7A97\u53E3\u3002");
+  if (values.length) lines.push(`${english2 ? "Displayed studies" : "\u5DF2\u663E\u793A\u6307\u6807"}\uFF1A${values.map(({ label, value }) => `${label}=${computed(value)}`).join("\uFF0C")}`);
+  if (hit && hit !== "volume") lines.push(`${english2 ? "Selected study" : "\u70B9\u51FB\u6307\u6807"}\uFF1A${hitLabel[hit] ?? hit}`);
   return lines.join("\n");
 }
 var CHART_REFERENCE_SOURCE = "hyperliquid-chart";
@@ -1851,6 +1885,11 @@ function resetModeView(mode) {
   });
   void Promise.allSettled([loadStatus(), loadAccount(), loadTradeHistory(true)]);
 }
+function resetWalletView() {
+  networkEpoch += 1;
+  store.patch({ account: null, accountAt: 0, accountError: null, tradeHistory: null, tradeHistoryAt: 0, tradeHistoryError: null });
+  void Promise.allSettled([loadStatus(), loadAccount(), loadTradeHistory(true)]);
+}
 async function switchTradingMode(mode) {
   const result = await hyperCall("switchTradingMode", { mode, acknowledgeLive: mode === "live" });
   if (result?.mode !== mode) throw new Error(tr("\u4EA4\u6613\u6A21\u5F0F\u5207\u6362\u7ED3\u679C\u4E0D\u4E00\u81F4", "Trading mode switch response mismatch"));
@@ -1894,6 +1933,10 @@ function mergeCandle(rows, next) {
   if (!last || next.t > last.t) return [...rows, next].slice(-MAX_CANDLES);
   if (next.t === last.t && JSON.stringify(next) !== JSON.stringify(last)) return [...rows.slice(0, -1), next];
   return rows;
+}
+async function setCustody(mode, acknowledge = false) {
+  await hyperCall("setCustody", { mode, acknowledge });
+  await loadStatus();
 }
 async function loadStatus() {
   const epoch = networkEpoch;
@@ -2119,6 +2162,8 @@ async function pollEvents() {
         if (ev.kind === "network.changed" && (ev.data?.to === "mainnet" || ev.data?.to === "testnet") && ev.data.to !== store.get().status?.network) resetNetworkView(ev.data.to);
         if (ev.kind === "mode.changed" && (ev.data?.to === "live" || ev.data?.to === "paper") && ev.data.to !== store.get().status?.tradingMode) resetModeView(ev.data.to);
         if (ev.kind === "risk.changed") void loadStatus();
+        if (ev.kind === "wallet.changed") resetWalletView();
+        if (ev.kind === "custody.changed") void loadStatus();
         if (ev.kind === "paper.fill" || ev.kind?.startsWith("live.order.")) {
           void loadAccount();
           void loadTradeHistory(true);
@@ -2423,10 +2468,16 @@ var import_dsh_client_ui_primitives = require("@deepseek-ai/dsh-client-ui-primit
 // src/client/format.ts
 var INTERVALS = ["1m", "5m", "15m", "1h", "4h", "1d"];
 var MORE_INTERVALS = ["3m", "30m", "2h", "8h", "12h", "3d", "1w", "1M"];
+var numberFormats = /* @__PURE__ */ new Map();
 function fmt(n2, d = 2) {
   const v = Number(n2);
   if (!Number.isFinite(v)) return "\u2014";
-  return v.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+  let formatter = numberFormats.get(d);
+  if (!formatter) {
+    formatter = new Intl.NumberFormat("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+    numberFormats.set(d, formatter);
+  }
+  return formatter.format(v);
 }
 function fmtPrice(n2) {
   const v = Number(n2);
@@ -17651,6 +17702,7 @@ function isSingleEmoji(value) {
   if (typeof value !== "string" || !value || value.length > 32 || !/\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(value)) return false;
   return [...new Intl.Segmenter(void 0, { granularity: "grapheme" }).segment(value)].length === 1;
 }
+var FIB_LEVEL_KINDS = ["fib", "fibext", "fibchannel"];
 function volumeProfile(bars, { rows = 48, valueArea = 0.7 } = {}) {
   const valid = bars.filter((bar) => [bar.open, bar.high, bar.low, bar.close, bar.volume].every(Number.isFinite) && bar.high >= bar.low && bar.volume >= 0);
   if (!valid.length) return null;
@@ -17935,7 +17987,7 @@ function guide(a, b, value, key3, text) {
 }
 var BADGE_PATHS = { alert: "M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0", shared: "M4 9h13l-3-3M20 15H7l3 3" };
 var DASH = { solid: void 0, dashed: "7 5", dotted: "1.5 4" };
-var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea }) {
+var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels }) {
   const badges = [...alert ? ["alert"] : [], ...shared ? ["shared"] : []];
   const { width: w, height: h } = view;
   const px = points2.map((point) => view.project(point.time, point.price));
@@ -17988,7 +18040,7 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
       if (!p[1]) break;
       const [start, end] = points2;
       const x0 = Math.min(p[0].x, p[1].x), x1 = Math.max(p[0].x, p[1].x, x0 + 40);
-      const rows2 = FIB_LEVELS.map((level) => ({ level, price: end.price + (start.price - end.price) * level })).map((row) => ({ ...row, y: view.project(end.time, row.price)?.y })).filter((row) => row.y != null);
+      const rows2 = (levels ?? FIB_LEVELS).map((level) => ({ level, price: end.price + (start.price - end.price) * level })).map((row) => ({ ...row, y: view.project(end.time, row.price)?.y })).filter((row) => row.y != null);
       body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, rows2.slice(1).map((row, index) => /* @__PURE__ */ React7.createElement("rect", { key: `b${row.level}`, className: `dhl-fib-band band-${index % 3}`, x: x0, width: x1 - x0, y: Math.min(row.y, rows2[index].y), height: Math.abs(row.y - rows2[index].y) })), rows2.map((row) => /* @__PURE__ */ React7.createElement("g", { key: row.level }, /* @__PURE__ */ React7.createElement("line", { className: row.level === 0.5 || row.level === 0.618 ? "dhl-fib-key" : void 0, x1: x0, x2: x1, y1: row.y, y2: row.y }), text(x0 + 4, row.y - 3, `${row.level} (${fmtPrice(row.price)})`))), /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y }));
       break;
     }
@@ -18070,7 +18122,7 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
       }
       const [a, b, c] = points2;
       const x0 = p[2].x, x1 = Math.max(x0 + Math.abs(p[1].x - p[0].x), x0 + 60);
-      const rows2 = FIB_EXT_LEVELS.map((level) => ({ level, price: c.price + (b.price - a.price) * level })).map((row) => ({ ...row, y: view.project(c.time, row.price)?.y })).filter((row) => row.y != null);
+      const rows2 = (levels ?? FIB_EXT_LEVELS).map((level) => ({ level, price: c.price + (b.price - a.price) * level })).map((row) => ({ ...row, y: view.project(c.time, row.price)?.y })).filter((row) => row.y != null);
       body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("polyline", { className: "dhl-drawing-mid", points: `${p[0].x},${p[0].y} ${p[1].x},${p[1].y} ${p[2].x},${p[2].y}` }), rows2.map((row) => /* @__PURE__ */ React7.createElement("g", { key: row.level }, /* @__PURE__ */ React7.createElement("line", { className: row.level === 1 || row.level === 1.618 ? "dhl-fib-key" : void 0, x1: x0, x2: x1, y1: row.y, y2: row.y }), text(x0 + 4, row.y - 3, `${row.level} (${fmtPrice(row.price)})`))));
       break;
     }
@@ -18082,7 +18134,7 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
       }
       const k = (points2[2].time - points2[0].time) / (points2[1].time - points2[0].time || 1);
       const offset = points2[2].price - (points2[0].price + (points2[1].price - points2[0].price) * k);
-      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, FIB_LEVELS.map((level) => {
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, (levels ?? FIB_LEVELS).map((level) => {
         const a2 = view.project(points2[0].time, points2[0].price + offset * level), b2 = view.project(points2[1].time, points2[1].price + offset * level);
         const seg = a2 && b2 ? clipLine(a2, b2, w, h, 0) : null;
         return seg ? /* @__PURE__ */ React7.createElement("g", { key: level }, /* @__PURE__ */ React7.createElement("line", { className: level === 0.5 || level === 0.618 ? "dhl-fib-key" : void 0, x1: seg[0].x, y1: seg[0].y, x2: seg[1].x, y2: seg[1].y }), text(a2.x + 4, a2.y - 3, String(level))) : null;
@@ -18152,9 +18204,9 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
     case "gannsquare": {
       if (!p[1]) break;
       const x0 = Math.min(p[0].x, p[1].x), x1 = Math.max(p[0].x, p[1].x), y0 = Math.min(p[0].y, p[1].y), y1 = Math.max(p[0].y, p[1].y);
-      const levels = kind === "gannbox" ? GANN_BOX_LEVELS : [0, 0.25, 0.5, 0.75, 1];
-      const xs = levels.map((level) => x0 + (x1 - x0) * level), ys = levels.map((level) => y0 + (y1 - y0) * level);
-      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-drawing-fill", x: x0, y: y0, width: x1 - x0, height: y1 - y0 }), xs.slice(1, -1).map((x, i) => /* @__PURE__ */ React7.createElement("line", { key: `v${i}`, className: "dhl-drawing-mid", x1: x, x2: x, y1: y0, y2: y1 })), ys.slice(1, -1).map((y, i) => /* @__PURE__ */ React7.createElement("line", { key: `h${i}`, className: "dhl-drawing-mid", x1: x0, x2: x1, y1: y, y2: y })), /* @__PURE__ */ React7.createElement("line", { x1: x0, y1, x2: x1, y2: y0 }), /* @__PURE__ */ React7.createElement("line", { x1: x0, y1: y0, x2: x1, y2: y1 }), kind === "gannsquare" ? [[x0, y1, x1, (y0 + y1) / 2], [x0, y1, (x0 + x1) / 2, y0], [x0, y0, x1, (y0 + y1) / 2], [x0, y0, (x0 + x1) / 2, y1]].map(([ax, ay, bx, by], i) => /* @__PURE__ */ React7.createElement("line", { key: `f${i}`, className: "dhl-drawing-mid", x1: ax, y1: ay, x2: bx, y2: by })) : null, kind === "gannbox" ? levels.map((level, i) => /* @__PURE__ */ React7.createElement("g", { key: `l${level}` }, text(xs[i], y0 - 4, String(level), "middle"), text(x0 - 4, ys[i] + 3, String(level), "end"))) : null);
+      const levels2 = kind === "gannbox" ? GANN_BOX_LEVELS : [0, 0.25, 0.5, 0.75, 1];
+      const xs = levels2.map((level) => x0 + (x1 - x0) * level), ys = levels2.map((level) => y0 + (y1 - y0) * level);
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-drawing-fill", x: x0, y: y0, width: x1 - x0, height: y1 - y0 }), xs.slice(1, -1).map((x, i) => /* @__PURE__ */ React7.createElement("line", { key: `v${i}`, className: "dhl-drawing-mid", x1: x, x2: x, y1: y0, y2: y1 })), ys.slice(1, -1).map((y, i) => /* @__PURE__ */ React7.createElement("line", { key: `h${i}`, className: "dhl-drawing-mid", x1: x0, x2: x1, y1: y, y2: y })), /* @__PURE__ */ React7.createElement("line", { x1: x0, y1, x2: x1, y2: y0 }), /* @__PURE__ */ React7.createElement("line", { x1: x0, y1: y0, x2: x1, y2: y1 }), kind === "gannsquare" ? [[x0, y1, x1, (y0 + y1) / 2], [x0, y1, (x0 + x1) / 2, y0], [x0, y0, x1, (y0 + y1) / 2], [x0, y0, (x0 + x1) / 2, y1]].map(([ax, ay, bx, by], i) => /* @__PURE__ */ React7.createElement("line", { key: `f${i}`, className: "dhl-drawing-mid", x1: ax, y1: ay, x2: bx, y2: by })) : null, kind === "gannbox" ? levels2.map((level, i) => /* @__PURE__ */ React7.createElement("g", { key: `l${level}` }, text(xs[i], y0 - 4, String(level), "middle"), text(x0 - 4, ys[i] + 3, String(level), "end"))) : null);
       break;
     }
     case "icon": {
@@ -18192,7 +18244,7 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
       const x0 = Math.min(p[0].x, p[1].x), x1 = Math.max(p[0].x, p[1].x);
       const settings = { rows: rows ?? 48, valueArea: valueArea ?? 0.7 };
       const profile = view.profile ? view.profile(from.time, to.time, settings) : volumeProfile(view.candles?.(from.time, to.time) ?? [], settings);
-      const partial = view.firstTime != null && view.barMs != null && view.firstTime - from.time > view.barMs;
+      const partial = view.firstTime != null && view.barMs != null && view.firstTime - from.time >= view.barMs;
       if (!profile) {
         body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-drawing-fill", x: x0, y: 0, width: Math.max(1, x1 - x0), height: h }), text(x0 + 4, 16, tr("\u533A\u95F4\u5185\u6682\u65E0\u6210\u4EA4\u91CF\u6570\u636E", "No volume in this range"), "start"));
         handles = [p[0], p[1]];
@@ -18202,13 +18254,17 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
       const maxRow = Math.max(...profile.rows.map((row) => row.up + row.down)) || 1;
       const span = Math.max(24, (x1 - x0) * 0.3);
       const yTop = y(profile.rows.at(-1).high), yBottom = y(profile.rows[0].low), yPoc = y(profile.poc), yVah = y(profile.vah), yVal = y(profile.val);
-      body = /* @__PURE__ */ React7.createElement("g", { className: "dhl-vprofile" }, yTop != null && yBottom != null ? /* @__PURE__ */ React7.createElement("rect", { className: "dhl-vprofile-range", x: x0, y: yTop, width: Math.max(1, x1 - x0), height: Math.max(1, yBottom - yTop) }) : null, profile.rows.map((row, index) => {
+      const paths2 = { valueUp: "", valueDown: "", outUp: "", outDown: "" };
+      const rectPath = (x, top, width, height) => `M${x.toFixed(2)} ${top.toFixed(2)}h${width.toFixed(2)}v${height.toFixed(2)}h${(-width).toFixed(2)}z`;
+      profile.rows.forEach((row, index) => {
         const top = y(row.high), bottom = y(row.low);
-        if (top == null || bottom == null) return null;
+        if (top == null || bottom == null) return;
         const height = Math.max(1, bottom - top - 0.5), inValue = index >= profile.valueLow && index <= profile.valueHigh;
         const upWidth = span * row.up / maxRow, downWidth = span * row.down / maxRow;
-        return /* @__PURE__ */ React7.createElement("g", { key: index, className: inValue ? "dhl-vprofile-va" : "dhl-vprofile-out" }, /* @__PURE__ */ React7.createElement("rect", { className: "dhl-vprofile-up", x: x0, y: top, width: upWidth, height }), /* @__PURE__ */ React7.createElement("rect", { className: "dhl-vprofile-down", x: x0 + upWidth, y: top, width: downWidth, height }));
-      }), yPoc != null ? /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { className: "dhl-vprofile-poc", x1: x0, y1: yPoc, x2: x1, y2: yPoc }), text(x1 - 4, yPoc - 4, `POC ${fmtPrice(profile.poc)}`, "end")) : null, yVah != null ? /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: x0, y1: yVah, x2: x1, y2: yVah }), text(x1 - 4, yVah - 4, `VAH ${fmtPrice(profile.vah)}`, "end")) : null, yVal != null ? /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: x0, y1: yVal, x2: x1, y2: yVal }), text(x1 - 4, yVal + 12, `VAL ${fmtPrice(profile.val)}`, "end")) : null, yBottom != null ? text(x0 + 4, Math.min(h - 4, yBottom + 14), partial ? tr("K \u7EBF\u4F30\u7B97 \xB7 \u533A\u95F4\u524D\u6BB5\u5386\u53F2\u672A\u52A0\u8F7D", "Estimated from bars \xB7 early range not loaded") : tr("K \u7EBF\u4F30\u7B97", "Estimated from bars"), "start", partial ? "dhl-drawing-text dhl-vprofile-warn" : "dhl-drawing-text") : null);
+        paths2[inValue ? "valueUp" : "outUp"] += rectPath(x0, top, upWidth, height);
+        paths2[inValue ? "valueDown" : "outDown"] += rectPath(x0 + upWidth, top, downWidth, height);
+      });
+      body = /* @__PURE__ */ React7.createElement("g", { className: "dhl-vprofile", "data-rows": profile.rows.length }, yTop != null && yBottom != null ? /* @__PURE__ */ React7.createElement("rect", { className: "dhl-vprofile-range", x: x0, y: yTop, width: Math.max(1, x1 - x0), height: Math.max(1, yBottom - yTop) }) : null, /* @__PURE__ */ React7.createElement("g", { className: "dhl-vprofile-va" }, /* @__PURE__ */ React7.createElement("path", { className: "dhl-vprofile-up", d: paths2.valueUp }), /* @__PURE__ */ React7.createElement("path", { className: "dhl-vprofile-down", d: paths2.valueDown })), /* @__PURE__ */ React7.createElement("g", { className: "dhl-vprofile-out" }, /* @__PURE__ */ React7.createElement("path", { className: "dhl-vprofile-up", d: paths2.outUp }), /* @__PURE__ */ React7.createElement("path", { className: "dhl-vprofile-down", d: paths2.outDown })), yPoc != null ? /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { className: "dhl-vprofile-poc", x1: x0, y1: yPoc, x2: x1, y2: yPoc }), text(x1 - 4, yPoc - 4, `POC ${fmtPrice(profile.poc)}`, "end")) : null, yVah != null ? /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: x0, y1: yVah, x2: x1, y2: yVah }), text(x1 - 4, yVah - 4, `VAH ${fmtPrice(profile.vah)}`, "end")) : null, yVal != null ? /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: x0, y1: yVal, x2: x1, y2: yVal }), text(x1 - 4, yVal + 12, `VAL ${fmtPrice(profile.val)}`, "end")) : null, yBottom != null ? text(x0 + 4, Math.min(h - 4, yBottom + 14), partial ? tr("K \u7EBF\u4F30\u7B97 \xB7 \u533A\u95F4\u524D\u6BB5\u5386\u53F2\u672A\u52A0\u8F7D", "Estimated from bars \xB7 early range not loaded") : tr("K \u7EBF\u4F30\u7B97", "Estimated from bars"), "start", partial ? "dhl-drawing-text dhl-vprofile-warn" : "dhl-drawing-text") : null);
       handles = [p[0], p[1]];
       break;
     }
@@ -18289,6 +18345,21 @@ function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone,
     setText(mark.label);
   }, [mark.id, mark.label]);
   const locked = Boolean(mark.locked) || globallyLocked;
+  const defaultLevels = (mark.levels ?? (mark.kind === "fibext" ? FIB_EXT_LEVELS : FIB_LEVELS)).join(", ");
+  const [levelsText, setLevelsText] = React8.useState(defaultLevels);
+  React8.useEffect(() => {
+    setLevelsText(defaultLevels);
+  }, [mark.id, defaultLevels]);
+  const applyLevels = () => {
+    if (levelsText === defaultLevels) return;
+    if (!levelsText.trim()) {
+      onEdit({ levels: null });
+      return;
+    }
+    const values = levelsText.split(/[,，\s]+/).filter(Boolean).map(Number);
+    if (values.length && values.every(Number.isFinite)) onEdit({ levels: values });
+    else setLevelsText(defaultLevels);
+  };
   const width = mark.lineWidth ?? 2;
   const style = mark.lineStyle ?? "solid";
   const tool = toolOf(mark.kind);
@@ -18348,7 +18419,22 @@ function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, onClone,
       onClick: () => onEdit({ lineStyle: value })
     },
     /* @__PURE__ */ React8.createElement("svg", { viewBox: "0 0 18 18", width: "16", height: "16", "aria-hidden": "true" }, /* @__PURE__ */ React8.createElement("line", { x1: "2", x2: "16", y1: "9", y2: "9", stroke: "currentColor", strokeWidth: "2", strokeDasharray: value === "dashed" ? "4 3" : value === "dotted" ? "1 3" : void 0, strokeLinecap: "round" }))
-  ))) : null, mark.kind === "vprofile" ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6210\u4EA4\u91CF\u5206\u5E03\u8BBE\u7F6E", "Volume profile settings") }, /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u4EF7\u683C\u884C\u6570", "Rows"), title: tr("\u4EF7\u683C\u884C\u6570", "Rows"), value: String(mark.rows ?? 48), disabled: locked, onChange: (event) => onEdit({ rows: Number(event.target.value) }) }, [24, 48, 96, 150].map((value) => /* @__PURE__ */ React8.createElement("option", { key: value, value }, tr(`${value} \u884C`, `${value} rows`)))), /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u4EF7\u503C\u533A\u6BD4\u4F8B", "Value area"), title: tr("\u4EF7\u503C\u533A\u6210\u4EA4\u91CF\u5360\u6BD4", "Value area volume"), value: String(mark.valueArea ?? 0.7), disabled: locked, onChange: (event) => onEdit({ valueArea: Number(event.target.value) }) }, [0.68, 0.7, 0.8].map((value) => /* @__PURE__ */ React8.createElement("option", { key: value, value }, `VA ${Math.round(value * 100)}%`)))) : null, /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group" }, /* @__PURE__ */ React8.createElement("button", { type: "button", disabled: locked, title: tr("\u7CBE\u786E\u7F16\u8F91\u65F6\u95F4\u3001\u4EF7\u683C\u4E0E\u540D\u79F0", "Edit exact time, price and name"), "aria-label": tr("\u7F16\u8F91\u753B\u7EBF\u5750\u6807", "Edit drawing coordinates"), onClick: onCoordinates }, /* @__PURE__ */ React8.createElement(UiIcon, { name: "settings", size: 15 })), /* @__PURE__ */ React8.createElement(
+  ))) : null, FIB_LEVEL_KINDS.includes(mark.kind) ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6590\u6CE2\u90A3\u5951\u5C42\u7EA7", "Fibonacci levels") }, /* @__PURE__ */ React8.createElement(
+    "input",
+    {
+      className: "dhl-draw-toolbar-text dhl-fib-levels",
+      value: levelsText,
+      disabled: locked,
+      "aria-label": tr("\u6590\u6CE2\u90A3\u5951\u5C42\u7EA7\uFF08\u9017\u53F7\u5206\u9694\uFF09", "Fibonacci levels (comma separated)"),
+      title: tr("\u9017\u53F7\u5206\u9694\uFF0C\u56DE\u8F66\u5E94\u7528\uFF1B\u6E05\u7A7A\u6062\u590D\u9ED8\u8BA4", "Comma separated, Enter applies; empty restores defaults"),
+      onChange: (event) => setLevelsText(event.target.value),
+      onKeyDown: (event) => {
+        if (event.key === "Enter") applyLevels();
+        if (event.key === "Escape") setLevelsText(defaultLevels);
+      },
+      onBlur: applyLevels
+    }
+  )) : null, mark.kind === "vprofile" ? /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group", role: "group", "aria-label": tr("\u6210\u4EA4\u91CF\u5206\u5E03\u8BBE\u7F6E", "Volume profile settings") }, /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u4EF7\u683C\u884C\u6570", "Rows"), title: tr("\u4EF7\u683C\u884C\u6570", "Rows"), value: String(mark.rows ?? 48), disabled: locked, onChange: (event) => onEdit({ rows: Number(event.target.value) }) }, [24, 48, 96, 150].map((value) => /* @__PURE__ */ React8.createElement("option", { key: value, value }, tr(`${value} \u884C`, `${value} rows`)))), /* @__PURE__ */ React8.createElement(Select, { "aria-label": tr("\u4EF7\u503C\u533A\u6BD4\u4F8B", "Value area"), title: tr("\u4EF7\u503C\u533A\u6210\u4EA4\u91CF\u5360\u6BD4", "Value area volume"), value: String(mark.valueArea ?? 0.7), disabled: locked, onChange: (event) => onEdit({ valueArea: Number(event.target.value) }) }, [0.68, 0.7, 0.8].map((value) => /* @__PURE__ */ React8.createElement("option", { key: value, value }, `VA ${Math.round(value * 100)}%`)))) : null, /* @__PURE__ */ React8.createElement("span", { className: "dhl-draw-toolbar-group" }, /* @__PURE__ */ React8.createElement("button", { type: "button", disabled: locked, title: tr("\u7CBE\u786E\u7F16\u8F91\u65F6\u95F4\u3001\u4EF7\u683C\u4E0E\u540D\u79F0", "Edit exact time, price and name"), "aria-label": tr("\u7F16\u8F91\u753B\u7EBF\u5750\u6807", "Edit drawing coordinates"), onClick: onCoordinates }, /* @__PURE__ */ React8.createElement(UiIcon, { name: "settings", size: 15 })), /* @__PURE__ */ React8.createElement(
     "button",
     {
       type: "button",
@@ -18548,6 +18634,24 @@ async function chartImage(chart, box, title) {
   return new Promise((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("PNG export failed")), "image/png"));
 }
 
+// src/client/chart-feed.ts
+var fedShape = /* @__PURE__ */ new WeakMap();
+var fields = ["time", "value", "open", "high", "low", "close", "color"];
+function samePrefix(previous, data, length) {
+  for (let i = 0; i < length; i++) for (const key3 of fields) if (previous[i][key3] !== data[i][key3]) return false;
+  return true;
+}
+function feed(series, data, sig = "") {
+  const prev = fedShape.get(series);
+  const len = data.length, first = data[0]?.time, last = data.at(-1)?.time;
+  const tailOnly = prev && prev.sig === sig && len > 0 && first === prev.data[0]?.time && (len === prev.data.length ? last === prev.data.at(-1)?.time : len === prev.data.length + 1 && data.at(-2)?.time === prev.data.at(-1)?.time) && samePrefix(prev.data, data, prev.data.length - 1);
+  if (tailOnly) {
+    if (len === prev.data.length + 1) series.update(data.at(-2));
+    series.update(data.at(-1));
+  } else series.setData(data);
+  fedShape.set(series, { data, sig });
+}
+
 // src/client/components/candle-chart.tsx
 var MAGNET_PX = 14;
 var MA_PALETTE = ["#29b6f6", "#ff7eb6", "#c6e377", "#ffb74d", "#b39ddb", "#4dd0e1", "#f48fb1", "#aed581"];
@@ -18651,11 +18755,25 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
   const [selectedTime, setSelectedTime] = React10.useState(null);
   const [themeVersion, setThemeVersion] = React10.useState(0);
   const [viewportVersion, setViewportVersion] = React10.useState(0);
+  const projectionStamp = React10.useRef([]);
+  const readProjection = (r, box) => {
+    const base = candlesRef.current[0]?.c ?? 1;
+    return [
+      r.chart.timeScale().logicalToCoordinate(0),
+      r.chart.timeScale().logicalToCoordinate(1),
+      r.candles.priceToCoordinate(base),
+      r.candles.priceToCoordinate(base * 1.01),
+      box.clientWidth,
+      box.clientHeight,
+      base
+    ];
+  };
   const [pendingPoints, setPendingPoints] = React10.useState([]);
   const [drawingHover, setDrawingHover] = React10.useState(null);
   const showVolume = indicators.has("volume");
   const studies = React10.useMemo(() => chartIndicators(candles, settings), [candles, settings]);
   const maComputed = React10.useMemo(() => maLines.map((line, index) => ({ line, color: maColor(line, index), ...maSeries(candles, line) })), [candles, maLines]);
+  const axisKey = `${candles.length}:${candles[0]?.t ?? 0}:${candles.at(-1)?.t ?? 0}`;
   const timeline = React10.useMemo(() => {
     const times = [...new Set(candles.map((candle) => Math.floor(candle.t / 1e3)))].sort((a, b) => a - b);
     const step = times.length > 1 ? times[times.length - 1] - times[times.length - 2] : 60;
@@ -18680,7 +18798,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
       return times[i] * 1e3;
     };
     return { toLogical, toTime };
-  }, [candles]);
+  }, [axisKey]);
   const timelineRef = React10.useRef(timeline);
   timelineRef.current = timeline;
   React10.useEffect(() => {
@@ -18807,7 +18925,21 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
           }
         }
       }
-      if (event.shiftKey && previous) price = previous.price;
+      if (event.shiftKey && previous) {
+        const px = chart.timeScale().logicalToCoordinate(timelineRef.current.toLogical(previous.time));
+        const py = candleSeries.priceToCoordinate(previous.price);
+        const x = event.clientX - rect.left;
+        if (px == null || py == null) return { time, price: previous.price };
+        const dx = x - px, dy = y - py;
+        const angle = Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) * (Math.PI / 4);
+        if (Math.abs(Math.abs(angle) - Math.PI / 2) < 1e-6 || Math.abs(angle) < 1e-6 || Math.abs(Math.abs(angle) - Math.PI) < 1e-6) return { time, price: previous.price };
+        const along = dx * Math.cos(angle) + dy * Math.sin(angle);
+        const tx = px + Math.cos(angle) * along, ty = py + Math.sin(angle) * along;
+        const snappedLogical = chart.timeScale().coordinateToLogical(tx);
+        const snappedPrice = Number(candleSeries.coordinateToPrice(ty));
+        if (snappedLogical == null || !Number.isFinite(snappedPrice) || snappedPrice <= 0) return { time, price: previous.price };
+        return { time: timelineRef.current.toTime(Number(snappedLogical)), price: snappedPrice };
+      }
       return { time, price };
     };
     snapRef.current = snapPoint;
@@ -18877,17 +19009,31 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     let viewportFrame = 0;
     const refreshOverlay = () => {
       if (viewportFrame) cancelAnimationFrame(viewportFrame);
-      viewportFrame = requestAnimationFrame(() => setViewportVersion((value) => value + 1));
+      viewportFrame = requestAnimationFrame(() => React10.startTransition(() => setViewportVersion((value) => value + 1)));
     };
     chart.timeScale().subscribeVisibleLogicalRangeChange(refreshOverlay);
-    const scaleDrag = (event) => {
-      if (event.buttons) refreshOverlay();
+    let scalingPrice = false;
+    const endCanvasGesture = () => box.classList.remove("dhl-canvas-gesture");
+    const beginCanvasGesture = (event) => {
+      if (event.target instanceof HTMLCanvasElement) box.classList.add("dhl-canvas-gesture");
     };
+    box.addEventListener("pointerdown", beginCanvasGesture, { passive: true });
+    window.addEventListener("pointerup", endCanvasGesture);
+    window.addEventListener("pointercancel", endCanvasGesture);
+    window.addEventListener("blur", endCanvasGesture);
+    const scaleDown = (event) => {
+      scalingPrice = event.target instanceof HTMLCanvasElement && event.clientX >= box.getBoundingClientRect().right - chart.priceScale("right").width();
+    };
+    const scaleDrag = (event) => {
+      if (event.buttons && scalingPrice) refreshOverlay();
+    };
+    box.addEventListener("pointerdown", scaleDown, { passive: true });
     box.addEventListener("pointermove", scaleDrag, { passive: true });
     box.addEventListener("wheel", refreshOverlay, { passive: true });
     box.addEventListener("dblclick", refreshOverlay);
     const sizeObserver = new ResizeObserver(refreshOverlay);
     sizeObserver.observe(box);
+    box.querySelectorAll("canvas").forEach((canvas) => sizeObserver.observe(canvas));
     chart.timeScale().subscribeVisibleTimeRangeChange((range) => {
       if (!fitted.current || restoring.current || !range || typeof range.from !== "number" || typeof range.to !== "number") return;
       if (rangeTimer) clearTimeout(rangeTimer);
@@ -18930,6 +19076,12 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
       box.removeEventListener("click", chartClick);
       chart.timeScale().unsubscribeVisibleLogicalRangeChange(refreshOverlay);
       box.removeEventListener("pointermove", scaleDrag);
+      box.removeEventListener("pointerdown", beginCanvasGesture);
+      window.removeEventListener("pointerup", endCanvasGesture);
+      window.removeEventListener("pointercancel", endCanvasGesture);
+      window.removeEventListener("blur", endCanvasGesture);
+      endCanvasGesture();
+      box.removeEventListener("pointerdown", scaleDown);
       box.removeEventListener("wheel", refreshOverlay);
       box.removeEventListener("dblclick", refreshOverlay);
       sizeObserver.disconnect();
@@ -18989,26 +19141,26 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     const prevFirst = firstBarTime.current;
     const prepended = prevFirst != null && bars[0].time < prevFirst ? Math.max(0, bars.findIndex((bar) => bar.time >= prevFirst)) : 0;
     firstBarTime.current = bars[0].time;
-    r.candles.setData(chartType === "line" || chartType === "area" ? bars.map((bar) => ({ time: bar.time, value: bar.close })) : bars);
-    r.volume.setData(vols.map((v) => ({ ...v, color: v.color === FALLBACK_UP ? th.up : th.down })));
-    r.sma.setData(chartData(studies.sma20));
-    r.basis.setData(chartData(studies.basis));
-    r.basis.applyOptions({ visible: indicators.has("bollinger20") });
-    r.sma60.setData(chartData(studies.sma60));
-    r.ema20.setData(chartData(studies.ema20));
-    r.ema50.setData(chartData(studies.ema50));
-    r.upper.setData(chartData(studies.upper));
-    r.lower.setData(chartData(studies.lower));
-    r.volume.applyOptions({ visible: showVolume });
-    r.sma.applyOptions({ visible: indicators.has("sma20") });
-    r.sma60.applyOptions({ visible: indicators.has("sma60") });
-    r.ema20.applyOptions({ visible: indicators.has("ema20") });
-    r.ema50.applyOptions({ visible: indicators.has("ema50") });
-    r.upper.applyOptions({ visible: indicators.has("bollinger20") });
-    r.lower.applyOptions({ visible: indicators.has("bollinger20") });
+    const studySig = JSON.stringify(settings), colorSig = `${chartType}|${th.up}|${th.down}`;
+    feed(r.candles, chartType === "line" || chartType === "area" ? bars.map((bar) => ({ time: bar.time, value: bar.close })) : bars, chartType);
+    if (showVolume) feed(r.volume, vols.map((v) => ({ ...v, color: v.color === FALLBACK_UP ? th.up : th.down })), colorSig);
+    if (r.volume.options().visible !== showVolume) r.volume.applyOptions({ visible: showVolume });
+    for (const [series, key3, indicator] of [
+      [r.sma, "sma20", "sma20"],
+      [r.sma60, "sma60", "sma60"],
+      [r.ema20, "ema20", "ema20"],
+      [r.ema50, "ema50", "ema50"],
+      [r.basis, "basis", "bollinger20"],
+      [r.upper, "upper", "bollinger20"],
+      [r.lower, "lower", "bollinger20"]
+    ]) {
+      const visible = indicators.has(indicator);
+      if (visible) feed(series, chartData(studies[key3]), studySig);
+      if (series.options().visible !== visible) series.applyOptions({ visible });
+    }
     if (indicators.has("vwap")) {
       r.vwap ??= r.chart.addSeries(lineSeries, { color: "#e89a56", lineWidth: 2, lastValueVisible: false, priceLineVisible: false });
-      r.vwap.setData(chartData(studies.vwap));
+      feed(r.vwap, chartData(studies.vwap), studySig);
     } else if (r.vwap) {
       r.chart.removeSeries(r.vwap);
       r.vwap = void 0;
@@ -19019,7 +19171,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         pane.setStretchFactor(0.28);
         r.atr = pane.addSeries(lineSeries, { color: "#56bca7", lineWidth: 2, priceLineVisible: false });
       }
-      r.atr.setData(chartData(studies.atr14));
+      feed(r.atr, chartData(studies.atr14), studySig);
     } else if (r.atr) {
       r.chart.removeSeries(r.atr);
       r.atr = void 0;
@@ -19032,7 +19184,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         r.rsiBounds = [settings.rsi.lower, settings.rsi.upper].map((price) => r.rsi.createPriceLine({ price, color: "#8d8d8d", lineWidth: 1, lineStyle: LineStyle.Dashed, axisLabelVisible: false }));
       }
       r.rsiBounds?.forEach((line, index) => line.applyOptions({ price: index ? settings.rsi.upper : settings.rsi.lower }));
-      r.rsi.setData(chartData(studies.rsi14));
+      feed(r.rsi, chartData(studies.rsi14), studySig);
     } else if (r.rsi) {
       r.chart.removeSeries(r.rsi);
       r.rsi = void 0;
@@ -19045,9 +19197,9 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         r.macd = pane.addSeries(lineSeries, { color: "#55a6ce", lineWidth: 2, priceLineVisible: false, lastValueVisible: false });
         r.signal = pane.addSeries(lineSeries, { color: "#e2a943", lineWidth: 2, priceLineVisible: false, lastValueVisible: false });
       }
-      r.macd.setData(chartData(studies.macd));
-      r.signal.setData(chartData(studies.signal));
-      r.histogram.setData(studies.histogram.map((point) => ({ time: point.time, value: point.value, color: point.value >= 0 ? th.up : th.down })));
+      feed(r.macd, chartData(studies.macd), studySig);
+      feed(r.signal, chartData(studies.signal), studySig);
+      feed(r.histogram, studies.histogram.map((point) => ({ time: point.time, value: point.value, color: point.value >= 0 ? th.up : th.down })), studySig + colorSig);
     } else if (r.macd) {
       r.chart.removeSeries(r.macd);
       r.chart.removeSeries(r.signal);
@@ -19071,7 +19223,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
           if (group2.id === "stochastic") r.stochBounds = [settings.stochastic.lower, settings.stochastic.upper].map((price) => r.extra.stochK.createPriceLine({ price, color: "#8d8d8d", lineWidth: 1, lineStyle: LineStyle.Dashed, axisLabelVisible: false }));
           if (group2.id === "adx") r.extra.adx.createPriceLine({ price: 25, color: "#8d8d8d", lineWidth: 1, lineStyle: LineStyle.Dashed, axisLabelVisible: false });
         }
-        for (const key3 of group2.keys) r.extra[key3].setData(chartData(studies[key3]));
+        for (const key3 of group2.keys) feed(r.extra[key3], chartData(studies[key3]), studySig);
         if (group2.id === "stochastic") r.stochBounds?.forEach((line, index) => line.applyOptions({ price: index ? settings.stochastic.upper : settings.stochastic.lower }));
       } else for (const key3 of group2.keys) {
         if (r.extra[key3]) {
@@ -19112,11 +19264,11 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         maRefs.current.set(item.line.id, entry);
       }
       entry.main.applyOptions({ color: item.color });
-      entry.main.setData(toPoints(item.values));
+      feed(entry.main, toPoints(item.values), JSON.stringify(item.line));
       if (item.smoothed) {
         entry.smooth ??= r.chart.addSeries(lineSeries, { lineWidth: 1, lineStyle: LineStyle.Dashed, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false });
         entry.smooth.applyOptions({ color: item.color });
-        entry.smooth.setData(toPoints(item.smoothed));
+        feed(entry.smooth, toPoints(item.smoothed), JSON.stringify(item.line));
       } else if (entry.smooth) {
         r.chart.removeSeries(entry.smooth);
         entry.smooth = void 0;
@@ -19125,7 +19277,8 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     if (!fitted.current) {
       restoring.current = true;
       r.chart.timeScale().fitContent();
-      const saved = initialRange.current;
+      const linked = linkRef.current?.range && linkRef.current.range.source !== linkRef.current.id ? linkRef.current.range : null;
+      const saved = linked ?? initialRange.current;
       if (saved && saved.from < saved.to) {
         try {
           r.chart.timeScale().setVisibleRange({ from: saved.from, to: saved.to });
@@ -19137,6 +19290,11 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         restoring.current = false;
       }, 100);
     }
+    const overlayFrame = requestAnimationFrame(() => {
+      const box2 = boxRef.current;
+      if (box2 && readProjection(r, box2).some((value, index) => value !== projectionStamp.current[index])) React10.startTransition(() => setViewportVersion((value) => value + 1));
+    });
+    return () => cancelAnimationFrame(overlayFrame);
   }, [candles, studies, indicators, showVolume, maComputed, chartType, settings]);
   React10.useEffect(() => {
     const r = refs.current;
@@ -19296,22 +19454,28 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
   const view = React10.useMemo(() => {
     const chartApi = refs.current, box = boxRef.current;
     if (!chartApi || !box) return null;
+    const stamp = readProjection(chartApi, box);
+    projectionStamp.current = stamp;
+    const [x0, x1, y0, y1] = stamp;
+    const base = candlesRef.current[0]?.c ?? 1;
+    const ys = /* @__PURE__ */ new Map();
     return {
       project: (time, price) => {
-        const x = chartApi.chart.timeScale().logicalToCoordinate(timeline.toLogical(time));
-        const y = chartApi.candles.priceToCoordinate(price);
+        const x = x0 == null || x1 == null ? null : x0 + (x1 - x0) * timeline.toLogical(time);
+        if (!ys.has(price)) ys.set(price, priceScale === "log" ? chartApi.candles.priceToCoordinate(price) : y0 == null || y1 == null ? null : y0 + (y1 - y0) * (price - base) / (base * 0.01));
+        const y = ys.get(price);
         return x == null || y == null || !Number.isFinite(x) || !Number.isFinite(y) ? null : { x, y };
       },
       width: Math.max(0, box.clientWidth - chartApi.chart.priceScale("right").width()),
       height: chartApi.chart.panes()[0]?.getHeight() ?? box.clientHeight,
       bars: (from, to) => timeline.toLogical(to) - timeline.toLogical(from),
-      closes: (from, to) => candles.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, price: candle.c })),
-      candles: (from, to) => candles.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, open: candle.o, high: candle.h, low: candle.l, close: candle.c, volume: candle.v })),
-      profile: (from, to, options) => cachedProfile(candles, from, to, options),
-      firstTime: candles[0]?.t,
-      barMs: candles.length > 1 ? candles[1].t - candles[0].t : void 0
+      closes: (from, to) => candlesRef.current.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, price: candle.c })),
+      candles: (from, to) => candlesRef.current.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, open: candle.o, high: candle.h, low: candle.l, close: candle.c, volume: candle.v })),
+      profile: (from, to, options) => cachedProfile(candlesRef.current, from, to, options),
+      firstTime: candlesRef.current[0]?.t,
+      barMs: candlesRef.current.length > 1 ? candlesRef.current[1].t - candlesRef.current[0].t : void 0
     };
-  }, [viewportVersion, timeline, themeVersion, expanded, indicators]);
+  }, [viewportVersion, timeline, themeVersion, expanded, indicators, priceScale]);
   React10.useEffect(() => {
     if (selectedId && !markById.has(selectedId)) setSelectedId(null);
   }, [markById, selectedId]);
@@ -19426,7 +19590,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
   const cloneOf = React10.useCallback((mark) => {
     const line = timelineRef.current;
     const shifted = markPoints(mark).map((point) => ({ time: line.toTime(line.toLogical(point.time) + 5), price: point.price }));
-    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle }).filter(([, value]) => value != null));
+    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle, levels: mark.levels, rows: mark.rows, valueArea: mark.valueArea }).filter(([, value]) => value != null));
     return { kind: mark.kind, geometry: geometryPatch(mark.kind, shifted), style, label: mark.label };
   }, []);
   const clipboard = React10.useRef(null);
@@ -19526,6 +19690,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         }
         latest2 = next;
         setGroupDraft(next);
+        for (const [memberId, member] of originals) if (member.kind === "level") priceLines.current.get(memberId)?.applyOptions({ price: next.get(memberId)[0].price });
       };
       const move2 = (ev) => {
         if (!moved2 && Math.hypot(ev.clientX - origin2.x, ev.clientY - origin2.y) < 3) return;
@@ -19543,6 +19708,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
       };
       const cancel2 = () => {
         detach2();
+        for (const [memberId, member] of originals) if (member.kind === "level") priceLines.current.get(memberId)?.applyOptions({ price: Number(member.price) });
         setGroupDraft(null);
       };
       const onKey2 = (ev) => {
@@ -19582,7 +19748,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
     const compute = (ev) => {
       let next;
       if (anchor != null) {
-        const point = snap(ev, original[anchor === 0 ? 1 : 0]);
+        const point = snap(ev, original[anchor === 0 ? 1 : anchor - 1]);
         if (!point) return;
         next = original.map((item) => ({ ...item }));
         if (mark.kind === "level") next[0] = { ...next[0], price: point.price };
@@ -19680,6 +19846,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         points: shown,
         view,
         text: mark.label,
+        dataVersion: mark.kind === "vprofile" || mark.kind === "regression" ? candles : void 0,
         className: `dhl-drawing ${roleClass(mark)}${mark.kind === "level" ? " is-level" : ""}${selected ? " selected" : ""}${mark.locked || drawingsLocked ? " locked" : ""}`,
         label: mark.source === "user" || mark.kind === "level" ? void 0 : mark.label,
         anchors: selected,
@@ -19690,7 +19857,8 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         alert: mark.alert,
         shared: mark.shared,
         rows: mark.rows,
-        valueArea: mark.valueArea
+        valueArea: mark.valueArea,
+        levels: mark.levels
       }
     );
   }), /* @__PURE__ */ React10.createElement("g", { className: "dhl-fills" }, fills.map((event) => {
@@ -19766,7 +19934,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
 var React11 = __toESM(require("react"), 1);
 var HISTORY_LIMIT = 100;
 var GEOMETRY = ["price", "fromTime", "fromPrice", "toTime", "toPrice", "points"];
-var STYLE = ["color", "lineWidth", "lineStyle", "locked", "hidden", "shared", "alert", "rows", "valueArea"];
+var STYLE = ["color", "lineWidth", "lineStyle", "locked", "hidden", "shared", "alert", "rows", "valueArea", "levels"];
 var FLAGS = /* @__PURE__ */ new Set(["locked", "hidden", "shared", "alert"]);
 function recreateRequest(mark) {
   const out = { kind: mark.kind, label: mark.label, role: mark.role, coin: mark.coin, interval: mark.interval };
@@ -19878,6 +20046,28 @@ function useDrawingHistory(scope) {
     }
     return apiDelete(ctx, op.mark.id);
   };
+  const step = async (ctx, forward) => {
+    const from = forward ? redoStack : undoStack, to = forward ? undoStack : redoStack;
+    const op = from.current.pop();
+    if (!op) return;
+    bump();
+    let done = null, left = null;
+    if (op.type === "batch") {
+      const ok = [], failed = [];
+      for (const inner of forward ? op.ops : [...op.ops].reverse()) (await apply2(ctx, inner, forward) ? ok : failed).push(inner);
+      if (!forward) {
+        ok.reverse();
+        failed.reverse();
+      }
+      if (ok.length) done = { type: "batch", ops: ok };
+      if (failed.length) left = { type: "batch", ops: failed };
+    } else if (await apply2(ctx, op, forward)) done = op;
+    else left = op;
+    if (ctx.scope !== scopeRef.current) return;
+    if (done) to.current.push(done);
+    if (left) from.current.push(left);
+    bump();
+  };
   return {
     create: (request) => serial(async (ctx) => {
       const saved = await apiCreate(ctx, request);
@@ -19919,29 +20109,8 @@ function useDrawingHistory(scope) {
       }
       if (done.length) record({ type: "batch", ops: done }, ctx);
     }, void 0),
-    // A failed undo/redo goes back where it was, so the stacks keep describing the host.
-    undo: () => serial(async (ctx) => {
-      const op = undoStack.current.pop();
-      if (!op) return;
-      redoStack.current.push(op);
-      bump();
-      if (!await apply2(ctx, op, false)) {
-        redoStack.current.pop();
-        undoStack.current.push(op);
-        bump();
-      }
-    }, void 0),
-    redo: () => serial(async (ctx) => {
-      const op = redoStack.current.pop();
-      if (!op) return;
-      undoStack.current.push(op);
-      bump();
-      if (!await apply2(ctx, op, true)) {
-        undoStack.current.pop();
-        redoStack.current.push(op);
-        bump();
-      }
-    }, void 0),
+    undo: () => serial((ctx) => step(ctx, false), void 0),
+    redo: () => serial((ctx) => step(ctx, true), void 0),
     canUndo: undoStack.current.length > 0,
     canRedo: redoStack.current.length > 0
   };
@@ -19950,7 +20119,7 @@ function useDrawingHistory(scope) {
 // src/client/components/drawing-list.tsx
 var React12 = __toESM(require("react"), 1);
 var OPEN_KEY = "dsh-hyperliquid.draw.listOpen";
-function DrawingList({ marks, locked, onSelect, onEdit, onRemove }) {
+var DrawingList = React12.memo(function DrawingList2({ marks, locked, onSelect, onEdit, onRemove, language }) {
   const [open, setOpen] = React12.useState(() => {
     try {
       return localStorage.getItem(OPEN_KEY) !== "0";
@@ -19966,11 +20135,11 @@ function DrawingList({ marks, locked, onSelect, onEdit, onRemove }) {
     return !value;
   });
   const hidden = marks.filter((mark) => mark.hidden).length;
-  return /* @__PURE__ */ React12.createElement("section", { className: "dhl-drawing-list", "aria-label": tr("\u753B\u7EBF\u5217\u8868", "Drawings") }, /* @__PURE__ */ React12.createElement("button", { type: "button", className: "dhl-drawing-list-head", "aria-expanded": open, onClick: toggle }, /* @__PURE__ */ React12.createElement("span", null, tr("\u753B\u7EBF", "Drawings"), " ", marks.length, hidden ? tr(` \xB7 \u9690\u85CF ${hidden}`, ` \xB7 ${hidden} hidden`) : ""), /* @__PURE__ */ React12.createElement(UiIcon, { name: open ? "chevronDown" : "chevronRight", size: 14 })), open ? /* @__PURE__ */ React12.createElement("ul", null, marks.map((mark) => {
+  return /* @__PURE__ */ React12.createElement("section", { className: "dhl-drawing-list", lang: language, "aria-label": tr("\u753B\u7EBF\u5217\u8868", "Drawings") }, /* @__PURE__ */ React12.createElement("button", { type: "button", className: "dhl-drawing-list-head", "aria-expanded": open, onClick: toggle }, /* @__PURE__ */ React12.createElement("span", null, tr("\u753B\u7EBF", "Drawings"), " ", marks.length, hidden ? tr(` \xB7 \u9690\u85CF ${hidden}`, ` \xB7 ${hidden} hidden`) : ""), /* @__PURE__ */ React12.createElement(UiIcon, { name: open ? "chevronDown" : "chevronRight", size: 14 })), open ? /* @__PURE__ */ React12.createElement("ul", null, marks.map((mark) => {
     const tool = toolOf(mark.kind);
     return /* @__PURE__ */ React12.createElement("li", { key: mark.id, className: mark.hidden ? "is-hidden" : "" }, /* @__PURE__ */ React12.createElement("button", { type: "button", className: "dhl-drawing-list-name", title: tr("\u5728\u56FE\u4E0A\u5B9A\u4F4D\u5E76\u9009\u4E2D", "Find and select on the chart"), onClick: () => onSelect(mark.id), disabled: mark.hidden }, /* @__PURE__ */ React12.createElement("span", { style: { color: mark.color } }, /* @__PURE__ */ React12.createElement(ToolIcon, { kind: mark.kind, size: 14 })), /* @__PURE__ */ React12.createElement("b", null, mark.label), /* @__PURE__ */ React12.createElement("small", null, mark.alert ? /* @__PURE__ */ React12.createElement("span", { className: "dhl-list-flag", title: tr("\u4EF7\u683C\u63D0\u9192\u5DF2\u5F00\u542F", "Price alert armed") }, /* @__PURE__ */ React12.createElement(UiIcon, { name: "bell", size: 12 })) : null, mark.shared ? /* @__PURE__ */ React12.createElement("span", { className: "dhl-list-flag", title: tr("\u5DF2\u540C\u6B65\u5230\u6240\u6709\u4F1A\u8BDD", "Synced to all sessions") }, /* @__PURE__ */ React12.createElement(UiIcon, { name: "sync", size: 12 })) : null, tr(tool.zh, tool.en), " \xB7 ", mark.interval, mark.source === "agent" ? " \xB7 agent" : "")), /* @__PURE__ */ React12.createElement("button", { type: "button", "aria-pressed": !mark.hidden, title: mark.hidden ? tr("\u663E\u793A", "Show") : tr("\u9690\u85CF", "Hide"), "aria-label": `${mark.hidden ? tr("\u663E\u793A", "Show") : tr("\u9690\u85CF", "Hide")} ${mark.label}`, onClick: () => onEdit(mark.id, { hidden: !mark.hidden }) }, /* @__PURE__ */ React12.createElement(UiIcon, { name: mark.hidden ? "eyeOff" : "eye", size: 14 })), /* @__PURE__ */ React12.createElement("button", { type: "button", className: mark.locked ? "on" : "", "aria-pressed": Boolean(mark.locked), disabled: locked, title: mark.locked ? tr("\u89E3\u9501", "Unlock") : tr("\u9501\u5B9A", "Lock"), "aria-label": `${mark.locked ? tr("\u89E3\u9501", "Unlock") : tr("\u9501\u5B9A", "Lock")} ${mark.label}`, onClick: () => onEdit(mark.id, { locked: !mark.locked }) }, /* @__PURE__ */ React12.createElement(UiIcon, { name: mark.locked ? "lock" : "unlock", size: 14 })), /* @__PURE__ */ React12.createElement("button", { type: "button", disabled: locked || mark.locked, title: tr("\u5220\u9664", "Delete"), "aria-label": `${tr("\u5220\u9664\u753B\u7EBF", "Remove line")} ${mark.label}`, onClick: () => onRemove(mark.id) }, /* @__PURE__ */ React12.createElement(UiIcon, { name: "trash", size: 14 })));
   })) : null);
-}
+});
 
 // src/client/components/sticker-picker.tsx
 var React13 = __toESM(require("react"), 1);
@@ -20426,7 +20595,7 @@ function MarketPicker({ activeCoin, onClose }) {
   const marketRows = React21.useMemo(() => {
     const livePerps = new Map(s.markets.map((market) => [market.name, market]));
     const catalog = s.marketCatalog.length ? s.marketCatalog.map((row) => {
-      const latest = row.tradable ? livePerps.get(row.name) : null;
+      const latest = row.kind === "perp" ? livePerps.get(row.name) : null;
       return latest ? { ...row, ctx: latest.ctx } : row;
     }) : s.markets.map((row) => ({
       name: row.name,
@@ -20540,7 +20709,7 @@ function MarketPicker({ activeCoin, onClose }) {
     }
   };
   const header = (label, key3) => /* @__PURE__ */ React21.createElement("button", { type: "button", onClick: () => sortBy(key3), "aria-label": tr(`\u6309${label}\u6392\u5E8F`, `Sort by ${label}`) }, label, sort === key3 ? /* @__PURE__ */ React21.createElement(UiIcon, { name: descending ? "arrowDown" : "arrowUp", size: 12 }) : null);
-  return /* @__PURE__ */ React21.createElement(import_dsh_client_ui_primitives3.Modal, { open: true, onClose, title: t("market.choose", "\u9009\u62E9\u5E02\u573A"), headless: true, className: "dhl-picker-modal", backdropBlur: true, onKeyDownCapture: onKeyDown }, /* @__PURE__ */ React21.createElement("section", { className: "dhl-picker" }, /* @__PURE__ */ React21.createElement("div", { className: "dhl-picker-top" }, /* @__PURE__ */ React21.createElement("div", { className: "dhl-picker-search" }, /* @__PURE__ */ React21.createElement(SearchIcon, null), /* @__PURE__ */ React21.createElement("input", { ref: searchRef, "data-modal-autofocus": true, value: query, onChange: (event) => setQuery(event.target.value), placeholder: t("market.search", "\u641C\u7D22\u5E02\u573A"), "aria-label": t("market.search", "\u641C\u7D22\u5E02\u573A") }), /* @__PURE__ */ React21.createElement("kbd", null, "/")), /* @__PURE__ */ React21.createElement("div", { className: "dhl-picker-mode", role: "group", "aria-label": tr("\u5E02\u573A\u8303\u56F4", "Market scope") }, /* @__PURE__ */ React21.createElement("button", { type: "button", className: strict ? "on" : "", "aria-pressed": strict, onClick: () => setStrict(true) }, t("market.tradable", "\u53EF\u4EA4\u6613")), /* @__PURE__ */ React21.createElement("button", { type: "button", className: !strict ? "on" : "", "aria-pressed": !strict, onClick: () => setStrict(false) }, t("market.all", "\u5168\u90E8"))), /* @__PURE__ */ React21.createElement("button", { type: "button", className: "dhl-picker-close", onClick: onClose, "aria-label": t("modal.close", "\u5173\u95ED") }, /* @__PURE__ */ React21.createElement(UiIcon, { name: "close", size: 18 }))), !strict ? /* @__PURE__ */ React21.createElement("p", { className: "dhl-picker-readonly-note" }, tr("\u201C\u53EA\u8BFB\u201D\u8868\u793A\u672C\u63D2\u4EF6\u4EC5\u63D0\u4F9B\u884C\u60C5\uFF0C\u5C1A\u672A\u63A5\u5165\u8BE5\u5E02\u573A\u7684\u4E0B\u5355\u4E0E\u98CE\u63A7\uFF1BHIP-3 \u548C\u73B0\u8D27\u5728 Hyperliquid \u672C\u8EAB\u53EF\u4EA4\u6613\u3002", "\u201CView only\u201D means this plugin has market data but no order and risk support for that market. Hyperliquid itself supports HIP-3 and spot trading.")) : null, /* @__PURE__ */ React21.createElement("nav", { className: "dhl-picker-tabs", "aria-label": tr("\u5E02\u573A\u5206\u7C7B", "Market categories") }, CATEGORIES.map(([key3, label]) => /* @__PURE__ */ React21.createElement("button", { type: "button", key: key3, className: category === key3 ? "on" : "", "aria-current": category === key3 ? "page" : void 0, onClick: () => {
+  return /* @__PURE__ */ React21.createElement(import_dsh_client_ui_primitives3.Modal, { open: true, onClose, title: t("market.choose", "\u9009\u62E9\u5E02\u573A"), headless: true, className: "dhl-picker-modal", backdropBlur: true, onKeyDownCapture: onKeyDown }, /* @__PURE__ */ React21.createElement("section", { className: "dhl-picker" }, /* @__PURE__ */ React21.createElement("div", { className: "dhl-picker-top" }, /* @__PURE__ */ React21.createElement("div", { className: "dhl-picker-search" }, /* @__PURE__ */ React21.createElement(SearchIcon, null), /* @__PURE__ */ React21.createElement("input", { ref: searchRef, "data-modal-autofocus": true, value: query, onChange: (event) => setQuery(event.target.value), placeholder: t("market.search", "\u641C\u7D22\u5E02\u573A"), "aria-label": t("market.search", "\u641C\u7D22\u5E02\u573A") }), /* @__PURE__ */ React21.createElement("kbd", null, "/")), /* @__PURE__ */ React21.createElement("div", { className: "dhl-picker-mode", role: "group", "aria-label": tr("\u5E02\u573A\u8303\u56F4", "Market scope") }, /* @__PURE__ */ React21.createElement("button", { type: "button", className: strict ? "on" : "", "aria-pressed": strict, onClick: () => setStrict(true) }, t("market.tradable", "\u53EF\u4EA4\u6613")), /* @__PURE__ */ React21.createElement("button", { type: "button", className: !strict ? "on" : "", "aria-pressed": !strict, onClick: () => setStrict(false) }, t("market.all", "\u5168\u90E8"))), /* @__PURE__ */ React21.createElement("button", { type: "button", className: "dhl-picker-close", onClick: onClose, "aria-label": t("modal.close", "\u5173\u95ED") }, /* @__PURE__ */ React21.createElement(UiIcon, { name: "close", size: 18 }))), !strict ? /* @__PURE__ */ React21.createElement("p", { className: "dhl-picker-readonly-note" }, tr("\u201C\u53EA\u8BFB\u201D\u8868\u793A\u672C\u63D2\u4EF6\u4EC5\u63D0\u4F9B\u884C\u60C5\uFF0C\u5C1A\u672A\u63A5\u5165\u8BE5\u5E02\u573A\u7684\u4E0B\u5355\u4E0E\u98CE\u63A7\uFF1B\u73B0\u8D27\u4E0E Outcome \u5728 Hyperliquid \u672C\u8EAB\u53EF\u4EA4\u6613\uFF1B\u4EE5 USDC \u4E3A\u4FDD\u8BC1\u91D1\u7684 HIP-3 \u6C38\u7EED\u5DF2\u53EF\u5728\u8FD9\u91CC\u4EA4\u6613\u3002", "\u201CView only\u201D means this plugin has market data but no order and risk support for that market. Hyperliquid itself supports spot and outcome trading; USDC-collateral HIP-3 perps are tradable here.")) : null, /* @__PURE__ */ React21.createElement("nav", { className: "dhl-picker-tabs", "aria-label": tr("\u5E02\u573A\u5206\u7C7B", "Market categories") }, CATEGORIES.map(([key3, label]) => /* @__PURE__ */ React21.createElement("button", { type: "button", key: key3, className: category === key3 ? "on" : "", "aria-current": category === key3 ? "page" : void 0, onClick: () => {
     setCategory(key3);
     if (["spot", "hip3", "outcome", "crypto", "tradfi", "preipo"].includes(key3)) setStrict(false);
   } }, t(`market.category.${key3}`, label)))), /* @__PURE__ */ React21.createElement("div", { className: "dhl-picker-tablehead" }, /* @__PURE__ */ React21.createElement(UiIcon, { name: "star", size: 15 }), header(t("market.name", "\u5E02\u573A"), "name"), header(t("market.price", "\u6700\u65B0\u4EF7"), "price"), header(t("market.change", "24h \u6DA8\u8DCC"), "change"), header(t("market.funding", "\u8D44\u91D1\u8D39"), "funding"), header(t("market.volume", "24h \u6210\u4EA4\u989D"), "volume"), header(t("market.openInterest", "\u672A\u5E73\u4ED3\u91CF"), "openInterest")), /* @__PURE__ */ React21.createElement("div", { className: "dhl-picker-list", role: "listbox", "aria-label": tr("\u5E02\u573A\u5217\u8868", "Market list"), ref: listRef, onScroll: (event) => {
@@ -20615,8 +20784,8 @@ function atr14(rows) {
   for (const item of ranges.slice(14)) value = (value * 13 + item) / 14;
   return value;
 }
-function evaluateStrategyStudies(candles, coin, interval, now = Date.now(), english = false) {
-  const say = (zh, en) => english ? en : zh;
+function evaluateStrategyStudies(candles, coin, interval, now = Date.now(), english2 = false) {
+  const say = (zh, en) => english2 ? en : zh;
   const valid = candles.filter((row) => Number.isFinite(row.t) && Number.isFinite(row.c) && row.c > 0 && Number.isFinite(row.h) && Number.isFinite(row.l) && row.h >= row.l && Number.isFinite(row.v));
   const rows = [...new Map(valid.map((row) => [row.t, row])).values()].sort((a, b) => a.t - b.t).filter((row) => closedAt(row, interval) <= now);
   const latest = rows.at(-1);
@@ -20712,8 +20881,8 @@ var STATE_LABELS = {
 };
 function StrategyMenu({ candles, coin, interval }) {
   const menu = React22.useRef(null);
-  const english = tr("zh", "en") === "en";
-  const studies = React22.useMemo(() => evaluateStrategyStudies(candles, coin, interval, Date.now(), english), [candles, coin, interval, english]);
+  const english2 = tr("zh", "en") === "en";
+  const studies = React22.useMemo(() => evaluateStrategyStudies(candles, coin, interval, Date.now(), english2), [candles, coin, interval, english2]);
   return /* @__PURE__ */ React22.createElement("details", { className: "dhl-strategy-menu", ref: menu }, /* @__PURE__ */ React22.createElement("summary", null, tr("\u7B56\u7565\u6846\u67B6", "Strategies"), /* @__PURE__ */ React22.createElement(UiIcon, { name: "chevronDown", size: 12 })), /* @__PURE__ */ React22.createElement("div", { className: "dhl-strategy-popover", role: "group", "aria-label": tr("\u4EA4\u6613\u7B56\u7565\u7814\u7A76", "Trading strategy studies") }, /* @__PURE__ */ React22.createElement("header", null, /* @__PURE__ */ React22.createElement("strong", null, tr("\u7B56\u7565\u7814\u7A76 \xB7 \u5DF2\u6536\u76D8 K \u7EBF", "Strategy studies \xB7 closed candles")), /* @__PURE__ */ React22.createElement("small", null, coin, " \xB7 ", interval)), /* @__PURE__ */ React22.createElement("p", { className: "dhl-strategy-caveat" }, tr(
     "\u8FD9\u4E9B\u6761\u4EF6\u7528\u4E8E\u7EC4\u7EC7\u5206\u6790\uFF0C\u672A\u5728\u672C\u5E02\u573A\u548C\u5468\u671F\u9A8C\u8BC1\u6536\u76CA\uFF1B\u9700\u8981\u6838\u5BF9\u66F4\u9AD8\u5468\u671F\u3001\u76D8\u53E3\u3001\u8D44\u91D1\u8D39\u548C\u4EA4\u6613\u6210\u672C\u3002",
     "These conditions structure analysis; returns are unverified for this market and interval. Check higher timeframe, book, funding and costs."
@@ -20803,7 +20972,7 @@ function IndicatorEditor({ settings, indicators, maLines, onApply }) {
   const [name, setName] = React23.useState("");
   const [error, setError] = React23.useState("");
   const [busy, setBusy] = React23.useState(false);
-  const populate = (value) => setDraft(Object.fromEntries(Object.entries(normalizeIndicatorSettings(value)).map(([section, fields]) => [section, Object.fromEntries(Object.entries(fields).map(([key3, n2]) => [key3, String(n2)]))])));
+  const populate = (value) => setDraft(Object.fromEntries(Object.entries(normalizeIndicatorSettings(value)).map(([section, fields2]) => [section, Object.fromEntries(Object.entries(fields2).map(([key3, n2]) => [key3, String(n2)]))])));
   React23.useEffect(() => {
     if (!open) return;
     populate(settings);
@@ -20822,7 +20991,7 @@ function IndicatorEditor({ settings, indicators, maLines, onApply }) {
       cancelled = true;
     };
   }, [open]);
-  const values = () => normalizeIndicatorSettings(Object.fromEntries(Object.entries(draft).map(([section, fields]) => [section, Object.fromEntries(Object.entries(fields).map(([key3, n2]) => [key3, n2.trim() ? Number(n2) : NaN]))])));
+  const values = () => normalizeIndicatorSettings(Object.fromEntries(Object.entries(draft).map(([section, fields2]) => [section, Object.fromEntries(Object.entries(fields2).map(([key3, n2]) => [key3, n2.trim() ? Number(n2) : NaN]))])));
   const apply2 = () => {
     try {
       onApply({ indicatorSettings: values(), indicators: active, maLines: lines });
@@ -20871,7 +21040,7 @@ function IndicatorEditor({ settings, indicators, maLines, onApply }) {
         setTemplates(result.templates);
         setSelected("");
       }).catch((cause) => setError(String(cause.message))).finally(() => setBusy(false));
-    } }, tr("\u5220\u9664\u6A21\u677F", "Delete")))), /* @__PURE__ */ React23.createElement("div", { className: "dhl-study-parameter-grid" }, SECTIONS.map(([section, title, fields]) => /* @__PURE__ */ React23.createElement("fieldset", { key: section }, /* @__PURE__ */ React23.createElement("legend", null, title), fields.map(([key3, zh, en]) => /* @__PURE__ */ React23.createElement("label", { key: key3 }, tr(zh, en), /* @__PURE__ */ React23.createElement(import_dsh_client_ui_primitives4.Input, { type: "number", step: key3 === "multiplier" ? "any" : 1, "aria-label": `${title} ${tr(zh, en)}`, value: draft[section]?.[key3] ?? "", onChange: (event) => setDraft((current2) => ({ ...current2, [section]: { ...current2[section], [key3]: event.target.value } })) })))))), error ? /* @__PURE__ */ React23.createElement("p", { className: "dhl-inline-error", role: "alert" }, error) : null)
+    } }, tr("\u5220\u9664\u6A21\u677F", "Delete")))), /* @__PURE__ */ React23.createElement("div", { className: "dhl-study-parameter-grid" }, SECTIONS.map(([section, title, fields2]) => /* @__PURE__ */ React23.createElement("fieldset", { key: section }, /* @__PURE__ */ React23.createElement("legend", null, title), fields2.map(([key3, zh, en]) => /* @__PURE__ */ React23.createElement("label", { key: key3 }, tr(zh, en), /* @__PURE__ */ React23.createElement(import_dsh_client_ui_primitives4.Input, { type: "number", step: key3 === "multiplier" ? "any" : 1, "aria-label": `${title} ${tr(zh, en)}`, value: draft[section]?.[key3] ?? "", onChange: (event) => setDraft((current2) => ({ ...current2, [section]: { ...current2[section], [key3]: event.target.value } })) })))))), error ? /* @__PURE__ */ React23.createElement("p", { className: "dhl-inline-error", role: "alert" }, error) : null)
   ));
 }
 
@@ -20885,7 +21054,7 @@ function ResearchPane({ coin, interval, onInterval, indicators, marks, link, cha
   const [state, setState] = React24.useState({ scope: "", candles: [], error: "", older: "idle", at: 0 });
   const currentScope = React24.useRef(scope);
   currentScope.current = scope;
-  const feed = state.scope === scope ? state : { scope, candles: [], error: "", older: "idle", at: 0 };
+  const feed2 = state.scope === scope ? state : { scope, candles: [], error: "", older: "idle", at: 0 };
   React24.useEffect(() => {
     let alive = true, busy = false;
     setState({ scope, candles: [], error: "", older: "idle", at: 0 });
@@ -20910,11 +21079,11 @@ function ResearchPane({ coin, interval, onInterval, indicators, marks, link, cha
   }, [scope]);
   const olderBusy = React24.useRef(false);
   const needOlder = async () => {
-    if (olderBusy.current || feed.older !== "idle" || !feed.candles.length) return;
+    if (olderBusy.current || feed2.older !== "idle" || !feed2.candles.length) return;
     olderBusy.current = true;
     setState((old) => ({ ...old, older: "loading" }));
     try {
-      const first = feed.candles[0].t;
+      const first = feed2.candles[0].t;
       const result = await hyperCall("candles", { coin, interval, endMs: first - 1, startMs: first - durations[RESEARCH_INTERVALS.indexOf(interval)] * 500 });
       if (currentScope.current === scope) setState((old) => {
         const rows = merge2(result.candles, old.candles);
@@ -20927,12 +21096,12 @@ function ResearchPane({ coin, interval, onInterval, indicators, marks, link, cha
     }
   };
   const layers = { orders: true, fills: true, reasons: false, ...s.workspace?.chartLayers };
-  const events = React24.useMemo(() => chartTradeEvents(feed.candles, coin, layers.orders ? s.tradeHistory?.orders ?? [] : [], layers.fills ? s.tradeHistory?.fills ?? [] : []), [feed.candles, s.tradeHistory, layers.orders, layers.fills, coin]);
-  return /* @__PURE__ */ React24.createElement("section", { className: "dhl-research-pane", "aria-label": `${coin} ${interval} ${tr("\u7814\u7A76\u56FE\u8868", "research chart")}` }, /* @__PURE__ */ React24.createElement("header", null, /* @__PURE__ */ React24.createElement("b", null, coin), /* @__PURE__ */ React24.createElement(Select, { "aria-label": tr("\u7814\u7A76\u5468\u671F", "Research interval"), value: interval, onChange: (e) => onInterval(e.target.value) }, RESEARCH_INTERVALS.map((iv) => /* @__PURE__ */ React24.createElement("option", { key: iv, value: iv }, iv))), /* @__PURE__ */ React24.createElement("small", null, feed.at ? `${tr("\u66F4\u65B0", "Updated")} ${new Date(feed.at).toLocaleTimeString()}` : tr("\u52A0\u8F7D\u4E2D\u2026", "Loading\u2026"))), /* @__PURE__ */ React24.createElement(
+  const events = React24.useMemo(() => chartTradeEvents(feed2.candles, coin, layers.orders ? s.tradeHistory?.orders ?? [] : [], layers.fills ? s.tradeHistory?.fills ?? [] : []), [feed2.candles, s.tradeHistory, layers.orders, layers.fills, coin]);
+  return /* @__PURE__ */ React24.createElement("section", { className: "dhl-research-pane", "aria-label": `${coin} ${interval} ${tr("\u7814\u7A76\u56FE\u8868", "research chart")}` }, /* @__PURE__ */ React24.createElement("header", null, /* @__PURE__ */ React24.createElement("b", null, coin), /* @__PURE__ */ React24.createElement(Select, { "aria-label": tr("\u7814\u7A76\u5468\u671F", "Research interval"), value: interval, onChange: (e) => onInterval(e.target.value) }, RESEARCH_INTERVALS.map((iv) => /* @__PURE__ */ React24.createElement("option", { key: iv, value: iv }, iv))), /* @__PURE__ */ React24.createElement("small", null, feed2.at ? `${tr("\u66F4\u65B0", "Updated")} ${new Date(feed2.at).toLocaleTimeString()}` : tr("\u52A0\u8F7D\u4E2D\u2026", "Loading\u2026"))), /* @__PURE__ */ React24.createElement(
     CandleChart,
     {
       key: scope,
-      candles: feed.candles,
+      candles: feed2.candles,
       marks,
       indicators,
       expanded: false,
@@ -20953,7 +21122,7 @@ function ResearchPane({ coin, interval, onInterval, indicators, marks, link, cha
       },
       onSelect: (selection) => insertChartReference(selection, coin, interval),
       onNeedOlder: () => void needOlder(),
-      olderState: feed.older,
+      olderState: feed2.older,
       tradeEvents: events,
       showReasons: layers.fills && layers.reasons,
       onAnalyzeFill,
@@ -20968,7 +21137,7 @@ function ResearchPane({ coin, interval, onInterval, indicators, marks, link, cha
       selectRequest: null,
       focus: null
     }
-  ), feed.error ? /* @__PURE__ */ React24.createElement("button", { type: "button", className: "dhl-inline-error", onClick: () => setState((old) => ({ ...old, older: "idle" })) }, feed.error, " \xB7 ", tr("\u81EA\u52A8\u91CD\u8BD5\u4E2D\uFF1B\u70B9\u51FB\u91CD\u8BD5\u5386\u53F2", "Retrying; click to retry history")) : null);
+  ), feed2.error ? /* @__PURE__ */ React24.createElement("button", { type: "button", className: "dhl-inline-error", onClick: () => setState((old) => ({ ...old, older: "idle" })) }, feed2.error, " \xB7 ", tr("\u81EA\u52A8\u91CD\u8BD5\u4E2D\uFF1B\u70B9\u51FB\u91CD\u8BD5\u5386\u53F2", "Retrying; click to retry history")) : null);
 }
 
 // lib/workspace-settings.js
@@ -21180,12 +21349,22 @@ function DeskColumn({ onCollapse }) {
   }, []);
   const editMark = React26.useCallback((id, patch) => historyRef.current.edit(id, patch), []);
   const erase = React26.useCallback((id) => historyRef.current.remove(id), []);
+  const selectMark = React26.useCallback((id) => setSelectRequest({ id, at: Date.now() }), []);
   const cloneMark = React26.useCallback((copy) => {
     void historyRef.current.create({ kind: copy.kind, label: copy.label, ...copy.geometry, ...copy.style });
   }, []);
+  const onSecondaryChart = React26.useRef(false);
+  React26.useEffect(() => {
+    const track = (event) => {
+      const target = event.target;
+      onSecondaryChart.current = Boolean(target?.closest?.(".dhl-research-pane") && !target.closest(".dhl-primary-pane"));
+    };
+    window.addEventListener("pointerdown", track, true);
+    return () => window.removeEventListener("pointerdown", track, true);
+  }, []);
   React26.useEffect(() => {
     const onKey = (event) => {
-      if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
+      if (!(event.metaKey || event.ctrlKey) || event.altKey || onSecondaryChart.current) return;
       const element = event.target;
       if (element?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element?.tagName ?? "")) return;
       const key3 = event.key.toLowerCase();
@@ -21225,7 +21404,7 @@ function DeskColumn({ onCollapse }) {
   React26.useEffect(() => {
     const keys = { KeyT: "trend", KeyH: "level", KeyJ: "hray", KeyV: "vline", KeyC: "crossline", KeyF: "fib" };
     const onKey = (event) => {
-      if (!event.altKey || event.ctrlKey || event.metaKey || chartTab !== "chart") return;
+      if (!event.altKey || event.ctrlKey || event.metaKey || chartTab !== "chart" || onSecondaryChart.current) return;
       const element = event.target;
       if (element?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element?.tagName ?? "")) return;
       const kind = event.shiftKey ? event.code === "KeyR" ? "rect" : void 0 : keys[event.code];
@@ -21421,9 +21600,10 @@ function DeskColumn({ onCollapse }) {
     {
       marks,
       locked: drawingsLocked,
-      onSelect: (id) => setSelectRequest({ id, at: Date.now() }),
-      onEdit: (id, patch) => void editMark(id, patch),
-      onRemove: (id) => void erase(id)
+      language: tr("zh", "en"),
+      onSelect: selectMark,
+      onEdit: editMark,
+      onRemove: erase
     }
   ) : null, /* @__PURE__ */ React26.createElement(
     ChartNavigation,
@@ -21638,8 +21818,8 @@ var React28 = __toESM(require("react"), 1);
 function TradeTicket({ onSubmitted }) {
   const s = useStore();
   const coin = s.activeCoin;
-  const market = s.markets.find((row) => row.name === coin);
   const catalogMarket = s.marketCatalog.find((row) => row.name === coin);
+  const market = s.markets.find((row) => row.name === coin) ?? (catalogMarket?.tradable ? catalogMarket : void 0);
   const liveMid = s.snapshot?.coin === coin && Date.now() - Number(s.snapshot?.observedAt?.mids) < 1e4 ? Number(s.snapshot?.mids?.mids?.[coin] ?? s.snapshot?.mids?.[coin]) : 0;
   const mark = liveMid || Number(s.selectedMarket?.name === coin ? s.selectedMarket.ctx?.markPx : 0) || Number(market?.ctx?.markPx);
   const position = s.account?.positions?.find((p) => p.coin === coin);
@@ -21874,20 +22054,34 @@ function ChatColumn({ width, fill = false, onCollapse, SessionProvider, renderFa
       requestAnimationFrame(() => input.focus?.());
     }
   }, [activeId, readyRef, showTicket, s.chartReferences]);
-  const askMarket = React29.useCallback(() => {
-    queueToAgent(tr(
-      `\u8BF7\u8C03\u7528 hyper_context \u8BFB\u53D6\u5F53\u524D\u4EA4\u6613\u53F0\u7684 ${s.activeCoin} \u5B9E\u65F6\u884C\u60C5\u3001\u76D8\u53E3\u548C\u8D26\u6237\u4FE1\u606F\uFF0C\u6982\u62EC\u5E02\u573A\u72B6\u6001\u3001\u5173\u952E\u98CE\u9669\u4E0E\u53EF\u80FD\u7684\u4EA4\u6613\u6761\u4EF6\u3002\u4EC5\u5206\u6790\uFF0C\u4E0D\u8981\u4E0B\u5355\u3002`,
-      `Use hyper_context to read live ${s.activeCoin} market data, order book and account state. Summarize conditions, key risks and possible trade criteria. Analysis only; do not place an order.`
-    ));
-  }, [s.activeCoin]);
-  const askRisk = React29.useCallback(() => {
-    queueToAgent(tr(
-      `\u8BF7\u8C03\u7528 hyper_context \u68C0\u67E5\u5F53\u524D\u4EA4\u6613\u4F1A\u8BDD\u7684\u8D26\u6237\u3001${s.activeCoin} \u4ED3\u4F4D\u3001\u6760\u6746\u3001\u6302\u5355\u548C\u98CE\u9669\u9650\u989D\uFF0C\u6307\u51FA\u9700\u8981\u6CE8\u610F\u7684\u98CE\u9669\u4E0E\u53EF\u91C7\u53D6\u7684\u7BA1\u7406\u52A8\u4F5C\u3002\u4EC5\u5206\u6790\uFF0C\u4E0D\u8981\u4E0B\u5355\u6216\u64A4\u5355\u3002`,
-      `Use hyper_context to review the account, ${s.activeCoin} position, leverage, open orders and risk limits. Identify risks and possible management actions. Analysis only; do not place or cancel orders.`
-    ));
-  }, [s.activeCoin]);
+  const QUICK = [
+    [
+      "\u4EA4\u6613\u4F53\u68C0",
+      "Trading check-up",
+      "\u8BF7\u7528 hyper_account action=analyze \u7ED9\u6211\u505A\u4E00\u6B21\u4EA4\u6613\u4F53\u68C0\uFF08\u8FD1 90 \u5929\uFF09\uFF1A\u5148\u8BB2\u6700\u503C\u94B1\u7684 1\u20132 \u4E2A\u53D1\u73B0\u548C\u5EFA\u8BAE\u89C4\u5219\uFF0C\u518D\u95EE\u6211\u662F\u5426\u91C7\u7528\u3002\u4E0D\u8981\u4E0B\u5355\u3002",
+      "Run a trading check-up with hyper_account action=analyze (last 90 days): lead with the 1\u20132 most valuable findings and suggested rules, then ask whether I want to adopt them. Do not trade."
+    ],
+    [
+      "\u4ECA\u5929\u6709\u4EC0\u4E48\u673A\u4F1A",
+      "Today's opportunities",
+      "\u8BF7\u7528 hyper_market action=scan \u770B\u770B\u4ECA\u5929\u7684\u673A\u4F1A\uFF0C\u7ED3\u5408\u6211\u7684\u6863\u6848\u6311 1 \u4E2A\u6700\u503C\u5F97\u5173\u6CE8\u7684\uFF0C\u7528 hyper_market candles/indicators \u6838\u5B9E\uFF0C\u518D\u7528 hyper_chart \u753B\u51FA\u5173\u952E\u4F4D\u548C\u5934\u5BF8\u6846\uFF0C\u6309\u4EA4\u6613\u5361\u683C\u5F0F\u7ED9\u51FA\u8BA1\u5212\u3002\u4E0D\u8981\u4E0B\u5355\u3002",
+      "Use hyper_market action=scan for today's opportunities, pick the one that best fits my profile, verify it with hyper_market candles/indicators, draw the levels and a position box with hyper_chart, and give the plan as a trade card. Do not trade."
+    ],
+    [
+      "\u5E2E\u6211\u76EF\u7740\u4ED3\u4F4D",
+      "Watch my positions",
+      "\u8BF7\u7528 hyper_context \u68C0\u67E5\u6211\u7684\u4ED3\u4F4D\u548C\u6302\u5355\uFF1A\u6BCF\u4E2A\u4ED3\u4F4D\u662F\u5426\u6709\u8DB3\u91CF\u6B62\u635F\u3001\u79BB\u6B62\u635F\u548C\u76EE\u6807\u591A\u8FDC\u3001\u8D44\u91D1\u8D39\u6210\u672C\uFF1B\u5728\u5173\u952E\u4EF7\u4F4D\u7528 hyper_chart \u8BBE\u4EF7\u683C\u63D0\u9192\uFF08alert=true\uFF09\uFF1B\u9700\u8981\u5B9A\u671F\u68C0\u67E5\u7684\u8BDD\u5148\u95EE\u6211\u4E00\u6B21\uFF0C\u518D\u7528 schedule_create \u5B89\u6392\u3002\u4E0D\u8981\u4E0B\u5355\u6216\u64A4\u5355\u3002",
+      "Use hyper_context to check my positions and orders: is each one covered by a stop, how far are stop and target, what does funding cost; set price alerts (alert=true) at key levels with hyper_chart; if periodic checks would help, ask me once, then use schedule_create. Do not place or cancel orders."
+    ],
+    [
+      "\u628A\u56FE\u4E0A\u753B\u7EBF\u53D8\u6210\u7B56\u7565",
+      "Turn my drawings into a strategy",
+      `\u8BF7\u7528 hyper_chart action=list \u8BFB\u53D6 ${s.activeCoin} \u56FE\u4E0A\u7684\u753B\u7EBF\uFF0C\u7ED3\u5408 hyper_market candles \u7406\u89E3\u6211\u7684\u601D\u8DEF\uFF0C\u6574\u7406\u6210\u4E00\u6761\u53EF\u6838\u5BF9\u7684\u7B56\u7565\uFF08\u4F9D\u636E\u3001\u5165\u573A\u3001\u79BB\u573A\u3001\u4F5C\u5E9F\u3001\u4ED3\u4F4D\uFF09\uFF0C\u7528 hyper_journal action=strategy \u5B58\u4E3A idea\uFF0C\u5E76\u8BF4\u660E\u8FD8\u9700\u8981\u9A8C\u8BC1\u4EC0\u4E48\u3002\u4E0D\u8981\u4E0B\u5355\u3002`,
+      `Read my drawings on ${s.activeCoin} with hyper_chart action=list, use hyper_market candles to understand the idea, write it up as a checkable strategy (thesis, entry, exit, invalidation, sizing), save it with hyper_journal action=strategy as an idea, and say what still needs verifying. Do not trade.`
+    ]
+  ];
   const content = !activeId ? /* @__PURE__ */ React29.createElement("div", { className: "dhl-empty" }, t("chat.noSession", "\u9009\u62E9\u5DE6\u4FA7\u4EA4\u6613\u4F1A\u8BDD\uFF0C\u5728\u8FD9\u91CC\u76F4\u63A5\u4E0E\u4EA4\u6613 agent \u5BF9\u8BDD\u3002")) : bindError ? /* @__PURE__ */ React29.createElement("div", { className: "dhl-inline-error", role: "alert" }, t("chat.bindError", "\u4F1A\u8BDD\u7ED1\u5B9A\u5931\u8D25\uFF1A") + bindError) : legacy ? /* @__PURE__ */ React29.createElement("div", { className: "dhl-chat-unavailable", role: "alert" }, t("chat.upgrade", "\u5F53\u524D DSH \u7248\u672C\u4E0D\u652F\u6301\u5D4C\u5165\u539F\u751F\u4F1A\u8BDD\uFF1B\u8BF7\u4F7F\u7528 DSH 0.2 \u6216\u66F4\u65B0\u7248\u672C\u3002")) : !readyRef ? /* @__PURE__ */ React29.createElement("div", { className: "dhl-empty" }, t("chat.linking", "\u6B63\u5728\u63A5\u5165\u4F1A\u8BDD\u2026")) : !SessionProvider || !renderFactorySlot ? /* @__PURE__ */ React29.createElement("div", { className: "dhl-inline-error", role: "alert" }, t("chat.noFactory", "DSH \u539F\u751F\u4F1A\u8BDD\u7EC4\u4EF6\u4E0D\u53EF\u7528\u3002")) : /* @__PURE__ */ React29.createElement("div", { className: "dhl-chatmount", "data-trading-session": activeId }, /* @__PURE__ */ React29.createElement(SessionProvider, { session: readyRef }, renderFactorySlot("conversation.content", { variant: "embedded", phase: "active", hero: false }, { slots: { views: FixedChatView } })));
-  return /* @__PURE__ */ React29.createElement("div", { id: "dhl-panel-chat", className: "dhl-col-chat", style: fill ? { flex: "1 1 0", width: "auto" } : width ? { width } : void 0 }, /* @__PURE__ */ React29.createElement("div", { className: "dhl-chat-header" }, /* @__PURE__ */ React29.createElement("div", { className: "dhl-chat-heading" }, /* @__PURE__ */ React29.createElement("strong", null, t("chat.title", "\u4EA4\u6613\u4F1A\u8BDD")), activeId ? /* @__PURE__ */ React29.createElement("span", { title }, title) : null), /* @__PURE__ */ React29.createElement("button", { type: "button", className: "dhl-chat-ticket-toggle", "aria-expanded": showTicket, onClick: () => setShowTicket((value) => !value) }, showTicket ? t("chat.back", "\u8FD4\u56DE\u4F1A\u8BDD") : t("chat.ticket", "\u4EA4\u6613\u7968\u636E")), /* @__PURE__ */ React29.createElement("button", { className: "dhl-panel-iconbtn", type: "button", onClick: onCollapse, "aria-label": tr("\u6536\u8D77\u5BF9\u8BDD\u680F", "Collapse chat"), title: tr("\u6536\u8D77\u5BF9\u8BDD\u680F", "Collapse chat") }, /* @__PURE__ */ React29.createElement(FoldIcon, { direction: "right" }))), activeId && !showTicket && !legacy ? /* @__PURE__ */ React29.createElement("div", { className: "dhl-chat-prompts", role: "group", "aria-label": t("chat.prompts", "\u5FEB\u6377\u63D0\u95EE") }, /* @__PURE__ */ React29.createElement("button", { type: "button", onClick: askMarket }, t("chat.analyze", "\u5206\u6790\u884C\u60C5")), /* @__PURE__ */ React29.createElement("button", { type: "button", onClick: askRisk }, t("chat.risk", "\u68C0\u67E5\u98CE\u9669"))) : null, showTicket ? /* @__PURE__ */ React29.createElement(TradeTicket, { key: activeId ?? "anonymous", onSubmitted: () => setShowTicket(false) }) : content);
+  return /* @__PURE__ */ React29.createElement("div", { id: "dhl-panel-chat", className: "dhl-col-chat", style: fill ? { flex: "1 1 0", width: "auto" } : width ? { width } : void 0 }, /* @__PURE__ */ React29.createElement("div", { className: "dhl-chat-header" }, /* @__PURE__ */ React29.createElement("div", { className: "dhl-chat-heading" }, /* @__PURE__ */ React29.createElement("strong", null, t("chat.title", "\u4EA4\u6613\u4F1A\u8BDD")), activeId ? /* @__PURE__ */ React29.createElement("span", { title }, title) : null), /* @__PURE__ */ React29.createElement("button", { type: "button", className: "dhl-chat-ticket-toggle", "aria-expanded": showTicket, onClick: () => setShowTicket((value) => !value) }, showTicket ? t("chat.back", "\u8FD4\u56DE\u4F1A\u8BDD") : t("chat.ticket", "\u4EA4\u6613\u7968\u636E")), /* @__PURE__ */ React29.createElement("button", { className: "dhl-panel-iconbtn", type: "button", onClick: onCollapse, "aria-label": tr("\u6536\u8D77\u5BF9\u8BDD\u680F", "Collapse chat"), title: tr("\u6536\u8D77\u5BF9\u8BDD\u680F", "Collapse chat") }, /* @__PURE__ */ React29.createElement(FoldIcon, { direction: "right" }))), activeId && !showTicket && !legacy ? /* @__PURE__ */ React29.createElement("div", { className: "dhl-chat-prompts", role: "group", "aria-label": t("chat.prompts", "\u5FEB\u6377\u63D0\u95EE") }, QUICK.map(([zh, en, askZh, askEn]) => /* @__PURE__ */ React29.createElement("button", { key: zh, type: "button", onClick: () => queueToAgent(tr(askZh, askEn)) }, tr(zh, en)))) : null, showTicket ? /* @__PURE__ */ React29.createElement(TradeTicket, { key: activeId ?? "anonymous", onSubmitted: () => setShowTicket(false) }) : content);
 }
 
 // src/client/components/wallet-details.tsx
@@ -22015,22 +22209,60 @@ function TradingLimits({ open, onClose }) {
       setBusy(false);
     }
   };
-  const field = (key3, label, props, wide = false) => /* @__PURE__ */ React31.createElement("label", { className: wide ? "dhl-risk-wide" : void 0 }, /* @__PURE__ */ React31.createElement("span", null, label), /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Input, { className: "dhl-risk-input", value: draft[key3], onChange: (event) => change(key3, event.target.value), required: true, ...props }));
-  const footer = limits ? /* @__PURE__ */ React31.createElement(React31.Fragment, null, st?.riskSettingsSource === "desk" ? /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Button, { variant: "outline", disabled: busy, onClick: () => void reset() }, tr("\u6062\u590D\u63D2\u4EF6\u914D\u7F6E", "Restore plugin config")) : null, /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Button, { variant: "primary", type: "submit", form: "dhl-risk-form", disabled: busy }, busy ? tr("\u4FDD\u5B58\u4E2D\u2026", "Saving\u2026") : tr("\u4FDD\u5B58", "Save"))) : null;
-  return /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Modal, { open, onClose, title: tr("\u4EA4\u6613\u9650\u989D\u4E0E\u7B7E\u540D\u89C4\u5219", "Trading limits & signing rules"), closeLabel: tr("\u5173\u95ED", "Close"), className: "dhl-limits-modal", footer }, /* @__PURE__ */ React31.createElement("section", { className: "dhl-limits-section" }, /* @__PURE__ */ React31.createElement("h3", null, tr("\u4EA4\u6613\u9650\u989D", "Trading limits"), /* @__PURE__ */ React31.createElement("span", { className: "dhl-limits-ledger" }, paper ? tr("\u6A21\u62DF\u76D8\u8D26\u672C", "Paper ledger") : tr("\u5B9E\u76D8\u8D26\u672C", "Live ledger"))), limits ? /* @__PURE__ */ React31.createElement("form", { id: "dhl-risk-form", className: "dhl-risk-form", onSubmit: (event) => void save(event) }, field("allowedCoins", tr("\u5141\u8BB8\u5F00\u4ED3\u5E01\u5BF9", "Coins allowed to open"), { placeholder: "BTC, ETH", maxLength: 1e3 }, true), field("maxOrderUsd", tr("\u5355\u7B14\u540D\u4E49\u4EF7\u503C\u4E0A\u9650 \xB7 USD", "Max per order \xB7 USD"), { type: "number", min: "0.01", step: "any" }), field("maxDailyUsd", tr("\u6BCF\u65E5\u5F00\u4ED3\u989D\u5EA6 \xB7 USD", "Daily opening budget \xB7 USD"), { type: "number", min: "0.01", step: "any" }), field("maxPositionUsd", tr("\u5355\u5E01\u4ED3\u4F4D\u4E0A\u9650 \xB7 USD", "Max position per coin \xB7 USD"), { type: "number", min: "0.01", step: "any" }), field("maxLeverage", tr("\u6700\u5927\u6760\u6746 \xB7 \u500D", "Max leverage \xB7 x"), { type: "number", min: "1", max: "50", step: "1" }), /* @__PURE__ */ React31.createElement("p", { className: "dhl-risk-budget" }, tr("\u4ECA\u65E5\u5DF2\u7528\u989D\u5EA6\uFF08UTC\uFF09", "Used today (UTC)"), "\uFF1A", fmt(limits.usedTodayUsd ?? 0), " / ", fmt(limits.maxDailyUsd), " USD"), error ? /* @__PURE__ */ React31.createElement("p", { className: "dhl-risk-error", role: "alert" }, error) : null) : /* @__PURE__ */ React31.createElement("div", { className: "dhl-empty" }, tr("\u6B63\u5728\u8BFB\u53D6\u2026", "Loading\u2026")), /* @__PURE__ */ React31.createElement("p", { className: "dhl-limits-note" }, tr(
-    "\u4FDD\u5B58\u540E\u7ACB\u5373\u4F5C\u7528\u4E8E\u6A21\u62DF\u76D8\u548C\u5B9E\u76D8\uFF0C\u91CD\u542F\u540E\u7EE7\u7EED\u751F\u6548\u3002\u4E24\u79CD\u6A21\u5F0F\u7684\u6BCF\u65E5\u989D\u5EA6\u5206\u5F00\u8BB0\u8D26\uFF1B\u51CF\u4ED3\u548C\u5E73\u4ED3\u4E0D\u53D7\u5F00\u4ED3\u9650\u989D\u963B\u6B62\u3002",
-    "Changes apply immediately to paper and live trading and survive restart. Each mode has its own daily budget; reducing and closing remain available."
-  ))), /* @__PURE__ */ React31.createElement("section", { className: "dhl-limits-section" }, /* @__PURE__ */ React31.createElement("h3", null, tr("\u6A21\u62DF\u6210\u4EA4\u6210\u672C", "Paper execution costs")), /* @__PURE__ */ React31.createElement("div", { className: "dhl-risk-form" }, ["feeBps", "slippageBps"].map((key3) => /* @__PURE__ */ React31.createElement("label", { key: key3 }, /* @__PURE__ */ React31.createElement("span", null, key3 === "feeBps" ? tr("\u624B\u7EED\u8D39 \xB7 bps", "Fee \xB7 bps") : tr("\u4E0D\u5229\u6ED1\u70B9 \xB7 bps", "Adverse slippage \xB7 bps")), /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Input, { type: "number", "aria-label": key3 === "feeBps" ? tr("\u6A21\u62DF\u624B\u7EED\u8D39 bps", "Paper fee bps") : tr("\u6A21\u62DF\u6ED1\u70B9 bps", "Paper slippage bps"), min: "0", max: "100", step: "any", value: costs[key3], onChange: (e) => setCosts((old) => ({ ...old, [key3]: e.target.value })) })))), /* @__PURE__ */ React31.createElement("p", { className: "dhl-limits-note" }, tr("1 bps = 0.01%\u3002\u8FD9\u662F\u6A21\u62DF\u5047\u8BBE\uFF0C\u4E0D\u662F\u5B9E\u76D8\u8D39\u7387\u3002\u4EC5\u4F5C\u7528\u4E8E\u4E4B\u540E\u7684\u6A21\u62DF\u6210\u4EA4\uFF0C\u65E7\u8BB0\u5F55\u4FDD\u7559\u539F\u503C\uFF1B\u4E0D\u6A21\u62DF\u76D8\u53E3\u6DF1\u5EA6\u3001\u8D44\u91D1\u8D39\u548C\u5F3A\u5E73\u3002", "1 bps = 0.01%. Simulation assumptions, not exchange fee tiers. Future paper fills only; historical assumptions are preserved. No depth, funding or liquidation simulation.")), /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Button, { variant: "outline", disabled: busy, onClick: () => {
+  const [tab, setTab] = React31.useState("limits");
+  const [wallet, setWallet] = React31.useState({ signer: "local", web3Account: "main", tradingAddress: "" });
+  const [web3Accounts, setWeb3Accounts] = React31.useState({ available: false, accounts: [] });
+  React31.useEffect(() => {
+    if (!open) return;
+    setWallet({ signer: st?.signer ?? "local", web3Account: st?.web3Account ?? "main", tradingAddress: st?.tradingAddress ?? "" });
+    void hyperCall("walletAccounts").then(setWeb3Accounts).catch(() => setWeb3Accounts({ available: false, accounts: [] }));
+  }, [open]);
+  const saveWallet = () => {
+    setBusy(true);
+    setError("");
+    void hyperCall("updateWalletSettings", wallet).then(() => resetWalletView()).then(() => notify(tr("\u94B1\u5305\u8BBE\u7F6E\u5DF2\u751F\u6548", "Wallet settings applied"))).catch((cause) => setError(String(cause.message))).finally(() => setBusy(false));
+  };
+  React31.useEffect(() => {
+    if (open) setTab("limits");
+  }, [open]);
+  const saveCosts = () => {
     setBusy(true);
     setError("");
     void hyperCall("updatePaperCosts", { costs: { feeBps: costs.feeBps.trim() ? Number(costs.feeBps) : NaN, slippageBps: costs.slippageBps.trim() ? Number(costs.slippageBps) : NaN } }).then(() => loadStatus()).then(() => notify(tr("\u6A21\u62DF\u6210\u672C\u5DF2\u4FDD\u5B58", "Paper costs saved"))).catch((cause) => setError(String(cause.message))).finally(() => setBusy(false));
-  } }, tr("\u4FDD\u5B58\u6A21\u62DF\u6210\u672C", "Save paper costs"))), /* @__PURE__ */ React31.createElement("section", { className: "dhl-limits-section" }, /* @__PURE__ */ React31.createElement("h3", null, tr("\u94B1\u5305\u7B7E\u540D", "Wallet signing")), /* @__PURE__ */ React31.createElement("p", { className: "dhl-limits-note" }, paper ? tr("\u6A21\u62DF\u76D8\u5728\u672C\u5730\u64AE\u5408\uFF0C\u4E0D\u7B7E\u540D\uFF0C\u4E5F\u4E0D\u7ECF\u8FC7\u94B1\u5305\u89C4\u5219\u3002", "Paper orders fill locally and do not use wallet signing.") : st?.signer === "web3" ? tr(
-    "\u5B9E\u76D8\u8BA2\u5355\u901A\u8FC7\u9650\u989D\u68C0\u67E5\u540E\uFF0C\u7531 dsh-web3 \u94B1\u5305\u6309\u5176\u7B7E\u540D\u7B56\u7565\u5904\u7406\u3002\u7B7E\u540D\u7B56\u7565\u5728 DSH \u8BBE\u7F6E \u2192 Web3 \u94B1\u5305\u4E2D\u7BA1\u7406\u3002",
-    "After the limits check, live orders use the dsh-web3 wallet signing policy. Manage it in DSH Settings \u2192 Web3 wallet."
-  ) : tr(
-    "\u5B9E\u76D8\u4F7F\u7528\u63D2\u4EF6\u914D\u7F6E\u4E2D\u7684\u79C1\u94A5\u7B7E\u540D\u3002\u79C1\u94A5\u4E0E\u7B7E\u540D\u65B9\u5F0F\u4ECD\u5728 DSH \u63D2\u4EF6\u914D\u7F6E\u4E2D\u7BA1\u7406\u3002",
-    "Live orders use the private key from plugin configuration. Manage the key and signing method in DSH plugin settings."
-  )), !paper && !st?.autonomousLive ? /* @__PURE__ */ React31.createElement("p", { className: "dhl-limits-note" }, tr("agent \u6BCF\u7B14\u5B9E\u76D8\u4E0B\u5355\u6216\u6539\u6760\u6746\u524D\u4ECD\u9700 DSH \u5BA1\u6279\u3002", "Each agent live order or leverage change still requires DSH approval.")) : null));
+  };
+  const field = (key3, label, props, wide = false) => /* @__PURE__ */ React31.createElement("label", { className: wide ? "dhl-risk-wide" : void 0 }, /* @__PURE__ */ React31.createElement("span", null, label), /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Input, { className: "dhl-risk-input", value: draft[key3], onChange: (event) => change(key3, event.target.value), required: true, ...props }));
+  const footer = tab === "limits" ? limits ? /* @__PURE__ */ React31.createElement(React31.Fragment, null, st?.riskSettingsSource === "desk" ? /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Button, { variant: "outline", disabled: busy, onClick: () => void reset() }, tr("\u6062\u590D\u63D2\u4EF6\u914D\u7F6E", "Restore plugin config")) : null, /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Button, { variant: "primary", type: "submit", form: "dhl-risk-form", disabled: busy }, busy ? tr("\u4FDD\u5B58\u4E2D\u2026", "Saving\u2026") : tr("\u4FDD\u5B58\u9650\u989D", "Save limits"))) : null : tab === "costs" ? /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Button, { variant: "primary", disabled: busy, onClick: saveCosts }, busy ? tr("\u4FDD\u5B58\u4E2D\u2026", "Saving\u2026") : tr("\u4FDD\u5B58\u6A21\u62DF\u6210\u672C", "Save paper costs")) : /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Button, { variant: "primary", disabled: busy, onClick: saveWallet }, busy ? tr("\u8FDE\u63A5\u4E2D\u2026", "Connecting\u2026") : tr("\u4FDD\u5B58\u5E76\u8FDE\u63A5", "Save & connect"));
+  const tabs = [["limits", "\u4EA4\u6613\u9650\u989D", "Limits"], ["costs", "\u6A21\u62DF\u6210\u672C", "Paper costs"], ["signing", "\u7B7E\u540D\u4E0E\u6258\u7BA1", "Signing & custody"]];
+  return /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Modal, { open, onClose, title: tr("\u4EA4\u6613\u9650\u989D\u4E0E\u7B7E\u540D\u89C4\u5219", "Trading limits & signing rules"), closeLabel: tr("\u5173\u95ED", "Close"), className: "dhl-limits-modal", contentClassName: "dhl-limits-content", footer }, /* @__PURE__ */ React31.createElement("div", { className: "dhl-limits-tabs", role: "tablist", "aria-label": tr("\u8BBE\u7F6E\u5206\u7EC4", "Settings sections") }, tabs.map(([key3, zh, en]) => /* @__PURE__ */ React31.createElement(
+    "button",
+    {
+      key: key3,
+      type: "button",
+      role: "tab",
+      id: `dhl-limits-tab-${key3}`,
+      "aria-controls": `dhl-limits-panel-${key3}`,
+      "aria-selected": tab === key3,
+      className: tab === key3 ? "on" : "",
+      onClick: () => {
+        setTab(key3);
+        setError("");
+      }
+    },
+    tr(zh, en)
+  ))), /* @__PURE__ */ React31.createElement("div", { className: "dhl-limits-scroll" }, tab === "limits" ? /* @__PURE__ */ React31.createElement("section", { className: "dhl-limits-section", role: "tabpanel", id: "dhl-limits-panel-limits", "aria-labelledby": "dhl-limits-tab-limits" }, /* @__PURE__ */ React31.createElement("p", { className: "dhl-limits-ledger-row" }, /* @__PURE__ */ React31.createElement("span", { className: "dhl-limits-ledger" }, paper ? tr("\u6A21\u62DF\u76D8\u8D26\u672C", "Paper ledger") : tr("\u5B9E\u76D8\u8D26\u672C", "Live ledger")), limits ? /* @__PURE__ */ React31.createElement("span", null, tr("\u4ECA\u65E5\u5DF2\u7528\uFF08UTC\uFF09", "Used today (UTC)"), " ", fmt(limits.usedTodayUsd ?? 0), " / ", fmt(limits.maxDailyUsd), " USD") : null), limits ? /* @__PURE__ */ React31.createElement("form", { id: "dhl-risk-form", className: "dhl-risk-form", onSubmit: (event) => void save(event) }, field("allowedCoins", tr("\u5141\u8BB8\u5F00\u4ED3\u5E01\u5BF9\uFF08\u9017\u53F7\u5206\u9694\uFF0C\u5982 BTC, xyz:XYZ100\uFF09", "Coins allowed to open (comma separated)"), { placeholder: "BTC, ETH, xyz:XYZ100", maxLength: 1e3 }, true), field("maxOrderUsd", tr("\u5355\u7B14\u4E0A\u9650 \xB7 USD", "Per order \xB7 USD"), { type: "number", min: "0.01", step: "any" }), field("maxDailyUsd", tr("\u6BCF\u65E5\u5F00\u4ED3\u989D\u5EA6 \xB7 USD", "Daily budget \xB7 USD"), { type: "number", min: "0.01", step: "any" }), field("maxPositionUsd", tr("\u5355\u5E01\u4ED3\u4F4D\u4E0A\u9650 \xB7 USD", "Per coin position \xB7 USD"), { type: "number", min: "0.01", step: "any" }), field("maxLeverage", tr("\u6700\u5927\u6760\u6746 \xB7 \u500D", "Max leverage \xB7 x"), { type: "number", min: "1", max: "50", step: "1" })) : /* @__PURE__ */ React31.createElement("div", { className: "dhl-empty" }, tr("\u6B63\u5728\u8BFB\u53D6\u2026", "Loading\u2026")), /* @__PURE__ */ React31.createElement("p", { className: "dhl-limits-note" }, tr(
+    "\u7ACB\u5373\u4F5C\u7528\u4E8E\u6A21\u62DF\u76D8\u548C\u5B9E\u76D8\uFF0C\u91CD\u542F\u540E\u4FDD\u7559\uFF1B\u4E24\u79CD\u6A21\u5F0F\u7684\u6BCF\u65E5\u989D\u5EA6\u5206\u5F00\u8BB0\u8D26\uFF0C\u51CF\u4ED3\u548C\u5E73\u4ED3\u4E0D\u53D7\u9650\u3002",
+    "Applies to paper and live at once and survives restart; each mode has its own daily budget; reducing and closing are never blocked."
+  ))) : null, tab === "costs" ? /* @__PURE__ */ React31.createElement("section", { className: "dhl-limits-section", role: "tabpanel", id: "dhl-limits-panel-costs", "aria-labelledby": "dhl-limits-tab-costs" }, /* @__PURE__ */ React31.createElement("div", { className: "dhl-risk-form" }, ["feeBps", "slippageBps"].map((key3) => /* @__PURE__ */ React31.createElement("label", { key: key3 }, /* @__PURE__ */ React31.createElement("span", null, key3 === "feeBps" ? tr("\u624B\u7EED\u8D39 \xB7 bps", "Fee \xB7 bps") : tr("\u4E0D\u5229\u6ED1\u70B9 \xB7 bps", "Adverse slippage \xB7 bps")), /* @__PURE__ */ React31.createElement(import_dsh_client_ui_primitives9.Input, { type: "number", "aria-label": key3 === "feeBps" ? tr("\u6A21\u62DF\u624B\u7EED\u8D39 bps", "Paper fee bps") : tr("\u6A21\u62DF\u6ED1\u70B9 bps", "Paper slippage bps"), min: "0", max: "100", step: "any", value: costs[key3], onChange: (e) => setCosts((old) => ({ ...old, [key3]: e.target.value })) })))), /* @__PURE__ */ React31.createElement("p", { className: "dhl-limits-note" }, tr("1 bps = 0.01%\u3002\u4EC5\u5F71\u54CD\u4E4B\u540E\u7684\u6A21\u62DF\u6210\u4EA4\uFF1B\u4E0D\u6A21\u62DF\u76D8\u53E3\u6DF1\u5EA6\u3001\u8D44\u91D1\u8D39\u548C\u5F3A\u5E73\u3002", "1 bps = 0.01%. Future paper fills only; no depth, funding or liquidation simulation."))) : null, tab === "signing" ? /* @__PURE__ */ React31.createElement("section", { className: "dhl-limits-section", role: "tabpanel", id: "dhl-limits-panel-signing", "aria-labelledby": "dhl-limits-tab-signing" }, /* @__PURE__ */ React31.createElement("div", { className: "dhl-risk-form dhl-wallet-form" }, /* @__PURE__ */ React31.createElement("label", null, /* @__PURE__ */ React31.createElement("span", null, tr("\u7B7E\u540D\u65B9\u5F0F", "Signer")), /* @__PURE__ */ React31.createElement(Select, { "aria-label": tr("\u7B7E\u540D\u65B9\u5F0F", "Signer"), value: wallet.signer, onChange: (event) => setWallet((old) => ({ ...old, signer: event.target.value })) }, /* @__PURE__ */ React31.createElement("option", { value: "web3" }, tr("dsh-web3 \u94B1\u5305", "dsh-web3 wallet")), /* @__PURE__ */ React31.createElement("option", { value: "local" }, tr("\u63D2\u4EF6\u914D\u7F6E\u7684\u79C1\u94A5", "Plugin private key")))), wallet.signer === "web3" ? /* @__PURE__ */ React31.createElement("label", null, /* @__PURE__ */ React31.createElement("span", null, tr("\u94B1\u5305\u8D26\u6237", "Wallet account")), /* @__PURE__ */ React31.createElement(Select, { "aria-label": tr("\u94B1\u5305\u8D26\u6237", "Wallet account"), value: wallet.web3Account, onChange: (event) => setWallet((old) => ({ ...old, web3Account: event.target.value })) }, web3Accounts.accounts.some((row) => row.id === wallet.web3Account || row.label === wallet.web3Account) ? null : /* @__PURE__ */ React31.createElement("option", { value: wallet.web3Account }, wallet.web3Account), web3Accounts.accounts.map((row) => /* @__PURE__ */ React31.createElement("option", { key: row.id, value: row.id }, `${row.label} \xB7 ${row.address.slice(0, 6)}\u2026${row.address.slice(-4)}`)))) : null, /* @__PURE__ */ React31.createElement("label", { className: "dhl-risk-wide" }, /* @__PURE__ */ React31.createElement("span", null, tr("Hyperliquid \u4E3B\u8D26\u6237\u5730\u5740\uFF08\u4EA4\u6613\u4E0E\u67E5\u8BE2\u7528\uFF09", "Hyperliquid main account address")), /* @__PURE__ */ React31.createElement(
+    import_dsh_client_ui_primitives9.Input,
+    {
+      "aria-label": tr("\u4E3B\u8D26\u6237\u5730\u5740", "Main account address"),
+      placeholder: "0x\u2026",
+      value: wallet.tradingAddress,
+      maxLength: 42,
+      spellCheck: false,
+      onChange: (event) => setWallet((old) => ({ ...old, tradingAddress: event.target.value.trim() }))
+    }
+  ))), wallet.signer === "web3" && !web3Accounts.available ? /* @__PURE__ */ React31.createElement("p", { className: "dhl-limits-note" }, tr("\u6CA1\u6709\u68C0\u6D4B\u5230 dsh-web3 \u94B1\u5305\u63D2\u4EF6\u3002", "The dsh-web3 wallet plugin is not available.")) : null, /* @__PURE__ */ React31.createElement("p", { className: "dhl-limits-note" }, tr("\u4FDD\u5B58\u540E\u7ACB\u5373\u751F\u6548\uFF0C\u65E0\u9700\u91CD\u542F\uFF1B\u79C1\u94A5\u4ECD\u53EA\u5728\u63D2\u4EF6\u914D\u7F6E\u91CC\u7BA1\u7406\u3002\u65B0\u5EFA\u7684 dsh-web3 \u8D26\u6237\u82E5\u4E0D\u5728\u5217\u8868\u4E2D\uFF0C\u9700\u91CD\u542F DSH \u5237\u65B0\u94B1\u5305\u3002", "Applies immediately, no restart; the private key stays in plugin config. A dsh-web3 account created elsewhere may need a DSH restart to appear.")), /* @__PURE__ */ React31.createElement("dl", { className: "dhl-limits-facts" }, /* @__PURE__ */ React31.createElement("dt", null, tr("\u5F53\u524D", "Current")), /* @__PURE__ */ React31.createElement("dd", null, paper ? tr("\u6A21\u62DF\u76D8\u672C\u5730\u64AE\u5408\uFF0C\u4E0D\u7B7E\u540D\u3002", "Paper fills locally without signing.") : st?.signer === "web3" ? tr("dsh-web3 \u94B1\u5305\uFF0C\u6309\u5176\u7B7E\u540D\u7B56\u7565\u5904\u7406\uFF08DSH \u8BBE\u7F6E \u2192 Web3 \u94B1\u5305\uFF09\u3002", "dsh-web3 wallet, under its signing policy (DSH Settings \u2192 Web3 wallet).") : tr("\u63D2\u4EF6\u914D\u7F6E\u4E2D\u7684\u79C1\u94A5\uFF08DSH \u63D2\u4EF6\u914D\u7F6E\uFF09\u3002", "Private key from plugin configuration.")), /* @__PURE__ */ React31.createElement("dt", null, tr("\u6258\u7BA1\u6A21\u5F0F", "Custody")), /* @__PURE__ */ React31.createElement("dd", null, st?.custody === "managed" ? tr("\u5168\u6258\u7BA1\uFF1Aagent \u5728\u9650\u989D\u5185\u76F4\u63A5\u6267\u884C\uFF0C\u4E5F\u53EF\u8C03\u6574\u8FD9\u4E9B\u9650\u989D\u5E76\u5212\u8F6C HIP-3 \u4FDD\u8BC1\u91D1\uFF0C\u6BCF\u6B21\u90FD\u4F1A\u5728\u4F1A\u8BDD\u91CC\u8BF4\u660E\u3002", "Managed: the agent trades within limits, may adjust them and move HIP-3 margin, and says so each time.") : tr("\u534A\u6258\u7BA1\uFF1Aagent \u6BCF\u7B14\u5B9E\u76D8\u4E0B\u5355\u3001\u6539\u6760\u6746\u548C\u5212\u8F6C\u90FD\u9700\u8981\u4F60\u6279\u51C6\uFF0C\u9650\u989D\u53EA\u7531\u4F60\u4FEE\u6539\u3002", "Assisted: you approve each live order, leverage change and transfer; only you change limits."), /* @__PURE__ */ React31.createElement("span", { className: "dhl-limits-hint" }, tr("\u5728\u53F3\u4E0A\u89D2 \u8BBE\u7F6E \u2192 \u6258\u7BA1\u6A21\u5F0F \u5207\u6362\u3002", "Switch in Settings \u2192 Custody."))))) : null, error ? /* @__PURE__ */ React31.createElement("p", { className: "dhl-risk-error", role: "alert" }, error) : null));
 }
 
 // src/client/app.tsx
@@ -22043,6 +22275,22 @@ function App(props) {
   const [walletOpen, setWalletOpen] = React32.useState(false);
   const [moreOpen, setMoreOpen] = React32.useState(false);
   const [limitsOpen, setLimitsOpen] = React32.useState(false);
+  const [confirmManaged, setConfirmManaged] = React32.useState(false);
+  const custody = st?.custody === "managed" ? "managed" : "assisted";
+  const chooseCustody = React32.useCallback(async (next, acknowledge = false) => {
+    setMoreOpen(false);
+    if (next === "managed" && store.get().status?.tradingMode === "live" && !acknowledge) {
+      setConfirmManaged(true);
+      return;
+    }
+    try {
+      await setCustody(next, acknowledge);
+    } catch (error) {
+      notify(tr("\u5207\u6362\u6258\u7BA1\u6A21\u5F0F\u5931\u8D25", "Could not switch custody") + "\uFF1A" + String(error?.message ?? error));
+    } finally {
+      setConfirmManaged(false);
+    }
+  }, []);
   const moreRef = React32.useRef(null);
   const network = st?.network === "testnet" ? "testnet" : "mainnet";
   const mode = st?.tradingMode === "paper" ? "paper" : "live";
@@ -22150,12 +22398,12 @@ function App(props) {
   const showSessions = !layout.sessionsCollapsed;
   const showDesk = !layout.deskCollapsed;
   const showChat = !layout.chatCollapsed;
-  return /* @__PURE__ */ React32.createElement("div", { className: "dhl-root" }, /* @__PURE__ */ React32.createElement("div", { className: "dhl-topbar" }, /* @__PURE__ */ React32.createElement("span", { className: "dhl-brand" }, /* @__PURE__ */ React32.createElement(BrandMark, null), "Hyperliquid ", /* @__PURE__ */ React32.createElement("span", { style: { fontWeight: 400, color: "var(--dsw-alias-label-secondary)" } }, t("app.suffix", "\u4EA4\u6613\u53F0"))), /* @__PURE__ */ React32.createElement("div", { className: "dhl-spacer" }), s.statusError ? /* @__PURE__ */ React32.createElement("span", { className: "dhl-badge err" }, t("status.unavailable", "\u8FDC\u7AEF\u4E0D\u53EF\u7528")) : null, st && network === "testnet" ? /* @__PURE__ */ React32.createElement("span", { className: "dhl-badge paper" }, t("network.testnet", "\u6D4B\u8BD5\u7F51")) : null, st && mode === "paper" ? /* @__PURE__ */ React32.createElement("span", { className: "dhl-badge paper" }, t("mode.paper", "\u6A21\u62DF\u76D8")) : null, wsBadge, /* @__PURE__ */ React32.createElement("button", { type: "button", className: "dhl-badge dhl-wallet-trigger", onClick: () => setWalletOpen(true), "aria-haspopup": "dialog", "aria-label": tr("\u67E5\u770B\u94B1\u5305\u8BE6\u60C5\u548C\u6536\u76CA", "View wallet and P&L") }, mode === "paper" ? tr("\u6A21\u62DF\u8D26\u6237", "Paper account") : st?.address ? st.address.slice(0, 6) + "\u2026" + st.address.slice(-4) : t("account.none", "\u672A\u8FDE\u63A5\u94B1\u5305"), /* @__PURE__ */ React32.createElement(UiIcon, { name: "chevronDown", size: 14 })), /* @__PURE__ */ React32.createElement("div", { className: "dhl-more", ref: moreRef }, /* @__PURE__ */ React32.createElement("button", { type: "button", className: "dhl-top-control dhl-more-trigger", "aria-haspopup": "menu", "aria-expanded": moreOpen, "aria-label": tr("\u4EA4\u6613\u8BBE\u7F6E", "Trading settings"), title: tr("\u4EA4\u6613\u8BBE\u7F6E", "Trading settings"), onClick: () => setMoreOpen((value) => !value) }, /* @__PURE__ */ React32.createElement(UiIcon, { name: "settings", size: 17 })), moreOpen ? /* @__PURE__ */ React32.createElement("div", { className: "dhl-more-popover", role: "menu" }, /* @__PURE__ */ React32.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React32.createElement("span", null, t("network.label", "\u7F51\u7EDC")), /* @__PURE__ */ React32.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React32.createElement("button", { type: "button", className: network === "mainnet" ? "on" : "", disabled: networkBusy || !st, onClick: () => network !== "mainnet" && requestEnv({ network: "mainnet", mode }) }, t("network.mainnet", "\u4E3B\u7F51")), /* @__PURE__ */ React32.createElement("button", { type: "button", className: network === "testnet" ? "on" : "", disabled: networkBusy || !st, onClick: () => network !== "testnet" && requestEnv({ network: "testnet", mode }) }, t("network.testnet", "\u6D4B\u8BD5\u7F51")))), /* @__PURE__ */ React32.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React32.createElement("span", null, tr("\u8D26\u6237", "Account")), /* @__PURE__ */ React32.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React32.createElement("button", { type: "button", className: mode === "live" ? "on" : "", disabled: networkBusy || !st, onClick: () => mode !== "live" && requestEnv({ network, mode: "live" }) }, t("mode.live", "\u5B9E\u76D8")), /* @__PURE__ */ React32.createElement("button", { type: "button", className: mode === "paper" ? "on" : "", disabled: networkBusy || !st, onClick: () => mode !== "paper" && requestEnv({ network, mode: "paper" }) }, t("mode.paper", "\u6A21\u62DF\u76D8")))), /* @__PURE__ */ React32.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React32.createElement("span", null, tr("\u76D8\u53E3 / \u6210\u4EA4\u4F4D\u7F6E", "Book / trades position")), /* @__PURE__ */ React32.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React32.createElement("button", { type: "button", className: s.tapePlacement === "auto" ? "on" : "", onClick: () => setTapePlacement("auto") }, tr("\u81EA\u9002\u5E94", "Auto")), /* @__PURE__ */ React32.createElement("button", { type: "button", className: s.tapePlacement === "below" ? "on" : "", onClick: () => setTapePlacement("below") }, tr("\u56FE\u8868\u4E0B\u65B9", "Below chart")))), /* @__PURE__ */ React32.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React32.createElement("span", null, tr("\u4EA4\u6613\u8BBE\u7F6E", "Trading settings")), /* @__PURE__ */ React32.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React32.createElement("button", { type: "button", onClick: () => {
+  return /* @__PURE__ */ React32.createElement("div", { className: "dhl-root" }, /* @__PURE__ */ React32.createElement("div", { className: "dhl-topbar" }, /* @__PURE__ */ React32.createElement("span", { className: "dhl-brand" }, /* @__PURE__ */ React32.createElement(BrandMark, null), "Hyperliquid ", /* @__PURE__ */ React32.createElement("span", { style: { fontWeight: 400, color: "var(--dsw-alias-label-secondary)" } }, t("app.suffix", "\u4EA4\u6613\u53F0"))), /* @__PURE__ */ React32.createElement("div", { className: "dhl-spacer" }), s.statusError ? /* @__PURE__ */ React32.createElement("span", { className: "dhl-badge err" }, t("status.unavailable", "\u8FDC\u7AEF\u4E0D\u53EF\u7528")) : null, st && network === "testnet" ? /* @__PURE__ */ React32.createElement("span", { className: "dhl-badge paper" }, t("network.testnet", "\u6D4B\u8BD5\u7F51")) : null, st && mode === "paper" ? /* @__PURE__ */ React32.createElement("span", { className: "dhl-badge paper" }, t("mode.paper", "\u6A21\u62DF\u76D8")) : null, st && custody === "managed" ? /* @__PURE__ */ React32.createElement("span", { className: "dhl-badge managed", title: tr("\u5168\u6258\u7BA1\uFF1Aagent \u53EF\u81EA\u4E3B\u6267\u884C\u5B9E\u76D8\u3001\u8C03\u6574\u9650\u989D\u4E0E\u5212\u8F6C\u4FDD\u8BC1\u91D1", "Managed: the agent trades, adjusts limits and moves margin on its own") }, tr("\u5168\u6258\u7BA1", "Managed")) : null, wsBadge, /* @__PURE__ */ React32.createElement("button", { type: "button", className: "dhl-badge dhl-wallet-trigger", onClick: () => setWalletOpen(true), "aria-haspopup": "dialog", "aria-label": tr("\u67E5\u770B\u94B1\u5305\u8BE6\u60C5\u548C\u6536\u76CA", "View wallet and P&L") }, mode === "paper" ? tr("\u6A21\u62DF\u8D26\u6237", "Paper account") : st?.address ? st.address.slice(0, 6) + "\u2026" + st.address.slice(-4) : t("account.none", "\u672A\u8FDE\u63A5\u94B1\u5305"), /* @__PURE__ */ React32.createElement(UiIcon, { name: "chevronDown", size: 14 })), /* @__PURE__ */ React32.createElement("div", { className: "dhl-more", ref: moreRef }, /* @__PURE__ */ React32.createElement("button", { type: "button", className: "dhl-top-control dhl-more-trigger", "aria-haspopup": "menu", "aria-expanded": moreOpen, "aria-label": tr("\u4EA4\u6613\u8BBE\u7F6E", "Trading settings"), title: tr("\u4EA4\u6613\u8BBE\u7F6E", "Trading settings"), onClick: () => setMoreOpen((value) => !value) }, /* @__PURE__ */ React32.createElement(UiIcon, { name: "settings", size: 17 })), moreOpen ? /* @__PURE__ */ React32.createElement("div", { className: "dhl-more-popover", role: "menu" }, /* @__PURE__ */ React32.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React32.createElement("span", null, t("network.label", "\u7F51\u7EDC")), /* @__PURE__ */ React32.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React32.createElement("button", { type: "button", className: network === "mainnet" ? "on" : "", disabled: networkBusy || !st, onClick: () => network !== "mainnet" && requestEnv({ network: "mainnet", mode }) }, t("network.mainnet", "\u4E3B\u7F51")), /* @__PURE__ */ React32.createElement("button", { type: "button", className: network === "testnet" ? "on" : "", disabled: networkBusy || !st, onClick: () => network !== "testnet" && requestEnv({ network: "testnet", mode }) }, t("network.testnet", "\u6D4B\u8BD5\u7F51")))), /* @__PURE__ */ React32.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React32.createElement("span", null, tr("\u8D26\u6237", "Account")), /* @__PURE__ */ React32.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React32.createElement("button", { type: "button", className: mode === "live" ? "on" : "", disabled: networkBusy || !st, onClick: () => mode !== "live" && requestEnv({ network, mode: "live" }) }, t("mode.live", "\u5B9E\u76D8")), /* @__PURE__ */ React32.createElement("button", { type: "button", className: mode === "paper" ? "on" : "", disabled: networkBusy || !st, onClick: () => mode !== "paper" && requestEnv({ network, mode: "paper" }) }, t("mode.paper", "\u6A21\u62DF\u76D8")))), /* @__PURE__ */ React32.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React32.createElement("span", null, tr("\u6258\u7BA1\u6A21\u5F0F", "Custody")), /* @__PURE__ */ React32.createElement("div", { className: "dhl-segment", role: "group", "aria-label": tr("\u6258\u7BA1\u6A21\u5F0F", "Custody") }, /* @__PURE__ */ React32.createElement("button", { type: "button", className: custody === "assisted" ? "on" : "", "aria-pressed": custody === "assisted", disabled: !st, title: tr("\u5B9E\u76D8\u4E0B\u5355\u3001\u5212\u8F6C\u9700\u4F60\u6279\u51C6\uFF1B\u9650\u989D\u53EA\u7531\u4F60\u4FEE\u6539", "You approve live orders and transfers; only you change limits"), onClick: () => custody !== "assisted" && void chooseCustody("assisted") }, tr("\u534A\u6258\u7BA1", "Assisted")), /* @__PURE__ */ React32.createElement("button", { type: "button", className: custody === "managed" ? "on" : "", "aria-pressed": custody === "managed", disabled: !st, title: tr("agent \u81EA\u4E3B\u6267\u884C\u5B9E\u76D8\u3001\u8C03\u6574\u9650\u989D\u4E0E\u5212\u8F6C\u4FDD\u8BC1\u91D1", "The agent trades, adjusts limits and moves margin on its own"), onClick: () => custody !== "managed" && void chooseCustody("managed") }, tr("\u5168\u6258\u7BA1", "Managed")))), /* @__PURE__ */ React32.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React32.createElement("span", null, tr("\u76D8\u53E3 / \u6210\u4EA4\u4F4D\u7F6E", "Book / trades position")), /* @__PURE__ */ React32.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React32.createElement("button", { type: "button", className: s.tapePlacement === "auto" ? "on" : "", onClick: () => setTapePlacement("auto") }, tr("\u81EA\u9002\u5E94", "Auto")), /* @__PURE__ */ React32.createElement("button", { type: "button", className: s.tapePlacement === "below" ? "on" : "", onClick: () => setTapePlacement("below") }, tr("\u56FE\u8868\u4E0B\u65B9", "Below chart")))), /* @__PURE__ */ React32.createElement("div", { className: "dhl-more-group" }, /* @__PURE__ */ React32.createElement("span", null, tr("\u4EA4\u6613\u8BBE\u7F6E", "Trading settings")), /* @__PURE__ */ React32.createElement("div", { className: "dhl-segment" }, /* @__PURE__ */ React32.createElement("button", { type: "button", onClick: () => {
     setMoreOpen(false);
     setLimitsOpen(true);
   } }, tr("\u4EA4\u6613\u9650\u989D\u4E0E\u7B7E\u540D\u89C4\u5219", "Limits & signing rules"))))) : null)), /* @__PURE__ */ React32.createElement(import_dsh_client_ui_primitives10.Modal, { open: Boolean(confirmLive), onClose: () => setConfirmLive(null), title: tr("\u5207\u6362\u5230\u4E3B\u7F51\u5B9E\u76D8", "Switch to mainnet live"), closeLabel: t("modal.close", "\u5173\u95ED"), className: "dhl-network-modal", footer: /* @__PURE__ */ React32.createElement(React32.Fragment, null, /* @__PURE__ */ React32.createElement(import_dsh_client_ui_primitives10.Button, { variant: "outline", onClick: () => setConfirmLive(null) }, t("modal.cancel", "\u53D6\u6D88")), /* @__PURE__ */ React32.createElement(import_dsh_client_ui_primitives10.Button, { variant: "primary", disabled: networkBusy, onClick: () => {
     if (confirmLive) void applyEnv(confirmLive);
-  } }, tr("\u786E\u8BA4\u5207\u6362", "Switch"))) }, /* @__PURE__ */ React32.createElement("p", null, tr("\u4E3B\u7F51\u5B9E\u76D8\u4F1A\u663E\u793A\u771F\u5B9E\u884C\u60C5\u548C\u771F\u5B9E\u8D26\u6237\uFF0C\u540E\u7EED\u4EA4\u6613\u5C06\u4F7F\u7528\u771F\u5B9E\u8D44\u91D1\u3002", "Mainnet live shows real markets and your real account; trades use real funds."))), /* @__PURE__ */ React32.createElement(WalletDetails, { open: walletOpen, onClose: () => setWalletOpen(false) }), /* @__PURE__ */ React32.createElement(TradingLimits, { open: limitsOpen, onClose: () => setLimitsOpen(false) }), /* @__PURE__ */ React32.createElement("div", { className: "dhl-toasts" }, marketStale && !resyncing ? /* @__PURE__ */ React32.createElement("div", { className: "dhl-data-warning", role: "status" }, tr("\u884C\u60C5\u6216\u5BBF\u4E3B\u72B6\u6001\u672A\u53CA\u65F6\u66F4\u65B0\uFF1B\u5F53\u524D\u4EF7\u683C\u53EF\u80FD\u8FC7\u671F\u3002\u4EA4\u6613\u7968\u636E\u5DF2\u6682\u505C\u63D0\u4EA4\uFF0C\u7B49\u5F85\u6570\u636E\u6062\u590D\u3002", "Market or host data is stale. Ticket submission is paused until data recovers.")) : null, s.notice ? /* @__PURE__ */ React32.createElement("div", { className: "dhl-notice", onClick: () => notify(null) }, /* @__PURE__ */ React32.createElement(UiIcon, { name: "info", size: 16 }), /* @__PURE__ */ React32.createElement("span", { style: { flex: 1 } }, s.notice.text), /* @__PURE__ */ React32.createElement(UiIcon, { name: "close", size: 14 })) : null), /* @__PURE__ */ React32.createElement("div", { className: "dhl-body" }, showSessions ? /* @__PURE__ */ React32.createElement(SessionsColumn, { width: layout.sessionsWidth, fill: !showDesk && !showChat, onCollapse: toggleSessions }) : /* @__PURE__ */ React32.createElement("button", { className: "dhl-panel-rail", type: "button", onClick: toggleSessions, "aria-label": tr("\u5C55\u5F00\u4F1A\u8BDD\u680F", "Expand sessions"), title: tr("\u5C55\u5F00\u4F1A\u8BDD\u680F", "Expand sessions") }, /* @__PURE__ */ React32.createElement(PanelIcon, { kind: "sessions" })), showSessions && (showDesk || showChat) ? /* @__PURE__ */ React32.createElement(Divider, { side: "left", onResize: resizeSessions, onCommit: commitLayout, onReset: resetSessions }) : null, showDesk ? /* @__PURE__ */ React32.createElement(DeskColumn, { onCollapse: toggleDesk }) : /* @__PURE__ */ React32.createElement("button", { className: "dhl-panel-rail", type: "button", onClick: toggleDesk, "aria-label": tr("\u5C55\u5F00\u884C\u60C5\u533A", "Expand market panel"), title: tr("\u5C55\u5F00\u884C\u60C5\u533A", "Expand market panel") }, /* @__PURE__ */ React32.createElement(PanelIcon, { kind: "desk" })), showDesk && showChat ? /* @__PURE__ */ React32.createElement(Divider, { side: "right", onResize: resizeChat, onCommit: commitLayout, onReset: resetChat }) : null, showChat ? /* @__PURE__ */ React32.createElement(ChatColumn, { width: layout.chatWidth, fill: !showDesk, onCollapse: toggleChat, SessionProvider: props.SessionProvider ?? props.sessionProvider, renderFactorySlot: props.renderFactorySlot }) : /* @__PURE__ */ React32.createElement("button", { className: "dhl-panel-rail", type: "button", onClick: toggleChat, "aria-label": tr("\u5C55\u5F00\u5BF9\u8BDD\u680F", "Expand chat"), title: tr("\u5C55\u5F00\u5BF9\u8BDD\u680F", "Expand chat") }, /* @__PURE__ */ React32.createElement(PanelIcon, { kind: "chat" }))));
+  } }, tr("\u786E\u8BA4\u5207\u6362", "Switch"))) }, /* @__PURE__ */ React32.createElement("p", null, tr("\u4E3B\u7F51\u5B9E\u76D8\u4F1A\u663E\u793A\u771F\u5B9E\u884C\u60C5\u548C\u771F\u5B9E\u8D26\u6237\uFF0C\u540E\u7EED\u4EA4\u6613\u5C06\u4F7F\u7528\u771F\u5B9E\u8D44\u91D1\u3002", "Mainnet live shows real markets and your real account; trades use real funds."))), /* @__PURE__ */ React32.createElement(import_dsh_client_ui_primitives10.Modal, { open: confirmManaged, onClose: () => setConfirmManaged(false), title: tr("\u5F00\u542F\u5168\u6258\u7BA1", "Turn on managed mode"), closeLabel: t("modal.close", "\u5173\u95ED"), className: "dhl-network-modal", footer: /* @__PURE__ */ React32.createElement(React32.Fragment, null, /* @__PURE__ */ React32.createElement(import_dsh_client_ui_primitives10.Button, { variant: "outline", onClick: () => setConfirmManaged(false) }, t("modal.cancel", "\u53D6\u6D88")), /* @__PURE__ */ React32.createElement(import_dsh_client_ui_primitives10.Button, { variant: "primary", onClick: () => void chooseCustody("managed", true) }, tr("\u5F00\u542F\u5168\u6258\u7BA1", "Turn on"))) }, /* @__PURE__ */ React32.createElement("p", null, tr("\u5168\u6258\u7BA1\u540E\uFF0Cagent \u5728\u5F53\u524D\u5B9E\u76D8\u8D26\u6237\u4E2D\u53EF\u4EE5\uFF1A", "In managed mode the agent can, on this live account:")), /* @__PURE__ */ React32.createElement("ul", { className: "dhl-managed-list" }, /* @__PURE__ */ React32.createElement("li", null, tr("\u4E0D\u7ECF\u9010\u7B14\u6279\u51C6\u76F4\u63A5\u4E0B\u5355\u3001\u64A4\u5355\u548C\u8C03\u6574\u6760\u6746\uFF1B", "place, cancel and re-lever orders without per-trade approval;")), /* @__PURE__ */ React32.createElement("li", null, tr("\u81EA\u884C\u4FEE\u6539\u5141\u8BB8\u4EA4\u6613\u7684\u5E01\u5BF9\u4E0E\u5355\u7B14\u3001\u6BCF\u65E5\u3001\u4ED3\u4F4D\u3001\u6760\u6746\u4E0A\u9650\uFF1B", "change the allowed coins and the order, daily, position and leverage limits;")), /* @__PURE__ */ React32.createElement("li", null, tr("\u5728\u4E3B\u6C38\u7EED\u8D26\u6237\u4E0E HIP-3 \u4EA4\u6613\u6240\u4E4B\u95F4\u5212\u8F6C USDC \u4FDD\u8BC1\u91D1\u3002", "move USDC margin between the core perp account and HIP-3 dexes."))), /* @__PURE__ */ React32.createElement("p", null, tr("dsh-web3 \u94B1\u5305\u81EA\u8EAB\u7684\u7B7E\u540D\u7B56\u7565\u4ECD\u7136\u751F\u6548\u3002\u4F60\u53EF\u4EE5\u968F\u65F6\u5207\u56DE\u534A\u6258\u7BA1\u3002", "The dsh-web3 wallet signing policy still applies. You can switch back to assisted at any time."))), /* @__PURE__ */ React32.createElement(WalletDetails, { open: walletOpen, onClose: () => setWalletOpen(false) }), /* @__PURE__ */ React32.createElement(TradingLimits, { open: limitsOpen, onClose: () => setLimitsOpen(false) }), /* @__PURE__ */ React32.createElement("div", { className: "dhl-toasts" }, marketStale && !resyncing ? /* @__PURE__ */ React32.createElement("div", { className: "dhl-data-warning", role: "status" }, tr("\u884C\u60C5\u6216\u5BBF\u4E3B\u72B6\u6001\u672A\u53CA\u65F6\u66F4\u65B0\uFF1B\u5F53\u524D\u4EF7\u683C\u53EF\u80FD\u8FC7\u671F\u3002\u4EA4\u6613\u7968\u636E\u5DF2\u6682\u505C\u63D0\u4EA4\uFF0C\u7B49\u5F85\u6570\u636E\u6062\u590D\u3002", "Market or host data is stale. Ticket submission is paused until data recovers.")) : null, s.notice ? /* @__PURE__ */ React32.createElement("div", { className: "dhl-notice", onClick: () => notify(null) }, /* @__PURE__ */ React32.createElement(UiIcon, { name: "info", size: 16 }), /* @__PURE__ */ React32.createElement("span", { style: { flex: 1 } }, s.notice.text), /* @__PURE__ */ React32.createElement(UiIcon, { name: "close", size: 14 })) : null), /* @__PURE__ */ React32.createElement("div", { className: "dhl-body" }, showSessions ? /* @__PURE__ */ React32.createElement(SessionsColumn, { width: layout.sessionsWidth, fill: !showDesk && !showChat, onCollapse: toggleSessions }) : /* @__PURE__ */ React32.createElement("button", { className: "dhl-panel-rail", type: "button", onClick: toggleSessions, "aria-label": tr("\u5C55\u5F00\u4F1A\u8BDD\u680F", "Expand sessions"), title: tr("\u5C55\u5F00\u4F1A\u8BDD\u680F", "Expand sessions") }, /* @__PURE__ */ React32.createElement(PanelIcon, { kind: "sessions" })), showSessions && (showDesk || showChat) ? /* @__PURE__ */ React32.createElement(Divider, { side: "left", onResize: resizeSessions, onCommit: commitLayout, onReset: resetSessions }) : null, showDesk ? /* @__PURE__ */ React32.createElement(DeskColumn, { onCollapse: toggleDesk }) : /* @__PURE__ */ React32.createElement("button", { className: "dhl-panel-rail", type: "button", onClick: toggleDesk, "aria-label": tr("\u5C55\u5F00\u884C\u60C5\u533A", "Expand market panel"), title: tr("\u5C55\u5F00\u884C\u60C5\u533A", "Expand market panel") }, /* @__PURE__ */ React32.createElement(PanelIcon, { kind: "desk" })), showDesk && showChat ? /* @__PURE__ */ React32.createElement(Divider, { side: "right", onResize: resizeChat, onCommit: commitLayout, onReset: resetChat }) : null, showChat ? /* @__PURE__ */ React32.createElement(ChatColumn, { width: layout.chatWidth, fill: !showDesk, onCollapse: toggleChat, SessionProvider: props.SessionProvider ?? props.sessionProvider, renderFactorySlot: props.renderFactorySlot }) : /* @__PURE__ */ React32.createElement("button", { className: "dhl-panel-rail", type: "button", onClick: toggleChat, "aria-label": tr("\u5C55\u5F00\u5BF9\u8BDD\u680F", "Expand chat"), title: tr("\u5C55\u5F00\u5BF9\u8BDD\u680F", "Expand chat") }, /* @__PURE__ */ React32.createElement(PanelIcon, { kind: "chat" }))));
 }
 
 // src/client/components/panel-entry.tsx

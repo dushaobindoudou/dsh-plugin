@@ -175,13 +175,24 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
   }, [])
   const editMark = React.useCallback((id: string, patch: Record<string, unknown>) => historyRef.current.edit(id, patch), [])
   const erase = React.useCallback((id: string) => historyRef.current.remove(id), [])
+  const selectMark = React.useCallback((id: string) => setSelectRequest({ id, at: Date.now() }), [])
   const cloneMark = React.useCallback((copy: ClonePayload) => {
     void historyRef.current.create({ kind: copy.kind, label: copy.label, ...copy.geometry, ...copy.style })
+  }, [])
+  // Shortcuts act on the chart the trader last pressed: a read-only research pane must not undo or draw on the main chart.
+  const onSecondaryChart = React.useRef(false)
+  React.useEffect(() => {
+    const track = (event: PointerEvent) => {
+      const target = event.target as Element | null
+      onSecondaryChart.current = Boolean(target?.closest?.('.dhl-research-pane') && !target.closest('.dhl-primary-pane'))
+    }
+    window.addEventListener('pointerdown', track, true)
+    return () => window.removeEventListener('pointerdown', track, true)
   }, [])
   // Ctrl/Cmd+Z undo, Shift+Ctrl/Cmd+Z or Ctrl+Y redo — never while typing (the chat composer keeps its own undo).
   React.useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (!(event.metaKey || event.ctrlKey) || event.altKey) return
+      if (!(event.metaKey || event.ctrlKey) || event.altKey || onSecondaryChart.current) return
       const element = event.target as HTMLElement | null
       if (element?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element?.tagName ?? '')) return
       const key = event.key.toLowerCase()
@@ -216,7 +227,7 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
   React.useEffect(() => {
     const keys: Record<string, DrawingKind> = { KeyT: 'trend', KeyH: 'level', KeyJ: 'hray', KeyV: 'vline', KeyC: 'crossline', KeyF: 'fib' }
     const onKey = (event: KeyboardEvent) => {
-      if (!event.altKey || event.ctrlKey || event.metaKey || chartTab !== 'chart') return
+      if (!event.altKey || event.ctrlKey || event.metaKey || chartTab !== 'chart' || onSecondaryChart.current) return
       const element = event.target as HTMLElement | null
       if (element?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(element?.tagName ?? '')) return
       const kind = event.shiftKey ? (event.code === 'KeyR' ? 'rect' : undefined) : keys[event.code]
@@ -418,8 +429,8 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
                 <div className="dhl-chart-click-hint">{drawMode
                   ? `${tr(toolOf(drawMode).zh, toolOf(drawMode).en)}：${tr(toolOf(drawMode).hintZh, toolOf(drawMode).hintEn)} · ${tr('Esc 取消', 'Esc to cancel')}`
                   : tr('点击 K 线、成交量柱或指标线，将该点数据加入聊天输入框', 'Click a candle, volume bar or study line to add its data to the chat draft')}</div>
-                {marks.length > 0 ? <DrawingList marks={marks} locked={drawingsLocked} onSelect={(id) => setSelectRequest({ id, at: Date.now() })}
-                  onEdit={(id, patch) => void editMark(id, patch)} onRemove={(id) => void erase(id)} /> : null}
+                {marks.length > 0 ? <DrawingList marks={marks} locked={drawingsLocked} language={tr('zh', 'en')} onSelect={selectMark}
+                  onEdit={editMark} onRemove={erase} /> : null}
                 <ChartNavigation disabled={s.candles.length < 2}
                   onNavigate={(action) => setChartCommand({ scope: chartScope, command: { ...action, at: performance.now() } })}
                   onCsv={() => downloadBlob(new Blob([candlesCsv(s.candles, coin, s.interval)], { type: 'text/csv;charset=utf-8' }), `${coin.replace(/[^a-zA-Z0-9_-]/g, '_')}_${s.interval}.csv`)} />

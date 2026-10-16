@@ -22,7 +22,7 @@ type Op =
 
 const HISTORY_LIMIT = 100
 const GEOMETRY = ['price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'points'] as const
-const STYLE = ['color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert', 'rows', 'valueArea'] as const
+const STYLE = ['color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert', 'rows', 'valueArea', 'levels'] as const
 /** Flags the host treats as "absent = false"; undo must send false, since null leaves them unchanged. */
 const FLAGS = new Set(['locked', 'hidden', 'shared', 'alert'])
 
@@ -141,6 +141,31 @@ export function useDrawingHistory(scope: string): DrawingHistory {
     return apiDelete(ctx, op.mark.id)
   }
 
+  /**
+   * Undo (forward=false) or redo one entry. What succeeded moves to the other stack and what failed stays,
+   * so a retry never repeats an applied step (a batch is split by member). If the trader left this chart
+   * while the request ran, nothing is pushed: the stacks now belong to another chart.
+   */
+  const step = async (ctx: Ctx, forward: boolean) => {
+    const from = forward ? redoStack : undoStack, to = forward ? undoStack : redoStack
+    const op = from.current.pop()
+    if (!op) return
+    bump()
+    let done: Op | null = null, left: Op | null = null
+    if (op.type === 'batch') {
+      const ok: Op[] = [], failed: Op[] = []
+      for (const inner of forward ? op.ops : [...op.ops].reverse()) ((await apply(ctx, inner, forward)) ? ok : failed).push(inner)
+      if (!forward) { ok.reverse(); failed.reverse() }
+      if (ok.length) done = { type: 'batch', ops: ok }
+      if (failed.length) left = { type: 'batch', ops: failed }
+    } else if (await apply(ctx, op, forward)) done = op
+    else left = op
+    if (ctx.scope !== scopeRef.current) return
+    if (done) to.current.push(done)
+    if (left) from.current.push(left)
+    bump()
+  }
+
   return {
     create: (request) => serial(async (ctx) => {
       const saved = await apiCreate(ctx, request)
@@ -182,19 +207,8 @@ export function useDrawingHistory(scope: string): DrawingHistory {
       }
       if (done.length) record({ type: 'batch', ops: done }, ctx)
     }, undefined),
-    // A failed undo/redo goes back where it was, so the stacks keep describing the host.
-    undo: () => serial(async (ctx) => {
-      const op = undoStack.current.pop()
-      if (!op) return
-      redoStack.current.push(op); bump()
-      if (!(await apply(ctx, op, false))) { redoStack.current.pop(); undoStack.current.push(op); bump() }
-    }, undefined),
-    redo: () => serial(async (ctx) => {
-      const op = redoStack.current.pop()
-      if (!op) return
-      undoStack.current.push(op); bump()
-      if (!(await apply(ctx, op, true))) { undoStack.current.pop(); redoStack.current.push(op); bump() }
-    }, undefined),
+    undo: () => serial((ctx) => step(ctx, false), undefined),
+    redo: () => serial((ctx) => step(ctx, true), undefined),
     canUndo: undoStack.current.length > 0,
     canRedo: redoStack.current.length > 0,
   }

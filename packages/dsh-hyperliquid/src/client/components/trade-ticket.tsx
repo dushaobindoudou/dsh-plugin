@@ -9,8 +9,9 @@ import { notify, useStore } from '../store'
 export function TradeTicket({ onSubmitted }: { onSubmitted?: () => void }) {
   const s = useStore()
   const coin = s.activeCoin
-  const market = s.markets.find((row) => row.name === coin)
   const catalogMarket = s.marketCatalog.find((row) => row.name === coin)
+  // HIP-3 perps are not in the core `markets` list; their size precision and leverage come from the catalog.
+  const market = s.markets.find((row) => row.name === coin) ?? (catalogMarket?.tradable ? catalogMarket : undefined)
   const liveMid = s.snapshot?.coin === coin && Date.now() - Number(s.snapshot?.observedAt?.mids) < 10_000
     ? Number(s.snapshot?.mids?.mids?.[coin] ?? s.snapshot?.mids?.[coin]) : 0
   const mark = liveMid || Number(s.selectedMarket?.name === coin ? s.selectedMarket.ctx?.markPx : 0) || Number(market?.ctx?.markPx)

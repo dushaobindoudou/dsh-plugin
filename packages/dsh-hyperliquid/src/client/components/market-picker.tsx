@@ -59,7 +59,7 @@ export function MarketPicker({ activeCoin, onClose }: { activeCoin: string; onCl
   const marketRows = React.useMemo<MarketEntry[]>(() => {
     const livePerps = new Map(s.markets.map((market) => [market.name, market]))
     const catalog: MarketEntry[] = s.marketCatalog.length ? s.marketCatalog.map((row) => {
-      const latest = row.tradable ? livePerps.get(row.name) : null
+      const latest = row.kind === 'perp' ? livePerps.get(row.name) : null
       return latest ? { ...row, ctx: latest.ctx } : row
     }) : s.markets.map((row): MarketEntry => ({
       name: row.name, label: `${row.name}-USDC`, kind: 'perp', venue: 'Hyperliquid',
@@ -165,7 +165,7 @@ export function MarketPicker({ activeCoin, onClose }: { activeCoin: string; onCl
         </div>
         <button type="button" className="dhl-picker-close" onClick={onClose} aria-label={t('modal.close', '关闭')}><UiIcon name="close" size={18} /></button>
       </div>
-      {!strict ? <p className="dhl-picker-readonly-note">{tr('“只读”表示本插件仅提供行情，尚未接入该市场的下单与风控；HIP-3 和现货在 Hyperliquid 本身可交易。', '“View only” means this plugin has market data but no order and risk support for that market. Hyperliquid itself supports HIP-3 and spot trading.')}</p> : null}
+      {!strict ? <p className="dhl-picker-readonly-note">{tr('“只读”表示本插件仅提供行情，尚未接入该市场的下单与风控；现货与 Outcome 在 Hyperliquid 本身可交易；以 USDC 为保证金的 HIP-3 永续已可在这里交易。', '“View only” means this plugin has market data but no order and risk support for that market. Hyperliquid itself supports spot and outcome trading; USDC-collateral HIP-3 perps are tradable here.')}</p> : null}
       <nav className="dhl-picker-tabs" aria-label={tr('市场分类', 'Market categories')}>
         {CATEGORIES.map(([key, label]) => <button type="button" key={key} className={category === key ? 'on' : ''} aria-current={category === key ? 'page' : undefined} onClick={() => { setCategory(key); if (['spot', 'hip3', 'outcome', 'crypto', 'tradfi', 'preipo'].includes(key)) setStrict(false) }}>{t(`market.category.${key}`, label)}</button>)}
       </nav>

@@ -4,7 +4,8 @@ import { Button, Input, Modal } from '@deepseek-ai/dsh-client-ui-primitives'
 import { hyperCall, tr } from '../remote'
 import { fmt } from '../format'
 import { notify, useStore } from '../store'
-import { loadStatus } from '../data'
+import { loadStatus, resetWalletView } from '../data'
+import { Select } from './select'
 
 type Draft = { allowedCoins: string; maxOrderUsd: string; maxDailyUsd: string; maxPositionUsd: string; maxLeverage: string }
 const EMPTY: Draft = { allowedCoins: '', maxOrderUsd: '', maxDailyUsd: '', maxPositionUsd: '', maxLeverage: '' }
@@ -62,45 +63,92 @@ export function TradingLimits({ open, onClose }: { open: boolean; onClose: () =>
     finally { setBusy(false) }
   }
 
+  const [tab, setTab] = React.useState<'limits' | 'costs' | 'signing'>('limits')
+  // Wallet connection: applied by the host at once (no restart) and kept across restarts.
+  const [wallet, setWallet] = React.useState({ signer: 'local', web3Account: 'main', tradingAddress: '' })
+  const [web3Accounts, setWeb3Accounts] = React.useState<{ available: boolean; accounts: Array<{ id: string; label: string; address: string }> }>({ available: false, accounts: [] })
+  React.useEffect(() => {
+    if (!open) return
+    setWallet({ signer: st?.signer ?? 'local', web3Account: st?.web3Account ?? 'main', tradingAddress: st?.tradingAddress ?? '' })
+    void hyperCall('walletAccounts').then(setWeb3Accounts).catch(() => setWeb3Accounts({ available: false, accounts: [] }))
+  }, [open])
+  const saveWallet = () => {
+    setBusy(true); setError('')
+    void hyperCall('updateWalletSettings', wallet).then(() => resetWalletView())
+      .then(() => notify(tr('钱包设置已生效', 'Wallet settings applied'))).catch((cause) => setError(String(cause.message))).finally(() => setBusy(false))
+  }
+  React.useEffect(() => { if (open) setTab('limits') }, [open])
+  const saveCosts = () => {
+    setBusy(true); setError('')
+    void hyperCall('updatePaperCosts', { costs: { feeBps: costs.feeBps.trim() ? Number(costs.feeBps) : NaN, slippageBps: costs.slippageBps.trim() ? Number(costs.slippageBps) : NaN } })
+      .then(() => loadStatus()).then(() => notify(tr('模拟成本已保存', 'Paper costs saved'))).catch((cause) => setError(String(cause.message))).finally(() => setBusy(false))
+  }
+
   const field = (key: keyof Draft, label: string, props: React.InputHTMLAttributes<HTMLInputElement>, wide = false) =>
     <label className={wide ? 'dhl-risk-wide' : undefined}><span>{label}</span>
       <Input className="dhl-risk-input" value={draft[key]} onChange={(event) => change(key, event.target.value)} required {...props} /></label>
-  const footer = limits ? <>
+  // The footer acts on the visible tab only, so “保存” always means what is on screen.
+  const footer = tab === 'limits' ? (limits ? <>
     {st?.riskSettingsSource === 'desk' ? <Button variant="outline" disabled={busy} onClick={() => void reset()}>{tr('恢复插件配置', 'Restore plugin config')}</Button> : null}
-    <Button variant="primary" type="submit" form="dhl-risk-form" disabled={busy}>{busy ? tr('保存中…', 'Saving…') : tr('保存', 'Save')}</Button>
-  </> : null
+    <Button variant="primary" type="submit" form="dhl-risk-form" disabled={busy}>{busy ? tr('保存中…', 'Saving…') : tr('保存限额', 'Save limits')}</Button>
+  </> : null) : tab === 'costs' ? <Button variant="primary" disabled={busy} onClick={saveCosts}>{busy ? tr('保存中…', 'Saving…') : tr('保存模拟成本', 'Save paper costs')}</Button>
+    : <Button variant="primary" disabled={busy} onClick={saveWallet}>{busy ? tr('连接中…', 'Connecting…') : tr('保存并连接', 'Save & connect')}</Button>
+  const tabs: Array<[typeof tab, string, string]> = [['limits', '交易限额', 'Limits'], ['costs', '模拟成本', 'Paper costs'], ['signing', '签名与托管', 'Signing & custody']]
 
-  return <Modal open={open} onClose={onClose} title={tr('交易限额与签名规则', 'Trading limits & signing rules')} closeLabel={tr('关闭', 'Close')} className="dhl-limits-modal" footer={footer}>
-    <section className="dhl-limits-section">
-      <h3>{tr('交易限额', 'Trading limits')}<span className="dhl-limits-ledger">{paper ? tr('模拟盘账本', 'Paper ledger') : tr('实盘账本', 'Live ledger')}</span></h3>
-      {limits ? <form id="dhl-risk-form" className="dhl-risk-form" onSubmit={(event) => void save(event)}>
-        {field('allowedCoins', tr('允许开仓币对', 'Coins allowed to open'), { placeholder: 'BTC, ETH', maxLength: 1000 }, true)}
-        {field('maxOrderUsd', tr('单笔名义价值上限 · USD', 'Max per order · USD'), { type: 'number', min: '0.01', step: 'any' })}
-        {field('maxDailyUsd', tr('每日开仓额度 · USD', 'Daily opening budget · USD'), { type: 'number', min: '0.01', step: 'any' })}
-        {field('maxPositionUsd', tr('单币仓位上限 · USD', 'Max position per coin · USD'), { type: 'number', min: '0.01', step: 'any' })}
-        {field('maxLeverage', tr('最大杠杆 · 倍', 'Max leverage · x'), { type: 'number', min: '1', max: '50', step: '1' })}
-        <p className="dhl-risk-budget">{tr('今日已用额度（UTC）', 'Used today (UTC)')}：{fmt(limits.usedTodayUsd ?? 0)} / {fmt(limits.maxDailyUsd)} USD</p>
-        {error ? <p className="dhl-risk-error" role="alert">{error}</p> : null}
-      </form> : <div className="dhl-empty">{tr('正在读取…', 'Loading…')}</div>}
-      <p className="dhl-limits-note">{tr('保存后立即作用于模拟盘和实盘，重启后继续生效。两种模式的每日额度分开记账；减仓和平仓不受开仓限额阻止。',
-        'Changes apply immediately to paper and live trading and survive restart. Each mode has its own daily budget; reducing and closing remain available.')}</p>
-    </section>
-    <section className="dhl-limits-section">
-      <h3>{tr('模拟成交成本', 'Paper execution costs')}</h3>
-      <div className="dhl-risk-form">{(['feeBps', 'slippageBps'] as const).map((key) => <label key={key}><span>{key === 'feeBps' ? tr('手续费 · bps', 'Fee · bps') : tr('不利滑点 · bps', 'Adverse slippage · bps')}</span><Input type="number" aria-label={key === 'feeBps' ? tr('模拟手续费 bps', 'Paper fee bps') : tr('模拟滑点 bps', 'Paper slippage bps')} min="0" max="100" step="any" value={costs[key]} onChange={(e) => setCosts((old) => ({ ...old, [key]: e.target.value }))} /></label>)}</div>
-      <p className="dhl-limits-note">{tr('1 bps = 0.01%。这是模拟假设，不是实盘费率。仅作用于之后的模拟成交，旧记录保留原值；不模拟盘口深度、资金费和强平。', '1 bps = 0.01%. Simulation assumptions, not exchange fee tiers. Future paper fills only; historical assumptions are preserved. No depth, funding or liquidation simulation.')}</p>
-      <Button variant="outline" disabled={busy} onClick={() => { setBusy(true); setError(''); void hyperCall('updatePaperCosts', { costs: { feeBps: costs.feeBps.trim() ? Number(costs.feeBps) : NaN, slippageBps: costs.slippageBps.trim() ? Number(costs.slippageBps) : NaN } }).then(() => loadStatus()).then(() => notify(tr('模拟成本已保存', 'Paper costs saved'))).catch((cause) => setError(String(cause.message))).finally(() => setBusy(false)) }}>{tr('保存模拟成本', 'Save paper costs')}</Button>
-    </section>
-    <section className="dhl-limits-section">
-      <h3>{tr('钱包签名', 'Wallet signing')}</h3>
-      <p className="dhl-limits-note">{paper
-        ? tr('模拟盘在本地撮合，不签名，也不经过钱包规则。', 'Paper orders fill locally and do not use wallet signing.')
-        : st?.signer === 'web3'
-          ? tr('实盘订单通过限额检查后，由 dsh-web3 钱包按其签名策略处理。签名策略在 DSH 设置 → Web3 钱包中管理。',
-            'After the limits check, live orders use the dsh-web3 wallet signing policy. Manage it in DSH Settings → Web3 wallet.')
-          : tr('实盘使用插件配置中的私钥签名。私钥与签名方式仍在 DSH 插件配置中管理。',
-            'Live orders use the private key from plugin configuration. Manage the key and signing method in DSH plugin settings.')}</p>
-      {!paper && !st?.autonomousLive ? <p className="dhl-limits-note">{tr('agent 每笔实盘下单或改杠杆前仍需 DSH 审批。', 'Each agent live order or leverage change still requires DSH approval.')}</p> : null}
-    </section>
+  return <Modal open={open} onClose={onClose} title={tr('交易限额与签名规则', 'Trading limits & signing rules')} closeLabel={tr('关闭', 'Close')} className="dhl-limits-modal" contentClassName="dhl-limits-content" footer={footer}>
+    <div className="dhl-limits-tabs" role="tablist" aria-label={tr('设置分组', 'Settings sections')}>
+      {tabs.map(([key, zh, en]) => <button key={key} type="button" role="tab" id={`dhl-limits-tab-${key}`} aria-controls={`dhl-limits-panel-${key}`} aria-selected={tab === key} className={tab === key ? 'on' : ''}
+        onClick={() => { setTab(key); setError('') }}>{tr(zh, en)}</button>)}
+    </div>
+    <div className="dhl-limits-scroll">
+      {tab === 'limits' ? <section className="dhl-limits-section" role="tabpanel" id="dhl-limits-panel-limits" aria-labelledby="dhl-limits-tab-limits">
+        <p className="dhl-limits-ledger-row"><span className="dhl-limits-ledger">{paper ? tr('模拟盘账本', 'Paper ledger') : tr('实盘账本', 'Live ledger')}</span>
+          {limits ? <span>{tr('今日已用（UTC）', 'Used today (UTC)')} {fmt(limits.usedTodayUsd ?? 0)} / {fmt(limits.maxDailyUsd)} USD</span> : null}</p>
+        {limits ? <form id="dhl-risk-form" className="dhl-risk-form" onSubmit={(event) => void save(event)}>
+          {field('allowedCoins', tr('允许开仓币对（逗号分隔，如 BTC, xyz:XYZ100）', 'Coins allowed to open (comma separated)'), { placeholder: 'BTC, ETH, xyz:XYZ100', maxLength: 1000 }, true)}
+          {field('maxOrderUsd', tr('单笔上限 · USD', 'Per order · USD'), { type: 'number', min: '0.01', step: 'any' })}
+          {field('maxDailyUsd', tr('每日开仓额度 · USD', 'Daily budget · USD'), { type: 'number', min: '0.01', step: 'any' })}
+          {field('maxPositionUsd', tr('单币仓位上限 · USD', 'Per coin position · USD'), { type: 'number', min: '0.01', step: 'any' })}
+          {field('maxLeverage', tr('最大杠杆 · 倍', 'Max leverage · x'), { type: 'number', min: '1', max: '50', step: '1' })}
+        </form> : <div className="dhl-empty">{tr('正在读取…', 'Loading…')}</div>}
+        <p className="dhl-limits-note">{tr('立即作用于模拟盘和实盘，重启后保留；两种模式的每日额度分开记账，减仓和平仓不受限。',
+          'Applies to paper and live at once and survives restart; each mode has its own daily budget; reducing and closing are never blocked.')}</p>
+      </section> : null}
+      {tab === 'costs' ? <section className="dhl-limits-section" role="tabpanel" id="dhl-limits-panel-costs" aria-labelledby="dhl-limits-tab-costs">
+        <div className="dhl-risk-form">{(['feeBps', 'slippageBps'] as const).map((key) => <label key={key}><span>{key === 'feeBps' ? tr('手续费 · bps', 'Fee · bps') : tr('不利滑点 · bps', 'Adverse slippage · bps')}</span><Input type="number" aria-label={key === 'feeBps' ? tr('模拟手续费 bps', 'Paper fee bps') : tr('模拟滑点 bps', 'Paper slippage bps')} min="0" max="100" step="any" value={costs[key]} onChange={(e) => setCosts((old) => ({ ...old, [key]: e.target.value }))} /></label>)}</div>
+        <p className="dhl-limits-note">{tr('1 bps = 0.01%。仅影响之后的模拟成交；不模拟盘口深度、资金费和强平。', '1 bps = 0.01%. Future paper fills only; no depth, funding or liquidation simulation.')}</p>
+      </section> : null}
+      {tab === 'signing' ? <section className="dhl-limits-section" role="tabpanel" id="dhl-limits-panel-signing" aria-labelledby="dhl-limits-tab-signing">
+        <div className="dhl-risk-form dhl-wallet-form">
+          <label><span>{tr('签名方式', 'Signer')}</span>
+            <Select aria-label={tr('签名方式', 'Signer')} value={wallet.signer} onChange={(event) => setWallet((old) => ({ ...old, signer: event.target.value }))}>
+              <option value="web3">{tr('dsh-web3 钱包', 'dsh-web3 wallet')}</option>
+              <option value="local">{tr('插件配置的私钥', 'Plugin private key')}</option>
+            </Select></label>
+          {wallet.signer === 'web3' ? <label><span>{tr('钱包账户', 'Wallet account')}</span>
+            <Select aria-label={tr('钱包账户', 'Wallet account')} value={wallet.web3Account} onChange={(event) => setWallet((old) => ({ ...old, web3Account: event.target.value }))}>
+              {web3Accounts.accounts.some((row) => row.id === wallet.web3Account || row.label === wallet.web3Account) ? null : <option value={wallet.web3Account}>{wallet.web3Account}</option>}
+              {web3Accounts.accounts.map((row) => <option key={row.id} value={row.id}>{`${row.label} · ${row.address.slice(0, 6)}…${row.address.slice(-4)}`}</option>)}
+            </Select></label> : null}
+          <label className="dhl-risk-wide"><span>{tr('Hyperliquid 主账户地址（交易与查询用）', 'Hyperliquid main account address')}</span>
+            <Input aria-label={tr('主账户地址', 'Main account address')} placeholder="0x…" value={wallet.tradingAddress} maxLength={42} spellCheck={false}
+              onChange={(event) => setWallet((old) => ({ ...old, tradingAddress: event.target.value.trim() }))} /></label>
+        </div>
+        {wallet.signer === 'web3' && !web3Accounts.available ? <p className="dhl-limits-note">{tr('没有检测到 dsh-web3 钱包插件。', 'The dsh-web3 wallet plugin is not available.')}</p> : null}
+        <p className="dhl-limits-note">{tr('保存后立即生效，无需重启；私钥仍只在插件配置里管理。新建的 dsh-web3 账户若不在列表中，需重启 DSH 刷新钱包。', 'Applies immediately, no restart; the private key stays in plugin config. A dsh-web3 account created elsewhere may need a DSH restart to appear.')}</p>
+        <dl className="dhl-limits-facts">
+          <dt>{tr('当前', 'Current')}</dt>
+          <dd>{paper ? tr('模拟盘本地撮合，不签名。', 'Paper fills locally without signing.')
+            : st?.signer === 'web3' ? tr('dsh-web3 钱包，按其签名策略处理（DSH 设置 → Web3 钱包）。', 'dsh-web3 wallet, under its signing policy (DSH Settings → Web3 wallet).')
+              : tr('插件配置中的私钥（DSH 插件配置）。', 'Private key from plugin configuration.')}</dd>
+          <dt>{tr('托管模式', 'Custody')}</dt>
+          <dd>{st?.custody === 'managed'
+            ? tr('全托管：agent 在限额内直接执行，也可调整这些限额并划转 HIP-3 保证金，每次都会在会话里说明。', 'Managed: the agent trades within limits, may adjust them and move HIP-3 margin, and says so each time.')
+            : tr('半托管：agent 每笔实盘下单、改杠杆和划转都需要你批准，限额只由你修改。', 'Assisted: you approve each live order, leverage change and transfer; only you change limits.')}
+            <span className="dhl-limits-hint">{tr('在右上角 设置 → 托管模式 切换。', 'Switch in Settings → Custody.')}</span></dd>
+        </dl>
+      </section> : null}
+      {error ? <p className="dhl-risk-error" role="alert">{error}</p> : null}
+    </div>
   </Modal>
 }

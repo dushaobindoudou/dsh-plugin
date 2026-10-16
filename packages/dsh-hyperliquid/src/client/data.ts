@@ -127,6 +127,13 @@ function resetModeView(mode: 'live' | 'paper'): void {
   void Promise.allSettled([loadStatus(), loadAccount(), loadTradeHistory(true)])
 }
 
+/** A different wallet: drop every account-derived view and discard replies that are still in flight. */
+export function resetWalletView(): void {
+  networkEpoch += 1
+  store.patch({ account: null, accountAt: 0, accountError: null, tradeHistory: null, tradeHistoryAt: 0, tradeHistoryError: null })
+  void Promise.allSettled([loadStatus(), loadAccount(), loadTradeHistory(true)])
+}
+
 export async function switchTradingMode(mode: 'live' | 'paper'): Promise<void> {
   const result = await hyperCall('switchTradingMode', { mode, acknowledgeLive: mode === 'live' })
   if (result?.mode !== mode) throw new Error(tr('交易模式切换结果不一致', 'Trading mode switch response mismatch'))
@@ -166,6 +173,12 @@ function mergeCandle(rows: Candle[], next: Candle): Candle[] {
   if (!last || next.t > last.t) return [...rows, next].slice(-MAX_CANDLES)
   if (next.t === last.t && JSON.stringify(next) !== JSON.stringify(last)) return [...rows.slice(0, -1), next]
   return rows
+}
+
+/** The trader picks 全托管 / 半托管 on the desk; the agent can only read it. */
+export async function setCustody(mode: 'managed' | 'assisted', acknowledge = false): Promise<void> {
+  await hyperCall('setCustody', { mode, acknowledge })
+  await loadStatus()
 }
 
 export async function loadStatus(): Promise<void> {
@@ -399,6 +412,8 @@ export async function pollEvents(): Promise<void> {
         if (ev.kind === 'network.changed' && (ev.data?.to === 'mainnet' || ev.data?.to === 'testnet') && ev.data.to !== store.get().status?.network) resetNetworkView(ev.data.to)
         if (ev.kind === 'mode.changed' && (ev.data?.to === 'live' || ev.data?.to === 'paper') && ev.data.to !== store.get().status?.tradingMode) resetModeView(ev.data.to)
         if (ev.kind === 'risk.changed') void loadStatus()
+        if (ev.kind === 'wallet.changed') resetWalletView()
+        if (ev.kind === 'custody.changed') void loadStatus()
         if (ev.kind === 'paper.fill' || ev.kind?.startsWith('live.order.')) { void loadAccount(); void loadTradeHistory(true) }
         if (ev.kind === 'chart.mark' && (ev.data?.sessionId === store.get().activeSessionId || (ev.data?.shared && ev.data?.coin === store.get().activeCoin))) void loadChartMarks()
         if (ev.kind === 'chart.alert' && (ev.data?.sessionId === store.get().activeSessionId || ev.data?.shared)) {

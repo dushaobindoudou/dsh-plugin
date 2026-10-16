@@ -114,15 +114,15 @@ try {
   if (walletIconAlignment.error || walletIconAlignment.delta > 2 || walletIconAlignment.iconWidth < 10) throw new Error('paper wallet dropdown icon is misaligned: ' + JSON.stringify(walletIconAlignment))
   if (!await page.getByRole('button', { name: '交易设置' }).locator('svg').count()) throw new Error('trading settings button is missing its SVG icon')
   await page.getByRole('button', { name: '交易设置' }).click()
-  await page.getByRole('menu').getByRole('button', { name: '编辑交易限额与签名规则' }).click()
-  const settingsDialog = page.getByRole('dialog', { name: '交易设置' })
+  await page.getByRole('menu').getByRole('button', { name: '交易限额与签名规则', exact: true }).click()
+  const settingsDialog = page.getByRole('dialog', { name: '交易限额与签名规则' })
   if (process.env.DSH_SMOKE_SETTINGS_SCREENSHOT) {
     await page.waitForTimeout(350)
     await settingsDialog.screenshot({ path: process.env.DSH_SMOKE_SETTINGS_SCREENSHOT })
   }
   await settingsDialog.getByRole('spinbutton', { name: '最大杠杆 · 倍' }).fill('3')
-  await settingsDialog.getByRole('spinbutton', { name: '单笔名义价值上限 · USD' }).fill('125')
-  await settingsDialog.getByRole('button', { name: '保存交易限额' }).click()
+  await settingsDialog.getByRole('spinbutton', { name: '单笔上限 · USD' }).fill('125')
+  await settingsDialog.getByRole('button', { name: '保存限额' }).click()
   await page.waitForFunction(() => window.__dhlStore.get().status?.riskLimits?.maxLeverage === 3 && window.__dhlStore.get().status?.riskLimits?.maxOrderUsd === 125)
   await settingsDialog.getByRole('button', { name: '恢复插件配置' }).click()
   await page.waitForFunction(() => window.__dhlStore.get().status?.riskSettingsSource === 'plugin' && window.__dhlStore.get().status?.riskLimits?.maxLeverage === 2)
@@ -332,7 +332,7 @@ try {
   if (await page.locator('.dhl-chatmount [contenteditable="true"]').count() === 0) {
     throw new Error('native DSH Composer did not mount inside the trading desk')
   }
-  await page.getByRole('button', { name: '分析行情' }).waitFor({ state: 'visible' })
+  await page.getByRole('button', { name: '交易体检' }).waitFor({ state: 'visible' })
   const composer = page.locator('.dhl-chatmount [contenteditable="true"]').first()
   await composer.fill('检查 BTC 行情')
   if (!(await composer.innerText()).includes('检查 BTC 行情')) throw new Error('native Composer did not accept text')

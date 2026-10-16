@@ -52,6 +52,8 @@ export function isSingleEmoji(value) {
  * from the POC toward the heavier neighbour until it holds `valueArea` of the volume.
  * @param {Array<{ open: number, high: number, low: number, close: number, volume: number }>} bars
  */
+/** Fibonacci drawings whose levels can be customised. */
+export const FIB_LEVEL_KINDS = ['fib', 'fibext', 'fibchannel']
 export const PROFILE_ROWS_MIN = 6
 export const PROFILE_ROWS_MAX = 200
 export function volumeProfile(bars, { rows = 48, valueArea = 0.7 } = {}) {
@@ -185,6 +187,13 @@ export function drawingStyle(request) {
   if (request?.lineStyle != null) {
     if (!LINE_STYLES.includes(request.lineStyle)) throw new Error(`线型必须为 ${LINE_STYLES.join('/')}`)
     style.lineStyle = request.lineStyle
+  }
+  // Custom Fibonacci levels (TradingView lets each fib drawing choose its own).
+  if (request?.levels != null) {
+    if (request?.kind != null && !FIB_LEVEL_KINDS.includes(request.kind)) throw new Error(`levels 只适用于 ${FIB_LEVEL_KINDS.join('/')}`)
+    const levels = Array.isArray(request.levels) ? [...new Set(request.levels.map(Number))].sort((a, b) => a - b) : []
+    if (levels.length < 1 || levels.length > 24 || levels.some((level) => !Number.isFinite(level) || level < -5 || level > 10)) throw new Error('斐波那契层级需要 1-24 个 -5 到 10 之间的数字')
+    style.levels = levels
   }
   // Volume profile settings (TradingView "Rows" and "Value Area Volume").
   if (request?.rows != null) {

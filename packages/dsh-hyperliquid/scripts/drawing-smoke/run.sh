@@ -36,16 +36,18 @@ boot
 if [ "${DRAWING_SMOKE_ONLY:-}" = "basics" ]; then run basics.mjs; exit 0; fi
 if [ "${DRAWING_SMOKE_ONLY:-}" = "navigation" ]; then run navigation.mjs; exit 0; fi
 if [ "${DRAWING_SMOKE_ONLY:-}" = "research" ]; then run research.mjs; exit 0; fi
-if [ -n "${DRAWING_SMOKE_ONLY:-}" ]; then run "$DRAWING_SMOKE_ONLY.mjs"; exit 0; fi
+# DRAWING_SMOKE_ONLY=basics,research runs just those phases, in order, on one host.
+if [ -n "${DRAWING_SMOKE_ONLY:-}" ]; then IFS=, read -ra ONLY <<< "$DRAWING_SMOKE_ONLY"; for phase in "${ONLY[@]}"; do run "$phase.mjs"; done; exit 0; fi
 run phase1.mjs
 kill "$WEB_PID"; wait "$WEB_PID" 2>/dev/null || true; WEB_PID=""
 boot
 run phase2.mjs
 run basics.mjs
+run settings.mjs
 run research.mjs
 run phase3.mjs
 run fills.mjs
-run perf.mjs
 run phase4.mjs
 run phase5.mjs
+run perf.mjs
 echo "drawing smoke: all phases passed"

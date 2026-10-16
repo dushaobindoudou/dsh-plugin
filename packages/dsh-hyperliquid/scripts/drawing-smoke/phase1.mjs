@@ -111,7 +111,8 @@ try {
     return (await marks()).length - before
   }
   check(await race(true) === 0, 'reproduced in the real chart: with the old rule a click is dropped when a new candle arrives mid-click')
-  check(await race(false) === 1, 'with the shipped rule the same click lands')
+  const landed = await race(false)
+  check(landed === 1, 'with the shipped rule the same click lands', { landed, marks: (await marks()).map((m) => [m.kind, m.points?.length ?? 0]), notice: await page.evaluate(() => window.__dhlStore.get().notice) })
 
   // ── realtime: another writer (second page) changes this session's drawings ──
   const other = await browser.newPage({ viewport: { width: 1600, height: 900 } })

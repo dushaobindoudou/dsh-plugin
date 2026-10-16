@@ -18,7 +18,8 @@ const WORKSPACE_DEFAULTS = Object.freeze({
   layout: { sessionsWidth: 232, chatWidth: 480, sessionsCollapsed: false, deskCollapsed: false, chatCollapsed: false },
 })
 
-/** Drawings per chart (session + coin, all intervals); the pan budget is verified at this size. */
+/** Drawings per chart (session + coin, all intervals); the pan budget is verified at this size. */import { emptyJournal } from './journal.js'
+
 export const MAX_CHART_MARKS = 100
 
 export class HyperStore {
@@ -342,6 +343,35 @@ export class HyperStore {
     this.#writeJson(join(this.dataDir, 'paper-costs.json'), costs)
     return costs
   }
+  /** Signing set on the desk (signer, web3Account, tradingAddress); overrides plugin config, no restart. */
+  walletSettings() { return this.#readJson(join(this.dataDir, 'wallet-settings.json'), null) }
+  saveWalletSettings(settings) { this.#writeJson(join(this.dataDir, 'wallet-settings.json'), { ...settings, at: Date.now() }); return settings }
+
+  /** Whether a session's current turn was started by an alert (see lib/turn-origin.js); survives a plugin reload. */
+  setAlertOrigin(sessionId, alert) {
+    const rows = { ...this.#readJson(join(this.dataDir, 'turn-origin.json'), {}), [sessionId]: { alert: Boolean(alert), at: Date.now() } }
+    // Only cleared rows are pruned: a live alert origin stays until a human message retires it.
+    const cleared = Object.entries(rows).filter(([, row]) => !row.alert).sort((a, b) => b[1].at - a[1].at).slice(0, 500)
+    const kept = Object.fromEntries([...Object.entries(rows).filter(([, row]) => row.alert), ...cleared])
+    this.#writeJson(join(this.dataDir, 'turn-origin.json'), kept)
+  }
+  alertOrigin(sessionId) { const row = this.#readJson(join(this.dataDir, 'turn-origin.json'), {})[sessionId]; return row ? row.alert === true : undefined }
+
+  /** Custody mode chosen on the desk: 'managed' (全托管) or 'assisted' (半托管); null = not chosen yet. */
+  custody() {
+    const saved = this.#readJson(join(this.dataDir, 'custody.json'), null)
+    return saved?.mode === 'managed' || saved?.mode === 'assisted' ? saved.mode : null
+  }
+  saveCustody(mode) { this.#writeJson(join(this.dataDir, 'custody.json'), { mode, at: Date.now() }); return mode }
+
+  /** The trader's journal (profile, strategy book, trade/review log); see lib/journal.js. */
+  journal() {
+    const saved = this.#readJson(join(this.dataDir, 'journal.json'), null)
+    return saved && typeof saved === 'object' && Array.isArray(saved.strategies) && Array.isArray(saved.entries)
+      ? { profile: saved.profile ?? {}, strategies: saved.strategies, entries: saved.entries } : emptyJournal()
+  }
+  saveJournal(journal) { this.#writeJson(join(this.dataDir, 'journal.json'), journal); return journal }
+
   indicatorTemplates() { return this.#readJson(join(this.dataDir, 'indicator-templates.json'), []) }
   saveIndicatorTemplate(template) {
     const rows = this.indicatorTemplates()

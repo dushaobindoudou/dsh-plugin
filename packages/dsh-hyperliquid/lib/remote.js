@@ -11,7 +11,7 @@ import { resolve } from 'node:path'
 import { HyperliquidClient, keys, sigFigs } from './hl.js'
 import { canonicalMarketCoin } from './market-symbol.js'
 import { HyperStore } from './store.js'
-import { addressFromPrivateKey, buildL1TypedData, splitSignature } from './signing.js'
+import { addressFromPrivateKey, buildL1TypedData, buildSendAsset, signTypedDataLocal, splitSignature } from './signing.js'
 import { TradingGuard } from './trading-guard.js'
 import { normalizeMaLines } from './moving-average.js'
 import { ALERT_KINDS, ICON_NAMES, TEXT_KINDS, drawingGeometry, drawingStyle, isIconLabel, linePriceAt } from './chart-drawings.js'
@@ -128,12 +128,16 @@ export class HyperRemote extends TypertRemoteService {
     if (this.cfg.tradingAddress && !/^0x[0-9a-fA-F]{40}$/.test(this.cfg.tradingAddress)) throw new Error('tradingAddress 必须为 20 字节 EVM 地址')
     this.client = new HyperliquidClient({ network: this.cfg.network, privateKey: this.cfg.privateKey })
     this.store = new HyperStore(this.cfg.dataDir, this.cfg.network)
+    // Signing chosen on the desk wins over plugin config (set without a restart; see updateWalletSettings).
+    try { Object.assign(this.cfg, normalizeWalletSettings(this.store.walletSettings() ?? {}, this.cfg)) } catch { /* a bad saved file falls back to config */ }
     this.baseRiskSettings = Object.fromEntries(['allowedCoins', 'maxOrderUsd', 'maxDailyUsd', 'maxPositionUsd', 'maxLeverage'].map((key) => [key, this.cfg[key]]))
     const savedRiskSettings = this.store.getRiskSettings()
     this.riskSettingsOverride = savedRiskSettings != null
     if (savedRiskSettings) Object.assign(this.cfg, normalizeRiskSettings(savedRiskSettings))
     this.guard = new TradingGuard(this.cfg.dataDir, { ...this.cfg, dataDir: this.cfg.dataDir })
     this.paperGuard = new TradingGuard(this.cfg.dataDir, { ...this.cfg, dataDir: this.cfg.dataDir }, { budgetName: this.cfg.network === 'mainnet' ? 'paper-budget-mainnet.json' : 'paper-budget.json' })
+    // Custody: the desk setting wins; before the trader picks one, config.autonomousLive implies managed.
+    this.cfg.custody = this.store.custody() ?? (this.cfg.autonomousLive ? 'managed' : 'assisted')
     this.marketsCache = null
     this.marketsAt = 0
     this.catalogCache = null
@@ -146,12 +150,13 @@ export class HyperRemote extends TypertRemoteService {
     this.tradeCapacityCache = new Map()
     this.tradeCapacityPending = new Map()
     this.walletAddressCache = null
+    this.walletEpoch = 0 // bumped on every wallet switch; work that started under an older wallet is discarded
     this.desk = { coin: 'BTC', interval: '15m', sessionId: null } // active UI session and market focus
     this.lastTouch = new Map() // snapshot key -> last request ms
     this.activeTradeOps = 0
     // Hold the network stable through every order/cancel/leverage operation,
     // including wallet approval and the exchange response.
-    for (const method of ['placeOrder', 'cancelOrder', 'setLeverage']) {
+    for (const method of ['placeOrder', 'cancelOrder', 'setLeverage', 'transferCollateral']) {
       const operation = this[method].bind(this)
       this[method] = async (...args) => {
         this.activeTradeOps += 1
@@ -162,7 +167,12 @@ export class HyperRemote extends TypertRemoteService {
     this.sweepTimer = setInterval(() => this.sweepSubs(), SUB_SWEEP_MS)
     this.sweepTimer.unref?.()
     this.alertSides = new Map() // drawing id → last side of the mid price (-1 below, 1 above)
-    this.alertTimer = setInterval(() => { try { this.checkDrawingAlerts() } catch { /* next tick retries */ } }, ALERT_CHECK_MS)
+    this.alertListeners = new Set() // (event) => void — the host wakes the session agent through this
+    this.dexMidCache = new Map() // HIP-3 dex → { at, mids }: core allMids does not carry builder-deployed markets
+    this.alertTimer = setInterval(() => {
+      try { this.checkDrawingAlerts() } catch { /* next tick retries */ }
+      void this.refreshAlertDexMids().catch(() => {})
+    }, ALERT_CHECK_MS)
     this.alertTimer.unref?.()
   }
 
@@ -294,8 +304,63 @@ export class HyperRemote extends TypertRemoteService {
     return this.client.exchangeSigned(action, signature, nonce)
   }
 
+  /**
+   * The exchange asset behind a tradable perp: core perps use their `meta` index; HIP-3 (builder-deployed)
+   * perps use 100000 + perpDexIndex * 10000 + index in that dex's meta (Hyperliquid "Asset IDs").
+   * Only USDC-collateral dexes are tradable here, since balances and limits are valued in USD.
+   * @returns {{ coin, asset, dex, szDecimals, maxLeverage, onlyIsolated }}
+   */
+  async tradeAsset(coin) {
+    if (!coin.includes(':')) {
+      const { universe } = await this.markets()
+      const index = universe.findIndex((row) => row.name === coin)
+      if (index < 0) throw new Error(`未知合约 ${coin}；现货与 Outcome 市场目前只读`)
+      const row = universe[index]
+      return { coin, asset: index, dex: '', szDecimals: row.szDecimals, maxLeverage: row.maxLeverage, onlyIsolated: Boolean(row.onlyIsolated) }
+    }
+    const dex = coin.split(':')[0]
+    const client = this.client
+    const cached = this.dexAssets?.get(dex)
+    let entry = cached && Date.now() - cached.at < 60_000 && cached.network === this.cfg.network ? cached : null
+    if (!entry) {
+      const [dexs, meta] = await Promise.all([this.perpDexList(), client.info('meta', { dex })])
+      if (client !== this.client) throw new Error('网络已切换，请重新预检交易')
+      const dexIndex = dexs.findIndex((row) => row?.name === dex)
+      if (dexIndex < 1 || !Array.isArray(meta?.universe)) throw new Error(`未知的 HIP-3 交易所 ${dex}`)
+      entry = { at: Date.now(), network: this.cfg.network, dexIndex, collateralToken: meta.collateralToken, universe: meta.universe }
+      ;(this.dexAssets ??= new Map()).set(dex, entry)
+    }
+    if (entry.collateralToken !== 0) throw new Error(`${dex} 使用非 USDC 保证金（token ${entry.collateralToken}），暂只支持查看行情`)
+    const index = entry.universe.findIndex((row) => row.name === coin)
+    if (index < 0) throw new Error(`${dex} 上没有合约 ${coin}`)
+    const row = entry.universe[index]
+    if (row.isDelisted) throw new Error(`${coin} 已下架`)
+    return { coin, asset: 100000 + entry.dexIndex * 10000 + index, dex, szDecimals: row.szDecimals, maxLeverage: row.maxLeverage,
+      onlyIsolated: Boolean(row.onlyIsolated) || row.marginMode === 'strictIsolated' || row.marginMode === 'noCross' }
+  }
+
+  /** `perpDexs`: index 0 is the core dex (null), HIP-3 dexes follow in asset-id order. */
+  async perpDexList() {
+    if (this.perpDexCache && Date.now() - this.perpDexCache.at < 300_000 && this.perpDexCache.network === this.cfg.network) return this.perpDexCache.rows
+    const rows = await this.client.info('perpDexs')
+    if (!Array.isArray(rows)) throw new Error('无法读取 HIP-3 交易所列表')
+    this.perpDexCache = { at: Date.now(), network: this.cfg.network, rows }
+    return rows
+  }
+
+  /** Mids of one HIP-3 dex (core mids do not include builder-deployed markets). */
+  async dexMids(dex) {
+    const res = await this.client.info('allMids', { dex })
+    return res?.mids ?? res ?? {}
+  }
+
   /** Mid price for a perp coin: WS allMids first, REST fallback. */
   async midOf(coin) {
+    if (coin.includes(':')) {
+      const n = Number((await this.dexMids(coin.split(':')[0]))[coin])
+      if (Number.isFinite(n) && n > 0) return n
+      throw new Error(`无法获得 ${coin} 中间价`)
+    }
     this.touch(keys.allMids())
     const snap = this.client.snapshot(keys.allMids())
     if (snap?.data && Date.now() - snap.at < 5_000) {
@@ -361,9 +426,10 @@ export class HyperRemote extends TypertRemoteService {
           for (const [index, asset] of (meta?.universe ?? []).entries()) {
             const dex = asset.name.split(':')[0] || 'HIP-3'
             dexIndex.set(asset.name, { dex, index })
+            // USDC-collateral HIP-3 perps trade through the same order path (asset 100000 + dex·10000 + index).
             rows.push({ name: asset.name, label: asset.name, kind: 'hip3',
-              venue: dex, tradable: false, ctx: contexts?.[index] ?? null,
-              category: categories.get(asset.name) ?? null, maxLeverage: asset.maxLeverage })
+              venue: dex, tradable: meta?.collateralToken === 0 && !asset.isDelisted, ctx: contexts?.[index] ?? null,
+              category: categories.get(asset.name) ?? null, maxLeverage: asset.maxLeverage, szDecimals: asset.szDecimals })
           }
         }
       }
@@ -509,7 +575,7 @@ export class HyperRemote extends TypertRemoteService {
     const fields = { ...drawingStyle({ ...patch, kind: current.kind }) }
     if (patch?.alert === true) fields.alertTriggeredAt = undefined
     // null clears a style back to its default (undo of a first restyle relies on this).
-    for (const key of ['color', 'lineWidth', 'lineStyle', 'rows', 'valueArea']) if (key in patch && patch[key] === null) fields[key] = undefined
+    for (const key of ['color', 'lineWidth', 'lineStyle', 'rows', 'valueArea', 'levels']) if (key in patch && patch[key] === null) fields[key] = undefined
     if (geometryKeys.some((key) => key in patch)) Object.assign(fields, drawingGeometry(current.kind, merged))
     if ('label' in patch) {
       const label = String(patch.label ?? '').trim()
@@ -530,6 +596,15 @@ export class HyperRemote extends TypertRemoteService {
    * switches off, the time is recorded) and the desk gets a `chart.alert` event.
    * @param mids - coin → mid (defaults to the live allMids snapshot).
    */
+  /** Keep fresh mids for every HIP-3 dex that has an armed alert (polled with the alert check). */
+  async refreshAlertDexMids() {
+    const dexes = new Set((this.store.allChartMarks?.() ?? []).filter((mark) => mark.alert && String(mark.coin).includes(':')).map((mark) => mark.coin.split(':')[0]))
+    const client = this.client, network = this.cfg.network
+    const rows = await Promise.all([...dexes].map(async (dex) => [dex, { at: Date.now(), mids: await this.dexMids(dex) }]))
+    if (this.client !== client || this.cfg.network !== network) throw new Error('网络已切换，丢弃旧价格')
+    for (const [dex, value] of rows) this.dexMidCache.set(dex, value)
+  }
+
   checkDrawingAlerts(now = Date.now(), mids = null) {
     const watched = this.store.allChartMarks?.().filter((mark) => mark.alert && ALERT_KINDS.includes(mark.kind)) ?? []
     for (const id of [...this.alertSides.keys()]) if (!watched.some((mark) => mark.id === id)) this.alertSides.delete(id)
@@ -539,7 +614,8 @@ export class HyperRemote extends TypertRemoteService {
       const key = this.touch(keys.allMids())
       const snap = this.client.snapshot(key)
       if (!snap || now - snap.at > 10_000) return []
-      book = snap.data?.mids ?? snap.data
+      book = { ...(snap.data?.mids ?? snap.data) }
+      for (const { at, mids: dexBook } of this.dexMidCache.values()) if (now - at <= 10_000) Object.assign(book, dexBook)
     }
     const fired = []
     for (const mark of watched) {
@@ -556,6 +632,8 @@ export class HyperRemote extends TypertRemoteService {
         price: mid, line, direction: side > 0 ? 'up' : 'down', at: now }
       this.store.recordEvent('chart.alert', event)
       fired.push({ ...event, mark: saved })
+      // The owning session's agent hears about it too (the host decides how, with its own guard rails).
+      for (const listener of this.alertListeners ?? []) { try { listener({ ...event, sessionId: mark.sessionId, mark: saved }) } catch { /* a listener must not stop the scan */ } }
     }
     return fired
   }
@@ -696,6 +774,9 @@ export class HyperRemote extends TypertRemoteService {
     this.cfg.network = network
     this.client = new HyperliquidClient({ network, privateKey: this.cfg.privateKey })
     this.lastTouch.clear()
+    this.dexMidCache?.clear()
+    this.alertSides?.clear()
+    this.lastLiveAccount = null
     this.marketsCache = null
     this.marketsAt = 0
     this.catalogCache = null
@@ -721,6 +802,7 @@ export class HyperRemote extends TypertRemoteService {
     if (mode === 'live' && request?.acknowledgeLive !== true) throw new Error('切换实盘需要确认')
     const previous = this.cfg.tradingMode
     this.cfg.tradingMode = mode
+    this.lastLiveAccount = null
     this.accountModeCache = null
     this.accountModePending = null
     this.tradeCapacityCache.clear()
@@ -744,6 +826,136 @@ export class HyperRemote extends TypertRemoteService {
     this.store.clearRiskSettings()
     this.applyRiskSettings(this.baseRiskSettings, false)
     return { riskLimits: { ...this.baseRiskSettings, usedTodayUsd: this.usedTodayUsd() } }
+  }
+
+  /** Desk only: the dsh-web3 accounts the trader can sign with (no secrets, just id / label / address). */
+  async walletAccounts() {
+    const wallet = this.walletService()
+    if (!wallet) return { available: false, accounts: [] }
+    const accounts = typeof wallet.listAccounts === 'function' ? wallet.listAccounts() : []
+    return { available: true, accounts: accounts.filter((row) => row?.address).map((row) => ({ id: row.id, label: row.label ?? row.id, address: row.address })) }
+  }
+
+  /**
+   * Desk only (never an agent tool): change signer / web3 account / trading address at runtime. The values
+   * are validated, saved, and every cached account read is dropped, so the next status and account reads
+   * use the new wallet — no host restart. The private key stays in plugin config.
+   */
+  async updateWalletSettings(request) {
+    if (this.activeTradeOps > 0) throw new Error('交易操作仍在进行，请稍后再修改钱包设置')
+    const next = normalizeWalletSettings(request ?? {}, this.cfg)
+    if (next.signer === 'web3') {
+      const wallet = this.walletService()
+      if (!wallet) throw new Error('dsh-web3 未安装或未启用：请先在 DSH 中启用 Web3 钱包插件')
+      const accounts = typeof wallet.listAccounts === 'function' ? wallet.listAccounts() : []
+      if (!accounts.some((row) => row?.id === next.web3Account || row?.label === next.web3Account)) {
+        throw new Error(`dsh-web3 中找不到账户「${next.web3Account}」。如果它刚在另一个进程里创建，当前宿主的钱包列表还没刷新，需要重启 DSH`)
+      }
+    }
+    if (next.signer === 'local' && !this.cfg.privateKey) throw new Error('本地签名需要在插件配置里填写私钥')
+    if (next.signer === 'web3' && !next.tradingAddress) throw new Error('使用 dsh-web3 签名时需要填写 Hyperliquid 主账户地址')
+    Object.assign(this.cfg, next)
+    this.walletEpoch += 1
+    this.store.saveWalletSettings(next)
+    this.addressCache = null; this.walletAddressCache = null
+    this.accountModeCache = null; this.accountModePending = null
+    this.tradeCapacityCache.clear(); this.tradeCapacityPending.clear()
+    this.lastLiveAccount = null
+    this.guard.plans.clear()
+    this.store.recordEvent('wallet.changed', { signer: next.signer, web3Account: next.web3Account, tradingAddress: next.tradingAddress })
+    return { signer: next.signer, web3Account: next.web3Account, tradingAddress: next.tradingAddress, address: await this.resolveAddress() }
+  }
+
+  /** 全托管: the agent may act without per-action approval (the dsh-web3 wallet policy still applies). */
+  isManaged() { return this.cfg.custody ? this.cfg.custody === 'managed' : this.cfg.autonomousLive === true }
+
+  /** Desk only (never an agent tool): the trader picks 全托管 / 半托管. */
+  async setCustody(request) {
+    if (this.activeTradeOps > 0) throw new Error('交易操作仍在进行，暂不能切换托管模式')
+    const mode = request?.mode
+    if (mode !== 'managed' && mode !== 'assisted') throw new Error('托管模式必须为 managed（全托管）或 assisted（半托管）')
+    if (mode === 'managed' && this.cfg.tradingMode === 'live' && request?.acknowledge !== true) throw new Error('开启全托管实盘需要确认')
+    this.cfg.custody = this.store.saveCustody(mode)
+    this.guard.plans.clear()
+    this.store.recordEvent('custody.changed', { mode })
+    return { custody: mode }
+  }
+
+  /**
+   * Agent edit of the trading limits — 全托管 only; in 半托管 the trader changes them on the desk.
+   * `addCoins` / `removeCoins` adjust the allow-list; numeric limits replace the current value.
+   */
+  agentUpdateRiskSettings(request) {
+    if (!this.isManaged()) throw new Error('当前为半托管：交易限额与允许币对只能由你在交易台 设置 → 交易限额与签名规则 中修改；如需让 agent 自行调整，请在 设置 → 托管模式 切换为全托管')
+    const current = { allowedCoins: [...this.cfg.allowedCoins], maxOrderUsd: this.cfg.maxOrderUsd, maxDailyUsd: this.cfg.maxDailyUsd, maxPositionUsd: this.cfg.maxPositionUsd, maxLeverage: this.cfg.maxLeverage }
+    const add = (request?.addCoins ?? []).map((coin) => canonicalMarketCoin(coin))
+    const drop = new Set((request?.removeCoins ?? []).map((coin) => canonicalMarketCoin(coin)))
+    const next = { ...current, allowedCoins: [...new Set([...current.allowedCoins.filter((coin) => !drop.has(coin)), ...add])] }
+    for (const key of ['maxOrderUsd', 'maxDailyUsd', 'maxPositionUsd', 'maxLeverage']) if (request?.[key] != null) next[key] = request[key]
+    if (this.activeTradeOps > 0) throw new Error('交易操作仍在进行，暂不能修改限额')
+    const limits = normalizeRiskSettings(next)
+    this.store.saveRiskSettings(limits)
+    this.applyRiskSettings(limits, true)
+    this.store.recordEvent('risk.changed', { by: 'agent', before: current, after: limits })
+    return { before: current, after: limits }
+  }
+
+  /**
+   * Move USDC between the core perp account ('') and a HIP-3 dex (e.g. 'xyz') with a user-signed
+   * `sendAsset` (main wallet). 半托管 asks the trader every time; 全托管 goes straight to the wallet.
+   */
+  async transferCollateral(request, exec) {
+    if (this.cfg.tradingMode !== 'live') throw new Error('paper 模式没有交易所资金，无需划转')
+    const transferEpoch = this.walletEpoch
+    if (!exec?.agent) throw new Error('资金划转仅允许从 DSH agent 工具调用')
+    exec.signal?.throwIfAborted()
+    const dex = String(request?.dex ?? '').trim()
+    const toDex = request?.direction !== 'out'
+    if (!dex || dex.includes(':')) throw new Error('dex 需要 HIP-3 交易所名，如 xyz')
+    const dexs = await this.perpDexList()
+    if (!dexs.some((row) => row?.name === dex)) throw new Error(`未知的 HIP-3 交易所 ${dex}`)
+    const meta = await this.client.info('meta', { dex })
+    if (meta?.collateralToken !== 0) throw new Error(`${dex} 不使用 USDC 保证金，暂不支持划转`)
+    const amount = Number(request?.amount)
+    if (!Number.isFinite(amount) || amount <= 0) throw new Error('amount 必须为正数（USDC）')
+    if (Number(amount.toFixed(6)) !== amount) throw new Error('USDC 划转金额最多 6 位小数')
+    if (amount > this.cfg.maxPositionUsd) throw new Error(`单次划转不超过仓位上限 ${this.cfg.maxPositionUsd} USD`)
+    const address = await this.resolveAddress()
+    if (!address) throw new Error('live 划转需要钱包地址')
+    const signerAddress = this.cfg.signer === 'web3' ? await this.web3Address() : await addressFromPrivateKey(this.cfg.privateKey)
+    if (signerAddress.toLowerCase() !== address.toLowerCase()) throw new Error('保证金划转需要交易主钱包签名；当前签名钱包与 tradingAddress 不一致，API wallet 不能用于此划转')
+    const source = toDex ? '' : dex
+    const sourceState = source ? await this.client.info('clearinghouseState', { user: address, dex: source }) : await this.client.clearinghouseState(address)
+    const withdrawable = Number(sourceState?.withdrawable)
+    if (!Number.isFinite(withdrawable)) throw new Error('无法确认可划转余额')
+    if (amount > withdrawable + 1e-9) throw new Error(`${source || '主永续账户'} 可划转 ${withdrawable.toFixed(2)} USDC，不足 ${amount}`)
+    const spotMeta = await this.client.info('spotMeta')
+    const usdc = (spotMeta?.tokens ?? []).find((token) => token.index === 0 && token.name === 'USDC')
+    if (!usdc?.tokenId) throw new Error('无法读取 USDC 代币信息')
+    const what = `${amount} USDC：${toDex ? `主永续账户 → ${dex}` : `${dex} → 主永续账户`}`
+    if (!this.isManaged()) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 划转 ${what}？`, exec, `Hyperliquid ${this.cfg.network}: transfer ${amount} USDC ${toDex ? `core perps → ${dex}` : `${dex} → core perps`}?`)
+    if (transferEpoch !== this.walletEpoch) throw new Error('钱包已切换，划转已取消')
+    const nonce = this.client.nextNonce()
+    const { action, typed } = buildSendAsset({ destination: address, sourceDex: source, destinationDex: toDex ? dex : '', token: `USDC:${usdc.tokenId}`,
+      amount: String(Number(amount.toFixed(6))), nonce, isMainnet: this.cfg.network === 'mainnet' })
+    let signature
+    if (this.cfg.signer === 'web3') {
+      const wallet = this.walletService()
+      if (!wallet) throw new Error('signer=web3 但 dsh-web3 未安装')
+      const result = await wallet.signTypedData({ account: this.cfg.web3Account, ...typed, purpose: `Hyperliquid ${this.cfg.network} 资金划转：${what}` },
+        this.approvalGateway(), { toolName: 'dsh-hyperliquid', agent: exec?.agent, callId: exec?.callId, signal: exec?.signal })
+      if (result?.status !== 'signed' || !result.signature) throw new Error(`dsh-web3 签名未完成（status=${result?.status}）`)
+      if (result.address?.toLowerCase() !== signerAddress.toLowerCase()) throw new Error('dsh-web3 返回的签名地址与配置账户不一致')
+      signature = splitSignature(result.signature)
+    } else {
+      if (!this.cfg.privateKey) throw new Error('live 划转需要钱包私钥')
+      signature = await signTypedDataLocal(this.cfg.privateKey, typed)
+    }
+    exec.signal?.throwIfAborted()
+    const res = await this.client.exchangeUserSigned(action, signature, nonce)
+    assertExchangeAccepted(res)
+    this.store.recordEvent('live.transfer', { dex, amount, toDex })
+    return { ok: true, dex, amount, direction: toDex ? 'in' : 'out', response: res }
   }
 
   applyRiskSettings(limits, override) {
@@ -771,7 +983,10 @@ export class HyperRemote extends TypertRemoteService {
       network: this.cfg.network,
       tradingMode: this.cfg.tradingMode,
       signer: this.cfg.signer,
-      autonomousLive: this.cfg.autonomousLive,
+      web3Account: this.cfg.web3Account,
+      tradingAddress: this.cfg.tradingAddress,
+      autonomousLive: this.isManaged(),
+      custody: this.cfg.custody,
       riskSettingsSource: this.riskSettingsOverride ? 'desk' : 'plugin',
       riskLimits: { allowedCoins: this.cfg.allowedCoins, maxOrderUsd: this.cfg.maxOrderUsd, maxDailyUsd: this.cfg.maxDailyUsd, maxPositionUsd: this.cfg.maxPositionUsd, maxLeverage: this.cfg.maxLeverage,
         // Day budget of the ledger that applies to the current mode (paper and live are separate).
@@ -872,7 +1087,7 @@ export class HyperRemote extends TypertRemoteService {
   async account(request) {
     if (this.cfg.tradingMode === 'paper') {
       const paper = this.store.paperAccount()
-      const mids = await safeMids(this)
+      const mids = await safeMids(this, Object.keys(paper.positions ?? {}))
       const risk = paperRiskState(paper, mids)
       return { mode: 'paper', usd: paper.usd, equity: risk.equity, uPnl: risk.uPnl,
         marginUsed: risk.marksConfirmed ? risk.marginUsed : null,
@@ -880,25 +1095,27 @@ export class HyperRemote extends TypertRemoteService {
         marksConfirmed: risk.marksConfirmed, positions: risk.positions, fills: paper.fills.slice(0, 50),
         simulation: '已模拟配置的滑点与手续费；未模拟盘口深度、资金费或强平' }
     }
+    const client = this.client, network = this.cfg.network
+    const walletEpoch = this.walletEpoch
     const address = await this.resolveAddress()
-    if (!address) throw new Error('live 模式需要钱包（config.privateKey 或 signer=web3）')
+    if (!address) throw new Error('live 模式需要钱包：在交易台 设置 → 交易限额与签名规则 → 签名与托管 中连接')
     const accountMode = await this.accountMode(address)
     const sharedBalance = accountMode === 'unifiedAccount' || accountMode === 'portfolioMargin'
     const activeCoin = canonicalMarketCoin(request?.coin ?? this.desk?.coin)
     const accountDex = activeCoin.includes(':') ? activeCoin.split(':')[0] : ''
     const stateKey = this.touch(keys.allDexsClearinghouseState(address))
-    const wsState = this.client.snapshot(stateKey)
+    const wsState = client.snapshot(stateKey)
     const liveStates = wsState && Date.now() - wsState.at < 10_000 &&
       wsState.data?.user?.toLowerCase() === address.toLowerCase() && Array.isArray(wsState.data?.clearinghouseStates)
       ? new Map(wsState.data.clearinghouseStates.filter((entry) => Array.isArray(entry) && typeof entry[0] === 'string' && entry[1] && Array.isArray(entry[1].assetPositions)))
       : null
     const [state, open, markets, spot] = await Promise.all([
       liveStates?.get(accountDex) ?? (accountDex
-        ? this.client.info('clearinghouseState', { user: address, dex: accountDex })
-        : this.client.clearinghouseState(address)),
-      this.client.frontendOpenOrders(address),
+        ? client.info('clearinghouseState', { user: address, dex: accountDex })
+        : client.clearinghouseState(address)),
+      client.frontendOpenOrders(address),
       this.markets().catch(() => null),
-      sharedBalance ? this.client.spotClearinghouseState(address) : Promise.resolve(null),
+      sharedBalance ? client.spotClearinghouseState(address) : Promise.resolve(null),
     ])
     if (!state || !Array.isArray(state.assetPositions) || (!sharedBalance && (!state.marginSummary || !Number.isFinite(Number(state.marginSummary.accountValue))))) {
       throw new Error('交易所永续账户响应无效；账户状态未确认')
@@ -931,7 +1148,7 @@ export class HyperRemote extends TypertRemoteService {
       maxLeverage: row.position?.maxLeverage ?? null,
       leverage: row.position?.leverage ?? null,
     })))
-    return {
+    const liveAccount = {
       mode: 'live',
       address,
       accountMode,
@@ -948,6 +1165,12 @@ export class HyperRemote extends TypertRemoteService {
       positions: assetPositions,
       openOrders: open,
     }
+    // The system prompt reads this (synchronously) to warn about unprotected positions.
+    if (this.client !== client || this.cfg.network !== network || this.cfg.tradingMode !== 'live') throw new Error('账户环境已切换，请重新读取')
+    // A response that started under the previous wallet must not land in the new wallet's view.
+    if (walletEpoch !== this.walletEpoch) throw new Error('钱包已切换，账户数据已过期')
+    this.lastLiveAccount = { at: Date.now(), network, value: liveAccount }
+    return liveAccount
   }
 
   /** Open orders (live mode; paper has none resting). */
@@ -1114,7 +1337,11 @@ export class HyperRemote extends TypertRemoteService {
     const thesis = String(request?.thesis ?? '').trim()
     if (thesis.length < 10 || thesis.length > 1000) throw new Error('交易决策需要 10-1000 字的依据')
     const order = orderOf(request)
-    const preview = await this.checkLiveOrder(order)
+    const epoch = this.walletEpoch
+    const checked = await this.checkLiveOrder(order)
+    // A wallet switch while the pre-check was in flight voids it: the decision belongs to the old wallet.
+    if (epoch !== this.walletEpoch) throw new Error('钱包已切换，请重新预检')
+    const preview = { ...checked, walletEpoch: epoch }
     const decision = this.guard.create(order, sessionId, preview)
     this.store.recordLiveDecision(decision.decisionId, { sessionId, order, thesis, preview, expiresAt: decision.expiresAt })
     return decision
@@ -1129,19 +1356,37 @@ export class HyperRemote extends TypertRemoteService {
     const address = await this.resolveAddress()
     if (!address) throw new Error('live 交易需要有效的 tradingAddress 或本地钱包')
     if (this.cfg.signer === 'web3') await this.web3Address()
-    const [market, mids, state, accountMode] = await Promise.all([
-      this.markets(), client.allMids(), client.clearinghouseState(address), this.accountMode(address, true),
+    const asset = await this.tradeAsset(order.coin)
+    // A HIP-3 dex has its own clearinghouse: margin, positions and withdrawable live there.
+    const [mids, state, accountMode] = await Promise.all([
+      asset.dex ? this.dexMids(asset.dex) : client.allMids(),
+      asset.dex ? client.info('clearinghouseState', { user: address, dex: asset.dex }) : client.clearinghouseState(address),
+      this.accountMode(address, true),
     ])
     if (!Array.isArray(state?.assetPositions)) throw new Error('交易所持仓状态未确认，拒绝 live 下单')
     const sharedBalance = accountMode === 'unifiedAccount' || accountMode === 'portfolioMargin'
-    const asset = market.universe.find((u) => u.name === order.coin)
-    if (!asset) throw new Error(`未知合约 ${order.coin}`)
+    let positionStates = [state]
+    if (sharedBalance) {
+      // Shared USDC backs every perp venue. Read fresh positions rather than
+      // the UI's partial/cached snapshot; Standard only risks its own dex equity.
+      const [dexs, metas] = await Promise.all([client.info('perpDexs'), accountMode === 'unifiedAccount' ? client.info('allPerpMetas') : Promise.resolve(null)])
+      if (!Array.isArray(dexs) || dexs.some((dex) => dex !== null && (typeof dex?.name !== 'string' || !dex.name))) throw new Error('交易所持仓状态未确认：无法读取交易所列表')
+      if (metas && (!Array.isArray(metas) || metas.length !== dexs.length || metas.some((meta) => !Number.isInteger(meta?.collateralToken)))) throw new Error('交易所持仓状态未确认：无法核对保证金资产')
+      if (accountMode === 'unifiedAccount' && !metas) throw new Error('交易所持仓状态未确认：无法核对保证金资产')
+      // Unified pools are per collateral token; USDH/USDT dexes do not spend
+      // USDC. Portfolio mode remains conservative across its eligible assets.
+      const pooledDexs = dexs.filter((dex, index) => dex && (!metas || metas[index].collateralToken === 0))
+      const names = [...new Set(['', asset.dex ?? '', ...pooledDexs.map((dex) => dex.name)])]
+      positionStates = await Promise.all(names.map((dex) => dex === (asset.dex ?? '') ? state
+        : dex ? client.info('clearinghouseState', { user: address, dex }) : client.clearinghouseState(address)))
+      if (positionStates.some((value) => !Array.isArray(value?.assetPositions))) throw new Error('交易所持仓状态未确认，拒绝 live 下单')
+    }
     const mid = Number(mids?.mids?.[order.coin] ?? mids?.[order.coin])
     if (!Number.isFinite(mid) || mid <= 0) throw new Error('无法获取实时价格，拒绝 live 下单')
     validateProtection(order, mid)
     if (Number(wireSz(order.sz, asset.szDecimals)) !== order.sz) throw new Error(`数量不符合 ${order.coin} 的精度 ${asset.szDecimals}`)
     const row = (state?.assetPositions ?? []).find((p) => p.position?.coin === order.coin)?.position
-    const otherExposureUsd = (state?.assetPositions ?? []).reduce((sum, p) => {
+    const otherExposureUsd = positionStates.flatMap((value) => value.assetPositions).reduce((sum, p) => {
       if (p.position?.coin === order.coin) return sum
       const value = Number(p.position?.positionValue)
       if (!Number.isFinite(value)) throw new Error('无法读取其他仓位敞口')
@@ -1161,10 +1406,13 @@ export class HyperRemote extends TypertRemoteService {
       const sideCapacity = Math.min(...capacity.maxTradeSzs.map(Number))
       if (!order.reduceOnly && order.sz > sideCapacity + 1e-10) throw new Error('订单数量超过交易所当前可交易额度')
     }
+    if (asset.dex && !sharedBalance && !order.reduceOnly && !(accountValue > 0)) {
+      throw new Error(`${asset.dex} 是独立保证金的 HIP-3 交易所，账户里没有 USDC。请在 Hyperliquid 网页把 USDC 从主永续账户划转到 ${asset.dex}，或开启统一账户（Unified Account），之后 HIP-3 下单会自动调用主账户余额`)
+    }
     const riskPrice = order.type === 'limit' ? Math.max(mid * 1.05, order.px) : mid * 1.05
     const checked = this.guard.validate({ ...order, price: riskPrice, positionSize, otherExposureUsd, accountValue, leverage })
     if (client !== this.client || network !== this.cfg.network) throw new Error('网络已切换，请重新预检交易')
-    return { coin: order.coin, side: order.isBuy ? 'buy' : 'sell', mid, riskPrice, accountValue, accountMode, positionSize, otherExposureUsd, leverage, ...checked, network, address }
+    return { coin: order.coin, dex: asset.dex, side: order.isBuy ? 'buy' : 'sell', mid, riskPrice, accountValue, accountMode, positionSize, otherExposureUsd, leverage, ...checked, network, address }
   }
 
   async executeToolOrder(request, exec, sessionId) {
@@ -1201,8 +1449,7 @@ export class HyperRemote extends TypertRemoteService {
     const reduceOnly = Boolean(request?.reduceOnly)
     if (this.cfg.tradingMode === 'paper') {
       if (request?.takeProfitPx != null || request?.stopLossPx != null) throw new Error('paper 暂不模拟止盈止损触发单；请移除保护价格或切换 testnet live')
-      const { universe } = await this.markets()
-      if (!universe.some((row) => row.name === coin)) throw new Error(`当前仅支持核心永续合约模拟交易：${coin}`)
+      await this.tradeAsset(coin)
       const mid = await this.midOf(coin)
       const pos = this.store.paper.positions[coin]?.size ?? 0
       if (reduceOnly && (pos === 0 || Math.sign(isBuy ? sz : -sz) === Math.sign(pos) || sz > Math.abs(pos) + 1e-10)) throw new Error('只减仓订单会增加或翻转仓位')
@@ -1217,7 +1464,7 @@ export class HyperRemote extends TypertRemoteService {
       const px = mid * (isBuy ? 1 + pct : 1 - pct)
       if (request?.type === 'limit' && (isBuy ? px > Number(request.px) : px < Number(request.px))) throw new Error('paper 模拟滑点后无法满足限价')
       const paper = this.store.paperAccount()
-      const risk = paperRiskState(paper, { ...await safeMids(this), [coin]: mid }, true)
+      const risk = paperRiskState(paper, { ...await safeMids(this, Object.keys(paper.positions)), [coin]: mid }, true)
       const positionSize = Number(paper.positions[coin]?.size ?? 0)
       const leverage = Number(paper.positions[coin]?.leverage ?? paper.leverageByCoin?.[coin] ?? 1)
       const otherExposureUsd = risk.positions.reduce((sum, p) => sum + (p.coin === coin ? 0 : Math.abs(p.size) * p.markPx), 0)
@@ -1244,16 +1491,17 @@ export class HyperRemote extends TypertRemoteService {
     const orderSpec = orderOf(request)
     const preview = this.guard.consume(request?.decisionId, orderSpec, trusted.sessionId)
     if (preview.network !== this.cfg.network) throw new Error('交易决策的网络与当前网络不一致，请重新预检')
+    if (preview.walletEpoch !== this.walletEpoch) throw new Error('交易决策来自切换前的钱包，请重新预检')
     const fresh = await this.checkLiveOrder(orderSpec)
+    if (String(fresh.address ?? '').toLowerCase() !== String(preview.address ?? '').toLowerCase() || preview.walletEpoch !== this.walletEpoch) {
+      throw new Error('交易账户与预检时不一致，请重新预检')
+    }
     if (Math.abs(fresh.mid / preview.mid - 1) > 0.01) throw new Error('价格已偏离预检超过 1%，请重新决策')
-    if (!this.cfg.autonomousLive) {
+    if (!this.isManaged()) {
       await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} ${coin} ${isBuy ? '买入' : '卖出'} ${sz}，预估名义价值 ${fresh.notionalUsd.toFixed(2)} USD。是否允许本次交易？`, trusted.exec,
         `Hyperliquid ${this.cfg.network}: ${isBuy ? 'buy' : 'sell'} ${sz} ${coin}, estimated notional ${fresh.notionalUsd.toFixed(2)} USD. Allow this trade?`)
     }
-    const { universe } = await this.markets()
-    const idx = universe.findIndex((u) => u.name === coin)
-    if (idx < 0) throw new Error(`未知合约 ${coin}`)
-    const szDecimals = universe[idx].szDecimals
+    const { asset: idx, szDecimals } = await this.tradeAsset(coin)
     const tif = request?.type === 'limit' ? (request?.tif === 'Alo' ? 'Alo' : 'Gtc') : 'Ioc'
     const mid = await this.midOf(coin)
     let pxNum
@@ -1327,10 +1575,8 @@ export class HyperRemote extends TypertRemoteService {
     if (this.cfg.tradingMode === 'paper') throw new Error('paper 模式没有挂单')
     const exec = request?.[TOOL_CALL]?.exec
     if (!exec?.agent) throw new Error('live 撤单仅允许从 DSH agent 工具调用')
-    if (!this.cfg.autonomousLive || !this.cfg.allowedCoins.includes(coin)) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 撤销 ${coin} 订单 oid=${oid}？`, exec, `Hyperliquid ${this.cfg.network}: cancel ${coin} order oid=${oid}?`)
-    const { universe } = await this.markets()
-    const idx = universe.findIndex((u) => u.name === coin)
-    if (idx < 0) throw new Error(`未知合约 ${coin}`)
+    if (!this.isManaged() || !this.cfg.allowedCoins.includes(coin)) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 撤销 ${coin} 订单 oid=${oid}？`, exec, `Hyperliquid ${this.cfg.network}: cancel ${coin} order oid=${oid}?`)
+    const { asset: idx } = await this.tradeAsset(coin)
     const res = await this.submitAction({ type: 'cancel', cancels: [{ a: idx, o: oid }] }, exec)
     assertExchangeAccepted(res)
     this.store.recordEvent('live.cancel', { coin, oid })
@@ -1341,17 +1587,17 @@ export class HyperRemote extends TypertRemoteService {
     const coin = requireCoin(request)
     const leverage = Number(request?.leverage)
     if (!Number.isInteger(leverage) || leverage < 1 || leverage > 50) throw new Error('leverage 需要是 1-50 的整数')
-    const { universe } = await this.markets()
-    const idx = universe.findIndex((u) => u.name === coin)
-    if (idx < 0) throw new Error(`未知合约 ${coin}`)
-    if (leverage > Number(universe[idx].maxLeverage ?? 50)) throw new Error(`杠杆超过 ${coin} 市场上限 ${universe[idx].maxLeverage}x`)
-    const isCross = request?.marginMode !== 'isolated'
+    const market = await this.tradeAsset(coin)
+    const idx = market.asset
+    if (leverage > Number(market.maxLeverage ?? 50)) throw new Error(`杠杆超过 ${coin} 市场上限 ${market.maxLeverage}x`)
+    if (market.onlyIsolated && request?.marginMode === 'cross') throw new Error(`${coin} 只支持逐仓`)
+    const isCross = request?.marginMode !== 'isolated' && !market.onlyIsolated
     if (this.cfg.tradingMode === 'paper') {
       if (leverage > this.cfg.maxLeverage) throw new Error(`杠杆超过配置上限 ${this.cfg.maxLeverage}x`)
       if (!this.cfg.allowedCoins.includes(coin)) throw new Error(`${coin} 不在允许交易币对内`)
       const paper = this.store.paperAccount()
       if (paper.positions[coin]) {
-        const risk = paperRiskState(paper, await safeMids(this), true)
+        const risk = paperRiskState(paper, await safeMids(this, Object.keys(paper.positions)), true)
         const pos = paper.positions[coin]
         const marked = risk.positions.find((row) => row.coin === coin)
         const currentMargin = Math.abs(pos.size) * marked.markPx / marked.leverage
@@ -1365,7 +1611,7 @@ export class HyperRemote extends TypertRemoteService {
     if (!this.cfg.allowedCoins.includes(coin)) throw new Error(`交易限额：${coin} 不在允许交易币对内（allowedCoins）`)
     const exec = request?.[TOOL_CALL]?.exec
     if (!exec?.agent) throw new Error('live 杠杆变更仅允许从 DSH agent 工具调用')
-    if (!this.cfg.autonomousLive) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 将 ${coin} 杠杆设为 ${leverage}x？`, exec, `Hyperliquid ${this.cfg.network}: set ${coin} leverage to ${leverage}x?`)
+    if (!this.isManaged()) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 将 ${coin} 杠杆设为 ${leverage}x？`, exec, `Hyperliquid ${this.cfg.network}: set ${coin} leverage to ${leverage}x?`)
     const res = await this.submitAction({ type: 'updateLeverage', asset: idx, isCross, leverage }, exec)
     assertExchangeAccepted(res)
     this.store.recordEvent('live.leverage', { coin, leverage, isCross })
@@ -1489,6 +1735,17 @@ function expandHome(p) {
   return resolve(p)
 }
 
+/** Validate desk wallet settings; missing fields keep the current value. */
+export function normalizeWalletSettings(input, current = {}) {
+  const signer = input.signer ?? current.signer ?? 'local'
+  if (signer !== 'local' && signer !== 'web3') throw new Error('签名方式必须为 local 或 web3')
+  const web3Account = String(input.web3Account ?? current.web3Account ?? 'main').trim()
+  if (!web3Account || web3Account.length > 80) throw new Error('dsh-web3 账户名无效')
+  const tradingAddress = String(input.tradingAddress ?? current.tradingAddress ?? '').trim()
+  if (tradingAddress && !/^0x[0-9a-fA-F]{40}$/.test(tradingAddress)) throw new Error('主账户地址必须是 0x 开头的 40 位十六进制地址')
+  return { signer, web3Account, tradingAddress }
+}
+
 function defaultSpanMs(interval) {
   const spans = { '1m': 6 * 3600e3, '3m': 18 * 3600e3, '5m': 24 * 3600e3, '15m': 3 * 86400e3, '30m': 6 * 86400e3, '1h': 7 * 86400e3, '2h': 14 * 86400e3, '4h': 30 * 86400e3, '8h': 60 * 86400e3, '12h': 90 * 86400e3, '1d': 180 * 86400e3, '3d': 540 * 86400e3, '1w': 1095 * 86400e3, '1M': 5475 * 86400e3 }
   return spans[interval] ?? 7 * 86400e3
@@ -1516,15 +1773,17 @@ function argsOf(key) {
   throw new Error(`unknown snapshot key: ${key}`)
 }
 
-async function safeMids(remote) {
-  const cached = remote.client.snapshot(keys.allMids())
-  if (cached?.data && Date.now() - cached.at < 5_000) return cached.data.mids ?? cached.data
-  try {
+async function safeMids(remote, coins = []) {
+  const core = async () => {
+    const cached = remote.client.snapshot(keys.allMids())
+    if (cached?.data && Date.now() - cached.at < 5_000) return cached.data.mids ?? cached.data
     const res = await remote.client.allMids()
     return res?.mids ?? res ?? {}
-  } catch {
-    return {}
   }
+  // HIP-3 positions are priced from their own dex's mids.
+  const dexes = [...new Set(coins.filter((coin) => coin.includes(':')).map((coin) => coin.split(':')[0]))]
+  const parts = await Promise.allSettled([core(), ...dexes.map((dex) => remote.dexMids(dex))])
+  return Object.assign({}, ...parts.map((part) => part.status === 'fulfilled' ? part.value : {}))
 }
 
 /** Mark every paper position before computing equity and occupied margin. */
@@ -1557,7 +1816,7 @@ function paperRiskState(paper, mids, strict = false) {
 
 // Remote markers: every method the web client may call.
 for (const m of [
-  'indicatorTemplates', 'updatePaperCosts', 'status', 'switchNetwork', 'switchTradingMode', 'updateRiskSettings', 'resetRiskSettings', 'markets', 'marketCatalog', 'marketDetail', 'chartMarks', 'drawChartMark', 'updateChartMark', 'eraseChartMark', 'sessionWorkspace', 'updateSessionWorkspace', 'snapshot', 'candles', 'fundingHistory', 'account', 'fills', 'tradeHistory', 'portfolio',
+  'indicatorTemplates', 'updatePaperCosts', 'status', 'setCustody', 'walletAccounts', 'updateWalletSettings', 'switchNetwork', 'switchTradingMode', 'updateRiskSettings', 'resetRiskSettings', 'markets', 'marketCatalog', 'marketDetail', 'chartMarks', 'drawChartMark', 'updateChartMark', 'eraseChartMark', 'sessionWorkspace', 'updateSessionWorkspace', 'snapshot', 'candles', 'fundingHistory', 'account', 'fills', 'tradeHistory', 'portfolio',
   'sessions', 'registerSession', 'removeSession', 'bindCoin', 'deskState',
   'eventsSince',
 ]) {

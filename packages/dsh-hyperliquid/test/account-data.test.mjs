@@ -95,6 +95,7 @@ assert.equal(capacityReads, 2, 'a changed account mode must not reuse the prior 
 remote.cfg.network = 'testnet'
 remote.cfg.signer = 'local'
 remote.client.allMids = async () => ({ BTC: '83000' })
+remote.client.info = async (type) => { assert.equal(type, 'perpDexs'); return [null] }
 remote.guard = { validate: (input) => ({ notionalUsd: input.sz * input.price, nextSize: input.positionSize + input.sz, checkedAccountValue: input.accountValue }) }
 const preview = await remote.checkLiveOrder({ coin: 'BTC', isBuy: true, sz: 0.001, type: 'market', reduceOnly: false })
 assert.equal(preview.accountMode, 'portfolioMargin')

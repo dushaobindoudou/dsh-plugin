@@ -11,7 +11,7 @@ import * as React from 'react'
 import { Button, Modal } from '@deepseek-ai/dsh-client-ui-primitives'
 import { getContext, t, tr } from './remote'
 import { notify, setTapePlacement, store, useStore } from './store'
-import { isMarketStale, openSession, saveSessionWorkspace, startPolling, switchNetwork, switchTradingMode } from './data'
+import { isMarketStale, openSession, saveSessionWorkspace, setCustody, startPolling, switchNetwork, switchTradingMode } from './data'
 import { DEFAULTS, LIMITS, clampWidth, useLayout } from './layout'
 import { BrandMark } from './components/brand-mark'
 import { Divider } from './components/divider'
@@ -38,6 +38,14 @@ export function App(props: AppProps) {
   const [walletOpen, setWalletOpen] = React.useState(false)
   const [moreOpen, setMoreOpen] = React.useState(false)
   const [limitsOpen, setLimitsOpen] = React.useState(false)
+  const [confirmManaged, setConfirmManaged] = React.useState(false)
+  const custody: 'managed' | 'assisted' = st?.custody === 'managed' ? 'managed' : 'assisted'
+  const chooseCustody = React.useCallback(async (next: 'managed' | 'assisted', acknowledge = false) => {
+    setMoreOpen(false)
+    if (next === 'managed' && store.get().status?.tradingMode === 'live' && !acknowledge) { setConfirmManaged(true); return }
+    try { await setCustody(next, acknowledge) } catch (error) { notify(tr('切换托管模式失败', 'Could not switch custody') + '：' + String((error as Error)?.message ?? error)) }
+    finally { setConfirmManaged(false) }
+  }, [])
   const moreRef = React.useRef<HTMLDivElement>(null)
   const network: 'mainnet' | 'testnet' = st?.network === 'testnet' ? 'testnet' : 'mainnet'
   const mode: 'live' | 'paper' = st?.tradingMode === 'paper' ? 'paper' : 'live'
@@ -163,6 +171,7 @@ export function App(props: AppProps) {
         {s.statusError ? <span className="dhl-badge err">{t('status.unavailable', '远端不可用')}</span> : null}
         {st && network === 'testnet' ? <span className="dhl-badge paper">{t('network.testnet', '测试网')}</span> : null}
         {st && mode === 'paper' ? <span className="dhl-badge paper">{t('mode.paper', '模拟盘')}</span> : null}
+        {st && custody === 'managed' ? <span className="dhl-badge managed" title={tr('全托管：agent 可自主执行实盘、调整限额与划转保证金', 'Managed: the agent trades, adjusts limits and moves margin on its own')}>{tr('全托管', 'Managed')}</span> : null}
         {wsBadge}
         <button type="button" className="dhl-badge dhl-wallet-trigger" onClick={() => setWalletOpen(true)} aria-haspopup="dialog" aria-label={tr('查看钱包详情和收益', 'View wallet and P&L')}>
           {mode === 'paper' ? tr('模拟账户', 'Paper account') : st?.address ? st.address.slice(0, 6) + '…' + st.address.slice(-4) : t('account.none', '未连接钱包')}
@@ -186,6 +195,13 @@ export function App(props: AppProps) {
               </div>
             </div>
             <div className="dhl-more-group">
+              <span>{tr('托管模式', 'Custody')}</span>
+              <div className="dhl-segment" role="group" aria-label={tr('托管模式', 'Custody')}>
+                <button type="button" className={custody === 'assisted' ? 'on' : ''} aria-pressed={custody === 'assisted'} disabled={!st} title={tr('实盘下单、划转需你批准；限额只由你修改', 'You approve live orders and transfers; only you change limits')} onClick={() => custody !== 'assisted' && void chooseCustody('assisted')}>{tr('半托管', 'Assisted')}</button>
+                <button type="button" className={custody === 'managed' ? 'on' : ''} aria-pressed={custody === 'managed'} disabled={!st} title={tr('agent 自主执行实盘、调整限额与划转保证金', 'The agent trades, adjusts limits and moves margin on its own')} onClick={() => custody !== 'managed' && void chooseCustody('managed')}>{tr('全托管', 'Managed')}</button>
+              </div>
+            </div>
+            <div className="dhl-more-group">
               <span>{tr('盘口 / 成交位置', 'Book / trades position')}</span>
               <div className="dhl-segment">
                 <button type="button" className={s.tapePlacement === 'auto' ? 'on' : ''} onClick={() => setTapePlacement('auto')}>{tr('自适应', 'Auto')}</button>
@@ -203,6 +219,15 @@ export function App(props: AppProps) {
       </div>
       <Modal open={Boolean(confirmLive)} onClose={() => setConfirmLive(null)} title={tr('切换到主网实盘', 'Switch to mainnet live')} closeLabel={t('modal.close', '关闭')} className="dhl-network-modal" footer={<><Button variant="outline" onClick={() => setConfirmLive(null)}>{t('modal.cancel', '取消')}</Button><Button variant="primary" disabled={networkBusy} onClick={() => { if (confirmLive) void applyEnv(confirmLive) }}>{tr('确认切换', 'Switch')}</Button></>}>
         <p>{tr('主网实盘会显示真实行情和真实账户，后续交易将使用真实资金。', 'Mainnet live shows real markets and your real account; trades use real funds.')}</p>
+      </Modal>
+      <Modal open={confirmManaged} onClose={() => setConfirmManaged(false)} title={tr('开启全托管', 'Turn on managed mode')} closeLabel={t('modal.close', '关闭')} className="dhl-network-modal" footer={<><Button variant="outline" onClick={() => setConfirmManaged(false)}>{t('modal.cancel', '取消')}</Button><Button variant="primary" onClick={() => void chooseCustody('managed', true)}>{tr('开启全托管', 'Turn on')}</Button></>}>
+        <p>{tr('全托管后，agent 在当前实盘账户中可以：', 'In managed mode the agent can, on this live account:')}</p>
+        <ul className="dhl-managed-list">
+          <li>{tr('不经逐笔批准直接下单、撤单和调整杠杆；', 'place, cancel and re-lever orders without per-trade approval;')}</li>
+          <li>{tr('自行修改允许交易的币对与单笔、每日、仓位、杠杆上限；', 'change the allowed coins and the order, daily, position and leverage limits;')}</li>
+          <li>{tr('在主永续账户与 HIP-3 交易所之间划转 USDC 保证金。', 'move USDC margin between the core perp account and HIP-3 dexes.')}</li>
+        </ul>
+        <p>{tr('dsh-web3 钱包自身的签名策略仍然生效。你可以随时切回半托管。', 'The dsh-web3 wallet signing policy still applies. You can switch back to assisted at any time.')}</p>
       </Modal>
       <WalletDetails open={walletOpen} onClose={() => setWalletOpen(false)} />
       <TradingLimits open={limitsOpen} onClose={() => setLimitsOpen(false)} />

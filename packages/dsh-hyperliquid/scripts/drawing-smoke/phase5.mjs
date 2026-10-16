@@ -79,6 +79,32 @@ try {
   check(await page.locator('.dhl-snap-ring').count() === 1, 'holding Ctrl turns the magnet on and shows where it snaps')
   await page.keyboard.up('Control'); await page.keyboard.press('Escape')
 
+  // ── Shift constrains a trend line to 45° (or horizontal) on screen ──
+  await page.keyboard.press('Escape')
+  const angleOf = async (id) => page.evaluate((markId) => { const l = document.querySelector(`.dhl-chart-drawing-overlay [data-mark-id="${markId}"] line`); const [x1, y1, x2, y2] = ['x1', 'y1', 'x2', 'y2'].map((k) => Number(l.getAttribute(k))); return Math.atan2(-(y2 - y1), x2 - x1) * 180 / Math.PI }, id)
+  const drawTrend = async (from, to) => {
+    const before = new Set((await marks()).map((m) => m.id))
+    await page.keyboard.press('Alt+KeyT'); await page.waitForTimeout(150)
+    await clickXY(from); await page.keyboard.down('Shift'); await page.mouse.move(to.x, to.y, { steps: 4 }); await page.mouse.click(to.x, to.y); await page.keyboard.up('Shift'); await settle()
+    return (await marks()).find((m) => !before.has(m.id) && m.kind === 'trend')
+  }
+  const b5 = await page.locator('.dhl-chart canvas').first().boundingBox()
+  const steep = await drawTrend({ x: b5.x + b5.width * .3, y: b5.y + b5.height * .7 }, { x: b5.x + b5.width * .3 + 100, y: b5.y + b5.height * .7 - 85 })
+  const steepAngle = await angleOf(steep.id)
+  check(Math.abs(steepAngle - 45) < 4, `Shift snaps a ~40° drag to 45° (${steepAngle.toFixed(1)}°)`)
+  const flat = await drawTrend({ x: b5.x + b5.width * .3, y: b5.y + b5.height * .4 }, { x: b5.x + b5.width * .3 + 160, y: b5.y + b5.height * .4 - 25 })
+  check(flat.fromPrice === flat.toPrice, 'Shift snaps a shallow drag to horizontal')
+
+  // ── custom Fibonacci levels from the toolbar ──
+  await page.keyboard.press('Alt+KeyF'); await page.waitForTimeout(150)
+  await clickXY({ x: b5.x + b5.width * .55, y: b5.y + b5.height * .75 }); await clickXY({ x: b5.x + b5.width * .7, y: b5.y + b5.height * .35 }); await settle()
+  const fib = (await marks()).find((m) => m.kind === 'fib')
+  await page.locator('.dhl-drawing-list').getByRole('button', { name: /斐波那契/ }).first().click()
+  const levelsBox = page.getByRole('toolbar', { name: '画线样式' }).getByLabel('斐波那契层级（逗号分隔）')
+  await levelsBox.fill('0, 0.5, 1, 1.618'); await levelsBox.press('Enter'); await settle()
+  check(JSON.stringify((await hostMarks()).find((m) => m.id === fib.id)?.levels) === '[0,0.5,1,1.618]' && (await page.locator(`.dhl-chart-drawing-overlay .dhl-drawing[data-mark-id="${fib.id}"]`).first().textContent()).includes('1.618 ('), 'custom fib levels are saved and drawn')
+  await page.keyboard.press('Escape')
+
   // ── volume profile settings from the toolbar ──
   await page.keyboard.press('Escape')
   await page.locator('.dhl-draw-menu summary').click(); await page.getByRole('menuitemradio', { name: /^固定范围成交量分布/ }).click()
@@ -87,7 +113,23 @@ try {
   check(Boolean(vp), 'volume profile drawn')
   await page.locator('.dhl-drawing-list').getByRole('button', { name: /成交量分布|固定范围/ }).first().click()
   await page.getByRole('toolbar', { name: '画线样式' }).getByLabel('价格行数').selectOption('96'); await settle()
-  check((await hostMarks()).find((m) => m.id === vp.id)?.rows === 96 && await page.locator(`[data-mark-id="${vp.id}"] .dhl-vprofile-up`).count() >= 60, 'changing rows to 96 re-bins the profile')
+  const profileRows = await page.locator(`[data-mark-id="${vp.id}"] > .dhl-vprofile`).first().evaluate((node) => [...node.querySelectorAll('.dhl-vprofile-up, .dhl-vprofile-down')].reduce((sum, path) => sum + (path.getAttribute('d')?.match(/M/g)?.length ?? 0), 0) / 2)
+  check((await hostMarks()).find((m) => m.id === vp.id)?.rows === 96 && profileRows === 96, 'changing rows to 96 re-bins and draws all 96 profile rows')
+
+  // ── custody switch: 全托管 asks first on live, shows a badge, and switches back ──
+  await page.keyboard.press('Escape')
+  const custody = () => page.evaluate(() => window.__dhlStore.get().status?.custody)
+  await page.locator('.dhl-more-trigger').click()
+  await page.getByRole('group', { name: '托管模式' }).getByRole('button', { name: '全托管' }).click()
+  if (await page.evaluate(() => window.__dhlStore.get().status?.tradingMode) === 'live') {
+    await page.getByRole('button', { name: '开启全托管' }).last().click()
+  }
+  await page.waitForFunction(() => window.__dhlStore.get().status?.custody === 'managed', null, { timeout: 10_000 })
+  check(await page.locator('.dhl-badge.managed').isVisible(), 'managed custody shows a badge in the top bar')
+  await page.locator('.dhl-more-trigger').click()
+  await page.getByRole('group', { name: '托管模式' }).getByRole('button', { name: '半托管' }).click()
+  await page.waitForFunction(() => window.__dhlStore.get().status?.custody === 'assisted', null, { timeout: 10_000 })
+  check(await custody() === 'assisted' && await page.locator('.dhl-badge.managed').count() === 0, 'switching back to assisted removes it')
 
   check(errors.length === 0, 'no page errors', errors)
   console.log('phase5 ok')

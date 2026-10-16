@@ -36,8 +36,18 @@ export function t(key: string, fallback: string): string {
 
 /** Small inline translations for desk-only labels outside the shared dictionary. */
 export function tr(zh: string, en: string): string {
-  return ctxRef?.get?.('locale')?.getLocale?.()?.active === 'en' ? en : zh
+  // The host locale lookup is a service call; a desk render makes hundreds of tr() calls (one live tick
+  // re-rendered the drawing list and tool menu ~450ms in 3s). The language changes rarely: read it at
+  // most every 250ms.
+  const now = Date.now()
+  if (now - localeReadAt > 250) {
+    localeReadAt = now
+    english = ctxRef?.get?.('locale')?.getLocale?.()?.active === 'en'
+  }
+  return english ? en : zh
 }
+let localeReadAt = -Infinity
+let english = false
 
 /**
  * Invoke one host `hyper/<method>` Remote endpoint through the DSH RPC

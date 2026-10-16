@@ -66,6 +66,8 @@ export interface MarketEntry {
   kind: 'perp' | 'hip3' | 'spot' | 'outcome'
   venue: string
   tradable: boolean
+  /** Order size precision (core and HIP-3 perps). */
+  szDecimals?: number
   /** Exchange-provided perpCategories label, if present. */
   category?: string | null
   ctx: any
@@ -73,6 +75,8 @@ export interface MarketEntry {
 }
 
 export interface ChartMark {
+  /** Custom Fibonacci levels (fib, fibext, fibchannel). */
+  levels?: number[]
   /** Volume profile rows and value-area share (vprofile only). */
   rows?: number
   valueArea?: number

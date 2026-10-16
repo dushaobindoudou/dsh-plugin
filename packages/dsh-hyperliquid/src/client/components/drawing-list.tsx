@@ -7,14 +7,15 @@ import { UiIcon } from './panel-icons'
 
 const OPEN_KEY = 'dsh-hyperliquid.draw.listOpen'
 
-export function DrawingList({ marks, locked, onSelect, onEdit, onRemove }: {
+export const DrawingList = React.memo(function DrawingList({ marks, locked, onSelect, onEdit, onRemove, language }: {
+  language: string
   marks: ChartMark[]; locked: boolean; onSelect: (id: string) => void; onEdit: (id: string, patch: Record<string, unknown>) => void; onRemove: (id: string) => void
 }) {
   const [open, setOpen] = React.useState(() => { try { return localStorage.getItem(OPEN_KEY) !== '0' } catch { return true } })
   const toggle = () => setOpen((value) => { try { localStorage.setItem(OPEN_KEY, value ? '0' : '1') } catch { /* storage unavailable */ } return !value })
   const hidden = marks.filter((mark) => mark.hidden).length
   return (
-    <section className="dhl-drawing-list" aria-label={tr('画线列表', 'Drawings')}>
+    <section className="dhl-drawing-list" lang={language} aria-label={tr('画线列表', 'Drawings')}>
       <button type="button" className="dhl-drawing-list-head" aria-expanded={open} onClick={toggle}>
         <span>{tr('画线', 'Drawings')} {marks.length}{hidden ? tr(` · 隐藏 ${hidden}`, ` · ${hidden} hidden`) : ''}</span>
         <UiIcon name={open ? 'chevronDown' : 'chevronRight'} size={14} />
@@ -40,4 +41,4 @@ export function DrawingList({ marks, locked, onSelect, onEdit, onRemove }: {
       </ul> : null}
     </section>
   )
-}
+})

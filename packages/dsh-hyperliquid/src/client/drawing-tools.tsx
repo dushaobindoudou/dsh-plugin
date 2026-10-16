@@ -14,7 +14,7 @@ import * as React from 'react'
 import { tr } from './remote'
 import { fmtPrice } from './format'
 import { volumeProfile, DRAWING_CLICKS, FIB_EXT_LEVELS, FIB_LEVELS, FIB_TIME_SERIES, GANN_BOX_LEVELS, GANN_RATIOS, ICON_NAMES, TEXT_KINDS, type DrawingKind, type LineStyleName } from '../../lib/chart-drawings.js'
-import type { ChartMark } from './types'
+import type { Candle, ChartMark } from './types'
 
 export type { DrawingKind }
 export interface DrawPoint { time: number; price: number }
@@ -247,6 +247,8 @@ const BADGE_PATHS = { alert: 'M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4
 const DASH: Record<LineStyleName, string | undefined> = { solid: undefined, dashed: '7 5', dotted: '1.5 4' }
 
 export interface ShapeProps {
+  /** Invalidate data-derived geometry when bars update but the axes stay put. */
+  dataVersion?: Candle[]
   kind: DrawingKind
   points: DrawPoint[]
   label?: string
@@ -268,10 +270,12 @@ export interface ShapeProps {
   /** Volume profile settings. */
   rows?: number
   valueArea?: number
+  /** Custom Fibonacci levels. */
+  levels?: number[]
 }
 
 /** One drawing as SVG; `points` are in click order (a preview passes clicks + hover). */
-export const DrawingShape = React.memo(function DrawingShape({ kind, points, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea }: ShapeProps) {
+export const DrawingShape = React.memo(function DrawingShape({ kind, points, label, text: textValue, className, view, anchors = false, interactive = false, color, lineWidth, lineStyle, id, alert, shared, rows, valueArea, levels }: ShapeProps) {
   const badges = [...(alert ? ['alert' as const] : []), ...(shared ? ['shared' as const] : [])]
   const { width: w, height: h } = view
   const px = points.map((point) => view.project(point.time, point.price))
@@ -315,7 +319,7 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
       if (!p[1]) break
       const [start, end] = points
       const x0 = Math.min(p[0].x, p[1].x), x1 = Math.max(p[0].x, p[1].x, x0 + 40)
-      const rows = FIB_LEVELS.map((level) => ({ level, price: end.price + (start.price - end.price) * level }))
+      const rows = (levels ?? FIB_LEVELS).map((level) => ({ level, price: end.price + (start.price - end.price) * level }))
         .map((row) => ({ ...row, y: view.project(end.time, row.price)?.y })).filter((row): row is { level: number; price: number; y: number } => row.y != null)
       body = <>
         {rows.slice(1).map((row, index) => <rect key={`b${row.level}`} className={`dhl-fib-band band-${index % 3}`} x={x0} width={x1 - x0} y={Math.min(row.y, rows[index].y)} height={Math.abs(row.y - rows[index].y)} />)}
@@ -428,7 +432,7 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
       if (!p[2]) { body = <line className="dhl-drawing-mid" x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />; break }
       const [a, b, c] = points
       const x0 = p[2].x, x1 = Math.max(x0 + Math.abs(p[1].x - p[0].x), x0 + 60)
-      const rows = FIB_EXT_LEVELS.map((level) => ({ level, price: c.price + (b.price - a.price) * level }))
+      const rows = (levels ?? FIB_EXT_LEVELS).map((level) => ({ level, price: c.price + (b.price - a.price) * level }))
         .map((row) => ({ ...row, y: view.project(c.time, row.price)?.y })).filter((row): row is { level: number; price: number; y: number } => row.y != null)
       body = <>
         <polyline className="dhl-drawing-mid" points={`${p[0].x},${p[0].y} ${p[1].x},${p[1].y} ${p[2].x},${p[2].y}`} />
@@ -444,7 +448,7 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
       if (!p[2]) { body = <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />; break }
       const k = (points[2].time - points[0].time) / ((points[1].time - points[0].time) || 1)
       const offset = points[2].price - (points[0].price + (points[1].price - points[0].price) * k)
-      body = <>{FIB_LEVELS.map((level) => {
+      body = <>{(levels ?? FIB_LEVELS).map((level) => {
         const a2 = view.project(points[0].time, points[0].price + offset * level), b2 = view.project(points[1].time, points[1].price + offset * level)
         const seg = a2 && b2 ? clipLine(a2, b2, w, h, 0) : null
         return seg ? <g key={level}>
@@ -584,7 +588,7 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
       const x0 = Math.min(p[0].x, p[1].x), x1 = Math.max(p[0].x, p[1].x)
       const settings = { rows: rows ?? 48, valueArea: valueArea ?? 0.7 }
       const profile = view.profile ? view.profile(from.time, to.time, settings) : volumeProfile(view.candles?.(from.time, to.time) ?? [], settings)
-      const partial = view.firstTime != null && view.barMs != null && view.firstTime - from.time > view.barMs
+      const partial = view.firstTime != null && view.barMs != null && view.firstTime - from.time >= view.barMs
       if (!profile) {
         body = <><rect className="dhl-drawing-fill" x={x0} y={0} width={Math.max(1, x1 - x0)} height={h} />{text(x0 + 4, 16, tr('区间内暂无成交量数据', 'No volume in this range'), 'start')}</>
         handles = [p[0], p[1]]
@@ -594,18 +598,23 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
       const maxRow = Math.max(...profile.rows.map((row) => row.up + row.down)) || 1
       const span = Math.max(24, (x1 - x0) * 0.3)
       const yTop = y(profile.rows.at(-1)!.high), yBottom = y(profile.rows[0].low), yPoc = y(profile.poc), yVah = y(profile.vah), yVal = y(profile.val)
-      body = <g className="dhl-vprofile">
+      // Batch the row rectangles into four paths (buy/sell × inside/outside
+      // value area). Their geometry and hit strokes stay the same, with far
+      // fewer DOM nodes to reconcile and lay out during a pan or live tick.
+      const paths = { valueUp: '', valueDown: '', outUp: '', outDown: '' }
+      const rectPath = (x: number, top: number, width: number, height: number) => `M${x.toFixed(2)} ${top.toFixed(2)}h${width.toFixed(2)}v${height.toFixed(2)}h${(-width).toFixed(2)}z`
+      profile.rows.forEach((row, index) => {
+        const top = y(row.high), bottom = y(row.low)
+        if (top == null || bottom == null) return
+        const height = Math.max(1, bottom - top - 0.5), inValue = index >= profile.valueLow && index <= profile.valueHigh
+        const upWidth = span * row.up / maxRow, downWidth = span * row.down / maxRow
+        paths[inValue ? 'valueUp' : 'outUp'] += rectPath(x0, top, upWidth, height)
+        paths[inValue ? 'valueDown' : 'outDown'] += rectPath(x0 + upWidth, top, downWidth, height)
+      })
+      body = <g className="dhl-vprofile" data-rows={profile.rows.length}>
         {yTop != null && yBottom != null ? <rect className="dhl-vprofile-range" x={x0} y={yTop} width={Math.max(1, x1 - x0)} height={Math.max(1, yBottom - yTop)} /> : null}
-        {profile.rows.map((row, index) => {
-          const top = y(row.high), bottom = y(row.low)
-          if (top == null || bottom == null) return null
-          const height = Math.max(1, bottom - top - 0.5), inValue = index >= profile.valueLow && index <= profile.valueHigh
-          const upWidth = span * row.up / maxRow, downWidth = span * row.down / maxRow
-          return <g key={index} className={inValue ? 'dhl-vprofile-va' : 'dhl-vprofile-out'}>
-            <rect className="dhl-vprofile-up" x={x0} y={top} width={upWidth} height={height} />
-            <rect className="dhl-vprofile-down" x={x0 + upWidth} y={top} width={downWidth} height={height} />
-          </g>
-        })}
+        <g className="dhl-vprofile-va"><path className="dhl-vprofile-up" d={paths.valueUp} /><path className="dhl-vprofile-down" d={paths.valueDown} /></g>
+        <g className="dhl-vprofile-out"><path className="dhl-vprofile-up" d={paths.outUp} /><path className="dhl-vprofile-down" d={paths.outDown} /></g>
         {yPoc != null ? <><line className="dhl-vprofile-poc" x1={x0} y1={yPoc} x2={x1} y2={yPoc} />{text(x1 - 4, yPoc - 4, `POC ${fmtPrice(profile.poc)}`, 'end')}</> : null}
         {yVah != null ? <><line className="dhl-drawing-mid" x1={x0} y1={yVah} x2={x1} y2={yVah} />{text(x1 - 4, yVah - 4, `VAH ${fmtPrice(profile.vah)}`, 'end')}</> : null}
         {yVal != null ? <><line className="dhl-drawing-mid" x1={x0} y1={yVal} x2={x1} y2={yVal} />{text(x1 - 4, yVal + 12, `VAL ${fmtPrice(profile.val)}`, 'end')}</> : null}

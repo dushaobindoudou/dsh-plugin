@@ -213,6 +213,12 @@ export class HyperliquidClient {
     return postJson(`${this.restBase}/exchange`, { action: canonicalAction(action), nonce, signature }, 15_000)
   }
 
+  /** Post a user-signed action (sendAsset …) as built; these are not L1 actions and skip canonicalAction. */
+  exchangeUserSigned(action, signature, nonce) {
+    if (!signature?.r || !signature?.s || !signature?.v) throw new Error('exchangeUserSigned 需要完整的 {r,s,v} 签名')
+    return postJson(`${this.restBase}/exchange`, { action, nonce, signature }, 15_000)
+  }
+
   // ── WebSocket upstream (SDK SubscriptionClient) ──────────────────────
   /** Map a snapshot key to a SubscriptionClient channel; resolve its ISubscription. */
   async _openChannel(key, args) {

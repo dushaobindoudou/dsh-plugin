@@ -48,6 +48,7 @@ import { chartBars, candleIndex, downloadBlob, type ChartType, type ChartCommand
 import { chartImage } from '../chart-export'
 import { notify } from '../store'
 import { normalizeIndicatorSettings, studyDefinitions, type IndicatorSettings } from '../../../lib/studies.js'
+import { feed } from '../chart-feed'
 
 export type MagnetMode = 'off' | 'weak' | 'strong'
 /** Weak magnet radius in pixels (TradingView snaps within roughly this distance). */
@@ -241,12 +242,21 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   const [selectedTime, setSelectedTime] = React.useState<number | null>(null)
   const [themeVersion, setThemeVersion] = React.useState(0)
   const [viewportVersion, setViewportVersion] = React.useState(0)
+  const projectionStamp = React.useRef<Array<number | null>>([])
+  const readProjection = (r: ChartRefs, box: HTMLDivElement) => {
+    const base = candlesRef.current[0]?.c ?? 1
+    return [r.chart.timeScale().logicalToCoordinate(0 as Logical), r.chart.timeScale().logicalToCoordinate(1 as Logical),
+      r.candles.priceToCoordinate(base), r.candles.priceToCoordinate(base * 1.01), box.clientWidth, box.clientHeight, base]
+  }
   const [pendingPoints, setPendingPoints] = React.useState<DrawPoint[]>([])
   const [drawingHover, setDrawingHover] = React.useState<DrawPoint | null>(null)
   const showVolume = indicators.has('volume')
   const studies = React.useMemo(() => chartIndicators(candles, settings), [candles, settings])
   const maComputed = React.useMemo(() => maLines.map((line, index) => ({ line, color: maColor(line, index), ...maSeries(candles, line) })), [candles, maLines])
   // Bar index ↔ time, extrapolated beyond both ends so drawings can reach empty space.
+  // A live tick only changes the last bar's prices; the time axis (and every drawing's x) stays put, so
+  // the mapping is rebuilt only when bars are added, prepended or replaced.
+  const axisKey = `${candles.length}:${candles[0]?.t ?? 0}:${candles.at(-1)?.t ?? 0}`
   const timeline = React.useMemo(() => {
     const times = [...new Set(candles.map((candle) => Math.floor(candle.t / 1000)))].sort((a, b) => a - b)
     const step = times.length > 1 ? times[times.length - 1] - times[times.length - 2] : 60
@@ -267,7 +277,8 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       return times[i] * 1000
     }
     return { toLogical, toTime }
-  }, [candles])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [axisKey])
   const timelineRef = React.useRef(timeline)
   timelineRef.current = timeline
 
@@ -394,7 +405,23 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
           if (mode === 'strong' || best.distance <= MAGNET_PX) { price = best.price; lastSnapped.current = true }
         }
       }
-      if (event.shiftKey && previous) price = previous.price
+      if (event.shiftKey && previous) {
+        // Shift constrains the segment from the previous anchor to 0° or ±45° on screen (never vertical:
+        // two-point lines need two different times).
+        const px = chart.timeScale().logicalToCoordinate(timelineRef.current.toLogical(previous.time) as Logical)
+        const py = candleSeries.priceToCoordinate(previous.price)
+        const x = event.clientX - rect.left
+        if (px == null || py == null) return { time, price: previous.price }
+        const dx = x - px, dy = y - py
+        const angle = Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) * (Math.PI / 4)
+        if (Math.abs(Math.abs(angle) - Math.PI / 2) < 1e-6 || Math.abs(angle) < 1e-6 || Math.abs(Math.abs(angle) - Math.PI) < 1e-6) return { time, price: previous.price }
+        const along = dx * Math.cos(angle) + dy * Math.sin(angle)
+        const tx = px + Math.cos(angle) * along, ty = py + Math.sin(angle) * along
+        const snappedLogical = chart.timeScale().coordinateToLogical(tx)
+        const snappedPrice = Number(candleSeries.coordinateToPrice(ty))
+        if (snappedLogical == null || !Number.isFinite(snappedPrice) || snappedPrice <= 0) return { time, price: previous.price }
+        return { time: timelineRef.current.toTime(Number(snappedLogical)), price: snappedPrice }
+      }
       return { time, price }
     }
     snapRef.current = snapPoint
@@ -449,16 +476,38 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     let viewportFrame = 0
     const refreshOverlay = () => {
       if (viewportFrame) cancelAnimationFrame(viewportFrame)
-      viewportFrame = requestAnimationFrame(() => setViewportVersion((value) => value + 1))
+      // React can yield between shapes while projecting a dense overlay;
+      // pointer handling and the exchange canvas keep their frame budget.
+      viewportFrame = requestAnimationFrame(() => React.startTransition(() => setViewportVersion((value) => value + 1)))
     }
     chart.timeScale().subscribeVisibleLogicalRangeChange(refreshOverlay)
     // Price-axis drags, wheel scaling and double-click resets move the y mapping without a time-range event.
-    const scaleDrag = (event: PointerEvent) => { if (event.buttons) refreshOverlay() }
+    // Time pans already emit range events. A drawing drag must only repaint
+    // that drawing, rather than invalidating the projection of all 100 shapes.
+    let scalingPrice = false
+    // Once the canvas owns a gesture, drawing hit targets cannot be used until release.
+    // Suspend their duplicate SVG geometry to avoid layout work during dense-chart pans.
+    const endCanvasGesture = () => box.classList.remove('dhl-canvas-gesture')
+    const beginCanvasGesture = (event: PointerEvent) => {
+      if (event.target instanceof HTMLCanvasElement) box.classList.add('dhl-canvas-gesture')
+    }
+    box.addEventListener('pointerdown', beginCanvasGesture, { passive: true })
+    window.addEventListener('pointerup', endCanvasGesture)
+    window.addEventListener('pointercancel', endCanvasGesture)
+    window.addEventListener('blur', endCanvasGesture)
+    const scaleDown = (event: PointerEvent) => {
+      scalingPrice = event.target instanceof HTMLCanvasElement &&
+        event.clientX >= box.getBoundingClientRect().right - chart.priceScale('right').width()
+    }
+    const scaleDrag = (event: PointerEvent) => { if (event.buttons && scalingPrice) refreshOverlay() }
+    box.addEventListener('pointerdown', scaleDown, { passive: true })
     box.addEventListener('pointermove', scaleDrag, { passive: true })
     box.addEventListener('wheel', refreshOverlay, { passive: true })
     box.addEventListener('dblclick', refreshOverlay)
     const sizeObserver = new ResizeObserver(refreshOverlay)
     sizeObserver.observe(box)
+    // Pane separators resize the main canvas while the outer box stays fixed.
+    box.querySelectorAll('canvas').forEach((canvas) => sizeObserver.observe(canvas))
     chart.timeScale().subscribeVisibleTimeRangeChange((range) => {
       if (!fitted.current || restoring.current || !range || typeof range.from !== 'number' || typeof range.to !== 'number') return
       if (rangeTimer) clearTimeout(rangeTimer)
@@ -504,6 +553,12 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       box.removeEventListener('click', chartClick)
       chart.timeScale().unsubscribeVisibleLogicalRangeChange(refreshOverlay)
       box.removeEventListener('pointermove', scaleDrag)
+      box.removeEventListener('pointerdown', beginCanvasGesture)
+      window.removeEventListener('pointerup', endCanvasGesture)
+      window.removeEventListener('pointercancel', endCanvasGesture)
+      window.removeEventListener('blur', endCanvasGesture)
+      endCanvasGesture()
+      box.removeEventListener('pointerdown', scaleDown)
       box.removeEventListener('wheel', refreshOverlay)
       box.removeEventListener('dblclick', refreshOverlay)
       sizeObserver.disconnect()
@@ -564,33 +619,31 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     const prevFirst = firstBarTime.current
     const prepended = prevFirst != null && bars[0].time < prevFirst ? Math.max(0, bars.findIndex((bar) => bar.time >= prevFirst)) : 0
     firstBarTime.current = bars[0].time
-    r.candles.setData(chartType === 'line' || chartType === 'area' ? bars.map((bar) => ({ time: bar.time, value: bar.close })) : bars)
-    r.volume.setData(vols.map((v) => ({ ...v, color: v.color === FALLBACK_UP ? th.up : th.down })))
-    r.sma.setData(chartData(studies.sma20))
-    r.basis.setData(chartData(studies.basis))
-    r.basis.applyOptions({ visible: indicators.has('bollinger20') })
-    r.sma60.setData(chartData(studies.sma60))
-    r.ema20.setData(chartData(studies.ema20))
-    r.ema50.setData(chartData(studies.ema50))
-    r.upper.setData(chartData(studies.upper))
-    r.lower.setData(chartData(studies.lower))
-    r.volume.applyOptions({ visible: showVolume })
-    r.sma.applyOptions({ visible: indicators.has('sma20') })
-    r.sma60.applyOptions({ visible: indicators.has('sma60') })
-    r.ema20.applyOptions({ visible: indicators.has('ema20') })
-    r.ema50.applyOptions({ visible: indicators.has('ema50') })
-    r.upper.applyOptions({ visible: indicators.has('bollinger20') })
-    r.lower.applyOptions({ visible: indicators.has('bollinger20') })
+    const studySig = JSON.stringify(settings), colorSig = `${chartType}|${th.up}|${th.down}`
+    feed(r.candles, chartType === 'line' || chartType === 'area' ? bars.map((bar) => ({ time: bar.time, value: bar.close })) : bars, chartType)
+    if (showVolume) feed(r.volume, vols.map((v) => ({ ...v, color: v.color === FALLBACK_UP ? th.up : th.down })), colorSig)
+    if (r.volume.options().visible !== showVolume) r.volume.applyOptions({ visible: showVolume })
+    // Hidden overlays need neither 5000-point conversions nor series updates
+    // on every tick. Enabling one feeds the current data before it is shown.
+    for (const [series, key, indicator] of [
+      [r.sma, 'sma20', 'sma20'], [r.sma60, 'sma60', 'sma60'],
+      [r.ema20, 'ema20', 'ema20'], [r.ema50, 'ema50', 'ema50'],
+      [r.basis, 'basis', 'bollinger20'], [r.upper, 'upper', 'bollinger20'], [r.lower, 'lower', 'bollinger20'],
+    ] as const) {
+      const visible = indicators.has(indicator)
+      if (visible) feed(series, chartData(studies[key]), studySig)
+      if (series.options().visible !== visible) series.applyOptions({ visible })
+    }
     if (indicators.has('vwap')) {
       r.vwap ??= r.chart.addSeries(LineSeries, { color: '#e89a56', lineWidth: 2, lastValueVisible: false, priceLineVisible: false })
-      r.vwap.setData(chartData(studies.vwap))
+      feed(r.vwap, chartData(studies.vwap), studySig)
     } else if (r.vwap) { r.chart.removeSeries(r.vwap); r.vwap = undefined }
     if (indicators.has('atr14')) {
       if (!r.atr) {
         const pane = r.chart.addPane(); pane.setStretchFactor(0.28)
         r.atr = pane.addSeries(LineSeries, { color: '#56bca7', lineWidth: 2, priceLineVisible: false })
       }
-      r.atr.setData(chartData(studies.atr14))
+      feed(r.atr, chartData(studies.atr14), studySig)
     } else if (r.atr) { r.chart.removeSeries(r.atr); r.atr = undefined }
     if (indicators.has('rsi14')) {
       if (!r.rsi) {
@@ -600,7 +653,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
         r.rsiBounds = [settings.rsi.lower, settings.rsi.upper].map((price) => r.rsi!.createPriceLine({ price, color: '#8d8d8d', lineWidth: 1, lineStyle: LineStyle.Dashed, axisLabelVisible: false }))
       }
       r.rsiBounds?.forEach((line, index) => line.applyOptions({ price: index ? settings.rsi.upper : settings.rsi.lower }))
-      r.rsi.setData(chartData(studies.rsi14))
+      feed(r.rsi, chartData(studies.rsi14), studySig)
     } else if (r.rsi) { r.chart.removeSeries(r.rsi); r.rsi = undefined }
     if (indicators.has('macd')) {
       if (!r.macd) {
@@ -610,9 +663,9 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
         r.macd = pane.addSeries(LineSeries, { color: '#55a6ce', lineWidth: 2, priceLineVisible: false, lastValueVisible: false })
         r.signal = pane.addSeries(LineSeries, { color: '#e2a943', lineWidth: 2, priceLineVisible: false, lastValueVisible: false })
       }
-      r.macd.setData(chartData(studies.macd))
-      r.signal!.setData(chartData(studies.signal))
-      r.histogram!.setData(studies.histogram.map((point) => ({ time: point.time as UTCTimestamp, value: point.value, color: point.value >= 0 ? th.up : th.down })))
+      feed(r.macd, chartData(studies.macd), studySig)
+      feed(r.signal!, chartData(studies.signal), studySig)
+      feed(r.histogram!, studies.histogram.map((point) => ({ time: point.time as UTCTimestamp, value: point.value, color: point.value >= 0 ? th.up : th.down })), studySig + colorSig)
     } else if (r.macd) {
       r.chart.removeSeries(r.macd); r.chart.removeSeries(r.signal!); r.chart.removeSeries(r.histogram!)
       r.macd = undefined; r.signal = undefined; r.histogram = undefined
@@ -629,7 +682,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
           if (group.id === 'stochastic') r.stochBounds = [settings.stochastic.lower, settings.stochastic.upper].map((price) => r.extra.stochK.createPriceLine({ price, color: '#8d8d8d', lineWidth: 1, lineStyle: LineStyle.Dashed, axisLabelVisible: false }))
           if (group.id === 'adx') r.extra.adx.createPriceLine({ price: 25, color: '#8d8d8d', lineWidth: 1, lineStyle: LineStyle.Dashed, axisLabelVisible: false })
         }
-        for (const key of group.keys) r.extra[key].setData(chartData(studies[key]))
+        for (const key of group.keys) feed(r.extra[key], chartData(studies[key]), studySig)
         if (group.id === 'stochastic') r.stochBounds?.forEach((line, index) => line.applyOptions({ price: index ? settings.stochastic.upper : settings.stochastic.lower }))
       } else for (const key of group.keys) { if (r.extra[key]) { r.chart.removeSeries(r.extra[key]); delete r.extra[key] } }
     }
@@ -661,18 +714,21 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
         maRefs.current.set(item.line.id, entry)
       }
       entry.main.applyOptions({ color: item.color })
-      entry.main.setData(toPoints(item.values))
+      feed(entry.main, toPoints(item.values), JSON.stringify(item.line))
       if (item.smoothed) {
         entry.smooth ??= r.chart.addSeries(LineSeries, { lineWidth: 1, lineStyle: LineStyle.Dashed, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false })
         entry.smooth.applyOptions({ color: item.color })
-        entry.smooth.setData(toPoints(item.smoothed))
+        feed(entry.smooth, toPoints(item.smoothed), JSON.stringify(item.line))
       } else if (entry.smooth) { r.chart.removeSeries(entry.smooth); entry.smooth = undefined }
     }
     // A live candle must not reset a trader's manual zoom or pan.
     if (!fitted.current) {
       restoring.current = true
       r.chart.timeScale().fitContent()
-      const saved = initialRange.current
+      // A linked chart that receives the shared range before its first data must open on that range,
+      // not on fit-content (which would undo the link and be saved as this chart's viewport).
+      const linked = linkRef.current?.range && linkRef.current.range.source !== linkRef.current.id ? linkRef.current.range : null
+      const saved = linked ?? initialRange.current
       if (saved && saved.from < saved.to) {
         try { r.chart.timeScale().setVisibleRange({ from: saved.from as UTCTimestamp, to: saved.to as UTCTimestamp }) }
         catch { /* historical range may no longer overlap loaded candles */ }
@@ -680,6 +736,13 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       fitted.current = true
       setTimeout(() => { restoring.current = false }, 100)
     }
+    // Tail updates can change auto-scale and data-derived drawings without a
+    // time-range event. Project after LWC has painted the new data.
+    const overlayFrame = requestAnimationFrame(() => {
+      const box = boxRef.current
+      if (box && readProjection(r, box).some((value, index) => value !== projectionStamp.current[index])) React.startTransition(() => setViewportVersion((value) => value + 1))
+    })
+    return () => cancelAnimationFrame(overlayFrame)
   }, [candles, studies, indicators, showVolume, maComputed, chartType, settings])
 
   // A reopened quote chip: page in history until the candle exists, then center and mark it.
@@ -831,22 +894,29 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   const view = React.useMemo<Projector | null>(() => {
     const chartApi = refs.current, box = boxRef.current
     if (!chartApi || !box) return null
+    const stamp = readProjection(chartApi, box)
+    projectionStamp.current = stamp
+    const [x0, x1, y0, y1] = stamp
+    const base = candlesRef.current[0]?.c ?? 1
+    const ys = new Map<number, number | null>()
     return {
       project: (time, price) => {
-        const x = chartApi.chart.timeScale().logicalToCoordinate(timeline.toLogical(time) as Logical)
-        const y = chartApi.candles.priceToCoordinate(price)
+        const x = x0 == null || x1 == null ? null : x0 + (x1 - x0) * timeline.toLogical(time)
+        if (!ys.has(price)) ys.set(price, priceScale === 'log' ? chartApi.candles.priceToCoordinate(price)
+          : y0 == null || y1 == null ? null : y0 + (y1 - y0) * (price - base) / (base * .01))
+        const y = ys.get(price)
         return x == null || y == null || !Number.isFinite(x) || !Number.isFinite(y) ? null : { x, y }
       },
       width: Math.max(0, box.clientWidth - chartApi.chart.priceScale('right').width()),
       height: chartApi.chart.panes()[0]?.getHeight() ?? box.clientHeight,
       bars: (from, to) => timeline.toLogical(to) - timeline.toLogical(from),
-      closes: (from, to) => candles.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, price: candle.c })),
-      candles: (from, to) => candles.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, open: candle.o, high: candle.h, low: candle.l, close: candle.c, volume: candle.v })),
-      profile: (from, to, options) => cachedProfile(candles, from, to, options),
-      firstTime: candles[0]?.t,
-      barMs: candles.length > 1 ? candles[1].t - candles[0].t : undefined,
+      closes: (from, to) => candlesRef.current.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, price: candle.c })),
+      candles: (from, to) => candlesRef.current.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, open: candle.o, high: candle.h, low: candle.l, close: candle.c, volume: candle.v })),
+      profile: (from, to, options) => cachedProfile(candlesRef.current, from, to, options),
+      firstTime: candlesRef.current[0]?.t,
+      barMs: candlesRef.current.length > 1 ? candlesRef.current[1].t - candlesRef.current[0].t : undefined,
     }
-  }, [viewportVersion, timeline, themeVersion, expanded, indicators])
+  }, [viewportVersion, timeline, themeVersion, expanded, indicators, priceScale])
 
   React.useEffect(() => { if (selectedId && !markById.has(selectedId)) setSelectedId(null) }, [markById, selectedId])
   React.useEffect(() => { if (drawMode) setSelectedId(null) }, [drawMode])
@@ -937,7 +1007,8 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
   const cloneOf = React.useCallback((mark: ChartMark): ClonePayload => {
     const line = timelineRef.current
     const shifted = markPoints(mark).map((point) => ({ time: line.toTime(line.toLogical(point.time) + 5), price: point.price }))
-    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle }).filter(([, value]) => value != null))
+    // Tool settings (fib levels, volume profile rows / value area) travel with the copy.
+    const style = Object.fromEntries(Object.entries({ color: mark.color, lineWidth: mark.lineWidth, lineStyle: mark.lineStyle, levels: mark.levels, rows: mark.rows, valueArea: mark.valueArea }).filter(([, value]) => value != null))
     return { kind: mark.kind, geometry: geometryPatch(mark.kind, shifted), style, label: mark.label }
   }, [])
   const clipboard = React.useRef<ChartMark | null>(null)
@@ -1020,6 +1091,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
           next.set(memberId, moved)
         }
         latest = next; setGroupDraft(next)
+        for (const [memberId, member] of originals) if (member.kind === 'level') priceLines.current.get(memberId)?.applyOptions({ price: next.get(memberId)![0].price })
       }
       const move = (ev: PointerEvent) => {
         if (!moved && Math.hypot(ev.clientX - origin.x, ev.clientY - origin.y) < 3) return
@@ -1031,7 +1103,11 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
         window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', cancel); window.removeEventListener('keydown', onKey, true)
         cancelAnimationFrame(frame); abortGesture.current = null
       }
-      const cancel = () => { detach(); setGroupDraft(null) }
+      const cancel = () => {
+        detach()
+        for (const [memberId, member] of originals) if (member.kind === 'level') priceLines.current.get(memberId)?.applyOptions({ price: Number(member.price) })
+        setGroupDraft(null)
+      }
       const onKey = (ev: KeyboardEvent) => { if (ev.key === 'Escape' && moved) { ev.stopPropagation(); cancel() } }
       const up = (ev: PointerEvent) => {
         detach()
@@ -1061,7 +1137,8 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     const compute = (ev: PointerEvent) => {
       let next: DrawPoint[] | null
       if (anchor != null) {
-        const point = snap(ev, original[anchor === 0 ? 1 : 0])
+        // Shift constrains relative to the neighbouring anchor in drawing order (as when it was drawn).
+        const point = snap(ev, original[anchor === 0 ? 1 : anchor - 1])
         if (!point) return
         next = original.map((item) => ({ ...item }))
         if (mark.kind === 'level') next[0] = { ...next[0], price: point.price }
@@ -1152,9 +1229,10 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
             const shown = mark.kind === 'level' ? [{ time: lastTime, price: live[0].price }] : live
             const selected = selectedId === mark.id || group.includes(mark.id)
             return <DrawingShape key={mark.id} id={mark.id} kind={mark.kind} points={shown} view={view} text={mark.label}
+              dataVersion={mark.kind === 'vprofile' || mark.kind === 'regression' ? candles : undefined}
               className={`dhl-drawing ${roleClass(mark)}${mark.kind === 'level' ? ' is-level' : ''}${selected ? ' selected' : ''}${mark.locked || drawingsLocked ? ' locked' : ''}`}
               label={mark.source === 'user' || mark.kind === 'level' ? undefined : mark.label} anchors={selected} interactive={!drawMode}
-              color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} alert={mark.alert} shared={mark.shared} rows={mark.rows} valueArea={mark.valueArea} />
+              color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} alert={mark.alert} shared={mark.shared} rows={mark.rows} valueArea={mark.valueArea} levels={mark.levels} />
           })}
           <g className="dhl-fills">
             {fills.map((event) => {

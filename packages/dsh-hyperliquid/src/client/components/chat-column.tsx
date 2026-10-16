@@ -125,14 +125,21 @@ export function ChatColumn({ width, fill = false, onCollapse, SessionProvider, r
     }
   }, [activeId, readyRef, showTicket, s.chartReferences])
 
-  const askMarket = React.useCallback(() => {
-    queueToAgent(tr(`请调用 hyper_context 读取当前交易台的 ${s.activeCoin} 实时行情、盘口和账户信息，概括市场状态、关键风险与可能的交易条件。仅分析，不要下单。`,
-      `Use hyper_context to read live ${s.activeCoin} market data, order book and account state. Summarize conditions, key risks and possible trade criteria. Analysis only; do not place an order.`))
-  }, [s.activeCoin])
-  const askRisk = React.useCallback(() => {
-    queueToAgent(tr(`请调用 hyper_context 检查当前交易会话的账户、${s.activeCoin} 仓位、杠杆、挂单和风险限额，指出需要注意的风险与可采取的管理动作。仅分析，不要下单或撤单。`,
-      `Use hyper_context to review the account, ${s.activeCoin} position, leverage, open orders and risk limits. Identify risks and possible management actions. Analysis only; do not place or cancel orders.`))
-  }, [s.activeCoin])
+  // Quick prompts name the exact tools, so even a weak model takes the intended path.
+  const QUICK: Array<[string, string, string, string]> = [
+    ['交易体检', 'Trading check-up',
+      '请用 hyper_account action=analyze 给我做一次交易体检（近 90 天）：先讲最值钱的 1–2 个发现和建议规则，再问我是否采用。不要下单。',
+      'Run a trading check-up with hyper_account action=analyze (last 90 days): lead with the 1–2 most valuable findings and suggested rules, then ask whether I want to adopt them. Do not trade.'],
+    ['今天有什么机会', "Today's opportunities",
+      '请用 hyper_market action=scan 看看今天的机会，结合我的档案挑 1 个最值得关注的，用 hyper_market candles/indicators 核实，再用 hyper_chart 画出关键位和头寸框，按交易卡格式给出计划。不要下单。',
+      'Use hyper_market action=scan for today\'s opportunities, pick the one that best fits my profile, verify it with hyper_market candles/indicators, draw the levels and a position box with hyper_chart, and give the plan as a trade card. Do not trade.'],
+    ['帮我盯着仓位', 'Watch my positions',
+      '请用 hyper_context 检查我的仓位和挂单：每个仓位是否有足量止损、离止损和目标多远、资金费成本；在关键价位用 hyper_chart 设价格提醒（alert=true）；需要定期检查的话先问我一次，再用 schedule_create 安排。不要下单或撤单。',
+      'Use hyper_context to check my positions and orders: is each one covered by a stop, how far are stop and target, what does funding cost; set price alerts (alert=true) at key levels with hyper_chart; if periodic checks would help, ask me once, then use schedule_create. Do not place or cancel orders.'],
+    ['把图上画线变成策略', 'Turn my drawings into a strategy',
+      `请用 hyper_chart action=list 读取 ${s.activeCoin} 图上的画线，结合 hyper_market candles 理解我的思路，整理成一条可核对的策略（依据、入场、离场、作废、仓位），用 hyper_journal action=strategy 存为 idea，并说明还需要验证什么。不要下单。`,
+      `Read my drawings on ${s.activeCoin} with hyper_chart action=list, use hyper_market candles to understand the idea, write it up as a checkable strategy (thesis, entry, exit, invalidation, sizing), save it with hyper_journal action=strategy as an idea, and say what still needs verifying. Do not trade.`],
+  ]
 
   const content = !activeId
     ? <div className="dhl-empty">{t('chat.noSession', '选择左侧交易会话，在这里直接与交易 agent 对话。')}</div>
@@ -163,8 +170,7 @@ export function ChatColumn({ width, fill = false, onCollapse, SessionProvider, r
         <button className="dhl-panel-iconbtn" type="button" onClick={onCollapse} aria-label={tr('收起对话栏', 'Collapse chat')} title={tr('收起对话栏', 'Collapse chat')}><FoldIcon direction="right" /></button>
       </div>
       {activeId && !showTicket && !legacy ? <div className="dhl-chat-prompts" role="group" aria-label={t('chat.prompts', '快捷提问')}>
-        <button type="button" onClick={askMarket}>{t('chat.analyze', '分析行情')}</button>
-        <button type="button" onClick={askRisk}>{t('chat.risk', '检查风险')}</button>
+        {QUICK.map(([zh, en, askZh, askEn]) => <button key={zh} type="button" onClick={() => queueToAgent(tr(askZh, askEn))}>{tr(zh, en)}</button>)}
       </div> : null}
       {showTicket ? <TradeTicket key={activeId ?? 'anonymous'} onSubmitted={() => setShowTicket(false)} /> : content}
     </div>

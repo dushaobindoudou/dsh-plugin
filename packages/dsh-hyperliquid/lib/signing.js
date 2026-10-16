@@ -213,3 +213,61 @@ export async function addressFromPrivateKey(privateKey) {
   const hash = c.keccak256(pub.slice(1))
   return '0x' + c.bytesToHex(hash.slice(-20))
 }
+
+// ── user-signed actions (EIP-712 "HyperliquidSignTransaction" domain) ──
+// Field lists and order follow the official Python SDK (utils/signing.py); the main wallet signs them.
+export const SEND_ASSET_TYPES = [
+  { name: 'hyperliquidChain', type: 'string' },
+  { name: 'destination', type: 'string' },
+  { name: 'sourceDex', type: 'string' },
+  { name: 'destinationDex', type: 'string' },
+  { name: 'token', type: 'string' },
+  { name: 'amount', type: 'string' },
+  { name: 'fromSubAccount', type: 'string' },
+  { name: 'nonce', type: 'uint64' },
+]
+/** The SDK signs user actions on chain 0x66eee; hyperliquidChain inside the message prevents replay across networks. */
+export const USER_SIGNATURE_CHAIN_ID = '0x66eee'
+
+/**
+ * A `sendAsset` action (move collateral between perp dexes / spot) and its EIP-712 payload.
+ * @returns {{ action, typed: { domain, types, value } }}
+ */
+export function buildSendAsset({ destination, sourceDex, destinationDex, token, amount, nonce, isMainnet = true }) {
+  const action = { type: 'sendAsset', signatureChainId: USER_SIGNATURE_CHAIN_ID, hyperliquidChain: isMainnet ? 'Mainnet' : 'Testnet',
+    destination, sourceDex, destinationDex, token, amount, fromSubAccount: '', nonce }
+  const value = Object.fromEntries(SEND_ASSET_TYPES.map(({ name }) => [name, action[name]]))
+  return {
+    action,
+    typed: {
+      domain: { name: 'HyperliquidSignTransaction', version: '1', chainId: parseInt(USER_SIGNATURE_CHAIN_ID, 16), verifyingContract: '0x0000000000000000000000000000000000000000' },
+      types: { 'HyperliquidTransaction:SendAsset': SEND_ASSET_TYPES },
+      value,
+    },
+  }
+}
+
+/** EIP-712 digest + secp256k1 signature for a single-struct payload of string / uint / bool / address fields. */
+export async function signTypedDataLocal(privateKey, { domain, types, value }) {
+  const c = await loadCrypto()
+  const [primary, fields] = Object.entries(types)[0]
+  const encode = (type, item) => {
+    if (type === 'string') return c.hashText(String(item))
+    if (type === 'bool') return u256be(item ? 1 : 0)
+    if (type === 'address') { const out = new Uint8Array(32); out.set(addressBytes(item), 12); return out }
+    if (/^uint\d+$/.test(type)) return u256be(item)
+    throw new Error(`unsupported EIP-712 field type ${type}`)
+  }
+  const typeHash = c.hashText(`${primary}(${fields.map((f) => `${f.type} ${f.name}`).join(',')})`)
+  const structHash = c.keccak256(concat(typeHash, ...fields.map((f) => encode(f.type, value[f.name]))))
+  const domainHash = c.keccak256(concat(c.hashText('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'),
+    c.hashText(domain.name), c.hashText(domain.version), u256be(domain.chainId), encode('address', domain.verifyingContract)))
+  const digest = c.keccak256(concat(new Uint8Array([0x19, 0x01]), domainHash, structHash))
+  const priv = c.hexToBytes(privateKey)
+  if (priv.length !== 32) throw new Error('钱包私钥格式错误（需要 32 字节 hex）')
+  const sig = c.sign(digest, priv)
+  const recovery = typeof sig.recovery === 'number' ? sig.recovery : sig.v - 27
+  const rHex = c.bytesToHex(typeof sig.r === 'bigint' ? u256be(sig.r) : sig.r).padStart(64, '0').slice(-64)
+  const sHex = c.bytesToHex(typeof sig.s === 'bigint' ? u256be(sig.s) : sig.s).padStart(64, '0').slice(-64)
+  return { r: '0x' + rHex, s: '0x' + sHex, v: 27 + recovery }
+}

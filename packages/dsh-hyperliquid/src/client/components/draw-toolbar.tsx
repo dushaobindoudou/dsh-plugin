@@ -4,7 +4,7 @@ import { tr } from '../remote'
 import type { ChartMark } from '../types'
 import { isTextKind, toolOf } from '../drawing-tools'
 import { saveStyleTemplate } from '../drawing-templates'
-import { ALERT_KINDS } from '../../../lib/chart-drawings.js'
+import { ALERT_KINDS, FIB_EXT_LEVELS, FIB_LEVELS, FIB_LEVEL_KINDS } from '../../../lib/chart-drawings.js'
 import { UiIcon } from './panel-icons'
 import { Select } from './select'
 
@@ -19,6 +19,15 @@ export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, o
   const [text, setText] = React.useState(mark.label)
   React.useEffect(() => { setText(mark.label) }, [mark.id, mark.label])
   const locked = Boolean(mark.locked) || globallyLocked
+  const defaultLevels = (mark.levels ?? (mark.kind === 'fibext' ? FIB_EXT_LEVELS : FIB_LEVELS)).join(', ')
+  const [levelsText, setLevelsText] = React.useState(defaultLevels)
+  React.useEffect(() => { setLevelsText(defaultLevels) }, [mark.id, defaultLevels])
+  const applyLevels = () => {
+    if (levelsText === defaultLevels) return
+    if (!levelsText.trim()) { onEdit({ levels: null }); return }
+    const values = levelsText.split(/[,，\s]+/).filter(Boolean).map(Number)
+    if (values.length && values.every(Number.isFinite)) onEdit({ levels: values }); else setLevelsText(defaultLevels)
+  }
   const width = mark.lineWidth ?? 2
   const style = mark.lineStyle ?? 'solid'
   const tool = toolOf(mark.kind)
@@ -46,6 +55,11 @@ export function DrawToolbar({ mark, globallyLocked, onEdit, onRemove, onClose, o
           aria-label={tr(zh, en)} title={tr(zh, en)} onClick={() => onEdit({ lineStyle: value })}>
           <svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true"><line x1="2" x2="16" y1="9" y2="9" stroke="currentColor" strokeWidth="2" strokeDasharray={value === 'dashed' ? '4 3' : value === 'dotted' ? '1 3' : undefined} strokeLinecap="round" /></svg>
         </button>)}
+      </span> : null}
+      {(FIB_LEVEL_KINDS as string[]).includes(mark.kind) ? <span className="dhl-draw-toolbar-group" role="group" aria-label={tr('斐波那契层级', 'Fibonacci levels')}>
+        <input className="dhl-draw-toolbar-text dhl-fib-levels" value={levelsText} disabled={locked} aria-label={tr('斐波那契层级（逗号分隔）', 'Fibonacci levels (comma separated)')} title={tr('逗号分隔，回车应用；清空恢复默认', 'Comma separated, Enter applies; empty restores defaults')}
+          onChange={(event) => setLevelsText(event.target.value)}
+          onKeyDown={(event) => { if (event.key === 'Enter') applyLevels(); if (event.key === 'Escape') setLevelsText(defaultLevels) }} onBlur={applyLevels} />
       </span> : null}
       {mark.kind === 'vprofile' ? <span className="dhl-draw-toolbar-group" role="group" aria-label={tr('成交量分布设置', 'Volume profile settings')}>
         <Select aria-label={tr('价格行数', 'Rows')} title={tr('价格行数', 'Rows')} value={String(mark.rows ?? 48)} disabled={locked} onChange={(event) => onEdit({ rows: Number(event.target.value) })}>

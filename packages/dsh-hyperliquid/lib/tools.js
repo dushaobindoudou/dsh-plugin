@@ -10,10 +10,13 @@ import { closedCandles, computeIndicators } from './indicators.js'
 import { MA_KINDS, MA_SOURCES, maLabel, maLatest, normalizeMaLine, normalizeMaLines } from './moving-average.js'
 import { INDICATOR_IDS, computeStudies, normalizeIndicatorSettings, studyDefinitions } from './studies.js'
 import { reviewLedger } from './review.js'
-import { DRAWING_KINDS, volumeProfile } from './chart-drawings.js'
+import { DRAWING_KINDS, drawingStyle, volumeProfile } from './chart-drawings.js'
 
 const DRAWING_NAMES = { vprofile: '固定范围成交量分布', level: '水平线', hray: '水平射线', vline: '垂直线', text: '文本', trend: '趋势线', ray: '射线', extended: '延长线', channel: '平行通道', fib: '斐波那契回撤', rect: '矩形', measure: '价格区间', long: '多头头寸', short: '空头头寸', fibext: '斐波那契扩展', fibchannel: '斐波那契通道', fibtime: '斐波那契时间周期', gannfan: '江恩扇形', pitchfork: '安德鲁叉子线', regression: '回归趋势', arrow: '箭头', callout: '标注气泡', circle: '圆形', triangle: '三角形', brush: '画笔', crossline: '十字线', pricelabel: '价格标签', infoline: '信息线', trendangle: '趋势角度', pricerange: '价格区间', daterange: '日期区间', elliott: '艾略特推动浪', elliottabc: '艾略特调整浪', xabcd: 'XABCD 谐波', abcd: 'ABCD 形态', headshoulders: '头肩形态', gannbox: '江恩箱', gannsquare: '江恩方格', schiff: 'Schiff 叉子线', modschiff: '改良 Schiff 叉子线', icon: '图标' }
 import { canonicalMarketCoin } from './market-symbol.js'
+import { addEntry, journalDigest, removeStrategy, updateProfile, upsertStrategy } from './journal.js'
+import { analyzeTrading, checkupText } from './analysis.js'
+import { scanMarkets, scanText } from './scan.js'
 
 /** Resolve the calling session id from a tool run context. */
 function sessionIdOf(exec) {
@@ -39,8 +42,8 @@ export function losslessJson(value) {
   return JSON.parse(JSON.stringify(value, (_key, item) => typeof item === 'number' && !Number.isFinite(item) ? null : item))
 }
 
-export function buildToolDefinitions(remote) {
-  return buildTools(remote).map((tool) => ({ ...tool, async execute(...args) { return losslessJson(await tool.execute(...args)) } }))
+export function buildToolDefinitions(remote, authorize = () => {}) {
+  return buildTools(remote).map((tool) => ({ ...tool, async execute(...args) { authorize(tool.name, args[0], args[1]); return losslessJson(await tool.execute(...args)) } }))
 }
 
 function buildTools(remote) {
@@ -68,10 +71,14 @@ function buildTools(remote) {
         const bid = snap.book?.levels?.[0]?.[0]
         const ask = snap.book?.levels?.[1]?.[0]
         const candles = candleResult.candles.slice(-24)
-        const tradable = Boolean(coreMarket)
+        // Core perps and USDC-collateral HIP-3 perps are tradable; spot and outcomes stay view only.
+        const tradable = Boolean(coreMarket) || (detail?.market?.kind === 'hip3' && detail.market.tradable === true)
         const position = account.positions.find((p) => p.coin === coin) ?? null
-        const mid = Number(snap.mids?.mids?.[coin] ?? snap.mids?.[coin])
-        const midFresh = tradable && snap.observedAt?.mids && Date.now() - snap.observedAt.mids < 10_000 && Number.isFinite(mid) && mid > 0
+        // HIP-3 mids are not in the core allMids snapshot: read the market's own dex.
+        const dexMid = tradable && !coreMarket ? await remote.midOf(coin).then((value) => ({ value, at: Date.now() }), () => null) : null
+        const mid = dexMid ? dexMid.value : Number(snap.mids?.mids?.[coin] ?? snap.mids?.[coin])
+        const midsAt = dexMid ? dexMid.at : snap.observedAt?.mids
+        const midFresh = tradable && midsAt && Date.now() - midsAt < 10_000 && Number.isFinite(mid) && mid > 0
         const mark = market.ctx?.markPx != null ? Number(market.ctx.markPx) : null
         const change24hPct = Number(market.ctx?.prevDayPx) > 0 && mark != null ? (mark / Number(market.ctx.prevDayPx) - 1) * 100 : null
         const context = {
@@ -93,8 +100,8 @@ function buildTools(remote) {
           position, positions: account.positions, openOrders: (account.openOrders ?? []).slice(0, 20), candles,
           recentTrades: (Array.isArray(snap.trades) ? snap.trades : []).slice(0, 10),
           bookDepth: { bids: (snap.book?.levels?.[0] ?? []).slice(0, 5), asks: (snap.book?.levels?.[1] ?? []).slice(0, 5) },
-          riskLimits: status.riskLimits, autonomousLive: status.autonomousLive, walletConfigured: status.walletConfigured,
-          observedAt: { ...snap.observedAt, market: detail?.observedAt ?? markets.observedAt ?? null }, ws: snap.ws, assembledAt: Date.now(),
+          riskLimits: status.riskLimits, autonomousLive: status.autonomousLive, custody: status.custody, walletConfigured: status.walletConfigured,
+          observedAt: { ...snap.observedAt, ...(dexMid ? { mids: dexMid.at } : {}), market: detail?.observedAt ?? markets.observedAt ?? null }, ws: snap.ws, assembledAt: Date.now(),
         }
         const bookAge = context.observedAt?.book ? Math.round((context.assembledAt - context.observedAt.book) / 1000) : null
         const midsAge = context.observedAt?.mids ? Math.round((context.assembledAt - context.observedAt.mids) / 1000) : null
@@ -111,7 +118,7 @@ function buildTools(remote) {
             ? '当前账户数据不代表该只读市场的余额、仓位或可交易额度。'
             : `当前市场仅可分析；${context.positionsCoverage === 'all-dexs' ? '仓位来自全部永续 DEX 快照' : '账户仓位仅覆盖所选 DEX'}${position ? `；当前仓位=${fmt(position.size, 6)} ${coin}` : ''}，不能据此在该市场下单。`
             : position ? `仓位 ${position.size > 0 ? 'LONG' : 'SHORT'} ${fmt(Math.abs(position.size), 6)} ${coin} entry=${fmt(position.entryPx)} uPnL=${fmt(position.uPnl)}` : '当前币对无持仓',
-          `风险：允许币对=${(context.riskLimits?.allowedCoins ?? []).join(',')} 单笔≤${fmt(context.riskLimits?.maxOrderUsd)} USD 每日≤${fmt(context.riskLimits?.maxDailyUsd)} USD 杠杆≤${fmt(context.riskLimits?.maxLeverage, 0)}x · 自主执行=${context.autonomousLive ? '开启' : '关闭'}${account.mode === 'paper' ? ' · 模拟盘配置的滑点与手续费，未模拟盘口深度、资金费或强平' : ''}`,
+          `风险：允许币对=${(context.riskLimits?.allowedCoins ?? []).join(',')} 单笔≤${fmt(context.riskLimits?.maxOrderUsd)} USD 每日≤${fmt(context.riskLimits?.maxDailyUsd)} USD 杠杆≤${fmt(context.riskLimits?.maxLeverage, 0)}x · 托管模式=${context.custody === 'managed' ? '全托管（可自主执行、调整限额与划转）' : '半托管（实盘与划转需用户批准，限额由用户修改）'}${account.mode === 'paper' ? ' · 模拟盘配置的滑点与手续费，未模拟盘口深度、资金费或强平' : ''}`,
           `近 ${candles.length} 根 K 线价格（末根可能未收盘）: ${candles.map((c) => fmt(c.c)).join(', ')}`,
         ].join('\n')
         return { text, context }
@@ -120,19 +127,20 @@ function buildTools(remote) {
     {
       name: 'hyper_market',
       description:
-        '查询 Hyperliquid 核心永续、HIP-3、现货与 Outcome 行情。action=overview 列出核心永续的 24h 涨跌/成交/资金费；action=book 查盘口；' +
-        'action=catalog 搜索所有市场，支持官方 perpCategories 分类；action=candles 查 K 线（支持 Hyperliquid 官方 1m 至 1M 的 14 种周期）；action=indicators 计算 SMA/EMA/RSI/MACD/布林带/ATR/Stochastic/ADX/OBV/支撑阻力，遵循当前会话指标参数；action=trades 查最近成交。非核心永续目前只读。',
+        '查询 Hyperliquid 核心永续、HIP-3、现货与 Outcome 行情。action=scan 市场雷达：扫描约 20 个可交易永续（成交额最大的核心永续 + 前 5 个 HIP-3），给出贴近/突破区间、资金费极值、24h 涨跌、溢价的前几名（用户问“今天有什么机会”时先用它）；action=overview 列出核心永续的 24h 涨跌/成交/资金费；action=book 查盘口；' +
+        'action=catalog 搜索所有市场，支持官方 perpCategories 分类；action=candles 查 K 线（支持 Hyperliquid 官方 1m 至 1M 的 14 种周期）；action=indicators 计算 SMA/EMA/RSI/MACD/布林带/ATR/Stochastic/ADX/OBV/支撑阻力，遵循当前会话指标参数；action=trades 查最近成交。核心永续与 USDC 保证金的 HIP-3 永续（如 xyz:XYZ100）可交易，现货与 Outcome 目前只读；HIP-3 每个 dex 保证金独立，需要该 dex 有 USDC 或开启统一账户。',
       parameters: {
         type: 'object',
         properties: {
-          action: { type: 'string', enum: ['overview', 'catalog', 'book', 'candles', 'indicators', 'trades'], description: '行情查询类型' },
+          action: { type: 'string', enum: ['overview', 'scan', 'catalog', 'book', 'candles', 'indicators', 'trades'], description: '行情查询类型' },
           ma: { type: 'array', description: 'action=indicators 可选：额外计算的均线，最多 8 条；省略时返回当前会话图表上已叠加的均线', items: { type: 'object', properties: { kind: { type: 'string', enum: MA_KINDS }, period: { type: 'number' }, source: { type: 'string', enum: MA_SOURCES }, smoothing: { type: 'object', properties: { kind: { type: 'string', enum: MA_KINDS }, period: { type: 'number' } } } }, required: ['kind', 'period'] } },
           coin: { type: 'string', description: '官方合约名，以 action=catalog 返回的 name 为准，如 BTC 或 xyz:XYZ100；overview 时可省略' },
           kind: { type: 'string', enum: ['perp', 'hip3', 'spot', 'outcome'], description: 'catalog 市场类型过滤' },
           category: { type: 'string', description: 'catalog 官方分类过滤，如 crypto、stocks、commodities、indices、fx、rates、preipo；tradfi 聚合这些传统金融标签' },
           query: { type: 'string', description: 'catalog 名称搜索' },
           interval: { type: 'string', description: 'K 线周期，默认 1h' },
-          limit: { type: 'number', description: 'candles/trades 返回条数上限，默认 48' },
+          limit: { type: 'number', description: 'candles/trades 返回条数上限，默认 48，candles 最多 200' },
+          endMs: { type: 'number', description: 'action=candles 可选：返回这一时刻（epoch 毫秒）之前的 K 线，用于往前翻页取历史；交易所每个周期只保留最近约 5000 根' },
         },
         required: ['action'],
         additionalProperties: false,
@@ -158,6 +166,10 @@ function buildTools(remote) {
             }))
           return { text: scored.map((s) => `${s.coin} mark=${fmt(s.mark)} 24h=${s.change24hPct.toFixed(2)}% vol=${fmt(s.vol24hUsd, 0)} funding=${s.fundingPct1h.toFixed(4)}%/h OI=${fmt(s.openInterestUsd, 0)} maxLev=${s.maxLeverage}x`).join('\n'), coins: scored }
         }
+        if (action === 'scan') {
+          const result = await scanMarkets(remote)
+          return { text: scanText(result), ...result }
+        }
         if (action === 'catalog') {
           const result = await remote.marketCatalog()
           const query = String(args?.query ?? '').trim().toLowerCase()
@@ -178,9 +190,12 @@ function buildTools(remote) {
           return { text: `${coin} 盘口\nbids: ${levels(0).map((l) => `${l.px}×${l.sz}`).join(' | ')}\nasks: ${levels(1).map((l) => `${l.px}×${l.sz}`).join(' | ')}`, book: snap.book }
         }
         if (action === 'candles') {
-          const { candles } = await remote.candles({ coin, interval: args?.interval ?? '1h' })
           const limit = Math.max(1, Math.min(Number(args?.limit) || 48, 200))
-          const tail = candles.slice(-limit)
+          const iv = args?.interval ?? '1h'
+          // Paging back: ask for exactly the window that ends at endMs.
+          const endMs = Number(args?.endMs) > 0 ? Number(args.endMs) : null
+          const { candles } = await remote.candles(endMs ? { coin, interval: iv, endMs, startMs: endMs - (INTERVAL_MS[iv] ?? 3600e3) * (limit + 1) } : { coin, interval: iv })
+          const tail = candles.filter((c) => !endMs || c.t < endMs).slice(-limit)
           return { text: tail.map((c) => new Date(c.t).toISOString().slice(5, 16) + ` O=${fmt(c.o)} H=${fmt(c.h)} L=${fmt(c.l)} C=${fmt(c.c)} V=${fmt(c.v, 3)}`).join('\n'), coin, interval: args?.interval ?? '1h', candles: tail }
         }
         if (action === 'indicators') {
@@ -237,6 +252,7 @@ function buildTools(remote) {
           smoothingPeriod: { type: 'number', description: 'kind=ma 可选：平滑周期' },
           color: { type: 'string', description: '可选 #RRGGBB 颜色（画线或均线）' },
           lineWidth: { type: 'number', description: '画线线宽 1-4' },
+          levels: { type: 'array', items: { type: 'number' }, description: 'kind=fib/fibext/fibchannel：自定义斐波那契层级，如 [0,0.382,0.5,0.618,1,1.618]' },
           rows: { type: 'number', description: 'kind=vprofile：价格行数 6-200，默认 48' },
           valueArea: { type: 'number', description: 'kind=vprofile：价值区成交量占比 0.5-0.95，默认 0.7' },
           lineStyle: { type: 'string', enum: ['solid', 'dashed', 'dotted'], description: '画线线型' },
@@ -290,7 +306,7 @@ function buildTools(remote) {
           return { text: `已移除均线：${maLabel(removed)}（${removed.id}）`, line: removed }
         }
         if (args?.action === 'update') {
-          const patch = Object.fromEntries(['points', 'price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'label', 'color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert', 'rows', 'valueArea'].filter((key) => args?.[key] != null).map((key) => [key, args[key]]))
+          const patch = Object.fromEntries(['points', 'price', 'fromTime', 'fromPrice', 'toTime', 'toPrice', 'label', 'color', 'lineWidth', 'lineStyle', 'locked', 'hidden', 'shared', 'alert', 'rows', 'valueArea', 'levels'].filter((key) => args?.[key] != null).map((key) => [key, args[key]]))
           const mark = remote.editChartMark(args?.id, patch, sessionId)
           return { text: `已更新${DRAWING_NAMES[mark.kind] ?? mark.kind}：${mark.label}（${mark.id}）`, mark }
         }
@@ -298,13 +314,15 @@ function buildTools(remote) {
           // Fetch the range first: a failed market request must not leave a saved drawing behind.
           let summary = null
           if (args?.kind === 'vprofile') {
+            // Validate rows / valueArea before they size any computation.
+            drawingStyle({ kind: 'vprofile', rows: args?.rows, valueArea: args?.valueArea })
             const times = (Array.isArray(args?.points) ? args.points : []).map((point) => Number(point?.time)).filter(Number.isFinite).sort((x, y) => x - y)
             if (times.length === 2) {
               const { candles } = await remote.candles({ coin, interval, startMs: times[0], endMs: times[1] + 1 })
               const inRange = candles.filter((c) => c.t >= times[0] && c.t <= times[1])
               const profile = volumeProfile(inRange.map((c) => ({ open: c.o, high: c.h, low: c.l, close: c.c, volume: c.v })), { rows: Number(args?.rows) || 48, valueArea: Number(args?.valueArea) || 0.7 })
               const step = INTERVAL_MS[interval] ?? (inRange.length > 1 ? inRange[1].t - inRange[0].t : 0)
-              const partial = !inRange.length || (step > 0 && inRange[0].t - times[0] > step)
+              const partial = !inRange.length || (step > 0 && inRange[0].t - times[0] >= step)
               summary = { profile, partial, bars: inRange.length, from: inRange[0]?.t ?? null }
             }
           }
@@ -325,11 +343,20 @@ function buildTools(remote) {
     },
     {
       name: 'hyper_account',
-      description: '查询交易账户。action=state 返回权益/持仓；orders 返回挂单；fills 返回成交；orderStatus 用 oid 或 cloid 核对某笔 live 订单，尤其在网络超时后。review 返回最近 7/30/90 天成交复盘、订单数量核对、费用和资金费覆盖缺口；不是完整账户收益率。',
+      description: '查询交易账户。action=state 返回权益/持仓；orders 返回挂单；fills 返回成交；orderStatus 用 oid 或 cloid 核对某笔 live 订单，尤其在网络超时后。review 返回最近 7/30/90 天成交复盘、订单数量核对、费用和资金费覆盖缺口；不是完整账户收益率。' +
+        'action=analyze 交易体检（默认 90 天）：按完整往返统计胜率、盈亏比、期望、持仓时长、按币种/时段/星期的表现、手续费与资金费，并给出按金额排序的习惯问题和建议规则——第一次见面或用户问“我做得怎么样”时用它，不要自己从成交里手算。' +
+        'action=limits 修改允许币对（addCoins/removeCoins）与单笔/每日/仓位/杠杆上限——仅全托管模式可用，半托管时由用户在 设置 → 交易限额与签名规则 修改。' +
+        'action=transfer 在主永续账户与 HIP-3 交易所之间划转 USDC（dex，amount，direction=in 转入 / out 转回）——全托管直接执行，半托管每次需用户批准；仅 live。',
       parameters: {
         type: 'object',
         properties: {
-          action: { type: 'string', enum: ['state', 'orders', 'fills', 'orderStatus', 'review'], description: '账户查询类型，默认 state' },
+          action: { type: 'string', enum: ['state', 'orders', 'fills', 'orderStatus', 'review', 'analyze', 'limits', 'transfer'], description: '账户动作，默认 state' },
+          addCoins: { type: 'array', items: { type: 'string' }, description: 'action=limits：加入允许币对，如 ["xyz:XYZ100"]' },
+          removeCoins: { type: 'array', items: { type: 'string' }, description: 'action=limits：移出允许币对' },
+          maxOrderUsd: { type: 'number' }, maxDailyUsd: { type: 'number' }, maxPositionUsd: { type: 'number' }, maxLeverage: { type: 'number' },
+          dex: { type: 'string', description: 'action=transfer：HIP-3 交易所名，如 xyz' },
+          amount: { type: 'number', description: 'action=transfer：USDC 数量' },
+          direction: { type: 'string', enum: ['in', 'out'], description: 'action=transfer：in=主账户转入该交易所（默认），out=转回主账户' },
           oid: { type: 'string', description: 'orderStatus 必填；交易所 oid 或 0x 开头 128 位 cloid' },
           days: { type: 'number', enum: [7, 30, 90], description: 'review 窗口，默认 30 天' },
           coin: { type: 'string', description: 'review 可选，仅核对该标的；省略为全部' },
@@ -338,8 +365,27 @@ function buildTools(remote) {
       },
       output: { schema: { type: 'object', additionalProperties: true }, render: (_a, v) => [{ type: 'text', text: v.text }] },
       timeoutMs: 60_000,
-      async execute(args) {
+      async execute(args, exec) {
         const action = args?.action ?? 'state'
+        if (action === 'analyze') {
+          const days = args?.days ?? 90
+          if (![7, 30, 90].includes(days)) throw Error('交易体检支持最近 7/30/90 天')
+          const evidence = await remote.tradeHistory({ includeFunding: true, days })
+          const fills = args?.coin ? (evidence.fills ?? []).filter((row) => row.coin === canonicalMarketCoin(args.coin)) : evidence.fills
+          const funding = evidence.coverage?.fundingStatus === 'complete' ? evidence.funding : null
+          const result = analyzeTrading(fills, { funding, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Shanghai' })
+          const limited = evidence.coverage?.fillsLimited ? '（交易所只返回最近 2000 笔成交，更早的未计入）' : ''
+          return { text: checkupText(result, { days, mode: `${evidence.mode}/${evidence.network}` }) + limited, ...result, coverage: { ...result.coverage, ...evidence.coverage } }
+        }
+        if (action === 'limits') {
+          const { before, after } = remote.agentUpdateRiskSettings(args)
+          const diff = Object.keys(after).filter((key) => JSON.stringify(before[key]) !== JSON.stringify(after[key]))
+          return { text: diff.length ? `已更新交易限额：${diff.map((key) => `${key} ${JSON.stringify(before[key])} → ${JSON.stringify(after[key])}`).join('；')}` : '交易限额未变化', before, after }
+        }
+        if (action === 'transfer') {
+          const res = await remote.transferCollateral(args, exec)
+          return { text: `已划转 ${res.amount} USDC：${res.direction === 'in' ? `主永续账户 → ${res.dex}` : `${res.dex} → 主永续账户`}`, ...res }
+        }
         if (action === 'state') {
           const a = await remote.account({ coin: remote.desk?.coin })
           const lines = [`mode=${a.mode}${a.address ? ' ' + a.address : ''}${a.accountDex ? ` DEX=${a.accountDex}` : ''}${a.positionsCoverage ? ` positions=${a.positionsCoverage}` : ''}`]
@@ -383,7 +429,7 @@ function buildTools(remote) {
     },
     {
       name: 'hyper_decide',
-      description: '对一个 live 交易意图做服务端预检：读取实时价格、账户权益和仓位，执行币对/单笔/每日/仓位/杠杆硬限制，并生成 30 秒、仅本会话可用的一次性 decisionId。可选 takeProfitPx/stopLossPx 会随主单作为 normalTpsl 分组保护单提交；父单未完全成交时保护单尚未挂出，部分成交后撤销父单会撤销子单，必须核对真实仓位与保护挂单。paper 暂不支持触发单。先独立分析行情与风险，再提交方向、数量和依据；预检通过不等于交易所已成交。',
+      description: '对一个 live 交易意图做服务端预检：读取实时价格、账户权益和仓位，执行币对/单笔/每日/仓位/杠杆硬限制，并生成 30 秒、仅本会话可用的一次性 decisionId。可选 takeProfitPx/stopLossPx 会随主单作为 normalTpsl 分组保护单提交（目前仅 testnet；mainnet 传入会被拒绝）；父单未完全成交时保护单尚未挂出，部分成交后撤销父单会撤销子单，必须核对真实仓位与保护挂单。paper 暂不支持触发单。先独立分析行情与风险，再提交方向、数量和依据；预检通过不等于交易所已成交。',
       parameters: {
         type: 'object',
         properties: {
@@ -406,8 +452,8 @@ function buildTools(remote) {
     {
       name: 'hyper_order',
       description:
-        '交易下单/撤单/杠杆。action=place：paper 直接执行；live 必须先调用 hyper_decide 并提供同一订单的一次性 decisionId。live 可带 takeProfitPx/stopLossPx，必须与预检完全一致，作为 normalTpsl 分组保护单提交；父单未完全成交时保护单尚未挂出，部分成交后撤销父单会撤销子单，提交后须核对仓位与实际保护挂单。自主 live 仅在宿主显式开启且钱包策略允许时执行，否则触发人工审批。' +
-        'action=cancel 撤单（oid）；action=leverage 设置杠杆（1-50）。autonomousLive=false 时 live 撤单和杠杆变更需人工审批；否则仍受 dsh-web3 钱包策略约束。',
+        '交易下单/撤单/杠杆。action=place：paper 直接执行；live 必须先调用 hyper_decide 并提供同一订单的一次性 decisionId。live 可带 takeProfitPx/stopLossPx（目前仅 testnet），必须与预检完全一致，作为 normalTpsl 分组保护单提交；父单未完全成交时保护单尚未挂出，部分成交后撤销父单会撤销子单，提交后须核对仓位与实际保护挂单。全托管模式下 live 直接执行（仍受钱包策略约束），半托管触发人工审批。' +
+        'action=cancel 撤单（oid）；action=leverage 设置杠杆（1-50）。半托管时 live 下单、撤单和杠杆变更需人工审批；全托管时直接执行，但仍受 dsh-web3 钱包策略约束。',
       parameters: {
         type: 'object',
         properties: {
@@ -511,6 +557,71 @@ function buildTools(remote) {
         if (row) lines.push(`本会话绑定币对: ${row.coin}`)
         else lines.push('本会话尚未绑定币对（可用 action=bind 绑定，或让用户在中间台选择）')
         return { text: lines.join('\n'), session: row, status: st }
+      },
+    },
+    {
+      name: 'hyper_journal',
+      description:
+        '交易员日志（跨会话、重启保留，摘要会自动出现在每个会话的系统提示里）。action=read 读取交易员档案、策略库（含按 paper/live 分开统计的笔数、胜率、期望 R）、最近教训与记录；' +
+        'action=profile 用 fields 更新档案（如 {"风险偏好":"单笔最多亏 1%","持仓周期":"日内到 3 天","打扰偏好":"只在需要决策时提醒"}，null 删除字段）；' +
+        'action=strategy 新建或修订策略（不传 id 为新建，至少 name+thesis；修订必须传 why 说明改动原因，版本号自动递增），action=removeStrategy 删除；' +
+        'action=log 追加记录：type=plan 交易计划 / trade 已平仓结果（必须 resultR=盈亏÷计划风险）/ review 复盘 / lesson 可复用的教训 / note 其他，可关联 strategyId 与 coin。' +
+        '用户表达偏好、纠正你、或一笔交易结束时就写入，不要等用户要求。',
+      parameters: {
+        type: 'object',
+        properties: {
+          action: { type: 'string', enum: ['read', 'profile', 'strategy', 'removeStrategy', 'log'], description: '默认 read' },
+          fields: { type: 'object', additionalProperties: true, description: 'action=profile：{字段: 内容 | null}' },
+          id: { type: 'string', description: 'strategy 修订 / removeStrategy 的策略 id' },
+          name: { type: 'string' }, markets: { type: 'string', description: '适用市场，如 BTC,ETH,xyz:XYZ100' }, timeframe: { type: 'string', description: '周期，如 4h 结构 + 15m 入场' },
+          thesis: { type: 'string', description: '为什么能赚钱：市场行为与优势来源' }, entry: { type: 'string', description: '入场条件（可核对的）' },
+          exit: { type: 'string', description: '止盈与离场规则' }, invalidation: { type: 'string', description: '止损与作废条件' },
+          sizing: { type: 'string', description: '仓位与风险规则，如 单笔风险 0.5% 权益' }, notes: { type: 'string' },
+          status: { type: 'string', enum: ['idea', 'testing', 'active', 'paused', 'retired'] },
+          why: { type: 'string', description: '修订策略时必填：依据哪些交易或复盘做了什么改动' },
+          type: { type: 'string', enum: ['plan', 'trade', 'review', 'lesson', 'note'], description: 'action=log 的记录类型' },
+          text: { type: 'string', description: 'action=log 的内容' }, coin: { type: 'string' }, strategyId: { type: 'string' },
+          strategyVersion: { type: 'integer', minimum: 1, description: 'action=log：默认当前策略版本；修订前的交易平仓时填原版本，战绩按版本分别统计' },
+          resultR: { type: 'number', description: 'type=trade：结果的 R 倍数（亏损为负）' }, pnlUsd: { type: 'number', description: 'type=trade：可选，实际盈亏 USD' },
+        },
+        additionalProperties: false,
+      },
+      output: { schema: { type: 'object', additionalProperties: true }, render: (_a, v) => [{ type: 'text', text: v.text }] },
+      timeoutMs: 10_000,
+      async execute(args, exec) {
+        const action = args?.action ?? 'read'
+        let sessionId = null
+        try { sessionId = sessionIdOf(exec) } catch { /* journal is not bound to a trading session */ }
+        let journal = remote.store.journal()
+        if (action === 'read') {
+          const digest = journalDigest(journal)
+          const text = [
+            Object.keys(digest.profile).length ? '档案：' + Object.entries(digest.profile).map(([k, v]) => `${k}=${v}`).join('；') : '档案：空（与用户交流时逐步记录偏好）',
+            digest.strategies.length ? '策略：\n' + digest.strategies.map((row) => `[${row.id}] ${row.name} ${row.status} v${row.version} ${row.markets ?? ''} ${row.timeframe ?? ''}\n  依据：${row.thesis}${row.entry ? `\n  入场：${row.entry}` : ''}${row.exit ? `\n  离场：${row.exit}` : ''}${row.invalidation ? `\n  作废：${row.invalidation}` : ''}${row.sizing ? `\n  仓位：${row.sizing}` : ''}\n  战绩：${Object.entries(row.stats).map(([mode, s]) => `${mode} ${s.trades}笔 胜率${Math.round(s.winRate * 100)}% 期望${fmt(s.expectancyR, 2)}R 最差${fmt(s.worstR, 2)}R`).join('；') || '暂无已平仓记录'}`).join('\n') : '策略：空',
+            digest.lessons.length ? '教训：' + digest.lessons.map((entry) => entry.text).join('；') : '',
+            digest.recent.length ? '最近记录：\n' + digest.recent.map((entry) => `${new Date(entry.at).toISOString().slice(0, 16)} ${entry.type}${entry.coin ? ' ' + entry.coin : ''}${entry.strategyId ? ' [' + entry.strategyId + ']' : ''}${entry.resultR != null ? ' ' + fmt(entry.resultR, 2) + 'R' : ''} ${entry.text.slice(0, 160)}`).join('\n') : '',
+          ].filter(Boolean).join('\n')
+          return { text, ...digest }
+        }
+        if (action === 'profile') {
+          journal = remote.store.saveJournal(updateProfile(journal, args?.fields))
+          return { text: `已更新交易员档案：${Object.keys(args?.fields ?? {}).join('、')}`, profile: journalDigest(journal).profile }
+        }
+        if (action === 'strategy') {
+          const result = upsertStrategy(journal, args)
+          remote.store.saveJournal(result.journal)
+          return { text: `${result.strategy.version === 1 ? '已新建' : '已修订'}策略 [${result.strategy.id}] ${result.strategy.name}（${result.strategy.status}，v${result.strategy.version}）`, strategy: result.strategy }
+        }
+        if (action === 'removeStrategy') {
+          remote.store.saveJournal(removeStrategy(journal, String(args?.id ?? '')))
+          return { text: `已删除策略 ${args?.id}` }
+        }
+        if (action === 'log') {
+          const result = addEntry(journal, args, { mode: remote.cfg.tradingMode, network: remote.cfg.network, sessionId: sessionId ?? undefined })
+          remote.store.saveJournal(result.journal)
+          return { text: `已记录 ${result.entry.type}${result.entry.resultR != null ? ` ${fmt(result.entry.resultR, 2)}R` : ''}`, entry: result.entry }
+        }
+        throw new Error(`未知 action: ${action}`)
       },
     },
   ]

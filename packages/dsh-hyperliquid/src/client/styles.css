@@ -95,7 +95,7 @@
 .dhl-chat-heading span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--dsw-alias-label-secondary); font-size: 10.5px; }
 .dhl-chat-ticket-toggle { flex: none; border: 1px solid var(--dsw-alias-border-l1); border-radius: 6px; background: transparent; color: var(--dsw-alias-label-secondary); padding: 5px 9px; font: inherit; font-size: 11px; cursor: pointer; }
 .dhl-chat-ticket-toggle:hover { color: var(--dsw-alias-label-primary); background: var(--dsw-alias-interactive-bg-hover); }
-.dhl-chat-prompts { flex: none; display: flex; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
+.dhl-chat-prompts { flex: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 12px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
 .dhl-chat-prompts button { border: 1px solid var(--dsw-alias-border-l1); border-radius: 999px; background: transparent; color: var(--dsw-alias-label-secondary); padding: 4px 9px; font: inherit; font-size: 10.5px; cursor: pointer; }
 .dhl-chat-prompts button:hover { color: var(--dsw-alias-brand-primary); border-color: var(--dsw-alias-brand-primary); }
 .dhl-chat-unavailable { margin: 18px; padding: 13px 14px; border: 1px solid var(--dsw-alias-state-warn-primary); border-radius: 8px; color: var(--dsw-alias-label-secondary); font-size: 12px; line-height: 1.6; }
@@ -418,7 +418,7 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-chart-tools { min-height: 42px; }
 .dhl-chartbox { height: 410px; }
 /* Above Lightweight Charts' own canvases (z-index 1–2, later in the DOM) so drawings receive the pointer. */
-.dhl-chart-drawing-overlay { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; overflow: hidden; pointer-events: none; color: #4c82d8; }
+.dhl-chart-drawing-overlay { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; overflow: hidden; pointer-events: none; color: #4c82d8; contain: layout paint; transform: translateZ(0); }
 .dhl-chart-drawing-overlay .role-user { color: #4c82d8; }
 .dhl-chart-drawing-overlay .role-support { color: var(--dsw-alias-state-success-primary); }
 .dhl-chart-drawing-overlay .role-resistance { color: var(--dsw-alias-state-error-primary); }
@@ -654,7 +654,7 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 /* Direct manipulation: a transparent, wide hit layer on strokes (empty chart space still pans). */
 .dhl-drawing-hit * { stroke: transparent !important; fill: transparent !important; stroke-dasharray: none !important; stroke-width: 12px !important; pointer-events: stroke; cursor: move; }
 .dhl-drawing-hit .dhl-text-box, .dhl-drawing-hit .dhl-position rect, .dhl-drawing-hit text { pointer-events: all; }
-.dhl-chart-drawing-overlay.drawing .dhl-drawing-hit { display: none; }
+.dhl-chart-drawing-overlay.drawing .dhl-drawing-hit, .dhl-canvas-gesture .dhl-drawing-hit { display: none; }
 .dhl-drawing.locked .dhl-drawing-hit * { cursor: default; }
 .dhl-drawing:has(> .dhl-drawing-hit:hover) > line, .dhl-drawing:has(> .dhl-drawing-hit:hover) > g > line, .dhl-drawing.selected > line, .dhl-drawing.selected > g > line { stroke-width: calc(var(--dhl-line-width, 1.8) + 1); }
 .dhl-drawing.selected { filter: drop-shadow(0 0 3px color-mix(in srgb, currentColor 55%, transparent)); }
@@ -855,7 +855,7 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 
 /* Fixed range volume profile: up/down volume per price row, value area brighter, POC in the alert red. */
 .dhl-vprofile-range { fill: color-mix(in srgb, currentColor 5%, transparent); stroke: none; }
-.dhl-vprofile rect.dhl-vprofile-up, .dhl-vprofile rect.dhl-vprofile-down { stroke: none; }
+.dhl-vprofile .dhl-vprofile-up, .dhl-vprofile .dhl-vprofile-down { stroke: none; }
 .dhl-vprofile-up { fill: color-mix(in srgb, #4c82d8 62%, transparent); }
 .dhl-vprofile-down { fill: color-mix(in srgb, #e2a943 62%, transparent); }
 .dhl-vprofile-out .dhl-vprofile-up { fill: color-mix(in srgb, #4c82d8 26%, transparent); }
@@ -866,3 +866,30 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 /* Magnet feedback: a ring on the O/H/L/C value the anchor will snap to. */
 .dhl-snap-ring { fill: none; stroke: var(--dsw-alias-brand-primary, #4c82d8); stroke-width: 1.5; pointer-events: none; }
 .dhl-draw-toolbar .dhl-select > select { height: 26px; font-size: 11px; }
+.dhl-draw-toolbar .dhl-fib-levels { width: 190px; }
+
+.dhl-badge.managed { color: var(--dsw-alias-brand-primary, #4c82d8); border-color: color-mix(in srgb, var(--dsw-alias-brand-primary, #4c82d8) 40%, transparent); background: color-mix(in srgb, var(--dsw-alias-brand-primary, #4c82d8) 10%, transparent); }
+.dhl-managed-list { margin: 6px 0 10px; padding-left: 20px; line-height: 1.7; }
+
+/* Trading limits dialog: tabs keep it short; when the viewport is still too small the card caps at the
+   overlay's padding box (DSH Modal contract: max-height 100%) and only the body scrolls — header and
+   footer (the save button) stay in view. */
+.dhl-limits-modal { max-height: 100%; }
+.dhl-limits-content { flex: 1 1 auto; min-height: 0; }
+.dhl-limits-content > :has(> .dhl-limits-scroll) { flex: 1 1 auto; min-height: 0; overflow: hidden; margin-top: 12px; }
+.dhl-limits-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; margin: 0 -24px; padding: 14px 24px 2px; scrollbar-gutter: stable; }
+.dhl-limits-tabs { flex: none; display: flex; gap: 4px; border-bottom: 1px solid var(--dsw-alias-border-l1); }
+.dhl-limits-tabs button { position: relative; height: 34px; padding: 0 12px; border: 0; background: transparent; color: var(--dsw-alias-label-secondary); font: inherit; font-size: 13px; cursor: pointer; }
+.dhl-limits-tabs button:hover { color: var(--dsw-alias-label-primary); }
+.dhl-limits-tabs button.on { color: var(--dsw-alias-label-primary); font-weight: 600; }
+.dhl-limits-tabs button.on::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; border-radius: 1px; background: var(--dsw-alias-label-primary); }
+.dhl-limits-tabs button:focus-visible { outline: 2px solid var(--dsw-alias-brand-primary); outline-offset: -2px; border-radius: 6px; }
+.dhl-limits-section + .dhl-limits-section { margin-top: 0; padding-top: 0; border-top: 0; }
+.dhl-limits-ledger-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 12px; color: var(--dsw-alias-label-secondary); font-size: 12px; }
+.dhl-limits-scroll .dhl-limits-note { margin-top: 10px; font-size: 12px; line-height: 18px; }
+.dhl-limits-facts { display: grid; grid-template-columns: auto 1fr; gap: 10px 14px; margin: 0; font-size: 13px; line-height: 20px; }
+.dhl-limits-facts dt { color: var(--dsw-alias-label-secondary); white-space: nowrap; }
+.dhl-limits-facts dd { margin: 0; color: var(--dsw-alias-label-primary); }
+.dhl-limits-hint { display: block; margin-top: 2px; color: var(--dsw-alias-label-secondary); font-size: 12px; }
+.dhl-limits-scroll .dhl-risk-error { margin: 10px 0 0; }
+.dhl-wallet-form ~ .dhl-limits-facts { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--dsw-alias-border-l1); }

@@ -9,10 +9,19 @@ import type { Interval } from './types'
 export const INTERVALS: Interval[] = ['1m', '5m', '15m', '1h', '4h', '1d']
 export const MORE_INTERVALS: Interval[] = ['3m', '30m', '2h', '8h', '12h', '3d', '1w', '1M']
 
+// Drawing labels and live market rows format hundreds of values per frame.
+// Reuse the formatter; toLocaleString with options constructs one on every call.
+const numberFormats = new Map<number, Intl.NumberFormat>()
+
 export function fmt(n: unknown, d = 2): string {
   const v = Number(n)
   if (!Number.isFinite(v)) return '—'
-  return v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d })
+  let formatter = numberFormats.get(d)
+  if (!formatter) {
+    formatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: d, maximumFractionDigits: d })
+    numberFormats.set(d, formatter)
+  }
+  return formatter.format(v)
 }
 
 /** Price with magnitude-aware precision (prices span 1e-5 … 1e5). */

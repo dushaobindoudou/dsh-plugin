@@ -56,4 +56,8 @@ remote.candles = async () => ({ candles: [6, 7, 8].map((i) => ({ t: t0 + i * 360
 const vp = await chart.execute({ action: 'add', kind: 'vprofile', label: 'VP', points: [{ time: t0 + 9 * 3600_000, price: 1 }, { time: t0, price: 1 }] }, exec)
 assert.ok(vp.profile.partial && /区间前段缺失/.test(vp.text) && /K 线估算/.test(vp.text), vp.text)
 assert.deepEqual(problems(vp), [], 'vprofile output is lossless JSON')
+await assert.rejects(chart.execute({ action: 'add', kind: 'vprofile', label: 'VP', rows: 6.5, points: [{ time: t0, price: 1 }, { time: t0 + 9 * 3600_000, price: 1 }] }, exec), /6-200/, 'rows are validated before any computation')
+// exactly the first 4h bar missing is still a gap
+remote.candles = async () => ({ candles: [4, 8].map((i) => ({ t: t0 + i * 3600_000, o: 10, h: 12, l: 9, c: 11, v: 100 })) })
+assert.equal((await chart.execute({ action: 'add', kind: 'vprofile', label: 'VP2', points: [{ time: t0, price: 1 }, { time: t0 + 9 * 3600_000, price: 1 }] }, exec)).profile.partial, true, 'a range missing exactly its first bar is flagged')
 console.log('hyper_* 工具输出均为无损 JSON（清除样式、重新开启提醒后 list/update 不再报错）')

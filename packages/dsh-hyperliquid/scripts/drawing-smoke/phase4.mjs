@@ -67,6 +67,15 @@ try {
   }, target.id, { timeout: 30_000, polling: 500 }).then((h) => h.jsonValue(), () => null)
   check(Boolean(fired), 'line and live mid crossed: the alert fired once (switched off, time recorded)')
   check(/BTC 价格(上穿|下穿)「/.test(await page.locator('.dhl-notice').innerText().catch(() => '')), 'the desk shows the crossing alert')
+  // …and the agent of the session that drew the line (a, not the session on screen) is woken with a
+  // notify-only event message (followup into the real DSH session).
+  await page.locator(`.dhl-srow[data-session-id="${a}"]`).click()
+  await page.waitForFunction((id) => window.__dhlStore.get().activeSessionId === id, a, { timeout: 10_000 })
+  // The event message has a plugin source, so DSH shows the agent's reply rather than the message itself;
+  // what must happen is a new agent turn in that session (this smoke host has no working model, so the
+  // turn itself fails — the turn counter is the evidence that the agent was woken).
+  const woke = await page.waitForFunction(() => /\b1\s*轮/.test(document.querySelector('.dhl-chatmount')?.innerText ?? ''), null, { timeout: 30_000 }).then(() => true).catch(() => false)
+  check(woke, 'the alert wakes the session agent (a new turn starts in the drawing\'s session)', await page.locator('.dhl-chatmount').innerText().catch(() => ''))
   // custom emoji from the full emoji set
   await pick('图标'); await clickXY(at(.55, .2))
   await page.getByRole('dialog').getByLabel('自定义 emoji 贴纸').fill('🦄')
