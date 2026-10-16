@@ -444,8 +444,10 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
     box.addEventListener('pointermove', move, true)
     box.addEventListener('pointerup', move, true)
     box.addEventListener('pointercancel', cancel, true)
-    // LWC's click callback can miss the first click after another control had
-    // focus. Handle both drawing and quoting from one native click path.
+    // Native click, not LWC subscribeClick: lightweight-charts counts clicks within its 500ms
+    // double-click window and fires no click callback for the second one (a dblclick only if
+    // within 5px). The second anchor of a quickly drawn line was dropped that way (verified
+    // against 0.1.0: 100ms between clicks missed 20/20, 700ms missed 0/20).
     const chartClick = (event: MouseEvent) => {
       const visible = chart.timeScale().getVisibleLogicalRange()
       // A live bar arriving mid-click must not cancel it (see click-guard).

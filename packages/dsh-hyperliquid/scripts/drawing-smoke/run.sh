@@ -12,7 +12,8 @@ trap cleanup EXIT
 DSH_BIN="${DSH_BIN:-$(command -v dsh)}"; NODE_BIN="${NODE_BIN:-node}"; PORT="${SMOKE_PORT:-4099}"
 (cd "$ROOT" && "$NODE_BIN" scripts/build-client.mjs >/dev/null)
 (cd "$ROOT" && npm pack --pack-destination "$TMP" >/dev/null 2>&1)
-TGZ="$(ls "$TMP"/dsh-hyperliquid-*.tgz | head -1)"
+# SMOKE_TGZ=/path/to/dsh-hyperliquid-x.y.z.tgz tests a published build instead of this checkout.
+TGZ="${SMOKE_TGZ:-$(ls "$TMP"/dsh-hyperliquid-*.tgz | head -1)}"
 export DSH_HOME="$TMP/dsh-home" npm_config_store_dir="$TMP/pnpm-store" npm_config_cache="$TMP/cache/npm" XDG_CACHE_HOME="$TMP/cache"
 export DRAWING_SMOKE_STATE="$TMP/phase1-state.json"
 mkdir -p "$npm_config_store_dir" "$npm_config_cache" "$TMP/home"
