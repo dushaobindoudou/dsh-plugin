@@ -93,6 +93,8 @@ export const DRAWING_TOOLS: DrawingTool[] = [
   { group: 'measure', kind: 'forecast', zh: '预测', en: 'Forecast', hintZh: '点击起点，再点击预测目标，显示涨跌与时长', hintEn: 'Click the source, then the target; shows change and time', icon: 'M3 17 10 12M10 12l11-7M17 5h4v4M10 12v.01' },
   { group: 'measure', kind: 'avwap', zh: '锚定 VWAP', en: 'Anchored VWAP', hintZh: '单击锚定的 K 线，从该处累计到最新 K 线', hintEn: 'Click the anchor bar; accumulates to the latest bar', icon: 'M4 4v16M4 16c4-1 6-6 10-7s5 2 6 0' },
   { group: 'measure', kind: 'avprofile', zh: '锚定成交量分布', en: 'Anchored volume profile', hintZh: '单击锚定的 K 线，统计从该处到最新的成交量分布', hintEn: 'Click the anchor bar; volume by price up to the latest bar', icon: 'M4 3v18M4 6h7M4 10h12M4 14h9M4 18h5' },
+  { group: 'measure', kind: 'projection', zh: '投影', en: 'Projection', hintZh: '点击起点、未来方向点，再点击估计价格，画出扇形并标注涨跌幅', hintEn: 'Click the origin, a future point, then the estimated price; draws a sector with the change', icon: 'M4 18 20 10M4 18l14-12M4 18M16 6a10 10 0 0 1 4 4' },
+  { group: 'measure', kind: 'ghostfeed', zh: '幽灵 K 线', en: 'Ghost feed', hintZh: '逐点点击设想的价格路径，双击或按 Enter 结束，沿路径生成假想 K 线', hintEn: 'Click the imagined price path; double-click or Enter to finish; candles follow it', icon: 'M5 8v8M4 10h2M10 5v10M9 7h2M15 9v9M14 11h2M20 6v8M19 8h2' },
   { group: 'measure', kind: 'barspattern', zh: 'K 线形态', en: 'Bars pattern', hintZh: '点击源区间起点和终点，再点击粘贴位置，复制这段 K 线的形状', hintEn: 'Click the source range start and end, then where to paste its shape', icon: 'M6 5v14M4 8h2M6 15h2M12 3v12M10 6h2M12 12h2M18 8v12M16 10h2M18 17h2' },
   { group: 'measure', kind: 'long', zh: '多头头寸', en: 'Long position', hintZh: '点击入场价，再点击止损价（止盈默认 2R，可拖动）', hintEn: 'Click entry, then stop (target defaults to 2R)', icon: 'M4 4h16v8H4zM4 12h16v8H4zM4 12h16' },
   { group: 'measure', kind: 'short', zh: '空头头寸', en: 'Short position', hintZh: '点击入场价，再点击止损价（止盈默认 2R，可拖动）', hintEn: 'Click entry, then stop (target defaults to 2R)', icon: 'M4 4h16v8H4zM4 12h16v8H4zM4 12h16' },
@@ -191,6 +193,9 @@ export interface Projector {
 }
 
 type Pt = { x: number; y: number }
+
+/** Most imagined candles a ghost feed draws. */
+const GHOST_MAX = 2000
 
 /** Clip the infinite line through a→b to the plot (Liang–Barsky); `from` 0 = ray from a, -Inf = both ways. */
 function clipLine(a: Pt, b: Pt, w: number, h: number, from: number, to = Infinity): [Pt, Pt] | null {
@@ -499,6 +504,53 @@ export const DrawingShape = React.memo(function DrawingShape({ kind, points, lab
         pts.push(`${(p[0].x + r * Math.cos(a0 + theta)).toFixed(1)},${(p[0].y + r * Math.sin(a0 + theta)).toFixed(1)}`)
       }
       body = <><polyline className="dhl-pattern" points={pts.join(' ')} /><line className="dhl-drawing-mid" x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} /></>
+      break
+    }
+    case 'projection': {
+      if (!p[1]) break
+      if (!p[2]) { body = <line x1={p[0].x} y1={p[0].y} x2={p[1].x} y2={p[1].y} />; break }
+      // TradingView's projection / sector: centered on the origin, from the future point's direction to the estimated price's.
+      const r = Math.hypot(p[1].x - p[0].x, p[1].y - p[0].y)
+      const a1 = Math.atan2(p[1].y - p[0].y, p[1].x - p[0].x), a2 = Math.atan2(p[2].y - p[0].y, p[2].x - p[0].x)
+      const span = Math.atan2(Math.sin(a2 - a1), Math.cos(a2 - a1))
+      const s1 = { x: p[0].x + r * Math.cos(a1), y: p[0].y + r * Math.sin(a1) }, s2 = { x: p[0].x + r * Math.cos(a1 + span), y: p[0].y + r * Math.sin(a1 + span) }
+      const change = points[0].price > 0 ? (points[2].price - points[0].price) / points[0].price * 100 : 0
+      body = <>
+        <path className="dhl-drawing-fill dhl-sector" d={`M${p[0].x} ${p[0].y}L${s1.x} ${s1.y}A${r} ${r} 0 0 ${span > 0 ? 1 : 0} ${s2.x} ${s2.y}Z`} />
+        <line className="dhl-drawing-mid" x1={p[0].x} y1={p[0].y} x2={p[2].x} y2={p[2].y} />
+        {text(p[2].x + 6, p[2].y - 4, `${fmtPrice(points[2].price)} (${change >= 0 ? '+' : ''}${change.toFixed(2)}%)`)}
+      </>
+      break
+    }
+    case 'ghostfeed': {
+      if (p.length < 2) break
+      // Imagined candles along the clicked path, one per bar slot from the first point to the last: closes
+      // follow the path; each candle's high-low is the larger of its body and the average high-low of the
+      // 20 real bars before the path (varied deterministically between 0.6× and 1.4× so it reads as candles).
+      const barMs = view.barMs ?? 0
+      if (!barMs) { body = <polyline className="dhl-drawing-mid" points={p.map((point) => `${point.x},${point.y}`).join(' ')} />; break }
+      // The 20 bars strictly before the start (the start bar itself is not history).
+      const before = view.candles?.(points[0].time - 20 * barMs, points[0].time - 1) ?? []
+      const avgHL = before.length ? before.reduce((sum, bar) => sum + bar.high - bar.low, 0) / before.length : 0
+      const w0 = view.project(points[0].time + barMs, points[0].price)?.x, half = w0 != null ? Math.max(1, (w0 - p[0].x) * 0.35) : 2
+      const last = points[points.length - 1]
+      let up = '', down = '', prev = points[0].price, k = 0, seg = 1
+      for (let t = points[0].time + barMs; t <= last.time + 1 && k < GHOST_MAX; t += barMs) {
+        while (seg < points.length - 1 && t > points[seg].time) seg += 1
+        const a = points[seg - 1], b = points[seg]
+        const close = a.price + (b.price - a.price) * Math.min(1, (t - a.time) / (b.time - a.time))
+        k += 1
+        const jitter = 0.6 + 0.8 * Math.abs(Math.sin(k * 12.9898) * 43758.5453 % 1)
+        const bodyLow = Math.min(prev, close), bodyHigh = Math.max(prev, close)
+        const extra = Math.max(0, avgHL * jitter - (bodyHigh - bodyLow)) / 2
+        const o = view.project(t, prev), c = view.project(t, close), hi = view.project(t, bodyHigh + extra), lo = view.project(t, bodyLow - extra)
+        if (o && c && hi && lo) {
+          const path = `M${o.x.toFixed(1)} ${hi.y.toFixed(1)}V${lo.y.toFixed(1)}M${(o.x - half).toFixed(1)} ${Math.min(o.y, c.y).toFixed(1)}h${(2 * half).toFixed(1)}v${Math.max(1, Math.abs(c.y - o.y)).toFixed(1)}h${(-2 * half).toFixed(1)}z`
+          if (close >= prev) up += path; else down += path
+        }
+        prev = close
+      }
+      body = <g className="dhl-ghost" data-candles={k}><path className="dhl-ghost-up" d={up} /><path className="dhl-ghost-down" d={down} /><polyline className="dhl-drawing-mid" points={p.map((point) => `${point.x},${point.y}`).join(' ')} /></g>
       break
     }
     case 'barspattern': {

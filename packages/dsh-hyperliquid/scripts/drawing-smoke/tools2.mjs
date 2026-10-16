@@ -39,7 +39,7 @@ try {
     ['周期线', 'cycles', [[.3, .9], [.36, .9]]], ['正弦线', 'sine', [[.4, .15], [.46, .25]]],
     ['椭圆', 'ellipse', [[.76, .2], [.84, .35]]], ['旋转矩形', 'rotrect', [[.85, .5], [.9, .4], [.9, .55]]],
     ['弧线', 'arc', [[.6, .9], [.7, .9], [.65, .8]]], ['曲线', 'curve', [[.72, .9], [.82, .9], [.77, .75]]],
-    ['预测', 'forecast', [[.5, .55], [.6, .4]]], ['斐波那契螺旋', 'fibspiral', [[.45, .7], [.48, .7]]], ['K 线形态', 'barspattern', [[.3, .5], [.36, .5], [.86, .3]]], ['锚定 VWAP', 'avwap', [[.4, .5]]], ['锚定成交量分布', 'avprofile', [[.6, .5]]],
+    ['预测', 'forecast', [[.5, .55], [.6, .4]]], ['斐波那契螺旋', 'fibspiral', [[.45, .7], [.48, .7]]], ['K 线形态', 'barspattern', [[.3, .5], [.36, .5], [.86, .3]]], ['投影', 'projection', [[.6, .7], [.7, .7], [.7, .55]]], ['锚定 VWAP', 'avwap', [[.4, .5]]], ['锚定成交量分布', 'avprofile', [[.6, .5]]],
   ]
   for (const [name, kind, clicks] of plan) {
     await pick(name)
@@ -72,6 +72,15 @@ try {
   for (const [fx, fy] of [[.5, .88], [.55, .8], [.6, .86], [.65, .78]]) await clickAt(fx, fy)
   await page.keyboard.press('Enter'); await settle()
   check((await marks()).find((m) => m.kind === 'polyline')?.points.length === 4, 'polyline: Enter finishes after four clicks')
+  // Ghost feed: a clicked path, finished by double-click, becomes imagined candles.
+  await pick('幽灵 K 线')
+  for (const [fx, fy] of [[.86, .5], [.9, .4]]) await clickAt(fx, fy)
+  { const g = at(.94, .45); await page.mouse.dblclick(g.x, g.y) }
+  await settle()
+  const ghost = (await marks()).find((m) => m.kind === 'ghostfeed')
+  const candlesDrawn = ghost ? Number(await page.locator(`.dhl-drawing[data-mark-id="${ghost.id}"] > .dhl-ghost`).getAttribute('data-candles')) : 0
+  check(ghost?.points.length === 3 && candlesDrawn >= 5, `幽灵 K 线 draws imagined candles along a 3-point path (${candlesDrawn})`, ghost?.points.length)
+
   // Stay in drawing mode: the second click of the finishing double-click must not start the next polyline.
   await page.locator('.dhl-draw-menu summary').click(); await page.getByLabel('连续绘制').check(); await page.locator('.dhl-draw-menu summary').click()
   await pick('折线')

@@ -79,6 +79,13 @@ function completePreview(kind: DrawingKind, points: DrawPoint[]): DrawPoint[] {
   return points
 }
 
+/** Candles with open time in [from, to] (ms), by binary search (bars are sorted by time). */
+function candlesIn(candles: Candle[], from: number, to: number): Candle[] {
+  const first = (time: number) => { let lo = 0, hi = candles.length; while (lo < hi) { const mid = (lo + hi) >> 1; if (candles[mid].t < time) lo = mid + 1; else hi = mid } return lo }
+  const end = to >= Number.MAX_SAFE_INTEGER ? candles.length : first(to + 1)
+  return candles.slice(first(from), end)
+}
+
 /** The candle whose open time is `time` (ms), by binary search. */
 function barAt(candles: Candle[], time: number): Candle | null {
   const t = Math.floor(time / 1000)
@@ -180,7 +187,7 @@ interface ChartProps {
 /** Overlay height the top toolbar occupies (top offset + one row + margin). */
 const TOOLBAR_CLEARANCE = 84
 // Only drawings whose geometry stays within their anchors (plus the margin): rotated rectangles and arcs do not.
-const FINITE_KINDS = new Set(['highlighter', 'path', 'polyline', 'pin', 'ellipse', 'curve', 'note', 'pricenote', 'signpost', 'forecast', 'cypher', 'threedrives', 'elliotttri', 'elliottwxy', 'elliottwxyxz', 'trend', 'rect', 'measure', 'fib', 'long', 'short', 'text', 'arrow', 'triangle', 'brush',
+const FINITE_KINDS = new Set(['ghostfeed', 'highlighter', 'path', 'polyline', 'pin', 'ellipse', 'curve', 'note', 'pricenote', 'signpost', 'forecast', 'cypher', 'threedrives', 'elliotttri', 'elliottwxy', 'elliottwxyxz', 'trend', 'rect', 'measure', 'fib', 'long', 'short', 'text', 'arrow', 'triangle', 'brush',
   'infoline', 'trendangle', 'pricerange', 'daterange', 'elliott', 'elliottabc', 'xabcd', 'abcd', 'gannbox', 'gannsquare', 'icon', 'vprofile', 'regression'])
 /** Every anchor beyond the same side of the plot (with a margin for labels and handles). */
 function offscreen(points: DrawPoint[], view: { project: (time: number, price: number) => { x: number } | null; width: number }): boolean {
@@ -991,8 +998,8 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
       width: Math.max(0, box.clientWidth - chartApi.chart.priceScale('right').width()),
       height: chartApi.chart.panes()[0]?.getHeight() ?? box.clientHeight,
       bars: (from, to) => timeline.toLogical(to) - timeline.toLogical(from),
-      closes: (from, to) => candlesRef.current.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, price: candle.c })),
-      candles: (from, to) => candlesRef.current.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, open: candle.o, high: candle.h, low: candle.l, close: candle.c, volume: candle.v })),
+      closes: (from, to) => candlesIn(candlesRef.current, from, to).map((candle) => ({ time: candle.t, price: candle.c })),
+      candles: (from, to) => candlesIn(candlesRef.current, from, to).map((candle) => ({ time: candle.t, open: candle.o, high: candle.h, low: candle.l, close: candle.c, volume: candle.v })),
       profile: (from, to, options) => cachedProfile(candlesRef.current, from, to, options),
       firstTime: candlesRef.current[0]?.t,
       barMs: candlesRef.current.length > 1 ? candlesRef.current[1].t - candlesRef.current[0].t : undefined,
@@ -1321,7 +1328,7 @@ export function CandleChart({ candles, marks, indicators, expanded, resetToken, 
             const clampedDecoration = !(mark.source === 'user' || mark.kind === 'level') || Boolean(mark.alert) || Boolean(mark.shared)
             if (!selected && !clampedDecoration && !mark.extendLeft && !mark.extendRight && FINITE_KINDS.has(mark.kind) && offscreen(shown, view)) return null
             return <DrawingShape key={mark.id} id={mark.id} kind={mark.kind} points={shown} view={view} text={mark.label}
-              dataVersion={mark.kind === 'vprofile' || mark.kind === 'regression' || mark.kind === 'avwap' || mark.kind === 'avprofile' || mark.kind === 'barspattern' ? candles : undefined}
+              dataVersion={mark.kind === 'vprofile' || mark.kind === 'regression' || mark.kind === 'avwap' || mark.kind === 'avprofile' || mark.kind === 'barspattern' || mark.kind === 'ghostfeed' ? candles : undefined}
               className={`dhl-drawing ${roleClass(mark)}${mark.kind === 'level' ? ' is-level' : ''}${selected ? ' selected' : ''}${mark.locked || drawingsLocked ? ' locked' : ''}`}
               label={mark.source === 'user' || mark.kind === 'level' ? undefined : mark.label} anchors={selected} interactive={!drawMode}
               color={mark.color} lineWidth={mark.lineWidth} lineStyle={mark.lineStyle} alert={mark.alert} shared={mark.shared} rows={mark.rows} valueArea={mark.valueArea} levels={mark.levels} fontSize={mark.fontSize} bold={mark.bold} italic={mark.italic} fillOpacity={mark.fillOpacity} extendLeft={mark.extendLeft} extendRight={mark.extendRight} />

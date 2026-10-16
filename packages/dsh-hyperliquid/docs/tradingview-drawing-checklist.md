@@ -1,6 +1,6 @@
 # 画线工具 · TradingView 逐项对照
 
-核对日期：2026-10-17（0.5.1）。对照对象是 TradingView 网页版的画线面板与画线对象设置。「已做」以源码和测试为依据：单元测试 `test/chart-drawings.test.mjs`，真实宿主冒烟 `npm run smoke:drawing`（`scripts/drawing-smoke/` 下的 basics、phase1–5、perf）；依据列引号内是冒烟里 check 的原文。没有自动化测试的项单独注明。
+核对日期：2026-10-17（0.5.2）。对照对象是 TradingView 网页版的画线面板与画线对象设置。「已做」以源码和测试为依据：单元测试 `test/chart-drawings.test.mjs`，真实宿主冒烟 `npm run smoke:drawing`（`scripts/drawing-smoke/` 下的 basics、phase1–5、perf）；依据列引号内是冒烟里 check 的原文。没有自动化测试的项单独注明。
 
 结论：通用交互与对象属性两节列出的项全部已做；每个工具分组的常用工具已做；第三节「未做」列是各分组里较少用的工具，不属于本轮「基础能力」范围。
 
@@ -49,21 +49,29 @@
 
 ## 三、工具分组
 
-| TradingView 分组 | 已做（0.5.0 / 0.5.1 新增加粗） | 未做 |
+| TradingView 分组 | 已做（0.5.x 新增加粗） | 未做 |
 |---|---|---|
 | 线条 | 趋势线、射线、信息线、延长线、趋势角度、水平线、水平射线、垂直线、十字线 | — |
 | 通道 | 平行通道、回归趋势、**平顶 / 平底通道**、**分离通道** | — |
-| 叉子线 | 安德鲁叉子线、Schiff、改良 Schiff | 内部叉子线（未确认其精确定义，未做） |
+| 叉子线 | 安德鲁叉子线、Schiff、改良 Schiff | 内部叉子线：TradingView 帮助页对它的描述（起点在前两点水平、垂直各一半处）与改良 Schiff 相同，未说明两者区别，未单独做 |
 | 斐波那契 | 回撤、趋势扩展、通道、时间周期、**速度阻力扇**、**斐波那契圆**、**速度阻力弧**、**楔形**、**基于趋势的时间**、**斐波那契螺旋** | — |
-| 江恩 | 江恩箱、江恩方格、江恩扇形 | 固定江恩方格 |
+| 江恩 | 江恩箱、江恩方格、江恩扇形 | 固定江恩方格：TradingView 只列出名称，没有说明文档，未做 |
 | 形态 | XABCD、ABCD、头肩、艾略特推动浪 / 调整浪、**Cypher**、**三驱**、**三角形态**、**艾略特三角浪 / 双重组合 / 三重组合**、**周期线**、**正弦线** | — |
-| 预测与测量 | 多头 / 空头头寸、日期区间、价格区间、日期与价格区间、固定范围成交量分布、**预测**、**锚定 VWAP**、**锚定成交量分布**、**K 线形态** | 幽灵 K 线、投影（未确认其精确定义，未做） |
+| 预测与测量 | 多头 / 空头头寸、日期区间、价格区间、日期与价格区间、固定范围成交量分布、**预测**、**锚定 VWAP**、**锚定成交量分布**、**K 线形态**、**投影**（按 TradingView 说明：起点、未来点、估计价格三点的扇形）、**幽灵 K 线**（官方未公开生成算法，本实现为近似：沿点击路径每个 K 线周期一根，高低差取实体与「起点前 20 根平均高低差 × 0.6–1.4」中的较大者） | — |
 | 几何形状 | 画笔、箭头、矩形、圆形、三角形、**椭圆**、**旋转矩形**、**弧线**、**曲线**、**荧光笔**、**路径**（双击或 Enter 结束）、**折线** | — |
 | 注释 | 文本、标注气泡、价格标签、图标 / 贴纸（含任意 emoji）、**便签**、**价格便签**、**路标**、**图钉** | 锚定文本（固定在屏幕位置，与按时间 / 价格存储的画线模型不同）、表格 |
 
-共 72 种画线工具；0.5.0 / 0.5.1 新增 31 种的依据：单元测试（每种按完整锚点数校验并渲染，平顶边、分离边、旋转矩形宽度、弧线控制点、Cypher 比值、斐波那契圆半径、锚定 VWAP 数值等几何断言）与冒烟 tools2（每种用鼠标真实绘制并渲染）。画线菜单顶部有搜索框（冒烟「searching the drawing menu for "vwap" leaves only anchored VWAP」）。
+共 74 种画线工具；0.5.x 新增 33 种的依据：单元测试（每种按完整锚点数校验并渲染，平顶边、分离边、旋转矩形宽度、弧线控制点、Cypher 比值、斐波那契圆半径、锚定 VWAP 数值等几何断言）与冒烟 tools2（每种用鼠标真实绘制并渲染）。画线菜单顶部有搜索框（冒烟「searching the drawing menu for "vwap" leaves only anchored VWAP」）。
 
 ## 仍需人工观察
 
 - 触摸与触控板已用 Chrome 模拟验收（触摸走手势管线，触控板为 Chrome 上报的 wheel 事件）；iPad / 安卓真机与 Safari 未验收。
 - 性能数字来自无头 Chrome（100 条画线、5000 根 K 线下 p95 约 16.7ms），实际机器上以使用体验为准。
+
+## 对照资料（第三节未做项的查证）
+
+- [Inside pitchfork（TradingView 帮助）](https://www.tradingview.com/support/solutions/43000518146-inside-pitchfork/)
+- [Schiff pitchfork（TradingView 帮助）](https://www.tradingview.com/support/solutions/43000518140-schiff-pitchfork/)
+- [Projection / Sector（TradingView 帮助）](https://www.tradingview.com/support/solutions/43000516995-projection/)
+- [Ghost Feed（TradingView 帮助）](https://www.tradingview.com/support/solutions/43000748168-ghost-feed-a-drawing-tool-to-study-your-chart/)
+- [Drawing tools available on TradingView](https://www.tradingview.com/support/solutions/43000703396-drawing-tools-available-on-tradingview/)（固定江恩方格只出现在列表中）

@@ -974,6 +974,12 @@ body:has(.dhl-divider.dragging) * { cursor: col-resize !important; }
 .dhl-drawing .dhl-pin-glyph { fill: currentColor; fill-opacity: .25; stroke: currentColor; stroke-width: 2; }
 .dhl-drawing .dhl-bars-copy { fill: none; stroke: currentColor; stroke-width: 1.3; opacity: .8; }
 .dhl-drawing-hit .dhl-bars-copy, .dhl-drawing-hit .dhl-pin-glyph { pointer-events: stroke; }
+
+/* 0.5.2: projection sector, ghost feed candles. */
+.dhl-drawing path.dhl-sector { fill: currentColor; fill-opacity: var(--dhl-fill-opacity, .1); stroke: currentColor; stroke-width: var(--dhl-line-width, 1.4); }
+.dhl-drawing .dhl-ghost-up { fill: color-mix(in srgb, var(--dsw-alias-state-success-primary) 45%, transparent); stroke: var(--dsw-alias-state-success-primary); stroke-width: 1; opacity: .7; }
+.dhl-drawing .dhl-ghost-down { fill: color-mix(in srgb, var(--dsw-alias-state-error-primary) 45%, transparent); stroke: var(--dsw-alias-state-error-primary); stroke-width: 1; opacity: .7; }
+.dhl-drawing-hit .dhl-ghost path, .dhl-drawing-hit .dhl-sector { pointer-events: all; }
 `;
 
 // src/client/locale.ts
@@ -17750,10 +17756,13 @@ var DRAWING_POINTS = {
   polyline: 0,
   pin: 1,
   fibspiral: 2,
-  barspattern: 3
+  barspattern: 3,
+  // Projection (TradingView's sector: origin, a future point, an estimated price); ghost feed is drawn like a path.
+  projection: 3,
+  ghostfeed: 0
 };
 var FREEHAND_KINDS = ["brush", "highlighter"];
-var MULTI_KINDS = ["path", "polyline"];
+var MULTI_KINDS = ["path", "polyline", "ghostfeed"];
 var PATH_MAX = 50;
 var ICON_NAMES = ["flag", "star", "up", "down", "warning", "check", "cross", "fire", "target", "bell", "pin", "clock", "dollar", "shield", "bolt", "heart", "question", "info"];
 var STICKERS = {
@@ -17852,6 +17861,8 @@ function drawingGeometry(kind, request, now = Date.now()) {
   if (["trend", "ray", "extended", "channel", "fibchannel", "gannfan", "regression", "fibtime", "infoline", "trendangle", "flatchannel", "disjoint", "fibfan", "fibtrendtime", "cycles", "sine", "forecast"].includes(kind) && points2[0].time === points2[1].time) throw new Error("\u524D\u4E24\u4E2A\u70B9\u7684\u65F6\u95F4\u4E0D\u80FD\u76F8\u540C");
   if ((kind === "cycles" || kind === "sine" || kind === "fibtrendtime") && points2[1].time < points2[0].time) throw new Error("\u7B2C\u4E8C\u4E2A\u70B9\u5FC5\u987B\u665A\u4E8E\u7B2C\u4E00\u4E2A\u70B9");
   if (kind === "barspattern" && points2[1].time <= points2[0].time) throw new Error("K \u7EBF\u5F62\u6001\u7684\u6E90\u533A\u95F4\u7EC8\u70B9\u5FC5\u987B\u665A\u4E8E\u8D77\u70B9");
+  if (kind === "projection" && points2[1].time <= points2[0].time) throw new Error("\u6295\u5F71\u7684\u7B2C\u4E8C\u4E2A\u70B9\u5FC5\u987B\u5728\u8D77\u70B9\u4E4B\u540E\uFF08\u672A\u6765\u65B9\u5411\uFF09");
+  if (kind === "ghostfeed" && points2.some((point2, index) => index > 0 && point2.time <= points2[index - 1].time)) throw new Error("\u5E7D\u7075 K \u7EBF\u7684\u70B9\u5FC5\u987B\u6309\u65F6\u95F4\u4ECE\u5DE6\u5230\u53F3");
   if (kind === "vprofile") {
     if (points2[0].time === points2[1].time) throw new Error("\u6210\u4EA4\u91CF\u5206\u5E03\u9700\u8981\u4E00\u4E2A\u65F6\u95F4\u533A\u95F4");
     if (points2[1].time < points2[0].time) points2.reverse();
@@ -17938,6 +17949,8 @@ var DRAWING_TOOLS = [
   { group: "measure", kind: "forecast", zh: "\u9884\u6D4B", en: "Forecast", hintZh: "\u70B9\u51FB\u8D77\u70B9\uFF0C\u518D\u70B9\u51FB\u9884\u6D4B\u76EE\u6807\uFF0C\u663E\u793A\u6DA8\u8DCC\u4E0E\u65F6\u957F", hintEn: "Click the source, then the target; shows change and time", icon: "M3 17 10 12M10 12l11-7M17 5h4v4M10 12v.01" },
   { group: "measure", kind: "avwap", zh: "\u951A\u5B9A VWAP", en: "Anchored VWAP", hintZh: "\u5355\u51FB\u951A\u5B9A\u7684 K \u7EBF\uFF0C\u4ECE\u8BE5\u5904\u7D2F\u8BA1\u5230\u6700\u65B0 K \u7EBF", hintEn: "Click the anchor bar; accumulates to the latest bar", icon: "M4 4v16M4 16c4-1 6-6 10-7s5 2 6 0" },
   { group: "measure", kind: "avprofile", zh: "\u951A\u5B9A\u6210\u4EA4\u91CF\u5206\u5E03", en: "Anchored volume profile", hintZh: "\u5355\u51FB\u951A\u5B9A\u7684 K \u7EBF\uFF0C\u7EDF\u8BA1\u4ECE\u8BE5\u5904\u5230\u6700\u65B0\u7684\u6210\u4EA4\u91CF\u5206\u5E03", hintEn: "Click the anchor bar; volume by price up to the latest bar", icon: "M4 3v18M4 6h7M4 10h12M4 14h9M4 18h5" },
+  { group: "measure", kind: "projection", zh: "\u6295\u5F71", en: "Projection", hintZh: "\u70B9\u51FB\u8D77\u70B9\u3001\u672A\u6765\u65B9\u5411\u70B9\uFF0C\u518D\u70B9\u51FB\u4F30\u8BA1\u4EF7\u683C\uFF0C\u753B\u51FA\u6247\u5F62\u5E76\u6807\u6CE8\u6DA8\u8DCC\u5E45", hintEn: "Click the origin, a future point, then the estimated price; draws a sector with the change", icon: "M4 18 20 10M4 18l14-12M4 18M16 6a10 10 0 0 1 4 4" },
+  { group: "measure", kind: "ghostfeed", zh: "\u5E7D\u7075 K \u7EBF", en: "Ghost feed", hintZh: "\u9010\u70B9\u70B9\u51FB\u8BBE\u60F3\u7684\u4EF7\u683C\u8DEF\u5F84\uFF0C\u53CC\u51FB\u6216\u6309 Enter \u7ED3\u675F\uFF0C\u6CBF\u8DEF\u5F84\u751F\u6210\u5047\u60F3 K \u7EBF", hintEn: "Click the imagined price path; double-click or Enter to finish; candles follow it", icon: "M5 8v8M4 10h2M10 5v10M9 7h2M15 9v9M14 11h2M20 6v8M19 8h2" },
   { group: "measure", kind: "barspattern", zh: "K \u7EBF\u5F62\u6001", en: "Bars pattern", hintZh: "\u70B9\u51FB\u6E90\u533A\u95F4\u8D77\u70B9\u548C\u7EC8\u70B9\uFF0C\u518D\u70B9\u51FB\u7C98\u8D34\u4F4D\u7F6E\uFF0C\u590D\u5236\u8FD9\u6BB5 K \u7EBF\u7684\u5F62\u72B6", hintEn: "Click the source range start and end, then where to paste its shape", icon: "M6 5v14M4 8h2M6 15h2M12 3v12M10 6h2M12 12h2M18 8v12M16 10h2M18 17h2" },
   { group: "measure", kind: "long", zh: "\u591A\u5934\u5934\u5BF8", en: "Long position", hintZh: "\u70B9\u51FB\u5165\u573A\u4EF7\uFF0C\u518D\u70B9\u51FB\u6B62\u635F\u4EF7\uFF08\u6B62\u76C8\u9ED8\u8BA4 2R\uFF0C\u53EF\u62D6\u52A8\uFF09", hintEn: "Click entry, then stop (target defaults to 2R)", icon: "M4 4h16v8H4zM4 12h16v8H4zM4 12h16" },
   { group: "measure", kind: "short", zh: "\u7A7A\u5934\u5934\u5BF8", en: "Short position", hintZh: "\u70B9\u51FB\u5165\u573A\u4EF7\uFF0C\u518D\u70B9\u51FB\u6B62\u635F\u4EF7\uFF08\u6B62\u76C8\u9ED8\u8BA4 2R\uFF0C\u53EF\u62D6\u52A8\uFF09", hintEn: "Click entry, then stop (target defaults to 2R)", icon: "M4 4h16v8H4zM4 12h16v8H4zM4 12h16" }
@@ -18005,6 +18018,7 @@ function drawingLabel(kind, points2, price) {
   const when = new Date(first.time).toLocaleString(tr("zh-CN", "en-US"), { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false });
   return `${name} ${when}`;
 }
+var GHOST_MAX = 2e3;
 function clipLine(a, b, w, h, from, to = Infinity) {
   const dx = b.x - a.x, dy = b.y - a.y;
   let t0 = from, t1 = to;
@@ -18245,6 +18259,51 @@ var DrawingShape = React7.memo(function DrawingShape2({ kind, points: points2, l
         pts.push(`${(p[0].x + r * Math.cos(a0 + theta)).toFixed(1)},${(p[0].y + r * Math.sin(a0 + theta)).toFixed(1)}`);
       }
       body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("polyline", { className: "dhl-pattern", points: pts.join(" ") }), /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y }));
+      break;
+    }
+    case "projection": {
+      if (!p[1]) break;
+      if (!p[2]) {
+        body = /* @__PURE__ */ React7.createElement("line", { x1: p[0].x, y1: p[0].y, x2: p[1].x, y2: p[1].y });
+        break;
+      }
+      const r = Math.hypot(p[1].x - p[0].x, p[1].y - p[0].y);
+      const a1 = Math.atan2(p[1].y - p[0].y, p[1].x - p[0].x), a2 = Math.atan2(p[2].y - p[0].y, p[2].x - p[0].x);
+      const span = Math.atan2(Math.sin(a2 - a1), Math.cos(a2 - a1));
+      const s1 = { x: p[0].x + r * Math.cos(a1), y: p[0].y + r * Math.sin(a1) }, s2 = { x: p[0].x + r * Math.cos(a1 + span), y: p[0].y + r * Math.sin(a1 + span) };
+      const change = points2[0].price > 0 ? (points2[2].price - points2[0].price) / points2[0].price * 100 : 0;
+      body = /* @__PURE__ */ React7.createElement(React7.Fragment, null, /* @__PURE__ */ React7.createElement("path", { className: "dhl-drawing-fill dhl-sector", d: `M${p[0].x} ${p[0].y}L${s1.x} ${s1.y}A${r} ${r} 0 0 ${span > 0 ? 1 : 0} ${s2.x} ${s2.y}Z` }), /* @__PURE__ */ React7.createElement("line", { className: "dhl-drawing-mid", x1: p[0].x, y1: p[0].y, x2: p[2].x, y2: p[2].y }), text(p[2].x + 6, p[2].y - 4, `${fmtPrice(points2[2].price)} (${change >= 0 ? "+" : ""}${change.toFixed(2)}%)`));
+      break;
+    }
+    case "ghostfeed": {
+      if (p.length < 2) break;
+      const barMs = view.barMs ?? 0;
+      if (!barMs) {
+        body = /* @__PURE__ */ React7.createElement("polyline", { className: "dhl-drawing-mid", points: p.map((point) => `${point.x},${point.y}`).join(" ") });
+        break;
+      }
+      const before = view.candles?.(points2[0].time - 20 * barMs, points2[0].time - 1) ?? [];
+      const avgHL = before.length ? before.reduce((sum, bar) => sum + bar.high - bar.low, 0) / before.length : 0;
+      const w0 = view.project(points2[0].time + barMs, points2[0].price)?.x, half = w0 != null ? Math.max(1, (w0 - p[0].x) * 0.35) : 2;
+      const last = points2[points2.length - 1];
+      let up = "", down = "", prev = points2[0].price, k2 = 0, seg = 1;
+      for (let t2 = points2[0].time + barMs; t2 <= last.time + 1 && k2 < GHOST_MAX; t2 += barMs) {
+        while (seg < points2.length - 1 && t2 > points2[seg].time) seg += 1;
+        const a = points2[seg - 1], b = points2[seg];
+        const close = a.price + (b.price - a.price) * Math.min(1, (t2 - a.time) / (b.time - a.time));
+        k2 += 1;
+        const jitter = 0.6 + 0.8 * Math.abs(Math.sin(k2 * 12.9898) * 43758.5453 % 1);
+        const bodyLow = Math.min(prev, close), bodyHigh = Math.max(prev, close);
+        const extra = Math.max(0, avgHL * jitter - (bodyHigh - bodyLow)) / 2;
+        const o = view.project(t2, prev), c = view.project(t2, close), hi = view.project(t2, bodyHigh + extra), lo = view.project(t2, bodyLow - extra);
+        if (o && c && hi && lo) {
+          const path = `M${o.x.toFixed(1)} ${hi.y.toFixed(1)}V${lo.y.toFixed(1)}M${(o.x - half).toFixed(1)} ${Math.min(o.y, c.y).toFixed(1)}h${(2 * half).toFixed(1)}v${Math.max(1, Math.abs(c.y - o.y)).toFixed(1)}h${(-2 * half).toFixed(1)}z`;
+          if (close >= prev) up += path;
+          else down += path;
+        }
+        prev = close;
+      }
+      body = /* @__PURE__ */ React7.createElement("g", { className: "dhl-ghost", "data-candles": k2 }, /* @__PURE__ */ React7.createElement("path", { className: "dhl-ghost-up", d: up }), /* @__PURE__ */ React7.createElement("path", { className: "dhl-ghost-down", d: down }), /* @__PURE__ */ React7.createElement("polyline", { className: "dhl-drawing-mid", points: p.map((point) => `${point.x},${point.y}`).join(" ") }));
       break;
     }
     case "barspattern": {
@@ -19057,6 +19116,19 @@ function completePreview(kind, points2) {
   if ((kind === "long" || kind === "short") && points2.length === 2) return completePoints(kind, points2) ?? points2.slice(0, 1);
   return points2;
 }
+function candlesIn(candles, from, to) {
+  const first = (time) => {
+    let lo = 0, hi = candles.length;
+    while (lo < hi) {
+      const mid = lo + hi >> 1;
+      if (candles[mid].t < time) lo = mid + 1;
+      else hi = mid;
+    }
+    return lo;
+  };
+  const end = to >= Number.MAX_SAFE_INTEGER ? candles.length : first(to + 1);
+  return candles.slice(first(from), end);
+}
 function barAt(candles, time) {
   const t2 = Math.floor(time / 1e3);
   let lo = 0, hi = candles.length - 1;
@@ -19077,6 +19149,7 @@ function chartData(points2) {
 }
 var TOOLBAR_CLEARANCE = 84;
 var FINITE_KINDS = /* @__PURE__ */ new Set([
+  "ghostfeed",
   "highlighter",
   "path",
   "polyline",
@@ -19963,8 +20036,8 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
       width: Math.max(0, box.clientWidth - chartApi.chart.priceScale("right").width()),
       height: chartApi.chart.panes()[0]?.getHeight() ?? box.clientHeight,
       bars: (from, to) => timeline.toLogical(to) - timeline.toLogical(from),
-      closes: (from, to) => candlesRef.current.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, price: candle.c })),
-      candles: (from, to) => candlesRef.current.filter((candle) => candle.t >= from && candle.t <= to).map((candle) => ({ time: candle.t, open: candle.o, high: candle.h, low: candle.l, close: candle.c, volume: candle.v })),
+      closes: (from, to) => candlesIn(candlesRef.current, from, to).map((candle) => ({ time: candle.t, price: candle.c })),
+      candles: (from, to) => candlesIn(candlesRef.current, from, to).map((candle) => ({ time: candle.t, open: candle.o, high: candle.h, low: candle.l, close: candle.c, volume: candle.v })),
       profile: (from, to, options) => cachedProfile(candlesRef.current, from, to, options),
       firstTime: candlesRef.current[0]?.t,
       barMs: candlesRef.current.length > 1 ? candlesRef.current[1].t - candlesRef.current[0].t : void 0
@@ -20354,7 +20427,7 @@ function CandleChart({ candles, marks, indicators, expanded, resetToken, drawMod
         points: shown,
         view,
         text: mark.label,
-        dataVersion: mark.kind === "vprofile" || mark.kind === "regression" || mark.kind === "avwap" || mark.kind === "avprofile" || mark.kind === "barspattern" ? candles : void 0,
+        dataVersion: mark.kind === "vprofile" || mark.kind === "regression" || mark.kind === "avwap" || mark.kind === "avprofile" || mark.kind === "barspattern" || mark.kind === "ghostfeed" ? candles : void 0,
         className: `dhl-drawing ${roleClass(mark)}${mark.kind === "level" ? " is-level" : ""}${selected ? " selected" : ""}${mark.locked || drawingsLocked ? " locked" : ""}`,
         label: mark.source === "user" || mark.kind === "level" ? void 0 : mark.label,
         anchors: selected,

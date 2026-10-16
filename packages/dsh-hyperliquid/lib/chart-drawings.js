@@ -32,11 +32,13 @@ export const DRAWING_POINTS = {
   avwap: 1, avprofile: 1, forecast: 2,
   // Freehand highlighter (0 = variable, like brush); path / polyline take clicks until a double-click or Enter.
   highlighter: 0, path: 0, polyline: 0, pin: 1, fibspiral: 2, barspattern: 3,
+  // Projection (TradingView's sector: origin, a future point, an estimated price); ghost feed is drawn like a path.
+  projection: 3, ghostfeed: 0,
 }
 /** Freehand kinds drawn by dragging. */
 export const FREEHAND_KINDS = ['brush', 'highlighter']
 /** Kinds drawn click by click until a double-click or Enter. */
-export const MULTI_KINDS = ['path', 'polyline']
+export const MULTI_KINDS = ['path', 'polyline', 'ghostfeed']
 export const PATH_MAX = 50
 /** Icon stickers (the drawing's label holds the icon name). */
 export const ICON_NAMES = ['flag', 'star', 'up', 'down', 'warning', 'check', 'cross', 'fire', 'target', 'bell', 'pin', 'clock', 'dollar', 'shield', 'bolt', 'heart', 'question', 'info']
@@ -179,6 +181,8 @@ export function drawingGeometry(kind, request, now = Date.now()) {
   if (['trend', 'ray', 'extended', 'channel', 'fibchannel', 'gannfan', 'regression', 'fibtime', 'infoline', 'trendangle', 'flatchannel', 'disjoint', 'fibfan', 'fibtrendtime', 'cycles', 'sine', 'forecast'].includes(kind) && points[0].time === points[1].time) throw new Error('前两个点的时间不能相同')
   if ((kind === 'cycles' || kind === 'sine' || kind === 'fibtrendtime') && points[1].time < points[0].time) throw new Error('第二个点必须晚于第一个点')
   if (kind === 'barspattern' && points[1].time <= points[0].time) throw new Error('K 线形态的源区间终点必须晚于起点')
+  if (kind === 'projection' && points[1].time <= points[0].time) throw new Error('投影的第二个点必须在起点之后（未来方向）')
+  if (kind === 'ghostfeed' && points.some((point, index) => index > 0 && point.time <= points[index - 1].time)) throw new Error('幽灵 K 线的点必须按时间从左到右')
   if (kind === 'vprofile') {
     if (points[0].time === points[1].time) throw new Error('成交量分布需要一个时间区间')
     // Only the time range matters, so either drawing direction is fine.

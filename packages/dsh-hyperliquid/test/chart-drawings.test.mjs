@@ -12,7 +12,7 @@ import { buildToolDefinitions } from '../lib/tools.js'
 
 const now = Date.UTC(2026, 9, 15)
 const pt = (hours, price) => ({ time: now - hours * 3600_000, price })
-assert.equal(DRAWING_KINDS.length, 72)
+assert.equal(DRAWING_KINDS.length, 74)
 assert.deepEqual(drawingGeometry('hray', { points: [pt(5, 100)] }, now), { points: [pt(5, 100)] })
 assert.equal(drawingGeometry('channel', { points: [pt(9, 100), pt(3, 110), pt(6, 95)] }, now).points.length, 3)
 assert.deepEqual(drawingGeometry('trend', { fromTime: pt(400 * 24, 1).time, fromPrice: 1, toTime: pt(1, 2).time, toPrice: 2 }, now).fromPrice, 1, 'trend lines may start long before the old 90-day window')
@@ -235,6 +235,20 @@ try {
   const bview = { ...view, candles: (from, to) => src.filter((bar) => bar.time >= from && bar.time <= to) }
   const copy = renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'barspattern', points: [{ time: now, price: 100 }, { time: now + 3600_000, price: 100 }, { time: now + 5 * 3600_000, price: 200 }], view: bview }))
   assert.ok(copy.includes('data-bars="2"') && copy.includes('M250.0 295.0V305.0'), `first copied bar: x = 200 + 50, high 105 → 205 (y 295), low 95 → 195 (y 305): ${copy.slice(0, 300)}`)
+  // 0.5.2: projection (sector) and ghost feed.
+  const sector = render('projection', [{ time: now, price: 100 }, { time: now + 3600_000, price: 100 }, { time: now + 3600_000, price: 110 }])
+  assert.ok(sector.includes('M200 400L210 400A10 10 0 0 0') && sector.includes('(+10.00%)'), `sector from the origin with the estimated change: ${sector.slice(0, 260)}`)
+  assert.throws(() => drawingGeometry('projection', { points: [pt(2, 100), pt(3, 100), pt(1, 110)] }, now), /未来方向/)
+  assert.throws(() => drawingGeometry('ghostfeed', { points: [pt(2, 100), pt(3, 110)] }, now), /从左到右/)
+  const gbars = Array.from({ length: 20 }, (_, i) => ({ time: now - (20 - i) * 3600_000, open: 100, high: 104, low: 96, close: 100, volume: 1 }))
+  const gview = { ...view, barMs: 3600_000, candles: (from, to) => gbars.filter((bar) => bar.time >= from && bar.time <= to) }
+  const ghost = renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'ghostfeed', points: [{ time: now, price: 100 }, { time: now + 4 * 3600_000, price: 120 }, { time: now + 6 * 3600_000, price: 110 }], view: gview }))
+  // 1.5 + 1.5 bars: still one candle per bar slot across the whole path (3), not reset per segment.
+  const ghostHalf = renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'ghostfeed', points: [{ time: now, price: 100 }, { time: now + 1.5 * 3600_000, price: 110 }, { time: now + 3 * 3600_000, price: 105 }], view: gview }))
+  assert.ok(ghostHalf.includes('data-candles="3"'), 'ghost feed samples one global bar grid')
+  const ghostLong = renderToStaticMarkup(React.createElement(DrawingShape, { kind: 'ghostfeed', points: [{ time: now, price: 100 }, { time: now + 1000 * 3600_000, price: 120 }, { time: now + 3000 * 3600_000, price: 110 }], view: gview }))
+  assert.ok(ghostLong.includes('data-candles="2000"'), 'capped at 2000 candles')
+  assert.ok(ghost.includes('data-candles="6"') && /dhl-ghost-up" d="M/.test(ghost) && /dhl-ghost-down" d="M/.test(ghost), `one candle per bar along the path, up then down: ${ghost.slice(0, 200)}`)
   const forecast = render('forecast', [{ time: now - 3 * 3600_000, price: 100 }, { time: now, price: 110 }])
   assert.ok(forecast.includes('+10.00%') && forecast.includes('3 根'), 'forecast change and bars')
   assert.ok(render('text', [{ time: now, price: 100 }], { text: 'x', bold: true, italic: true }).includes('--dhl-font-weight:700'), 'bold reaches the text')
@@ -280,4 +294,4 @@ try {
   assert.ok(render('icon', [{ time: now, price: 100 }], { text: 'emoji:🚀' }).includes('>🚀<'), 'stickers render their emoji')
   assert.ok(render('brush', Array.from({ length: 30 }, (_, i) => ({ time: now + i * 600_000, price: 100 + i }))).includes('<polyline'))
 } finally { rmSync(file, { force: true }) }
-console.log('画线工具（72 种）校验、编辑与锁定、agent 路径、头寸与 SVG 几何通过')
+console.log('画线工具（74 种）校验、编辑与锁定、agent 路径、头寸与 SVG 几何通过')
