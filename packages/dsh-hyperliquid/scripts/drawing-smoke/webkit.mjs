@@ -25,11 +25,20 @@ try {
     const click = async (p) => { await page.mouse.move(p.x, p.y); await page.waitForTimeout(60); await page.mouse.click(p.x, p.y); await page.waitForTimeout(200) }
     await page.locator('.dhl-draw-menu summary').click(); await toolItem(page, '趋势线').click()
     await click(at(.35, .65)); await click(at(.55, .45)); await page.waitForTimeout(1600)
-    const trend = (await store(page)).chartMarks.find((m) => m.kind === 'trend')
+    const trend = (await store(page)).chartMarks.find((m) => m.kind === 'trend' && !m.shared)
     check(Boolean(trend), 'webkit desktop: two clicks draw a trend line')
-    const anchor = await page.evaluate((id) => { const c = document.querySelector(`circle.dhl-chart-anchor[data-mark-id="${id}"][data-anchor="1"]`); const r = c?.getBoundingClientRect(); return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null }, trend.id)
-      ?? await (async () => { await click(at(.45, .55)); return page.evaluate((id) => { const c = document.querySelector(`circle.dhl-chart-anchor[data-mark-id="${id}"][data-anchor="1"]`); const r = c?.getBoundingClientRect(); return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null }, trend.id) })()
-    check(Boolean(anchor), 'webkit desktop: selecting the line shows its anchors')
+    // Select it from the drawing list by id: a line synced from an earlier phase can cross the same spot on the chart.
+    const anchorAt = () => page.evaluate((id) => { const c = document.querySelector(`circle.dhl-chart-anchor[data-mark-id="${id}"][data-anchor="1"]`); const r = c?.getBoundingClientRect(); return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null }, trend.id)
+    let anchor = await anchorAt()
+    if (!anchor) {
+      const head = page.locator('.dhl-drawing-list-head')
+      if (await head.getAttribute('aria-expanded') !== 'true') await head.click()
+      await page.locator(`.dhl-drawing-list [data-mark-id="${trend.id}"] .dhl-drawing-list-name`).click()
+      for (let i = 0; i < 20; i += 1) { await page.waitForTimeout(150); const next = await anchorAt(); if (next && anchor && Math.abs(next.x - anchor.x) < 0.5 && Math.abs(next.y - anchor.y) < 0.5) break; anchor = next }
+      if (await head.getAttribute('aria-expanded') === 'true') await head.click()
+      anchor = await anchorAt()
+    }
+    check(Boolean(anchor), 'webkit desktop: selecting the line shows its anchors', { trend: trend?.id, shared: (await store(page)).chartMarks.filter((m) => m.shared).map((m) => m.kind) })
     await page.mouse.move(anchor.x, anchor.y); await page.mouse.down()
     for (let i = 1; i <= 8; i += 1) { await page.mouse.move(anchor.x, anchor.y - i * 8); await page.waitForTimeout(16) }
     await page.mouse.up(); await page.waitForTimeout(1600)
@@ -69,7 +78,7 @@ try {
     await toolItem(page, '趋势线').tap()
     const a = at(.3, .65), b = at(.5, .45)
     await page.touchscreen.tap(a.x, a.y); await page.waitForTimeout(300); await page.touchscreen.tap(b.x, b.y); await page.waitForTimeout(1600)
-    const trend = (await store(page)).chartMarks.find((m) => m.kind === 'trend')
+    const trend = (await store(page)).chartMarks.find((m) => m.kind === 'trend' && !m.shared)
     check(Boolean(trend), 'webkit iPad: two taps draw a trend line')
     const m = at(.4, .55); await page.touchscreen.tap(m.x, m.y); await page.waitForTimeout(400)
     check(await page.getByRole('toolbar', { name: '画线样式' }).isVisible(), 'webkit iPad: tapping the line selects it')

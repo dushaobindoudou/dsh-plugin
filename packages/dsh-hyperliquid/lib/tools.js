@@ -356,7 +356,7 @@ function buildTools(remote) {
       description: '查询交易账户。action=state 返回权益/持仓；orders 返回挂单；fills 返回成交；orderStatus 用 oid 或 cloid 核对某笔 live 订单，尤其在网络超时后。review 返回最近 7/30/90 天成交复盘、订单数量核对、费用和资金费覆盖缺口；不是完整账户收益率。' +
         'action=analyze 交易体检（默认 90 天）：按完整往返统计胜率、盈亏比、期望、持仓时长、按币种/时段/星期的表现、手续费与资金费，并给出按金额排序的习惯问题和建议规则——第一次见面或用户问“我做得怎么样”时用它，不要自己从成交里手算。' +
         'action=limits 修改允许币对（addCoins/removeCoins）与单笔/每日/仓位/杠杆上限——仅全托管模式可用，半托管时由用户在 设置 → 交易限额与签名规则 修改。' +
-        'action=transfer 在主永续账户与 HIP-3 交易所之间划转 USDC（dex，amount，direction=in 转入 / out 转回）——全托管直接执行，半托管每次需用户批准；仅 live。',
+        'action=transfer 在账户之间划转 USDC：from / to 取 spot（现货）、perp（主永续）或 HIP-3 交易所名（如 xyz），amount 为数量；支持 spot↔perp 与 perp↔HIP-3，spot 与 HIP-3 之间请分两步经 perp。下单前永续保证金不足而现货有 USDC 时，先 spot→perp。统一账户 / 组合保证金模式无需 spot↔perp 划转。全托管直接执行，半托管每次需用户批准；仅 live，需交易主钱包签名。旧参数 dex + direction（in/out）仍可用。',
       parameters: {
         type: 'object',
         properties: {
@@ -364,9 +364,11 @@ function buildTools(remote) {
           addCoins: { type: 'array', items: { type: 'string' }, description: 'action=limits：加入允许币对，如 ["xyz:XYZ100"]' },
           removeCoins: { type: 'array', items: { type: 'string' }, description: 'action=limits：移出允许币对' },
           maxOrderUsd: { type: 'number' }, maxDailyUsd: { type: 'number' }, maxPositionUsd: { type: 'number' }, maxLeverage: { type: 'number' },
-          dex: { type: 'string', description: 'action=transfer：HIP-3 交易所名，如 xyz' },
+          from: { type: 'string', description: 'action=transfer：转出账户，spot / perp / HIP-3 交易所名' },
+          to: { type: 'string', description: 'action=transfer：转入账户，spot / perp / HIP-3 交易所名' },
+          dex: { type: 'string', description: 'action=transfer（旧写法）：HIP-3 交易所名，配合 direction' },
           amount: { type: 'number', description: 'action=transfer：USDC 数量' },
-          direction: { type: 'string', enum: ['in', 'out'], description: 'action=transfer：in=主账户转入该交易所（默认），out=转回主账户' },
+          direction: { type: 'string', enum: ['in', 'out'], description: 'action=transfer（旧写法）：in=主永续转入 dex（默认），out=转回主永续' },
           oid: { type: 'string', description: 'orderStatus 必填；交易所 oid 或 0x 开头 128 位 cloid' },
           days: { type: 'number', enum: [7, 30, 90], description: 'review 窗口，默认 30 天' },
           coin: { type: 'string', description: 'review 可选，仅核对该标的；省略为全部' },
@@ -394,7 +396,8 @@ function buildTools(remote) {
         }
         if (action === 'transfer') {
           const res = await remote.transferCollateral(args, exec)
-          return { text: `已划转 ${res.amount} USDC：${res.direction === 'in' ? `主永续账户 → ${res.dex}` : `${res.dex} → 主永续账户`}`, ...res }
+          const name = (value) => value === 'spot' ? '现货账户' : value === 'perp' ? '主永续账户' : value
+          return { text: `已划转 ${res.amount} USDC：${name(res.from)} → ${name(res.to)}`, ...res }
         }
         if (action === 'state') {
           const a = await remote.account({ coin: remote.desk?.coin })

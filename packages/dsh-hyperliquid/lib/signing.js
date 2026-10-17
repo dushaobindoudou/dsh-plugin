@@ -247,6 +247,31 @@ export function buildSendAsset({ destination, sourceDex, destinationDex, token, 
   }
 }
 
+/** `usdClassTransfer` fields, as the official SDK signs them. */
+export const USD_CLASS_TRANSFER_TYPES = [
+  { name: 'hyperliquidChain', type: 'string' },
+  { name: 'amount', type: 'string' },
+  { name: 'toPerp', type: 'bool' },
+  { name: 'nonce', type: 'uint64' },
+]
+
+/**
+ * A `usdClassTransfer` action (USDC between the spot balance and the core perp account) and its EIP-712 payload.
+ * @returns {{ action, typed: { domain, types, value } }}
+ */
+export function buildUsdClassTransfer({ amount, toPerp, nonce, isMainnet = true }) {
+  const action = { type: 'usdClassTransfer', signatureChainId: USER_SIGNATURE_CHAIN_ID, hyperliquidChain: isMainnet ? 'Mainnet' : 'Testnet', amount, toPerp: Boolean(toPerp), nonce }
+  const value = Object.fromEntries(USD_CLASS_TRANSFER_TYPES.map(({ name }) => [name, action[name]]))
+  return {
+    action,
+    typed: {
+      domain: { name: 'HyperliquidSignTransaction', version: '1', chainId: parseInt(USER_SIGNATURE_CHAIN_ID, 16), verifyingContract: '0x0000000000000000000000000000000000000000' },
+      types: { 'HyperliquidTransaction:UsdClassTransfer': USD_CLASS_TRANSFER_TYPES },
+      value,
+    },
+  }
+}
+
 /** EIP-712 digest + secp256k1 signature for a single-struct payload of string / uint / bool / address fields. */
 export async function signTypedDataLocal(privateKey, { domain, types, value }) {
   const c = await loadCrypto()

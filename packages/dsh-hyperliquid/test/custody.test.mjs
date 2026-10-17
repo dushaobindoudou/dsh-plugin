@@ -8,7 +8,7 @@ import { HyperRemote } from '../lib/remote.js'
 import { HyperStore } from '../lib/store.js'
 import { TradingGuard } from '../lib/trading-guard.js'
 import { buildToolDefinitions } from '../lib/tools.js'
-import { buildSendAsset } from '../lib/signing.js'
+import { buildSendAsset, buildUsdClassTransfer } from '../lib/signing.js'
 import { Context } from '@deepseek-ai/cordis'
 
 const dir = mkdtempSync(join(tmpdir(), 'dhl-custody-'))
@@ -34,6 +34,8 @@ remote.client = {
     throw new Error(type)
   },
   async clearinghouseState() { return { withdrawable: '300', assetPositions: [] } },
+  async spotClearinghouseState() { return { balances: [{ coin: 'USDC', token: 0, total: '250', hold: '20' }] } },
+  async userAbstraction() { return remote.testAccountMode ?? 'default' },
   async exchangeUserSigned(action, signature, nonce) { posted.push({ action, signature, nonce }); return { status: 'ok', response: { type: 'default' } } },
 }
 const account = buildToolDefinitions(remote).find((tool) => tool.name === 'hyper_account')
@@ -67,6 +69,39 @@ assert.equal(posted.at(-1).action.sourceDex, 'xyz'); assert.equal(posted.at(-1).
 await assert.rejects(account.execute({ action: 'transfer', dex: 'xyz', amount: 45, direction: 'out' }, exec), /可划转 40\.00/)
 await assert.rejects(account.execute({ action: 'transfer', dex: 'flx', amount: 10 }, exec), /不使用 USDC/)
 await assert.rejects(account.execute({ action: 'transfer', dex: 'xyz', amount: 900 }, exec), /仓位上限/)
+// spot ↔ perp: usdClassTransfer, signed by the trading wallet, both directions
+const toPerp = await account.execute({ action: 'transfer', from: 'spot', to: 'perp', amount: 200 }, exec)
+assert.match(toPerp.text, /现货账户 → 主永续账户/)
+const spotSent = posted.at(-1)
+assert.deepEqual(spotSent.action, buildUsdClassTransfer({ amount: '200', toPerp: true, nonce: 1792140000000, isMainnet: true }).action)
+const spotTyped = buildUsdClassTransfer({ amount: '200', toPerp: true, nonce: 1792140000000, isMainnet: true }).typed
+assert.deepEqual(Object.keys(spotTyped.types), ['HyperliquidTransaction:UsdClassTransfer'])
+assert.equal(verifyTypedData(spotTyped.domain, spotTyped.types, spotTyped.value, Signature.from(spotSent.signature)), wallet.address, 'spot → perp is signed by the trading wallet')
+await account.execute({ action: 'transfer', from: 'perp', to: 'spot', amount: 50 }, exec)
+assert.equal(posted.at(-1).action.type, 'usdClassTransfer'); assert.equal(posted.at(-1).action.toPerp, false)
+await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'perp', amount: 240 }, exec), /现货账户可划转 230\.00/)
+await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'xyz', amount: 10 }, exec), /分两步/)
+await assert.rejects(account.execute({ action: 'transfer', from: 'perp', to: 'perp', amount: 10 }, exec), /不能相同/)
+// perp → HIP-3 with the new parameters is the same sendAsset as dex + direction
+await account.execute({ action: 'transfer', from: 'perp', to: 'xyz', amount: 20 }, exec)
+assert.equal(posted.at(-1).action.type, 'sendAsset'); assert.equal(posted.at(-1).action.destinationDex, 'xyz')
+// unified accounts already use spot USDC as margin
+remote.testAccountMode = 'unifiedAccount'; remote.accountModeCache = null
+await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'perp', amount: 10 }, exec), /无需划转/)
+remote.testAccountMode = 'default'; remote.accountModeCache = null
+// No transfer is signed when the account mode cannot be read, nor between two HIP-3 dexes
+const sentBefore = posted.length
+remote.testAccountMode = 'boom'; remote.accountModeCache = null
+await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'perp', amount: 10 }, exec), /未知账户模式/)
+remote.testAccountMode = 'default'; remote.accountModeCache = null
+await assert.rejects(account.execute({ action: 'transfer', from: 'xyz', to: 'flx', amount: 10 }, exec), /HIP-3 交易所之间请分两步/)
+assert.equal(posted.length, sentBefore, 'nothing was submitted')
+// testnet signs for the Testnet chain
+remote.cfg.network = 'testnet'
+await account.execute({ action: 'transfer', from: 'spot', to: 'perp', amount: 5 }, exec)
+assert.equal(posted.at(-1).action.hyperliquidChain, 'Testnet')
+remote.cfg.network = 'mainnet'
+
 remote.cfg.tradingMode = 'paper'
 await assert.rejects(account.execute({ action: 'transfer', dex: 'xyz', amount: 10 }, exec), /paper/)
 await remote.setCustody({ mode: 'assisted' })

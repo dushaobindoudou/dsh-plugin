@@ -11,7 +11,7 @@ import { resolve } from 'node:path'
 import { HyperliquidClient, keys, sigFigs } from './hl.js'
 import { canonicalMarketCoin } from './market-symbol.js'
 import { HyperStore } from './store.js'
-import { addressFromPrivateKey, buildL1TypedData, buildSendAsset, signTypedDataLocal, splitSignature } from './signing.js'
+import { addressFromPrivateKey, buildL1TypedData, buildSendAsset, buildUsdClassTransfer, signTypedDataLocal, splitSignature } from './signing.js'
 import { TradingGuard } from './trading-guard.js'
 import { normalizeMaLines } from './moving-average.js'
 import { ALERT_KINDS, ICON_NAMES, TEXT_KINDS, drawingGeometry, drawingStyle, isIconLabel, linePriceAt } from './chart-drawings.js'
@@ -901,61 +901,104 @@ export class HyperRemote extends TypertRemoteService {
   }
 
   /**
-   * Move USDC between the core perp account ('') and a HIP-3 dex (e.g. 'xyz') with a user-signed
-   * `sendAsset` (main wallet). 半托管 asks the trader every time; 全托管 goes straight to the wallet.
+   * Move USDC between the spot balance ('spot'), the core perp account ('perp') and a HIP-3 dex (e.g. 'xyz').
+   * spot ↔ perp is a user-signed `usdClassTransfer`; perp ↔ HIP-3 a user-signed `sendAsset`; both need the
+   * main wallet. 半托管 asks the trader every time; 全托管 goes straight to the wallet.
+   * Accepts { from, to, amount } or the original { dex, direction: 'in' | 'out', amount }.
    */
   async transferCollateral(request, exec) {
     if (this.cfg.tradingMode !== 'live') throw new Error('paper 模式没有交易所资金，无需划转')
     const transferEpoch = this.walletEpoch
     if (!exec?.agent) throw new Error('资金划转仅允许从 DSH agent 工具调用')
     exec.signal?.throwIfAborted()
-    const dex = String(request?.dex ?? '').trim()
-    const toDex = request?.direction !== 'out'
-    if (!dex || dex.includes(':')) throw new Error('dex 需要 HIP-3 交易所名，如 xyz')
-    const dexs = await this.perpDexList()
-    if (!dexs.some((row) => row?.name === dex)) throw new Error(`未知的 HIP-3 交易所 ${dex}`)
-    const meta = await this.client.info('meta', { dex })
-    if (meta?.collateralToken !== 0) throw new Error(`${dex} 不使用 USDC 保证金，暂不支持划转`)
+    const account = (value) => { const name = String(value ?? '').trim(); return name === '' || name === 'main' || name === 'core' ? 'perp' : name }
+    let from, to
+    if (request?.from != null || request?.to != null) { from = account(request?.from); to = account(request?.to) }
+    else {
+      const dex = String(request?.dex ?? '').trim()
+      if (!dex || dex.includes(':')) throw new Error('需要 from / to（spot、perp 或 HIP-3 交易所名），或 dex + direction')
+      ;[from, to] = request?.direction === 'out' ? [dex, 'perp'] : ['perp', dex]
+    }
+    if (from === to) throw new Error('from 和 to 不能相同')
+    if ([from, to].some((name) => name.includes(':'))) throw new Error('交易所名不含冒号，如 xyz')
+    // Every transfer has the core perp account on one side: spot ↔ perp or perp ↔ one HIP-3 dex.
+    if (from !== 'perp' && to !== 'perp') {
+      throw new Error(from === 'spot' || to === 'spot'
+        ? '现货与 HIP-3 交易所之间请分两步：先在 spot 与 perp 之间划转，再在 perp 与该交易所之间划转'
+        : 'HIP-3 交易所之间请分两步：先转回 perp，再从 perp 转入目标交易所')
+    }
+    const dex = [from, to].find((name) => name !== 'spot' && name !== 'perp') ?? null
     const amount = Number(request?.amount)
     if (!Number.isFinite(amount) || amount <= 0) throw new Error('amount 必须为正数（USDC）')
     if (Number(amount.toFixed(6)) !== amount) throw new Error('USDC 划转金额最多 6 位小数')
     if (amount > this.cfg.maxPositionUsd) throw new Error(`单次划转不超过仓位上限 ${this.cfg.maxPositionUsd} USD`)
+    if (dex) {
+      const dexs = await this.perpDexList()
+      if (!dexs.some((row) => row?.name === dex)) throw new Error(`未知的 HIP-3 交易所 ${dex}`)
+      const meta = await this.client.info('meta', { dex })
+      if (meta?.collateralToken !== 0) throw new Error(`${dex} 不使用 USDC 保证金，暂不支持划转`)
+    }
     const address = await this.resolveAddress()
     if (!address) throw new Error('live 划转需要钱包地址')
     const signerAddress = this.cfg.signer === 'web3' ? await this.web3Address() : await addressFromPrivateKey(this.cfg.privateKey)
-    if (signerAddress.toLowerCase() !== address.toLowerCase()) throw new Error('保证金划转需要交易主钱包签名；当前签名钱包与 tradingAddress 不一致，API wallet 不能用于此划转')
-    const source = toDex ? '' : dex
-    const sourceState = source ? await this.client.info('clearinghouseState', { user: address, dex: source }) : await this.client.clearinghouseState(address)
-    const withdrawable = Number(sourceState?.withdrawable)
-    if (!Number.isFinite(withdrawable)) throw new Error('无法确认可划转余额')
-    if (amount > withdrawable + 1e-9) throw new Error(`${source || '主永续账户'} 可划转 ${withdrawable.toFixed(2)} USDC，不足 ${amount}`)
-    const spotMeta = await this.client.info('spotMeta')
-    const usdc = (spotMeta?.tokens ?? []).find((token) => token.index === 0 && token.name === 'USDC')
-    if (!usdc?.tokenId) throw new Error('无法读取 USDC 代币信息')
-    const what = `${amount} USDC：${toDex ? `主永续账户 → ${dex}` : `${dex} → 主永续账户`}`
-    if (!this.isManaged()) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 划转 ${what}？`, exec, `Hyperliquid ${this.cfg.network}: transfer ${amount} USDC ${toDex ? `core perps → ${dex}` : `${dex} → core perps`}?`)
+    if (signerAddress.toLowerCase() !== address.toLowerCase()) throw new Error('资金划转需要交易主钱包签名；当前签名钱包与 tradingAddress 不一致，API wallet 不能用于划转')
+    const label = (name) => name === 'spot' ? '现货账户' : name === 'perp' ? '主永续账户' : name
+    const labelEn = (name) => name === 'spot' ? 'spot' : name === 'perp' ? 'core perps' : name
+    // What can leave the source account now.
+    let available
+    if (from === 'spot') {
+      // Unified / portfolio-margin accounts already use spot USDC as margin: there is nothing to move.
+      // The mode must be known before signing: a failed lookup stops the transfer.
+      const mode = await this.accountMode(address, true)
+      if (mode === 'unifiedAccount' || mode === 'portfolioMargin') throw new Error(`账户模式为 ${mode}，现货 USDC 已直接作为保证金，无需划转`)
+      const spot = await this.client.spotClearinghouseState(address)
+      const usdc = (spot?.balances ?? []).find((row) => row.coin === 'USDC')
+      available = Number(usdc?.total ?? 0) - Number(usdc?.hold ?? 0)
+    } else {
+      if (to === 'spot') {
+        const mode = await this.accountMode(address, true)
+        if (mode === 'unifiedAccount' || mode === 'portfolioMargin') throw new Error(`账户模式为 ${mode}，现货与永续共用余额，无需划转`)
+      }
+      const state = from === 'perp' ? await this.client.clearinghouseState(address) : await this.client.info('clearinghouseState', { user: address, dex: from })
+      available = Number(state?.withdrawable)
+    }
+    if (!Number.isFinite(available)) throw new Error('无法确认可划转余额')
+    if (amount > available + 1e-9) throw new Error(`${label(from)}可划转 ${Math.max(0, available).toFixed(2)} USDC，不足 ${amount}`)
+    const what = `${amount} USDC：${label(from)} → ${label(to)}`
+    if (!this.isManaged()) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 划转 ${what}？`, exec, `Hyperliquid ${this.cfg.network}: transfer ${amount} USDC ${labelEn(from)} → ${labelEn(to)}?`)
     if (transferEpoch !== this.walletEpoch) throw new Error('钱包已切换，划转已取消')
     const nonce = this.client.nextNonce()
-    const { action, typed } = buildSendAsset({ destination: address, sourceDex: source, destinationDex: toDex ? dex : '', token: `USDC:${usdc.tokenId}`,
-      amount: String(Number(amount.toFixed(6))), nonce, isMainnet: this.cfg.network === 'mainnet' })
-    let signature
+    const isMainnet = this.cfg.network === 'mainnet'
+    const amountText = String(Number(amount.toFixed(6)))
+    let built
+    if (from === 'spot' || to === 'spot') built = buildUsdClassTransfer({ amount: amountText, toPerp: to === 'perp', nonce, isMainnet })
+    else {
+      const spotMeta = await this.client.info('spotMeta')
+      const usdc = (spotMeta?.tokens ?? []).find((token) => token.index === 0 && token.name === 'USDC')
+      if (!usdc?.tokenId) throw new Error('无法读取 USDC 代币信息')
+      built = buildSendAsset({ destination: address, sourceDex: from === 'perp' ? '' : from, destinationDex: to === 'perp' ? '' : to, token: `USDC:${usdc.tokenId}`, amount: amountText, nonce, isMainnet })
+    }
+    const signature = await this.signUserTyped(built.typed, `Hyperliquid ${this.cfg.network} 资金划转：${what}`, exec, signerAddress)
+    exec.signal?.throwIfAborted()
+    const res = await this.client.exchangeUserSigned(built.action, signature, nonce)
+    assertExchangeAccepted(res)
+    this.store.recordEvent('live.transfer', { from, to, amount, dex: dex ?? undefined, toDex: dex ? to === dex : undefined })
+    return { ok: true, from, to, amount, dex: dex ?? undefined, direction: dex ? (to === dex ? 'in' : 'out') : undefined, response: res }
+  }
+
+  /** Sign a user-signed action's EIP-712 payload with the main wallet (dsh-web3 or the local key). */
+  async signUserTyped(typed, purpose, exec, signerAddress) {
     if (this.cfg.signer === 'web3') {
       const wallet = this.walletService()
       if (!wallet) throw new Error('signer=web3 但 dsh-web3 未安装')
-      const result = await wallet.signTypedData({ account: this.cfg.web3Account, ...typed, purpose: `Hyperliquid ${this.cfg.network} 资金划转：${what}` },
+      const result = await wallet.signTypedData({ account: this.cfg.web3Account, ...typed, purpose },
         this.approvalGateway(), { toolName: 'dsh-hyperliquid', agent: exec?.agent, callId: exec?.callId, signal: exec?.signal })
       if (result?.status !== 'signed' || !result.signature) throw new Error(`dsh-web3 签名未完成（status=${result?.status}）`)
       if (result.address?.toLowerCase() !== signerAddress.toLowerCase()) throw new Error('dsh-web3 返回的签名地址与配置账户不一致')
-      signature = splitSignature(result.signature)
-    } else {
-      if (!this.cfg.privateKey) throw new Error('live 划转需要钱包私钥')
-      signature = await signTypedDataLocal(this.cfg.privateKey, typed)
+      return splitSignature(result.signature)
     }
-    exec.signal?.throwIfAborted()
-    const res = await this.client.exchangeUserSigned(action, signature, nonce)
-    assertExchangeAccepted(res)
-    this.store.recordEvent('live.transfer', { dex, amount, toDex })
-    return { ok: true, dex, amount, direction: toDex ? 'in' : 'out', response: res }
+    if (!this.cfg.privateKey) throw new Error('live 划转需要钱包私钥')
+    return signTypedDataLocal(this.cfg.privateKey, typed)
   }
 
   applyRiskSettings(limits, override) {

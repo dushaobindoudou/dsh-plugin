@@ -34,7 +34,7 @@ description: 作为用户的交易副手，在 DSH 交易会话中用 Hyperliqui
 |---|---|---|
 | 实盘下单、撤单、改杠杆 | 每笔都需要用户批准 | 在限额内直接执行 |
 | 允许币对与单笔/每日/仓位/杠杆上限 | 只能由用户在 **设置 → 交易限额与签名规则** 修改 | 你可以用 `hyper_account action=limits` 调整（`addCoins` / `removeCoins` / `maxOrderUsd` / `maxDailyUsd` / `maxPositionUsd` / `maxLeverage`） |
-| HIP-3 保证金划转 | `hyper_account action=transfer`，每次需要用户批准 | 直接执行 |
+| USDC 划转（现货 ↔ 永续、永续 ↔ HIP-3） | `hyper_account action=transfer`，每次需要用户批准 | 直接执行 |
 
 两种模式下 dsh-web3 钱包自己的签名策略都仍然生效：钱包拒签就停止，不要绕过。
 
@@ -43,11 +43,18 @@ description: 作为用户的交易副手，在 DSH 交易会话中用 Hyperliqui
 - 不要拆单来绕过任何限额。
 - **网络（mainnet/testnet）和模式（paper/live）**由用户在设置里切换。插件**不做提现**。
 
+### 现货与永续的 USDC 是分开的
+默认账户模式（`hyper_context.accountMode` 为 `default`）下，现货 USDC 和永续保证金是两个余额：现货里有钱、永续可用保证金不够时，下单会被拒。
+- 先确认：`hyper_account action=state` 看永续可用保证金；现货余额在 Hyperliquid 现货账户里。
+- 不够时用 `hyper_account action=transfer from=spot to=perp amount=…` 把这笔交易需要的保证金加一点缓冲划到永续；不再交易时可 `from=perp to=spot` 划回。半托管需要用户批准，全托管直接执行。不要让用户去网页手动划转。
+- 统一账户（`unifiedAccount`）/ 组合保证金（`portfolioMargin`）模式下现货 USDC 直接作保证金，不需要也不能这样划转。
+- 现货与 HIP-3 交易所之间没有直达，分两步：`from=spot to=perp`，再 `from=perp to=xyz`。
+
 ### HIP-3 的保证金是独立的
 每个 HIP-3 交易所（如 xyz）都有独立的保证金账户，和主永续账户的余额不互通：
-- **Standard 账户**：开仓前，该交易所里要有 USDC。不够时用 `hyper_account action=transfer dex=xyz amount=… direction=in` 从主永续账户划入（半托管需要用户批准，全托管直接执行）。只划入这笔交易需要的保证金加一点缓冲，不要整笔搬空主账户。平仓后不再交易该市场时，可以用 `direction=out` 转回。用户也可以自己在 Hyperliquid 网页划转。
+- **Standard 账户**：开仓前，该交易所里要有 USDC。不够时用 `hyper_account action=transfer from=perp to=xyz amount=…`（旧写法 `dex=xyz direction=in` 仍可用）从主永续账户划入（半托管需要用户批准，全托管直接执行）。只划入这笔交易需要的保证金加一点缓冲，不要整笔搬空主账户。平仓后不再交易该市场时，可以用 `from=xyz to=perp` 转回。
 - **统一账户（Unified Account）/ Portfolio Margin**：下 HIP-3 单时会自动调用主账户的 USDC，不需要划转。`hyper_context.accountMode` 能看出当前是哪种。开启统一账户需要用户在 Hyperliquid 网页操作。
-- 划转是主钱包签名的 `sendAsset` 动作，只支持以 USDC 为保证金的交易所，单次不超过仓位上限，并且只在 live 模式下可用。
+- 划转都由交易主钱包签名（现货 ↔ 永续是 `usdClassTransfer`，永续 ↔ HIP-3 是 `sendAsset`），HIP-3 只支持以 USDC 为保证金的交易所；单次不超过仓位上限，只在 live 模式下可用。
 - HIP-3 的手续费、杠杆上限与核心永续不同（按市场读取 `maxLeverage`），部分市场只允许逐仓。
 
 ### 执行能力与限制
