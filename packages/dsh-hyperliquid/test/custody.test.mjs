@@ -27,8 +27,8 @@ remote.authorizeToolAction = async () => { approvals += 1 }
 remote.client = {
   nextNonce: () => 1792140000000,
   async info(type, extra = {}) {
-    if (type === 'perpDexs') return [null, { name: 'xyz' }, { name: 'flx' }]
-    if (type === 'meta') return { collateralToken: extra.dex === 'xyz' ? 0 : 360, universe: [] }
+    if (type === 'perpDexs') return [null, { name: 'xyz' }, { name: 'flx' }, { name: 'abc' }]
+    if (type === 'meta') return { collateralToken: extra.dex === 'xyz' || extra.dex === 'abc' ? 0 : 360, universe: [] }
     if (type === 'spotMeta') return { tokens: [{ name: 'USDC', index: 0, tokenId: '0x6d1e7cde53ba9467b783cb7c530ce054' }] }
     if (type === 'clearinghouseState') return { withdrawable: '40', assetPositions: [] }
     throw new Error(type)
@@ -36,7 +36,11 @@ remote.client = {
   async clearinghouseState() { return { withdrawable: '300', assetPositions: [] } },
   async spotClearinghouseState() { return { balances: [{ coin: 'USDC', token: 0, total: '250', hold: '20' }] } },
   async userAbstraction() { return remote.testAccountMode ?? 'default' },
-  async exchangeUserSigned(action, signature, nonce) { posted.push({ action, signature, nonce }); return { status: 'ok', response: { type: 'default' } } },
+  async exchangeUserSigned(action, signature, nonce) {
+    if (remote.failNextSendAsset && action.type === 'sendAsset') { remote.failNextSendAsset = false; return { status: 'err', response: 'Insufficient balance' } }
+    if (remote.timeoutNextSendAsset && action.type === 'sendAsset') { remote.timeoutNextSendAsset = false; throw new Error('request timed out') }
+    posted.push({ action, signature, nonce }); return { status: 'ok', response: { type: 'default' } }
+  },
 }
 const account = buildToolDefinitions(remote).find((tool) => tool.name === 'hyper_account')
 const exec = { agent: { id: 's1' } }
@@ -80,7 +84,49 @@ assert.equal(verifyTypedData(spotTyped.domain, spotTyped.types, spotTyped.value,
 await account.execute({ action: 'transfer', from: 'perp', to: 'spot', amount: 50 }, exec)
 assert.equal(posted.at(-1).action.type, 'usdClassTransfer'); assert.equal(posted.at(-1).action.toPerp, false)
 await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'perp', amount: 240 }, exec), /现货账户可划转 230\.00/)
-await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'xyz', amount: 10 }, exec), /分两步/)
+// spot → HIP-3 and HIP-3 → HIP-3 go through perp: two signed legs, one approval
+let approvalsBefore = approvals, postedBefore = posted.length
+const twoLeg = await account.execute({ action: 'transfer', from: 'spot', to: 'xyz', amount: 10 }, exec)
+assert.match(twoLeg.text, /现货账户 → 主永续账户 → xyz（两步）/)
+assert.deepEqual(posted.slice(postedBefore).map((row) => [row.action.type, row.action.toPerp ?? row.action.destinationDex]), [['usdClassTransfer', true], ['sendAsset', 'xyz']])
+assert.equal(approvals - approvalsBefore, remote.isManaged() ? 0 : 1, 'one approval for both legs')
+postedBefore = posted.length
+await account.execute({ action: 'transfer', from: 'xyz', to: 'abc', amount: 10 }, exec)
+assert.deepEqual(posted.slice(postedBefore).map((row) => [row.action.sourceDex, row.action.destinationDex]), [['xyz', ''], ['', 'abc']])
+// a failed second leg says where the money is
+remote.failNextSendAsset = true
+await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'xyz', amount: 10 }, exec), /第一步已完成（10 USDC 已到主永续账户）.*第二步.*未完成.*资金在主永续账户/)
+// a second leg that timed out may have gone through: the agent is told to reconcile, not retry
+remote.timeoutNextSendAsset = true
+await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'xyz', amount: 10 }, exec), /已提交但未收到确认.*结果未知.*不要直接重试/)
+// cancelled between the legs: the error still says where the money is
+const between = new AbortController()
+const originalSign = remote.signUserTyped
+// (the first leg is confirmed; the cancel lands while the second is being signed)
+remote.signUserTyped = async function (...args) { if (args[1].includes('（2/2）')) between.abort(); return originalSign.apply(this, args) }
+postedBefore = posted.length
+await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'xyz', amount: 10 }, { ...exec, signal: between.signal }), /第一步已完成（10 USDC 已到主永续账户）.*资金在主永续账户/)
+assert.deepEqual(posted.slice(postedBefore).map((row) => row.action.type), ['usdClassTransfer'], 'only the first leg reached the exchange')
+// a wallet switch between the legs: same message, second leg not submitted
+remote.signUserTyped = async function (...args) { if (args[1].includes('（2/2）')) remote.walletEpoch = (remote.walletEpoch ?? 0) + 1; return originalSign.apply(this, args) }
+postedBefore = posted.length
+await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'xyz', amount: 10 }, exec), /第一步已完成.*钱包已切换.*资金在主永续账户/)
+assert.deepEqual(posted.slice(postedBefore).map((row) => row.action.type), ['usdClassTransfer'])
+remote.signUserTyped = originalSign
+// failed second legs are in the event log
+assert.ok(remote.store.eventsSince(0).events.some((ev) => ev.kind === 'live.transfer' && ev.data?.failed && ev.data?.unknown === true), 'an unconfirmed second leg is logged as unknown')
+assert.ok(remote.store.eventsSince(0).events.some((ev) => ev.kind === 'live.transfer' && ev.data?.failed && ev.data?.unknown === false), 'a refused second leg is logged')
+// perp must have the money free before the second leg
+const originalPerp = remote.client.clearinghouseState
+remote.client.clearinghouseState = async () => ({ withdrawable: '3', assetPositions: [] })
+postedBefore = posted.length
+await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'xyz', amount: 10 }, exec), /第一步已完成.*主永续账户可划转 3\.00 USDC，不足 10/)
+assert.deepEqual(posted.slice(postedBefore).map((row) => row.action.type), ['usdClassTransfer'], 'the second leg is not submitted')
+remote.client.clearinghouseState = originalPerp
+// a non-USDC dex on either side is refused before anything is signed
+postedBefore = posted.length
+await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'flx', amount: 10 }, exec), /flx 不使用 USDC/)
+assert.equal(posted.length, postedBefore)
 await assert.rejects(account.execute({ action: 'transfer', from: 'perp', to: 'perp', amount: 10 }, exec), /不能相同/)
 // perp → HIP-3 with the new parameters is the same sendAsset as dex + direction
 await account.execute({ action: 'transfer', from: 'perp', to: 'xyz', amount: 20 }, exec)
@@ -94,7 +140,7 @@ const sentBefore = posted.length
 remote.testAccountMode = 'boom'; remote.accountModeCache = null
 await assert.rejects(account.execute({ action: 'transfer', from: 'spot', to: 'perp', amount: 10 }, exec), /未知账户模式/)
 remote.testAccountMode = 'default'; remote.accountModeCache = null
-await assert.rejects(account.execute({ action: 'transfer', from: 'xyz', to: 'flx', amount: 10 }, exec), /HIP-3 交易所之间请分两步/)
+await assert.rejects(account.execute({ action: 'transfer', from: 'xyz', to: 'flx', amount: 10 }, exec), /flx 不使用 USDC/)
 assert.equal(posted.length, sentBefore, 'nothing was submitted')
 // testnet signs for the Testnet chain
 remote.cfg.network = 'testnet'

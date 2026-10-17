@@ -34,7 +34,7 @@ description: 作为用户的交易副手，在 DSH 交易会话中用 Hyperliqui
 |---|---|---|
 | 实盘下单、撤单、改杠杆 | 每笔都需要用户批准 | 在限额内直接执行 |
 | 允许币对与单笔/每日/仓位/杠杆上限 | 只能由用户在 **设置 → 交易限额与签名规则** 修改 | 你可以用 `hyper_account action=limits` 调整（`addCoins` / `removeCoins` / `maxOrderUsd` / `maxDailyUsd` / `maxPositionUsd` / `maxLeverage`） |
-| USDC 划转（现货 ↔ 永续、永续 ↔ HIP-3） | `hyper_account action=transfer`，每次需要用户批准 | 直接执行 |
+| USDC 划转（现货、主永续、各 HIP-3 交易所之间任意互转） | `hyper_account action=transfer`，每次需要用户批准 | 直接执行 |
 
 两种模式下 dsh-web3 钱包自己的签名策略都仍然生效：钱包拒签就停止，不要绕过。
 
@@ -48,7 +48,7 @@ description: 作为用户的交易副手，在 DSH 交易会话中用 Hyperliqui
 - 先确认：`hyper_account action=state` 看永续可用保证金；现货余额在 Hyperliquid 现货账户里。
 - 不够时用 `hyper_account action=transfer from=spot to=perp amount=…` 把这笔交易需要的保证金加一点缓冲划到永续；不再交易时可 `from=perp to=spot` 划回。半托管需要用户批准，全托管直接执行。不要让用户去网页手动划转。
 - 统一账户（`unifiedAccount`）/ 组合保证金（`portfolioMargin`）模式下现货 USDC 直接作保证金，不需要也不能这样划转。
-- 现货与 HIP-3 交易所之间没有直达，分两步：`from=spot to=perp`，再 `from=perp to=xyz`。
+- 现货 ↔ HIP-3、HIP-3 ↔ HIP-3 直接写 `from=spot to=xyz` / `from=xyz to=abc`，插件自动经主永续两步完成，只需批准一次；如果第二步失败，报错会说明钱已停在主永续，再单独 `from=perp to=…` 补一步即可。
 
 ### HIP-3 的保证金是独立的
 每个 HIP-3 交易所（如 xyz）都有独立的保证金账户，和主永续账户的余额不互通：

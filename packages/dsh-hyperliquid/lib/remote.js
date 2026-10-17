@@ -901,9 +901,10 @@ export class HyperRemote extends TypertRemoteService {
   }
 
   /**
-   * Move USDC between the spot balance ('spot'), the core perp account ('perp') and a HIP-3 dex (e.g. 'xyz').
-   * spot ↔ perp is a user-signed `usdClassTransfer`; perp ↔ HIP-3 a user-signed `sendAsset`; both need the
-   * main wallet. 半托管 asks the trader every time; 全托管 goes straight to the wallet.
+   * Move USDC between any two of the trader's own accounts: the spot balance ('spot'), the core perp
+   * account ('perp') and each HIP-3 dex (e.g. 'xyz'). spot ↔ perp is a `usdClassTransfer`, perp ↔ HIP-3 a
+   * `sendAsset`; spot ↔ HIP-3 and HIP-3 ↔ HIP-3 go through perp in two signed legs under one approval.
+   * All legs need the main wallet. 半托管 asks the trader once per transfer; 全托管 goes straight through.
    * Accepts { from, to, amount } or the original { dex, direction: 'in' | 'out', amount }.
    */
   async transferCollateral(request, exec) {
@@ -921,22 +922,20 @@ export class HyperRemote extends TypertRemoteService {
     }
     if (from === to) throw new Error('from 和 to 不能相同')
     if ([from, to].some((name) => name.includes(':'))) throw new Error('交易所名不含冒号，如 xyz')
-    // Every transfer has the core perp account on one side: spot ↔ perp or perp ↔ one HIP-3 dex.
-    if (from !== 'perp' && to !== 'perp') {
-      throw new Error(from === 'spot' || to === 'spot'
-        ? '现货与 HIP-3 交易所之间请分两步：先在 spot 与 perp 之间划转，再在 perp 与该交易所之间划转'
-        : 'HIP-3 交易所之间请分两步：先转回 perp，再从 perp 转入目标交易所')
-    }
-    const dex = [from, to].find((name) => name !== 'spot' && name !== 'perp') ?? null
     const amount = Number(request?.amount)
     if (!Number.isFinite(amount) || amount <= 0) throw new Error('amount 必须为正数（USDC）')
     if (Number(amount.toFixed(6)) !== amount) throw new Error('USDC 划转金额最多 6 位小数')
     if (amount > this.cfg.maxPositionUsd) throw new Error(`单次划转不超过仓位上限 ${this.cfg.maxPositionUsd} USD`)
-    if (dex) {
-      const dexs = await this.perpDexList()
-      if (!dexs.some((row) => row?.name === dex)) throw new Error(`未知的 HIP-3 交易所 ${dex}`)
-      const meta = await this.client.info('meta', { dex })
-      if (meta?.collateralToken !== 0) throw new Error(`${dex} 不使用 USDC 保证金，暂不支持划转`)
+    // Every leg has the core perp account on one side; a route without it goes through perp.
+    const legs = from === 'perp' || to === 'perp' ? [[from, to]] : [[from, 'perp'], ['perp', to]]
+    const dexes = [...new Set([from, to].filter((name) => name !== 'spot' && name !== 'perp'))]
+    if (dexes.length) {
+      const known = await this.perpDexList()
+      for (const dex of dexes) {
+        if (!known.some((row) => row?.name === dex)) throw new Error(`未知的 HIP-3 交易所 ${dex}`)
+        const meta = await this.client.info('meta', { dex })
+        if (meta?.collateralToken !== 0) throw new Error(`${dex} 不使用 USDC 保证金，暂不支持划转`)
+      }
     }
     const address = await this.resolveAddress()
     if (!address) throw new Error('live 划转需要钱包地址')
@@ -944,46 +943,78 @@ export class HyperRemote extends TypertRemoteService {
     if (signerAddress.toLowerCase() !== address.toLowerCase()) throw new Error('资金划转需要交易主钱包签名；当前签名钱包与 tradingAddress 不一致，API wallet 不能用于划转')
     const label = (name) => name === 'spot' ? '现货账户' : name === 'perp' ? '主永续账户' : name
     const labelEn = (name) => name === 'spot' ? 'spot' : name === 'perp' ? 'core perps' : name
-    // What can leave the source account now.
+    // Unified / portfolio-margin accounts already share spot and perp USDC: no spot ↔ perp leg. The mode
+    // must be known before signing: a failed lookup stops the transfer.
+    if (from === 'spot' || to === 'spot') {
+      const mode = await this.accountMode(address, true)
+      if (mode === 'unifiedAccount' || mode === 'portfolioMargin') throw new Error(`账户模式为 ${mode}，现货 USDC 已直接作为保证金，现货与永续之间无需划转`)
+    }
+    // What can leave the source account now (the later leg spends what the first one brought into perp).
     let available
     if (from === 'spot') {
-      // Unified / portfolio-margin accounts already use spot USDC as margin: there is nothing to move.
-      // The mode must be known before signing: a failed lookup stops the transfer.
-      const mode = await this.accountMode(address, true)
-      if (mode === 'unifiedAccount' || mode === 'portfolioMargin') throw new Error(`账户模式为 ${mode}，现货 USDC 已直接作为保证金，无需划转`)
       const spot = await this.client.spotClearinghouseState(address)
       const usdc = (spot?.balances ?? []).find((row) => row.coin === 'USDC')
       available = Number(usdc?.total ?? 0) - Number(usdc?.hold ?? 0)
     } else {
-      if (to === 'spot') {
-        const mode = await this.accountMode(address, true)
-        if (mode === 'unifiedAccount' || mode === 'portfolioMargin') throw new Error(`账户模式为 ${mode}，现货与永续共用余额，无需划转`)
-      }
       const state = from === 'perp' ? await this.client.clearinghouseState(address) : await this.client.info('clearinghouseState', { user: address, dex: from })
       available = Number(state?.withdrawable)
     }
     if (!Number.isFinite(available)) throw new Error('无法确认可划转余额')
     if (amount > available + 1e-9) throw new Error(`${label(from)}可划转 ${Math.max(0, available).toFixed(2)} USDC，不足 ${amount}`)
-    const what = `${amount} USDC：${label(from)} → ${label(to)}`
-    if (!this.isManaged()) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 划转 ${what}？`, exec, `Hyperliquid ${this.cfg.network}: transfer ${amount} USDC ${labelEn(from)} → ${labelEn(to)}?`)
-    if (transferEpoch !== this.walletEpoch) throw new Error('钱包已切换，划转已取消')
-    const nonce = this.client.nextNonce()
+    const route = legs.length > 1 ? `${label(from)} → 主永续账户 → ${label(to)}（两步）` : `${label(from)} → ${label(to)}`
+    const what = `${amount} USDC：${route}`
+    if (!this.isManaged()) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 划转 ${what}？`, exec,
+      `Hyperliquid ${this.cfg.network}: transfer ${amount} USDC ${[from, ...legs.map(([, next]) => next)].map(labelEn).join(' → ')}?`)
     const isMainnet = this.cfg.network === 'mainnet'
     const amountText = String(Number(amount.toFixed(6)))
-    let built
-    if (from === 'spot' || to === 'spot') built = buildUsdClassTransfer({ amount: amountText, toPerp: to === 'perp', nonce, isMainnet })
-    else {
-      const spotMeta = await this.client.info('spotMeta')
-      const usdc = (spotMeta?.tokens ?? []).find((token) => token.index === 0 && token.name === 'USDC')
-      if (!usdc?.tokenId) throw new Error('无法读取 USDC 代币信息')
-      built = buildSendAsset({ destination: address, sourceDex: from === 'perp' ? '' : from, destinationDex: to === 'perp' ? '' : to, token: `USDC:${usdc.tokenId}`, amount: amountText, nonce, isMainnet })
+    let usdcToken = null
+    const responses = []
+    for (const [index, [source, target]] of legs.entries()) {
+      // Everything before the second leg is submitted can stop it; the first leg's money then sits in perp.
+      const parked = `第一步已完成（${amount} USDC 已到主永续账户）`
+      let submitted = false
+      try {
+        if (transferEpoch !== this.walletEpoch) throw new Error('钱包已切换，划转已取消')
+        exec.signal?.throwIfAborted()
+        if (index > 0) {
+          // The money that just arrived must be free to leave perp (positions may have taken it as margin).
+          const state = await this.client.clearinghouseState(address)
+          const free = Number(state?.withdrawable)
+          if (!Number.isFinite(free) || free + 1e-9 < amount) throw new Error(`主永续账户可划转 ${Number.isFinite(free) ? free.toFixed(2) : '未知'} USDC，不足 ${amount}`)
+        }
+        const nonce = this.client.nextNonce()
+        let built
+        if (source === 'spot' || target === 'spot') built = buildUsdClassTransfer({ amount: amountText, toPerp: target === 'perp', nonce, isMainnet })
+        else {
+          if (!usdcToken) {
+            const spotMeta = await this.client.info('spotMeta')
+            usdcToken = (spotMeta?.tokens ?? []).find((token) => token.index === 0 && token.name === 'USDC')?.tokenId
+            if (!usdcToken) throw new Error('无法读取 USDC 代币信息')
+          }
+          built = buildSendAsset({ destination: address, sourceDex: source === 'perp' ? '' : source, destinationDex: target === 'perp' ? '' : target, token: `USDC:${usdcToken}`, amount: amountText, nonce, isMainnet })
+        }
+        const signature = await this.signUserTyped(built.typed, `Hyperliquid ${this.cfg.network} 资金划转（${index + 1}/${legs.length}）：${amount} USDC ${label(source)} → ${label(target)}`, exec, signerAddress)
+        // Cancelled while the wallet was signing: never submit that signature.
+        exec.signal?.throwIfAborted()
+        if (transferEpoch !== this.walletEpoch) throw new Error('钱包已切换，划转已取消')
+        submitted = true
+        const res = await this.client.exchangeUserSigned(built.action, signature, nonce)
+        submitted = false
+        assertExchangeAccepted(res)
+        responses.push(res)
+      } catch (error) {
+        if (index === 0) throw error
+        const reason = error?.message ?? String(error)
+        this.store.recordEvent('live.transfer', { from: source, to: target, amount, failed: true, unknown: submitted, reason })
+        // Submitted but no answer (timeout, network): it may have gone through. Never suggest a blind retry.
+        if (submitted) throw new Error(`${parked}；第二步 主永续账户 → ${label(target)} 已提交但未收到确认（${reason}），结果未知：先用 hyper_account action=state 核对主永续与 ${label(target)} 的余额，不要直接重试`)
+        throw new Error(`${parked}，第二步 主永续账户 → ${label(target)} 未完成：${reason}。资金在主永续账户，可稍后 from=perp to=${target} 补划`)
+      }
+      this.store.recordEvent('live.transfer', { from: source, to: target, amount, dex: [source, target].find((name) => name !== 'spot' && name !== 'perp'), toDex: target !== 'spot' && target !== 'perp' })
     }
-    const signature = await this.signUserTyped(built.typed, `Hyperliquid ${this.cfg.network} 资金划转：${what}`, exec, signerAddress)
-    exec.signal?.throwIfAborted()
-    const res = await this.client.exchangeUserSigned(built.action, signature, nonce)
-    assertExchangeAccepted(res)
-    this.store.recordEvent('live.transfer', { from, to, amount, dex: dex ?? undefined, toDex: dex ? to === dex : undefined })
-    return { ok: true, from, to, amount, dex: dex ?? undefined, direction: dex ? (to === dex ? 'in' : 'out') : undefined, response: res }
+    const dex = dexes.length === 1 ? dexes[0] : undefined
+    return { ok: true, from, to, amount, legs: legs.map(([source, target]) => ({ from: source, to: target })), dex,
+      direction: dex && legs.length === 1 ? (to === dex ? 'in' : 'out') : undefined, response: responses.at(-1), responses }
   }
 
   /** Sign a user-signed action's EIP-712 payload with the main wallet (dsh-web3 or the local key). */

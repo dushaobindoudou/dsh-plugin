@@ -114,7 +114,7 @@ dsh plugin --profile web add dsh-web3
 | `hyper_decide` | 实盘预检：提交交易意图与依据，返回 30 秒内有效的一次性 `decisionId` |
 | `hyper_order` | place / cancel / leverage；实盘下单必须带匹配的 `decisionId`，可附带止盈止损（目前仅测试网） |
 | `hyper_session` | status / bind，同步用户当前查看的币对 |
-| `hyper_account` 托管动作 | `action=limits`（全托管时 agent 可调整允许币对与各项上限）、`action=transfer`（`from` / `to` 取 spot、perp 或 HIP-3 交易所名，在现货 ↔ 主永续（usdClassTransfer）与主永续 ↔ HIP-3（sendAsset）之间划转 USDC：半托管每次需批准，全托管直接执行；主钱包签名；统一账户无需现货 ↔ 永续划转） |
+| `hyper_account` 托管动作 | `action=limits`（全托管时 agent 可调整允许币对与各项上限）、`action=transfer`（`from` / `to` 取 spot、perp 或 HIP-3 交易所名，自己的任意两个账户之间划转 USDC：现货 ↔ 主永续（usdClassTransfer）、主永续 ↔ HIP-3（sendAsset）一步完成，现货 ↔ HIP-3 与 HIP-3 ↔ HIP-3 自动经主永续两步、只批准一次；半托管每次需批准，全托管直接执行；主钱包签名；统一账户无需现货 ↔ 永续划转） |
 | 交易体检与市场雷达 | `hyper_account action=analyze`：按完整往返统计近 7/30/90 天的胜率、盈亏比、期望、持仓时长、按币种/时段/星期的表现、手续费与资金费，并按金额列出习惯问题和建议规则（样本少于 10 笔往返时不下结论）；`hyper_market action=scan`：扫描流动性最好的约 20 个可交易永续，给出贴近/突破区间、资金费极值、24h 涨跌和溢价的前几名 |
 | `hyper_journal` | 交易员日志（跨会话保留）：交易员档案（风险偏好、持仓周期、打扰偏好等）、策略库（版本与每次修订原因，按 paper / live 分开统计笔数、胜率、期望 R）、交易计划 / 结果 / 复盘 / 教训记录；摘要自动带入每个会话的系统提示 |
 

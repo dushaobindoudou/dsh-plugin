@@ -356,7 +356,7 @@ function buildTools(remote) {
       description: '查询交易账户。action=state 返回权益/持仓；orders 返回挂单；fills 返回成交；orderStatus 用 oid 或 cloid 核对某笔 live 订单，尤其在网络超时后。review 返回最近 7/30/90 天成交复盘、订单数量核对、费用和资金费覆盖缺口；不是完整账户收益率。' +
         'action=analyze 交易体检（默认 90 天）：按完整往返统计胜率、盈亏比、期望、持仓时长、按币种/时段/星期的表现、手续费与资金费，并给出按金额排序的习惯问题和建议规则——第一次见面或用户问“我做得怎么样”时用它，不要自己从成交里手算。' +
         'action=limits 修改允许币对（addCoins/removeCoins）与单笔/每日/仓位/杠杆上限——仅全托管模式可用，半托管时由用户在 设置 → 交易限额与签名规则 修改。' +
-        'action=transfer 在账户之间划转 USDC：from / to 取 spot（现货）、perp（主永续）或 HIP-3 交易所名（如 xyz），amount 为数量；支持 spot↔perp 与 perp↔HIP-3，spot 与 HIP-3 之间请分两步经 perp。下单前永续保证金不足而现货有 USDC 时，先 spot→perp。统一账户 / 组合保证金模式无需 spot↔perp 划转。全托管直接执行，半托管每次需用户批准；仅 live，需交易主钱包签名。旧参数 dex + direction（in/out）仍可用。',
+        'action=transfer 在自己的任意两个账户之间划转 USDC：from / to 取 spot（现货）、perp（主永续）或 HIP-3 交易所名（如 xyz），amount 为数量；spot↔perp、perp↔HIP-3 一步完成，spot↔HIP-3 与 HIP-3↔HIP-3 自动经 perp 两步完成（只需批准一次）。下单前永续保证金不足而现货有 USDC 时，先 spot→perp。统一账户 / 组合保证金模式无需 spot↔perp 划转。全托管直接执行，半托管每次需用户批准；仅 live，需交易主钱包签名。旧参数 dex + direction（in/out）仍可用。',
       parameters: {
         type: 'object',
         properties: {
@@ -397,7 +397,7 @@ function buildTools(remote) {
         if (action === 'transfer') {
           const res = await remote.transferCollateral(args, exec)
           const name = (value) => value === 'spot' ? '现货账户' : value === 'perp' ? '主永续账户' : value
-          return { text: `已划转 ${res.amount} USDC：${name(res.from)} → ${name(res.to)}`, ...res }
+          return { text: `已划转 ${res.amount} USDC：${[res.from, ...res.legs.map((leg) => leg.to)].map(name).join(' → ')}${res.legs.length > 1 ? '（两步）' : ''}`, ...res }
         }
         if (action === 'state') {
           const a = await remote.account({ coin: remote.desk?.coin })
