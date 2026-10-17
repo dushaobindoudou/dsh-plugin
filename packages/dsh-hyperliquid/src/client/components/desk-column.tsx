@@ -113,6 +113,30 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
 
 
   const drawMenu = React.useRef<HTMLDetailsElement>(null)
+  /**
+   * Keep the drawing menu inside its column: on a narrow column (an iPad in landscape) the right-aligned
+   * popover spilled past the column's left edge, was clipped by it and sat under the sessions divider.
+   */
+  const popoverWatch = React.useRef<ResizeObserver | null>(null)
+  const fitPopover = (details: HTMLDetailsElement) => {
+    const pop = details.querySelector<HTMLElement>('.dhl-draw-popover')
+    if (!pop) return
+    const columnEl = details.closest('.dhl-col-desk') ?? document.body
+    const fit = () => {
+      pop.style.right = ''; pop.style.width = ''
+      if (!details.open) return
+      const column = columnEl.getBoundingClientRect()
+      const room = column.width - 8
+      if (pop.getBoundingClientRect().width > room) pop.style.width = `${Math.max(200, room)}px`
+      const rect = pop.getBoundingClientRect()
+      if (rect.left < column.left + 4) pop.style.right = `${rect.left - (column.left + 4)}px`
+    }
+    fit()
+    // While open, follow the column as the window or the layout changes.
+    popoverWatch.current?.disconnect(); popoverWatch.current = null
+    if (details.open && typeof ResizeObserver !== 'undefined') { popoverWatch.current = new ResizeObserver(fit); popoverWatch.current.observe(columnEl) }
+  }
+  React.useEffect(() => () => popoverWatch.current?.disconnect(), [])
   // Tool preferences are per browser (TradingView keeps them global); drawings themselves are per session.
   const [magnet, setMagnet] = usePreference<MagnetMode>('magnet', 'off', (value) => value === 'weak' || value === 'strong' ? value : 'off')
   const [stayDrawing, setStayDrawing] = usePreference<boolean>('stayDrawing', false, (value) => value === true)
@@ -348,7 +372,7 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
                   </details>
                   <button type="button" className={s.workspace?.showDataWindow ? 'on' : ''} aria-pressed={s.workspace?.showDataWindow ?? false} onClick={() => saveSessionWorkspace({ showDataWindow: !s.workspace?.showDataWindow })}>{tr('数据窗口', 'Data window')}</button>
                   <StrategyMenu candles={s.candles} coin={coin} interval={s.interval} />
-                  <details className={'dhl-draw-menu' + (drawMode ? ' active' : '')} ref={drawMenu}>
+                  <details className={'dhl-draw-menu' + (drawMode ? ' active' : '')} ref={drawMenu} onToggle={(event) => fitPopover(event.currentTarget)}>
                     <summary aria-label={tr('画线工具', 'Drawing tools')}>{drawMode ? <><ToolIcon kind={drawMode} size={14} />{tr(toolOf(drawMode).zh, toolOf(drawMode).en)}</> : tr('画线', 'Draw')}<UiIcon name="chevronDown" size={12} /></summary>
                     <div className="dhl-draw-popover" role="menu" aria-label={tr('画线工具', 'Drawing tools')}>
                       <input className="dhl-draw-search" type="search" value={toolQuery} placeholder={tr(`搜索 ${DRAWING_TOOLS.length} 种画线工具`, `Search ${DRAWING_TOOLS.length} drawing tools`)} aria-label={tr('搜索画线工具', 'Search drawing tools')}

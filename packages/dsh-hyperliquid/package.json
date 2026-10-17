@@ -1,6 +1,6 @@
 {
   "name": "dsh-hyperliquid",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Hyperliquid trading desk for the DeepSeek Harness (dsh) - market workspace, native agent conversation and guarded live / paper trading over the Hyperliquid API.",
   "icon": "./icon.svg",
   "type": "module",

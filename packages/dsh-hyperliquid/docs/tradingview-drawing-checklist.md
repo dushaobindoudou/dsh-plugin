@@ -1,6 +1,6 @@
 # 画线工具 · TradingView 逐项对照
 
-核对日期：2026-10-17（0.5.5）。对照对象是 TradingView 网页版的画线面板与画线对象设置。「已做」以源码和测试为依据：单元测试 `test/chart-drawings.test.mjs`，真实宿主冒烟 `npm run smoke:drawing`（`scripts/drawing-smoke/` 下的 basics、phase1–5、perf）；依据列引号内是冒烟里 check 的原文。没有自动化测试的项单独注明。
+核对日期：2026-10-17（0.5.6）。对照对象是 TradingView 网页版的画线面板与画线对象设置。「已做」以源码和测试为依据：单元测试 `test/chart-drawings.test.mjs`，真实宿主冒烟 `npm run smoke:drawing`（`scripts/drawing-smoke/` 下的 basics、phase1–5、perf）；依据列引号内是冒烟里 check 的原文。没有自动化测试的项单独注明。
 
 结论：通用交互与对象属性两节列出的项全部已做；TradingView 画线面板各分组的工具已全部覆盖（共 78 种）。其中幽灵 K 线是近似实现（官方未公开生成算法），内部叉子线按帮助页描述与改良 Schiff 几何一致；触摸与触控板只在 Chrome 模拟中验收，见文末。
 
@@ -30,6 +30,7 @@
 | 快速连续点击不丢锚点 | 已做 | 原生 click 路径。0.1.0 对照：两次点击间隔 100/300/450ms 均漏画 20/20，550/700ms 0/20（图表库 500ms 双击窗口）；当前版本 100/300/450/900ms 各 20 次 0 漏画 |
 | 触摸：点两下画线、点线选中、手指拖锚点、单指平移 | 已做（0.4.4） | touch「touch: two taps draw a trend line」「touch: dragging an anchor reshapes the line」「touch: a one-finger swipe pans the chart」（Chrome 手势管线模拟，非真机） |
 | 触控板：双指缩放只缩放图表（不缩放页面）、双指横滑平移，画线随 K 线移动；指针停在画线上时手势同样作用于图表（0.5.3 修复） | 已做 | trackpad「pinch-out zooms the chart (not the page)」「a two-finger horizontal swipe pans」「a swipe with the pointer on a drawing still pans the chart」 |
+| WebKit（Safari 内核）：桌面鼠标画线 / 拖锚点 / 画线上方滑动平移；iPad 横屏设备参数下轻点画线与选中；窄栏下画线菜单在打开时及打开期间栏宽变化时都不超出所在栏（0.5.6 修复） | 已做 | webkit「webkit desktop: dragging an anchor reshapes the line」「webkit iPad: two taps draw a trend line」「webkit iPad: the drawing menu stays inside its column」（Playwright 的 WebKit，非 Safari 应用；WebKit 下无法模拟手指拖动） |
 | 屏幕外画线不渲染 | 已做 | perf「a drawing far off-screen is not rendered」 |
 
 ## 二、对象属性
@@ -65,7 +66,7 @@
 
 ## 仍需人工观察
 
-- 触摸与触控板已用 Chrome 模拟验收（触摸走手势管线，触控板为 Chrome 上报的 wheel 事件）；iPad / 安卓真机与 Safari 未验收。
+- 触摸与触控板已用 Chrome 模拟验收（触摸走手势管线，触控板为 Chrome 上报的 wheel 事件）；Safari 内核用 Playwright 的 WebKit 验收（桌面与 iPad 设备参数）。iPad / 安卓真机与 Safari 应用本身未验收；WebKit 下的手指拖动无法模拟。
 - 性能数字来自无头 Chrome（100 条画线、5000 根 K 线下 p95 约 16.7ms），实际机器上以使用体验为准。
 
 ## 对照资料（第三节各工具的查证）
