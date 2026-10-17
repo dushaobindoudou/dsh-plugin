@@ -1,4 +1,4 @@
-import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, toolItem } from './common.mjs'
+import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, toolItem, openList } from './common.mjs'
 const url = await readUrl()
 const browser = await chromium.launch({ headless: true, executablePath: CHROME })
 try {
@@ -55,12 +55,12 @@ try {
   await page.keyboard.press(`${mod}+Shift+z`); await settle()
   check((await marks()).some((m) => m.kind === 'brush'), 'Shift+Ctrl/Cmd+Z redoes it')
   const arrow = (await marks()).find((m) => m.kind === 'arrow')
-  await page.locator('.dhl-drawing-list').getByRole('button', { name: new RegExp('^.*' + arrow.label) }).first().click()
+  await (await openList(page)).getByRole('button', { name: new RegExp('^.*' + arrow.label) }).first().click()
   await page.locator('.dhl-draw-toolbar .dhl-swatch').nth(2).click(); await settle()
   check((await marks()).find((m) => m.id === arrow.id).color === '#ef5f6c', 'list row selects the drawing; color changed')
   await page.keyboard.press(`${mod}+z`); await settle()
   check(!('color' in (await marks()).find((m) => m.id === arrow.id)), 'undo restores the default color (style cleared on host)')
-  await page.locator('.dhl-drawing-list').getByRole('button', { name: new RegExp('^.*' + arrow.label) }).first().click()
+  await (await openList(page)).getByRole('button', { name: new RegExp('^.*' + arrow.label) }).first().click()
   await page.keyboard.press('Delete'); await settle()
   check(!(await marks()).some((m) => m.id === arrow.id), 'deleted')
   await page.keyboard.press(`${mod}+z`); await settle()
@@ -71,24 +71,24 @@ try {
 
   // ── clone, copy / paste ──
   const tri = (await marks()).find((m) => m.kind === 'triangle')
-  await page.locator('.dhl-drawing-list').getByRole('button', { name: new RegExp('^.*' + tri.label) }).first().click()
+  await (await openList(page)).getByRole('button', { name: new RegExp('^.*' + tri.label) }).first().click()
   const before = (await marks()).length
   await page.locator('.dhl-draw-toolbar').getByRole('button', { name: '复制画线' }).click(); await settle()
   const clones = (await marks()).filter((m) => m.kind === 'triangle')
   check((await marks()).length === before + 1 && clones.some((m) => m.id !== tri.id && m.points[0].time > tri.points[0].time && m.points[0].price === tri.points[0].price), 'clone adds a shifted copy')
-  await page.locator('.dhl-drawing-list').getByRole('button', { name: new RegExp('^.*' + tri.label) }).first().click()
+  await (await openList(page)).getByRole('button', { name: new RegExp('^.*' + tri.label) }).first().click()
   await page.keyboard.press(`${mod}+c`); await page.keyboard.press(`${mod}+v`); await settle()
   check((await marks()).filter((m) => m.kind === 'triangle').length === 3, 'Ctrl/Cmd+C then V pastes another copy')
 
   // ── object list: hide / show ──
   const circle = (await marks()).find((m) => m.kind === 'circle')
-  await page.getByRole('button', { name: `隐藏 ${circle.label}` }).click(); await settle()
+  await (await openList(page)).getByRole('button', { name: `隐藏 ${circle.label}` }).click(); await settle()
   check((await marks()).find((m) => m.id === circle.id).hidden === true && await page.locator(`.dhl-drawing[data-mark-id="${circle.id}"]`).count() === 0, 'hide removes it from the chart but keeps it in the list')
-  await page.getByRole('button', { name: `显示 ${circle.label}` }).click(); await settle()
+  await (await openList(page)).getByRole('button', { name: `显示 ${circle.label}` }).click(); await settle()
   check(await page.locator(`.dhl-drawing[data-mark-id="${circle.id}"]`).count() === 1, 'show brings it back')
 
   // ── templates: default style per tool ──
-  await page.locator('.dhl-drawing-list').getByRole('button', { name: new RegExp('^.*' + circle.label) }).first().click()
+  await (await openList(page)).getByRole('button', { name: new RegExp('^.*' + circle.label) }).first().click()
   await page.locator('.dhl-draw-toolbar .dhl-swatch').nth(4).click()
   await page.locator('.dhl-draw-toolbar').getByRole('button', { name: '线宽 4' }).click(); await settle()
   await page.locator('.dhl-draw-toolbar').getByRole('button', { name: '设为默认样式' }).click()

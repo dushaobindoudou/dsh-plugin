@@ -48,7 +48,7 @@ export const Config = z.object({
   web3Account: z.string().description('signer=web3 时使用的 dsh-web3 账户 id 或名称').default('main'),
   tradingAddress: z.string().description('Hyperliquid 主账户地址；使用 dsh-web3 API wallet 签名时必填，账户查询必须用主账户地址').default(''),
   autonomousLive: z.boolean().description('初始托管模式：true=全托管（agent 自主执行实盘、可调整限额与划转保证金），false=半托管；之后以交易台 设置 → 托管模式 为准。仅支持 dsh-web3 签名').default(false),
-  allowedCoins: z.string().description('交易限额（paper/live 均生效）：允许新开仓的币对，逗号分隔；减仓不受限').default('BTC,ETH'),
+  allowedCoins: z.string().description('交易限额（paper/live 均生效）：允许新开仓的币对，逗号分隔；* 表示全部可交易市场；减仓不受限').default('BTC,ETH'),
   maxOrderUsd: z.number().description('交易限额（paper/live 均生效）：单笔名义价值上限 USD').default(100),
   maxDailyUsd: z.number().description('交易限额（paper/live 均生效）：每 UTC 日累计开仓名义价值上限 USD，paper 与 live 分账').default(500),
   maxPositionUsd: z.number().description('交易限额（paper/live 均生效）：每币最大仓位名义价值 USD').default(500),

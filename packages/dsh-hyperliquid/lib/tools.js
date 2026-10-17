@@ -120,7 +120,7 @@ function buildTools(remote) {
             ? '当前账户数据不代表该只读市场的余额、仓位或可交易额度。'
             : `当前市场仅可分析；${context.positionsCoverage === 'all-dexs' ? '仓位来自全部永续 DEX 快照' : '账户仓位仅覆盖所选 DEX'}${position ? `；当前仓位=${fmt(position.size, 6)} ${coin}` : ''}，不能据此在该市场下单。`
             : position ? `仓位 ${position.size > 0 ? 'LONG' : 'SHORT'} ${fmt(Math.abs(position.size), 6)} ${coin} entry=${fmt(position.entryPx)} uPnL=${fmt(position.uPnl)}` : '当前币对无持仓',
-          `风险：允许币对=${(context.riskLimits?.allowedCoins ?? []).join(',')} 单笔≤${fmt(context.riskLimits?.maxOrderUsd)} USD 每日≤${fmt(context.riskLimits?.maxDailyUsd)} USD 杠杆≤${fmt(context.riskLimits?.maxLeverage, 0)}x · 托管模式=${context.custody === 'managed' ? '全托管（可自主执行、调整限额与划转）' : '半托管（实盘与划转需用户批准，限额由用户修改）'}${account.mode === 'paper' ? ' · 模拟盘配置的滑点与手续费，未模拟盘口深度、资金费或强平' : ''}`,
+          `风险：允许币对=${(context.riskLimits?.allowedCoins ?? []).includes('*') ? '全部' : (context.riskLimits?.allowedCoins ?? []).join(',')} 单笔≤${fmt(context.riskLimits?.maxOrderUsd)} USD 每日≤${fmt(context.riskLimits?.maxDailyUsd)} USD 杠杆≤${fmt(context.riskLimits?.maxLeverage, 0)}x · 托管模式=${context.custody === 'managed' ? '全托管（可自主执行、调整限额与划转）' : '半托管（实盘与划转需用户批准，限额由用户修改）'}${account.mode === 'paper' ? ' · 模拟盘配置的滑点与手续费，未模拟盘口深度、资金费或强平' : ''}`,
           `近 ${candles.length} 根 K 线价格（末根可能未收盘）: ${candles.map((c) => fmt(c.c)).join(', ')}`,
         ].join('\n')
         return { text, context }
@@ -355,7 +355,7 @@ function buildTools(remote) {
       name: 'hyper_account',
       description: '查询交易账户。action=state 返回权益/持仓；orders 返回挂单；fills 返回成交；orderStatus 用 oid 或 cloid 核对某笔 live 订单，尤其在网络超时后。review 返回最近 7/30/90 天成交复盘、订单数量核对、费用和资金费覆盖缺口；不是完整账户收益率。' +
         'action=analyze 交易体检（默认 90 天）：按完整往返统计胜率、盈亏比、期望、持仓时长、按币种/时段/星期的表现、手续费与资金费，并给出按金额排序的习惯问题和建议规则——第一次见面或用户问“我做得怎么样”时用它，不要自己从成交里手算。' +
-        'action=limits 修改允许币对（addCoins/removeCoins）与单笔/每日/仓位/杠杆上限——仅全托管模式可用，半托管时由用户在 设置 → 交易限额与签名规则 修改。' +
+        'action=limits 修改允许币对（addCoins/removeCoins；addCoins ["*"] 表示允许全部币对）与单笔/每日/仓位/杠杆上限——仅全托管模式可用，半托管时由用户在 设置 → 交易限额与签名规则 修改。' +
         'action=transfer 在自己的任意两个账户之间划转 USDC：from / to 取 spot（现货）、perp（主永续）或 HIP-3 交易所名（如 xyz），amount 为数量；spot↔perp、perp↔HIP-3 一步完成，spot↔HIP-3 与 HIP-3↔HIP-3 自动经 perp 两步完成（只需批准一次）。下单前永续保证金不足而现货有 USDC 时，先 spot→perp。统一账户 / 组合保证金模式无需 spot↔perp 划转。全托管直接执行，半托管每次需用户批准；仅 live，需交易主钱包签名。旧参数 dex + direction（in/out）仍可用。',
       parameters: {
         type: 'object',

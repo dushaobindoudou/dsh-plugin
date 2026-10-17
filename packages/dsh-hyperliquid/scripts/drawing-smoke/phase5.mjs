@@ -1,6 +1,6 @@
 // Phase 5: multi-select with batch delete + one-step undo, undo of a first-time lock, TradingView
 // shortcuts, Esc peeling one layer at a time, and the Ctrl/⌘ magnet inversion with its snap ring.
-import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, toolItem } from './common.mjs'
+import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, toolItem, openList } from './common.mjs'
 const url = await readUrl()
 const browser = await chromium.launch({ headless: true, executablePath: CHROME })
 try {
@@ -73,7 +73,7 @@ try {
   check((await hostMarks()).every((m) => !m.locked) && (await marks()).every((m) => !m.locked), 'undoing a first lock unlocks on the host as well')
 
   // ── shortcuts and Esc layering in the expanded chart ──
-  await page.getByRole('button', { name: '放大图表' }).click(); await page.waitForTimeout(600)
+  await page.getByRole('button', { name: '全屏图表' }).click(); await page.waitForTimeout(600)
   const expanded = () => page.locator('.dhl-chart-panel-expanded').count()
   await page.keyboard.press('Alt+KeyT'); await page.waitForTimeout(200)
   check(await page.locator('.dhl-chart-drawing-overlay.drawing').count() === 1, 'Alt+T starts the trend line tool')
@@ -112,7 +112,7 @@ try {
   await page.keyboard.press('Alt+KeyF'); await page.waitForTimeout(150)
   await clickXY({ x: b5.x + b5.width * .55, y: b5.y + b5.height * .75 }); await clickXY({ x: b5.x + b5.width * .7, y: b5.y + b5.height * .35 }); await settle()
   const fib = (await marks()).find((m) => m.kind === 'fib')
-  await page.locator('.dhl-drawing-list').getByRole('button', { name: /斐波那契/ }).first().click()
+  await (await openList(page)).getByRole('button', { name: /斐波那契/ }).first().click()
   const levelsBox = page.getByRole('toolbar', { name: '画线样式' }).getByLabel('斐波那契层级（逗号分隔）')
   await levelsBox.fill('0, 0.5, 1, 1.618'); await levelsBox.press('Enter'); await settle()
   check(JSON.stringify((await hostMarks()).find((m) => m.id === fib.id)?.levels) === '[0,0.5,1,1.618]' && (await page.locator(`.dhl-chart-drawing-overlay .dhl-drawing[data-mark-id="${fib.id}"]`).first().textContent()).includes('1.618 ('), 'custom fib levels are saved and drawn')
@@ -124,7 +124,7 @@ try {
   await clickXY({ x: box2.x + box2.width * .3, y: box2.y + box2.height * .5 }); await clickXY({ x: box2.x + box2.width * .6, y: box2.y + box2.height * .5 }); await settle()
   const vp = (await marks()).find((m) => m.kind === 'vprofile')
   check(Boolean(vp), 'volume profile drawn')
-  await page.locator('.dhl-drawing-list').getByRole('button', { name: /成交量分布|固定范围/ }).first().click()
+  await (await openList(page)).getByRole('button', { name: /成交量分布|固定范围/ }).first().click()
   await page.getByRole('toolbar', { name: '画线样式' }).getByLabel('价格行数').selectOption('96'); await settle()
   const profileRows = await page.locator(`[data-mark-id="${vp.id}"] > .dhl-vprofile`).first().evaluate((node) => [...node.querySelectorAll('.dhl-vprofile-up, .dhl-vprofile-down')].reduce((sum, path) => sum + (path.getAttribute('d')?.match(/M/g)?.length ?? 0), 0) / 2)
   check((await hostMarks()).find((m) => m.id === vp.id)?.rows === 96 && profileRows === 96, 'changing rows to 96 re-bins and draws all 96 profile rows')
@@ -150,7 +150,7 @@ try {
   const b6 = await page.locator('.dhl-chart canvas').first().boundingBox()
   await clickXY({ x: b6.x + b6.width * .35, y: b6.y + b6.height * .3 }); await clickXY({ x: b6.x + b6.width * .45, y: b6.y + b6.height * .45 }); await settle()
   const box6 = (await marks()).find((m) => m.kind === 'rect')
-  await page.locator('.dhl-drawing-list').getByRole('button', { name: /矩形/ }).first().click()
+  await (await openList(page)).getByRole('button', { name: /矩形/ }).first().click()
   const bar = page.getByRole('toolbar', { name: '画线样式' })
   await bar.getByLabel('背景填充').selectOption('0.32'); await settle()
   await bar.getByRole('button', { name: '仅本周期显示' }).click(); await settle()
@@ -160,7 +160,7 @@ try {
   await page.keyboard.press('Escape')
   const other = here === '1h' ? '4h' : '1h'
   await page.getByRole('button', { name: other, exact: true }).first().click(); await page.waitForTimeout(2500)
-  check(await page.locator(`.dhl-chart-drawing-overlay [data-mark-id="${box6.id}"]`).count() === 0 && await page.locator('.dhl-drawing-list').getByText(`仅 ${here} 显示`).count() > 0, 'on another interval it is hidden from the chart but listed', { overlay: await page.locator(`.dhl-chart-drawing-overlay [data-mark-id="${box6.id}"]`).count(), interval: await page.evaluate(() => window.__dhlStore.get().interval), selected: await page.locator('.dhl-draw-toolbar').count(), list: (await page.locator('.dhl-drawing-list').innerText()).slice(0, 300) })
+  check(await page.locator(`.dhl-chart-drawing-overlay [data-mark-id="${box6.id}"]`).count() === 0 && await (await openList(page)).getByText(`仅 ${here} 显示`).count() > 0, 'on another interval it is hidden from the chart but listed', { overlay: await page.locator(`.dhl-chart-drawing-overlay [data-mark-id="${box6.id}"]`).count(), interval: await page.evaluate(() => window.__dhlStore.get().interval), selected: await page.locator('.dhl-draw-toolbar').count(), list: (await (await openList(page)).innerText()).slice(0, 300) })
   await page.getByRole('button', { name: here, exact: true }).first().click(); await page.waitForTimeout(2500)
   check(await page.locator(`.dhl-chart-drawing-overlay [data-mark-id="${box6.id}"]`).count() > 0, 'back on its interval it is drawn again')
 
@@ -170,7 +170,7 @@ try {
   await clickXY({ x: b6.x + b6.width * .5, y: b6.y + b6.height * .22 }); await settle()
   const lvl = (await marks()).find((m) => m.kind === 'level' && !levelsBefore.includes(m.id))
   check(Boolean(lvl), 'Alt+H places a level', (await marks()).map((m) => m.kind))
-  await page.locator(`.dhl-drawing-list [data-mark-id="${lvl.id}"] .dhl-drawing-list-name`).click()
+  await (await openList(page)).locator(`[data-mark-id="${lvl.id}"] .dhl-drawing-list-name`).click()
   await bar.getByRole('button', { name: '仅本周期显示' }).click(); await settle()
   await page.keyboard.press('Escape')
   const priceLineCount = () => page.evaluate(() => window.__dhlPriceLines?.() ?? -1)
@@ -181,7 +181,7 @@ try {
   await page.getByRole('button', { name: here, exact: true }).first().click(); await page.waitForTimeout(2500)
 
   // Text emphasis and the single-drawing hide button.
-  await page.locator('.dhl-drawing-list').getByRole('button', { name: /矩形/ }).first().click()
+  await (await openList(page)).getByRole('button', { name: /矩形/ }).first().click()
   await bar.getByRole('button', { name: '隐藏画线' }).click(); await settle()
   check((await hostMarks()).find((m) => m.id === box6.id)?.hidden === true && await page.locator(`.dhl-chart-drawing-overlay [data-mark-id="${box6.id}"]`).count() === 0, 'the toolbar hide button hides the drawing')
 
@@ -190,7 +190,7 @@ try {
   await page.keyboard.press('Alt+KeyT'); await page.waitForTimeout(150)
   await clickXY({ x: b6.x + b6.width * .3, y: b6.y + b6.height * .6 }); await clickXY({ x: b6.x + b6.width * .4, y: b6.y + b6.height * .5 }); await settle()
   const tl = (await marks()).find((m) => m.kind === 'trend' && !trendsBefore.includes(m.id))
-  await page.locator(`.dhl-drawing-list [data-mark-id="${tl.id}"] .dhl-drawing-list-name`).click()
+  await (await openList(page)).locator(`[data-mark-id="${tl.id}"] .dhl-drawing-list-name`).click()
   const tlRight = () => page.evaluate((id) => document.querySelector(`.dhl-chart-drawing-overlay [data-mark-id="${id}"] line`)?.getBoundingClientRect().right ?? 0, tl.id)
   const shortRight = await tlRight()
   await bar.getByRole('button', { name: '向右延长' }).click(); await settle()

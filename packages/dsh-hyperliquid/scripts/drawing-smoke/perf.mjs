@@ -1,4 +1,4 @@
-import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check } from './common.mjs'
+import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, openList } from './common.mjs'
 const url = await readUrl()
 const browser = await chromium.launch({ headless: true, executablePath: CHROME })
 try {
@@ -87,10 +87,10 @@ try {
       fromTime: c[40].t, fromPrice: c[40].c, toTime: c[60].t, toPrice: c[60].c }] }) })
   await page.waitForTimeout(500)
   check(await page.locator('.dhl-chart-drawing-overlay [data-mark-id="perf-far"]').count() === 0, 'a drawing far off-screen is not rendered')
-  await page.locator('.dhl-drawing-list').getByRole('button', { name: /perf-far/ }).first().click(); await page.waitForTimeout(800)
+  await (await openList(page)).getByRole('button', { name: /perf-far/ }).first().click(); await page.waitForTimeout(800)
   check(await page.locator('.dhl-chart-drawing-overlay [data-mark-id="perf-far"]').count() > 0, 'it renders once the chart is brought to it')
   await page.keyboard.press('Escape')
-  await page.locator('.dhl-drawing-list').getByRole('button', { name: /perf-vp/ }).first().click()
+  await (await openList(page)).getByRole('button', { name: /perf-vp/ }).first().click()
   await page.waitForTimeout(500)
   const handle = await page.locator('[data-mark-id="perf-vp"] [data-anchor="1"]').first().boundingBox()
   check(Boolean(handle), 'the profile end anchor is on screen')

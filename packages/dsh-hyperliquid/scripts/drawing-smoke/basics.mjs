@@ -1,7 +1,7 @@
 // Exercise public controls in a real host: chart types, studies, navigation, exports and restore.
 import { readFile } from 'node:fs/promises'
 import { build } from 'esbuild'
-import { chromium, CHROME, readUrl, openDesk, waitCandles, check } from './common.mjs'
+import { chromium, CHROME, readUrl, openDesk, waitCandles, check, openList } from './common.mjs'
 
 const compiled = await build({ entryPoints: ['src/client/chart-indicators.ts'], bundle: true, write: false, format: 'esm', platform: 'node' })
 const { chartIndicators } = await import('data:text/javascript;base64,' + Buffer.from(compiled.outputFiles[0].text).toString('base64'))
@@ -23,7 +23,7 @@ try {
   await page.mouse.click(box.x + box.width * .6, box.y + box.height * .4)
   await page.waitForFunction(() => window.__dhlStore.get().chartMarks.length > 0)
   const trend = (await state()).marks.at(-1)
-  await page.locator('.dhl-drawing-list-name').last().click()
+  await (await openList(page)).locator('.dhl-drawing-list-name').last().click()
   await page.locator('.dhl-draw-toolbar .dhl-swatch').nth(4).click()
   await page.waitForFunction((id) => window.__dhlStore.get().chartMarks.find((m) => m.id === id)?.color === '#9b86db', trend.id)
   await page.getByRole('button', { name: '编辑画线坐标', exact: true }).click()
@@ -106,11 +106,40 @@ try {
   check((await state()).workspace.chartType === 'area' && (await state()).workspace.indicators.includes('atr14'), 'chart type and studies survive reload')
   check(await page.getByRole('button', { name: '常用 水平射线', exact: true }).count() === 1, 'favorite tools survive reload')
   check((await state()).marks.some((m) => m.id === trend.id), 'drawings survive chart type changes and reload')
-  await page.getByRole('button', { name: '放大图表', exact: true }).click(); await page.waitForTimeout(500)
+  // The drawing list floats: opening it does not push the chart controls below it.
+  // Measured relative to the list header (clicking it may scroll the page into view).
+  const listHead = page.locator('.dhl-drawing-list-head').first()
+  await listHead.scrollIntoViewIfNeeded()
+  const gap = async () => (await page.locator('.dhl-chart-navigation').boundingBox()).y - (await listHead.boundingBox()).y
+  const gapBefore = await gap()
+  check(await listHead.getAttribute('aria-expanded') === 'false', 'the drawing list starts closed')
+  await listHead.click(); await page.waitForTimeout(200)
+  const gapOpen = await gap()
+  check(await listHead.getAttribute('aria-expanded') === 'true' && await page.locator('.dhl-drawing-list ul').isVisible() && Math.abs(gapOpen - gapBefore) < 1,
+    'opening the drawing list leaves the chart controls where they are', { gapBefore, gapOpen })
+  const outside = await page.locator('.dhl-market-trigger').boundingBox()
+  await page.mouse.click(outside.x + outside.width / 2, outside.y + outside.height / 2); await page.waitForTimeout(200)
+  await page.keyboard.press('Escape'); await page.waitForTimeout(150)
+  check(await listHead.getAttribute('aria-expanded') === 'false', 'a press outside closes the drawing list')
+  await listHead.click(); await page.waitForTimeout(150)
+  await page.locator('.dhl-drawing-list .dhl-drawing-list-name').first().click(); await page.waitForTimeout(300)
+  check(await listHead.getAttribute('aria-expanded') === 'false' && await page.locator('.dhl-draw-toolbar').count() === 1, 'picking a drawing from the list selects it and closes the list (so it does not cover it)')
+  await page.keyboard.press('Escape'); await page.waitForTimeout(150)
+  // Fullscreen: the browser goes fullscreen and the chart fills the screen edge to edge.
+  await page.getByRole('button', { name: '全屏图表', exact: true }).click(); await page.waitForTimeout(700)
+  const fs = await page.evaluate(() => ({ element: document.fullscreenElement === document.documentElement, panel: document.querySelector('.dhl-chart-panel')?.className ?? '' }))
+  check(fs.element && fs.panel.includes('is-fullscreen'), 'the fullscreen button enters real browser fullscreen', fs)
   const expanded = await page.locator('.dhl-chart-panel-expanded').boundingBox()
+  const vp = page.viewportSize()
+  check(expanded.x <= 0.5 && expanded.y <= 0.5 && Math.abs(expanded.width - vp.width) < 1 && Math.abs(expanded.height - vp.height) < 1, 'the fullscreen chart fills the screen edge to edge', { expanded, vp })
   const navigation = await page.locator('.dhl-chart-navigation').boundingBox()
   check(navigation.y + navigation.height <= expanded.y + expanded.height, 'expanded chart keeps navigation visible')
-  await page.getByRole('button', { name: '退出放大图表', exact: true }).click()
+  await page.getByRole('button', { name: '退出全屏图表', exact: true }).click(); await page.waitForTimeout(500)
+  check(await page.evaluate(() => document.fullscreenElement === null) && await page.locator('.dhl-chart-panel-expanded').count() === 0, 'leaving restores the page and leaves browser fullscreen')
+  // Leaving from the browser side (as Esc / F11 would) also leaves the expanded chart.
+  await page.getByRole('button', { name: '全屏图表', exact: true }).click(); await page.waitForTimeout(500)
+  await page.evaluate(() => document.exitFullscreen()); await page.waitForTimeout(500)
+  check(await page.locator('.dhl-chart-panel-expanded').count() === 0, 'leaving fullscreen from the browser also leaves the expanded chart')
   await page.setViewportSize({ width: 1400, height: 1000 })
   await page.waitForTimeout(600)
   await page.screenshot({ path: '/tmp/dsh-hyperliquid-chart-basics.png' })

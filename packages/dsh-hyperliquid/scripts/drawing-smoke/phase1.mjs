@@ -1,6 +1,6 @@
 // Phase 1: drawing interactions in a real DSH host.
 import { writeFileSync } from 'node:fs'
-import { chromium, CHROME, STATE_FILE, readUrl, openDesk, store, waitCandles, check, toolItem } from './common.mjs'
+import { chromium, CHROME, STATE_FILE, readUrl, openDesk, store, waitCandles, check, toolItem, openList } from './common.mjs'
 
 const url = await readUrl()
 const browser = await chromium.launch({ headless: true, executablePath: CHROME })
@@ -121,7 +121,7 @@ try {
   await waitCandles(other) // let the second desk settle its layout before using its list
   await other.waitForFunction((n) => window.__dhlStore.get().chartMarks.length === n, (await marks()).length, { timeout: 15_000 })
   const textMark = (await marks()).find((m) => m.kind === 'text')
-  await other.getByRole('button', { name: `删除画线 ${textMark.label}` }).click({ timeout: 8000 }).catch(async (error) => { console.log('ELEMENT', await other.evaluate(() => { const b = [...document.querySelectorAll('.dhl-drawing-list li')].map((li) => li.getBoundingClientRect().top); const c = document.querySelector('.dhl-chartbox').getBoundingClientRect(); return JSON.stringify({ rows: b, chart: [c.top, c.bottom], scroll: document.querySelector('.dhl-col-desk').scrollTop }) })); throw error })
+  await (await openList(other)).getByRole('button', { name: `删除画线 ${textMark.label}` }).click({ timeout: 8000 }).catch(async (error) => { console.log('ELEMENT', await other.evaluate(() => { const b = [...document.querySelectorAll('.dhl-drawing-list li')].map((li) => li.getBoundingClientRect().top); const c = document.querySelector('.dhl-chartbox').getBoundingClientRect(); return JSON.stringify({ rows: b, chart: [c.top, c.bottom], scroll: document.querySelector('.dhl-col-desk').scrollTop }) })); throw error })
   await page.waitForFunction((id) => !window.__dhlStore.get().chartMarks.some((m) => m.id === id), textMark.id, { timeout: 5000 })
     .then(() => check(true, 'a change from another writer shows up live (no reload)'), () => check(false, 'live update from another writer'))
   await other.close()

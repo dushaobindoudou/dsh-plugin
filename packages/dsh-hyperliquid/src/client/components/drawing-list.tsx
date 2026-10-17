@@ -5,17 +5,35 @@ import type { ChartMark } from '../types'
 import { ToolIcon, toolOf } from '../drawing-tools'
 import { UiIcon } from './panel-icons'
 
-const OPEN_KEY = 'dsh-hyperliquid.draw.listOpen'
 
 export const DrawingList = React.memo(function DrawingList({ marks, locked, onSelect, onEdit, onRemove, language }: {
   language: string
   marks: ChartMark[]; locked: boolean; onSelect: (id: string) => void; onEdit: (id: string, patch: Record<string, unknown>) => void; onRemove: (id: string) => void
 }) {
-  const [open, setOpen] = React.useState(() => { try { return localStorage.getItem(OPEN_KEY) !== '0' } catch { return true } })
-  const toggle = () => setOpen((value) => { try { localStorage.setItem(OPEN_KEY, value ? '0' : '1') } catch { /* storage unavailable */ } return !value })
+  // A popover over the content below (it used to open in the page flow and push the chart controls down).
+  // Starts closed; closes on an outside press or Esc, and after picking a drawing (so it does not cover it);
+  // show / lock / delete keep it open. Opens upward when there is no room below.
+  const [open, setOpen] = React.useState(false)
+  const [up, setUp] = React.useState(false)
+  const root = React.useRef<HTMLElement>(null)
+  const toggle = () => setOpen((value) => {
+    if (!value && root.current) {
+      const rect = root.current.getBoundingClientRect(), below = window.innerHeight - rect.bottom
+      setUp(below < 240 && rect.top > below)
+    }
+    return !value
+  })
+  React.useEffect(() => {
+    if (!open) return undefined
+    const onPointer = (event: PointerEvent) => { if (!root.current?.contains(event.target as Node)) setOpen(false) }
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setOpen(false) } }
+    window.addEventListener('pointerdown', onPointer, true)
+    window.addEventListener('keydown', onKey, true)
+    return () => { window.removeEventListener('pointerdown', onPointer, true); window.removeEventListener('keydown', onKey, true) }
+  }, [open])
   const hidden = marks.filter((mark) => mark.hidden).length
   return (
-    <section className="dhl-drawing-list" lang={language} aria-label={tr('画线列表', 'Drawings')}>
+    <section ref={root} className={'dhl-drawing-list' + (open ? ' open' : '') + (open && up ? ' up' : '')} lang={language} aria-label={tr('画线列表', 'Drawings')}>
       <button type="button" className="dhl-drawing-list-head" aria-expanded={open} onClick={toggle}>
         <span>{tr('画线', 'Drawings')} {marks.length}{hidden ? tr(` · 隐藏 ${hidden}`, ` · ${hidden} hidden`) : ''}</span>
         <UiIcon name={open ? 'chevronDown' : 'chevronRight'} size={14} />
@@ -24,7 +42,7 @@ export const DrawingList = React.memo(function DrawingList({ marks, locked, onSe
         {marks.map((mark) => {
           const tool = toolOf(mark.kind)
           return <li key={mark.id} data-mark-id={mark.id} className={mark.hidden ? 'is-hidden' : ''}>
-            <button type="button" className="dhl-drawing-list-name" title={tr('在图上定位并选中', 'Find and select on the chart')} onClick={() => onSelect(mark.id)} disabled={mark.hidden}>
+            <button type="button" className="dhl-drawing-list-name" title={tr('在图上定位并选中', 'Find and select on the chart')} onClick={() => { onSelect(mark.id); setOpen(false) }} disabled={mark.hidden}>
               <span style={{ color: mark.color }}><ToolIcon kind={mark.kind} size={14} /></span>
               <b>{mark.label}</b>
               <small>{mark.alert ? <span className="dhl-list-flag" title={tr('价格提醒已开启', 'Price alert armed')}><UiIcon name="bell" size={12} /></span> : null}{mark.shared ? <span className="dhl-list-flag" title={tr('已同步到所有会话', 'Synced to all sessions')}><UiIcon name="sync" size={12} /></span> : null}{tr(tool.zh, tool.en)} · {mark.interval}{mark.visibleIntervals?.length ? tr(` · 仅 ${mark.visibleIntervals.join('/')} 显示`, ` · ${mark.visibleIntervals.join('/')} only`) : ''}{mark.source === 'agent' ? ' · agent' : ''}</small>

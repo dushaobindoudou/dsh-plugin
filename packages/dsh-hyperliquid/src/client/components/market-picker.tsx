@@ -19,6 +19,8 @@ const CATEGORIES: Array<[Category, string]> = [
 const FAV_KEY = 'dsh-hyperliquid.favorites.v1'
 const TRADFI_TAGS = new Set(['stocks', 'stock', 'equities', 'equity', 'commodities', 'indices', 'fx', 'rates', 'preipo'])
 
+const STRICT_KEY = 'dhl.marketPicker.tradableOnly'
+function readStrict(): boolean { try { return localStorage.getItem(STRICT_KEY) !== '0' } catch { return true } }
 function readFavorites(): string[] {
   try {
     const value: unknown = JSON.parse(localStorage.getItem(FAV_KEY) || '[]')
@@ -37,7 +39,9 @@ export function MarketPicker({ activeCoin, onClose }: { activeCoin: string; onCl
   const s = useStore()
   const [query, setQuery] = React.useState('')
   const [category, setCategory] = React.useState<Category>('all')
-  const [strict, setStrict] = React.useState(true)
+  // 可交易 / 全部 is the trader's choice: kept across categories and remembered between openings.
+  const [strict, setStrictState] = React.useState(readStrict)
+  const setStrict = (value: boolean) => { setStrictState(value); try { localStorage.setItem(STRICT_KEY, value ? '1' : '0') } catch { /* convenience only */ } }
   const [sort, setSort] = React.useState<SortKey>('volume')
   const [descending, setDescending] = React.useState(true)
   const [favorites, setFavorites] = React.useState<string[]>(readFavorites)
@@ -167,7 +171,7 @@ export function MarketPicker({ activeCoin, onClose }: { activeCoin: string; onCl
       </div>
       {!strict ? <p className="dhl-picker-readonly-note">{tr('“只读”表示本插件仅提供行情，尚未接入该市场的下单与风控；现货与 Outcome 在 Hyperliquid 本身可交易；以 USDC 为保证金的 HIP-3 永续已可在这里交易。', '“View only” means this plugin has market data but no order and risk support for that market. Hyperliquid itself supports spot and outcome trading; USDC-collateral HIP-3 perps are tradable here.')}</p> : null}
       <nav className="dhl-picker-tabs" aria-label={tr('市场分类', 'Market categories')}>
-        {CATEGORIES.map(([key, label]) => <button type="button" key={key} className={category === key ? 'on' : ''} aria-current={category === key ? 'page' : undefined} onClick={() => { setCategory(key); if (['spot', 'hip3', 'outcome', 'crypto', 'tradfi', 'preipo'].includes(key)) setStrict(false) }}>{t(`market.category.${key}`, label)}</button>)}
+        {CATEGORIES.map(([key, label]) => <button type="button" key={key} className={category === key ? 'on' : ''} aria-current={category === key ? 'page' : undefined} onClick={() => setCategory(key)}>{t(`market.category.${key}`, label)}</button>)}
       </nav>
       <div className="dhl-picker-tablehead">
         <UiIcon name="star" size={15} />{header(t('market.name', '市场'), 'name')}{header(t('market.price', '最新价'), 'price')}{header(t('market.change', '24h 涨跌'), 'change')}{header(t('market.funding', '资金费'), 'funding')}{header(t('market.volume', '24h 成交额'), 'volume')}{header(t('market.openInterest', '未平仓量'), 'openInterest')}
@@ -188,7 +192,11 @@ export function MarketPicker({ activeCoin, onClose }: { activeCoin: string; onCl
             <span>{row.ctx?.openInterest != null ? '$' + fmt(interestOf(row), 0) : '—'}</span>
           </div>
         })}
-        {!loading && marketRows.length === 0 ? <div className="dhl-picker-empty">{category === 'outcome' && s.status?.network === 'mainnet' ? t('market.outcomeTestnet', 'Outcome 目录目前仅在 testnet 提供。') : t('market.empty', '没有匹配的市场')}</div> : null}
+        {/* Empty result: also while a known catalog refreshes (otherwise the list was blank with no message). */}
+        {marketRows.length === 0 && (!loading || s.marketCatalog.length > 0) ? <div className="dhl-picker-empty">{category === 'outcome' && s.status?.network === 'mainnet' ? t('market.outcomeTestnet', 'Outcome 目录目前仅在 testnet 提供。')
+          : strict ? <>{tr('这个分类里没有可交易的市场（现货、Outcome 等目前只读）。', 'No tradable markets in this category (spot, outcome and some others are view only).')}
+            <button type="button" className="dhl-picker-empty-action" onClick={() => setStrict(false)}>{tr('查看全部', 'Show all')}</button></>
+          : t('market.empty', '没有匹配的市场')}</div> : null}
         {loading && !s.marketCatalog.length ? <div className="dhl-picker-empty">{t('market.loading', '正在读取市场目录…')}</div> : null}
       </div>
       <footer className="dhl-picker-foot"><span>{t('market.shortcuts', '↑↓ 选择　Enter 打开　⌘/Ctrl+S 自选　Esc 关闭')}</span><span>{marketRows.length} {t('market.count', '个市场')} · Hyperliquid · {s.status?.network ?? 'Hyperliquid'}</span></footer>

@@ -1,5 +1,5 @@
 // The 0.5.0 tools (TradingView's remaining common set), each drawn by real clicks in a fresh session.
-import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, toolItem } from './common.mjs'
+import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, toolItem, openList } from './common.mjs'
 const url = await readUrl()
 const browser = await chromium.launch({ headless: true, executablePath: CHROME })
 try {
@@ -148,7 +148,7 @@ try {
   // Editing works on the new kinds too: drag the ellipse's second anchor.
   const ellipse = (await marks()).find((m) => m.kind === 'ellipse')
   { const head = page.locator('.dhl-drawing-list-head'); if (await head.getAttribute('aria-expanded') !== 'true') { await head.click(); await page.waitForTimeout(200) } }
-  await page.locator(`.dhl-drawing-list [data-mark-id="${ellipse.id}"] .dhl-drawing-list-name`).click(); await page.waitForTimeout(300)
+  await (await openList(page)).locator(`[data-mark-id="${ellipse.id}"] .dhl-drawing-list-name`).click(); await page.waitForTimeout(300)
   // Selecting from the list pans the chart to the drawing: read the anchor once it stops moving.
   const anchorAt = () => page.evaluate((id) => { const c = document.querySelector(`circle.dhl-chart-anchor[data-mark-id="${id}"][data-anchor="1"]`); const r = c?.getBoundingClientRect(); return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null }, ellipse.id)
   let anchor = await anchorAt()

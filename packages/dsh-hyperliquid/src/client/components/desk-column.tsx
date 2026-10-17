@@ -149,6 +149,43 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
   const [confirmClear, setConfirmClear] = React.useState(false)
   const [pickerOpen, setPickerOpen] = React.useState(false)
   const [chartExpanded, setChartExpanded] = React.useState(false)
+  // Expanded = real browser fullscreen when the browser allows it (else the in-page expanded panel).
+  // The whole page goes fullscreen, not just the chart, so dialogs (text entry, market picker) still show.
+  const [fullscreen, setFullscreen] = React.useState(false)
+  type KeyboardLock = { lock?: (keys: string[]) => Promise<void>; unlock?: () => void }
+  const keyboard = () => (navigator as Navigator & { keyboard?: KeyboardLock }).keyboard
+  // Each request gets a number; leaving bumps it, so a request that finishes after the trader left is undone.
+  const fullscreenRequest = React.useRef(0)
+  const enterExpanded = React.useCallback(() => {
+    setChartExpanded(true)
+    const root = document.documentElement
+    if (!document.fullscreenElement && root.requestFullscreen) {
+      const request = ++fullscreenRequest.current
+      // Keep Esc for the chart (cancel drawing → deselect → leave) where the browser lets us lock it.
+      void root.requestFullscreen({ navigationUI: 'hide' }).then(async () => {
+        if (request !== fullscreenRequest.current) { await document.exitFullscreen().catch(() => {}); return }
+        await keyboard()?.lock?.(['Escape'])
+        // Left while the lock was pending: release it again.
+        if (request !== fullscreenRequest.current) keyboard()?.unlock?.()
+      }).catch(() => { /* not allowed: stay in-page */ })
+    }
+  }, [])
+  const leaveExpanded = React.useCallback(() => {
+    fullscreenRequest.current += 1
+    setChartExpanded(false)
+    keyboard()?.unlock?.()
+    if (document.fullscreenElement) void document.exitFullscreen().catch(() => {})
+  }, [])
+  React.useEffect(() => {
+    // Leaving fullscreen from the browser (Esc without a keyboard lock, F11, system UI) also leaves the expanded chart.
+    const onChange = () => {
+      const on = Boolean(document.fullscreenElement)
+      setFullscreen(on)
+      if (!on) { fullscreenRequest.current += 1; keyboard()?.unlock?.(); setChartExpanded(false) }
+    }
+    document.addEventListener('fullscreenchange', onChange)
+    return () => document.removeEventListener('fullscreenchange', onChange)
+  }, [])
   const [chartResetToken, setChartResetToken] = React.useState(0)
   const sessionMaLines = s.workspaceSessionId === s.activeSessionId ? s.workspace?.maLines : undefined
   const maLines = React.useMemo<MaLine[]>(() => sessionMaLines ?? [], [sessionMaLines])
@@ -157,7 +194,7 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
     if (next.has(id)) next.delete(id); else next.add(id)
     saveSessionWorkspace({ indicators: [...next] })
   }
-  React.useEffect(() => { setDrawMode(null); setChartExpanded(false) }, [s.activeSessionId])
+  React.useEffect(() => { setDrawMode(null); leaveExpanded() }, [s.activeSessionId, leaveExpanded])
   const marks = s.chartMarksKey === `${s.activeSessionId ?? ''}:${coin}` ? s.chartMarks : []
   const layers = { orders: true, fills: true, drawings: true, reasons: false, ...s.workspace?.chartLayers }
   const tradeEvents = React.useMemo(() => chartTradeEvents(s.candles, coin,
@@ -244,11 +281,11 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
     if (!chartExpanded) return undefined
     // Esc peels one layer at a time: cancel drawing → deselect (both consume the key) → leave the expanded chart.
     const onEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !pickerOpen && !event.defaultPrevented) { event.preventDefault(); setChartExpanded(false) }
+      if (event.key === 'Escape' && !pickerOpen && !event.defaultPrevented) { event.preventDefault(); leaveExpanded() }
     }
     window.addEventListener('keydown', onEscape)
     return () => window.removeEventListener('keydown', onEscape)
-  }, [chartExpanded, pickerOpen])
+  }, [chartExpanded, pickerOpen, leaveExpanded])
   // TradingView drawing shortcuts (physical keys, so Option+letter works on macOS).
   React.useEffect(() => {
     const keys: Record<string, DrawingKind> = { KeyT: 'trend', KeyH: 'level', KeyJ: 'hray', KeyV: 'vline', KeyC: 'crossline', KeyF: 'fib' }
@@ -333,7 +370,7 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
       {pickerOpen ? <MarketPicker activeCoin={coin} onClose={() => setPickerOpen(false)} /> : null}
 
       <div className={'dhl-market-workspace' + (s.tapePlacement === 'below' ? ' dhl-tape-below' : '')}>
-        <section className={'dhl-chart-panel' + (chartExpanded ? ' dhl-chart-panel-expanded' : '')} aria-label={tr('行情图表', 'Market chart')}>
+        <section className={'dhl-chart-panel' + (chartExpanded ? ' dhl-chart-panel-expanded' : '') + (chartExpanded && fullscreen ? ' is-fullscreen' : '')} aria-label={tr('行情图表', 'Market chart')}>
           <div className="dhl-chart-tabs" role="tablist" aria-label={tr('图表内容', 'Chart content')}>
             <button type="button" role="tab" aria-selected={chartTab === 'chart'} className={chartTab === 'chart' ? 'on' : ''} onClick={() => saveSessionWorkspace({ chartTab: 'chart' })}>{tr('K 线', 'Chart')}</button>
             {row?.kind !== 'spot' && row?.kind !== 'outcome' ? <button type="button" role="tab" aria-selected={chartTab === 'funding'} className={chartTab === 'funding' ? 'on' : ''} onClick={() => saveSessionWorkspace({ chartTab: 'funding' })}>{tr('资金费历史', 'Funding history')}</button> : null}
@@ -423,7 +460,7 @@ export function DeskColumn({ onCollapse }: { onCollapse: () => void }) {
                   <button type="button" className="dhl-chart-iconbtn" aria-label={tr('复位图表视图', 'Reset chart view')} title={tr('复位图表视图', 'Reset chart view')} onClick={() => setChartResetToken((value) => value + 1)}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M3 11a9 9 0 1 0 2.6-6.4M3 4v6h6" /><path d="M12 7v5l3 2" /></svg>
                   </button>
-                  <button type="button" className="dhl-chart-iconbtn" aria-label={chartExpanded ? tr('退出放大图表', 'Exit expanded chart') : tr('放大图表', 'Expand chart')} aria-pressed={chartExpanded} title={chartExpanded ? tr('退出放大图表 (Esc)', 'Exit expanded chart (Esc)') : tr('放大图表', 'Expand chart')} onClick={() => setChartExpanded((value) => !value)}>
+                  <button type="button" className="dhl-chart-iconbtn" aria-label={chartExpanded ? tr('退出全屏图表', 'Exit fullscreen chart') : tr('全屏图表', 'Fullscreen chart')} aria-pressed={chartExpanded} title={chartExpanded ? tr('退出全屏 (Esc)', 'Exit fullscreen (Esc)') : tr('全屏图表', 'Fullscreen chart')} onClick={() => chartExpanded ? leaveExpanded() : enterExpanded()}>
                     {chartExpanded
                       ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M9 3v6H3m18 6h-6v6M3 9h6V3m12 12h-6v6" /></svg>
                       : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M9 3H3v6m12-6h6v6M3 15v6h6m12-6v6h-6" /></svg>}

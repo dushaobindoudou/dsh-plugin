@@ -30,3 +30,10 @@ export function check(ok, message, detail) { if (!ok) throw new Error('FAIL ' + 
 /** A drawing-menu item by its exact tool name (the menu item's accessible name also carries the hint,
  * so a prefix match would confuse 三角形 with 三角形态). */
 export const toolItem = (page, name) => page.getByRole('menuitemradio').filter({ has: page.locator('b', { hasText: new RegExp('^' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$') }) })
+
+/** The drawing list is a popover that starts closed: open it (if needed) and return it. */
+export async function openList(page) {
+  const head = page.locator('.dhl-drawing-list-head').first()
+  if (await head.getAttribute('aria-expanded') !== 'true') { await head.click(); await page.waitForTimeout(150) }
+  return page.locator('.dhl-drawing-list').first()
+}

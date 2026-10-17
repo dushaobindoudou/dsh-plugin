@@ -1,7 +1,7 @@
 // WebKit (Safari's engine): desktop drawing with a mouse, and an iPad profile drawing with taps.
 // Playwright's WebKit build, not the shipping Safari app; finger drags are not available here.
 import { createRequire } from 'node:module'
-import { readUrl, openDesk, store, waitCandles, check, toolItem } from './common.mjs'
+import { readUrl, openDesk, store, waitCandles, check, toolItem, openList } from './common.mjs'
 const { webkit, devices } = createRequire(new URL('../../package.json', import.meta.url))('playwright-core')
 const url = await readUrl()
 // WebKit is an optional download (npx playwright-core install webkit); without it this phase is skipped, not failed.
@@ -33,7 +33,7 @@ try {
     if (!anchor) {
       const head = page.locator('.dhl-drawing-list-head')
       if (await head.getAttribute('aria-expanded') !== 'true') await head.click()
-      await page.locator(`.dhl-drawing-list [data-mark-id="${trend.id}"] .dhl-drawing-list-name`).click()
+      await (await openList(page)).locator(`[data-mark-id="${trend.id}"] .dhl-drawing-list-name`).click()
       for (let i = 0; i < 20; i += 1) { await page.waitForTimeout(150); const next = await anchorAt(); if (next && anchor && Math.abs(next.x - anchor.x) < 0.5 && Math.abs(next.y - anchor.y) < 0.5) break; anchor = next }
       if (await head.getAttribute('aria-expanded') === 'true') await head.click()
       anchor = await anchorAt()
@@ -80,7 +80,13 @@ try {
     await page.touchscreen.tap(a.x, a.y); await page.waitForTimeout(300); await page.touchscreen.tap(b.x, b.y); await page.waitForTimeout(1600)
     const trend = (await store(page)).chartMarks.find((m) => m.kind === 'trend' && !m.shared)
     check(Boolean(trend), 'webkit iPad: two taps draw a trend line')
-    const m = at(.4, .55); await page.touchscreen.tap(m.x, m.y); await page.waitForTimeout(400)
+    const m = await page.evaluate((id) => {
+      const line = document.querySelector(`.dhl-drawing[data-mark-id="${id}"] > line`), o = document.querySelector('.dhl-chart-drawing-overlay').getBoundingClientRect()
+      const [x1, y1, x2, y2] = ['x1', 'y1', 'x2', 'y2'].map((key) => +line.getAttribute(key))
+      for (const t of [0.5, 0.4, 0.6, 0.3, 0.7]) { const p = { x: o.left + x1 + (x2 - x1) * t, y: o.top + y1 + (y2 - y1) * t }; if (document.elementFromPoint(p.x, p.y)?.closest('[data-mark-id]')?.getAttribute('data-mark-id') === id) return p }
+      return { x: o.left + (x1 + x2) / 2, y: o.top + (y1 + y2) / 2 }
+    }, trend.id)
+    await page.touchscreen.tap(m.x, m.y); await page.waitForTimeout(400)
     check(await page.getByRole('toolbar', { name: '画线样式' }).isVisible(), 'webkit iPad: tapping the line selects it')
     check(errors.length === 0, 'webkit iPad: no page errors', errors)
     await context.close()

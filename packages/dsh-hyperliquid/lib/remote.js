@@ -15,7 +15,7 @@ import { addressFromPrivateKey, buildL1TypedData, buildSendAsset, buildUsdClassT
 import { TradingGuard } from './trading-guard.js'
 import { normalizeMaLines } from './moving-average.js'
 import { ALERT_KINDS, ICON_NAMES, TEXT_KINDS, drawingGeometry, drawingStyle, isIconLabel, linePriceAt } from './chart-drawings.js'
-import { normalizeRiskSettings } from './risk-settings.js'
+import { normalizeRiskSettings, coinAllowed, ALL_COINS } from './risk-settings.js'
 import { INDICATOR_IDS, normalizeIndicatorSettings } from './studies.js'
 import { normalizeResearch } from './workspace-settings.js'
 import { fundingWindow } from './review.js'
@@ -890,7 +890,11 @@ export class HyperRemote extends TypertRemoteService {
     const current = { allowedCoins: [...this.cfg.allowedCoins], maxOrderUsd: this.cfg.maxOrderUsd, maxDailyUsd: this.cfg.maxDailyUsd, maxPositionUsd: this.cfg.maxPositionUsd, maxLeverage: this.cfg.maxLeverage }
     const add = (request?.addCoins ?? []).map((coin) => canonicalMarketCoin(coin))
     const drop = new Set((request?.removeCoins ?? []).map((coin) => canonicalMarketCoin(coin)))
-    const next = { ...current, allowedCoins: [...new Set([...current.allowedCoins.filter((coin) => !drop.has(coin)), ...add])] }
+    // '*' = all markets. Removing one coin from "all" needs an explicit list first (the trader's call).
+    const allNow = current.allowedCoins.includes(ALL_COINS)
+    if (allNow && drop.size && !drop.has(ALL_COINS)) throw new Error('当前允许全部币对；要排除某个币对，请先用 removeCoins ["*"] 并 addCoins 列出要允许的币对')
+    const base = allNow && drop.has(ALL_COINS) ? [] : current.allowedCoins.filter((coin) => !drop.has(coin))
+    const next = { ...current, allowedCoins: add.includes(ALL_COINS) ? [ALL_COINS] : [...new Set([...base, ...add])] }
     for (const key of ['maxOrderUsd', 'maxDailyUsd', 'maxPositionUsd', 'maxLeverage']) if (request?.[key] != null) next[key] = request[key]
     if (this.activeTradeOps > 0) throw new Error('交易操作仍在进行，暂不能修改限额')
     const limits = normalizeRiskSettings(next)
@@ -1649,7 +1653,7 @@ export class HyperRemote extends TypertRemoteService {
     if (this.cfg.tradingMode === 'paper') throw new Error('paper 模式没有挂单')
     const exec = request?.[TOOL_CALL]?.exec
     if (!exec?.agent) throw new Error('live 撤单仅允许从 DSH agent 工具调用')
-    if (!this.isManaged() || !this.cfg.allowedCoins.includes(coin)) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 撤销 ${coin} 订单 oid=${oid}？`, exec, `Hyperliquid ${this.cfg.network}: cancel ${coin} order oid=${oid}?`)
+    if (!this.isManaged() || !coinAllowed(this.cfg.allowedCoins, coin)) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 撤销 ${coin} 订单 oid=${oid}？`, exec, `Hyperliquid ${this.cfg.network}: cancel ${coin} order oid=${oid}?`)
     const { asset: idx } = await this.tradeAsset(coin)
     const res = await this.submitAction({ type: 'cancel', cancels: [{ a: idx, o: oid }] }, exec)
     assertExchangeAccepted(res)
@@ -1668,7 +1672,7 @@ export class HyperRemote extends TypertRemoteService {
     const isCross = request?.marginMode !== 'isolated' && !market.onlyIsolated
     if (this.cfg.tradingMode === 'paper') {
       if (leverage > this.cfg.maxLeverage) throw new Error(`杠杆超过配置上限 ${this.cfg.maxLeverage}x`)
-      if (!this.cfg.allowedCoins.includes(coin)) throw new Error(`${coin} 不在允许交易币对内`)
+      if (!coinAllowed(this.cfg.allowedCoins, coin)) throw new Error(`${coin} 不在允许交易币对内`)
       const paper = this.store.paperAccount()
       if (paper.positions[coin]) {
         const risk = paperRiskState(paper, await safeMids(this, Object.keys(paper.positions)), true)
@@ -1682,7 +1686,7 @@ export class HyperRemote extends TypertRemoteService {
       return { mode: 'paper', ok: true }
     }
     if (leverage > this.cfg.maxLeverage) throw new Error(`杠杆超过配置上限 ${this.cfg.maxLeverage}x`)
-    if (!this.cfg.allowedCoins.includes(coin)) throw new Error(`交易限额：${coin} 不在允许交易币对内（allowedCoins）`)
+    if (!coinAllowed(this.cfg.allowedCoins, coin)) throw new Error(`交易限额：${coin} 不在允许交易币对内（allowedCoins）`)
     const exec = request?.[TOOL_CALL]?.exec
     if (!exec?.agent) throw new Error('live 杠杆变更仅允许从 DSH agent 工具调用')
     if (!this.isManaged()) await this.authorizeToolAction(`Hyperliquid ${this.cfg.network} 将 ${coin} 杠杆设为 ${leverage}x？`, exec, `Hyperliquid ${this.cfg.network}: set ${coin} leverage to ${leverage}x?`)

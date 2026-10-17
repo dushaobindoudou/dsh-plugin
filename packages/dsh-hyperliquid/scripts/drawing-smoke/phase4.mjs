@@ -1,5 +1,5 @@
 // Phase 4: sync to every session of a coin, the sticker library, and a price-cross alert on live data.
-import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, toolItem } from './common.mjs'
+import { chromium, CHROME, readUrl, openDesk, store, waitCandles, check, toolItem, openList } from './common.mjs'
 const url = await readUrl()
 const browser = await chromium.launch({ headless: true, executablePath: CHROME })
 try {
@@ -20,7 +20,7 @@ try {
   const pick = async (name) => { await page.locator('.dhl-draw-menu summary').click(); await toolItem(page, name).click() }
   const marks = async () => (await store(page)).chartMarks
   const settle = () => page.waitForTimeout(1500)
-  const selectByLabel = (label) => page.locator('.dhl-drawing-list').getByRole('button', { name: new RegExp('^.*' + label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }).first().click()
+  const selectByLabel = async (label) => (await openList(page)).getByRole('button', { name: new RegExp('^.*' + label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }).first().click()
 
   // ── sticker library ──
   await pick('图标'); await clickXY(at(.5, .2))

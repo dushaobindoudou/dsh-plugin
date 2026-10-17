@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto'
+import { coinAllowed } from './risk-settings.js'
 import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -28,7 +29,7 @@ export class TradingGuard {
     if (reduceOnly && (positionSize === 0 || Math.sign(signed) === Math.sign(positionSize) || sz > Math.abs(positionSize) + 1e-10)) throw new Error('只减仓订单会增加或翻转仓位')
     const riskReducing = positionSize !== 0 && Math.sign(signed) !== Math.sign(positionSize) &&
       (nextSize === 0 || Math.sign(nextSize) === Math.sign(positionSize)) && Math.abs(nextSize) < Math.abs(positionSize)
-    if (!riskReducing && !l.allowedCoins.includes(coin)) throw new Error(`交易限额：${coin} 不在允许交易币对内（allowedCoins）`)
+    if (!riskReducing && !coinAllowed(l.allowedCoins, coin)) throw new Error(`交易限额：${coin} 不在允许交易币对内（allowedCoins）`)
     if (!riskReducing && leverage > l.maxLeverage) throw new Error(`交易限额：杠杆 ${leverage}x 超过上限 ${l.maxLeverage}x（maxLeverage）`)
     const notionalUsd = sz * price
     if (!riskReducing && accountValue <= 0) throw new Error('账户权益不足，拒绝开仓')

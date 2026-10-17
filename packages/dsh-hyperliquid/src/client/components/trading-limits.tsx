@@ -7,12 +7,21 @@ import { notify, useStore } from '../store'
 import { loadStatus, resetWalletView } from '../data'
 import { Select } from './select'
 
-type Draft = { allowedCoins: string; maxOrderUsd: string; maxDailyUsd: string; maxPositionUsd: string; maxLeverage: string }
-const EMPTY: Draft = { allowedCoins: '', maxOrderUsd: '', maxDailyUsd: '', maxPositionUsd: '', maxLeverage: '' }
+/** coinsMode: 'all' allows every tradable market ('*' on the host); 'manual' uses the listed coins. */
+type Draft = { coinsMode: 'all' | 'manual'; allowedCoins: string; maxOrderUsd: string; maxDailyUsd: string; maxPositionUsd: string; maxLeverage: string }
+const EMPTY: Draft = { coinsMode: 'manual', allowedCoins: '', maxOrderUsd: '', maxDailyUsd: '', maxPositionUsd: '', maxLeverage: '' }
+
+const MANUAL_KEY = 'dhl.allowedCoins.manual'
+function readManualCoins(): string { try { return localStorage.getItem(MANUAL_KEY) ?? '' } catch { return '' } }
+function rememberManualCoins(value: string) { try { localStorage.setItem(MANUAL_KEY, value) } catch { /* convenience only */ } }
 
 function fromLimits(limits: any): Draft {
+  const coins: string[] = limits?.allowedCoins ?? []
+  const all = coins.includes('*')
   return {
-    allowedCoins: (limits?.allowedCoins ?? []).join(', '),
+    coinsMode: all ? 'all' : 'manual',
+    // Switching from 全部 back to 手动设置 starts from the last manual list this desk saw (or an empty field).
+    allowedCoins: all ? readManualCoins() : coins.join(', '),
     maxOrderUsd: String(limits?.maxOrderUsd ?? ''),
     maxDailyUsd: String(limits?.maxDailyUsd ?? ''),
     maxPositionUsd: String(limits?.maxPositionUsd ?? ''),
@@ -33,14 +42,16 @@ export function TradingLimits({ open, onClose }: { open: boolean; onClose: () =>
     if (open && limits) { setDraft(fromLimits(limits)); setError('') }
   }, [open, Boolean(limits)])
 
-  const change = (key: keyof Draft, value: string) => setDraft((current) => ({ ...current, [key]: value }))
+  const change = (key: Exclude<keyof Draft, 'coinsMode'>, value: string) => setDraft((current) => ({ ...current, [key]: value }))
   const save = async (event?: React.FormEvent) => {
     event?.preventDefault()
     setBusy(true)
     setError('')
     try {
+      // Keep the manual list even when saving 全部, so 手动设置 can bring it back after a reopen.
+      if (draft.allowedCoins.trim()) rememberManualCoins(draft.allowedCoins)
       await hyperCall('updateRiskSettings', { limits: {
-        allowedCoins: draft.allowedCoins,
+        allowedCoins: draft.coinsMode === 'all' ? '*' : draft.allowedCoins,
         maxOrderUsd: Number(draft.maxOrderUsd),
         maxDailyUsd: Number(draft.maxDailyUsd),
         maxPositionUsd: Number(draft.maxPositionUsd),
@@ -84,7 +95,7 @@ export function TradingLimits({ open, onClose }: { open: boolean; onClose: () =>
       .then(() => loadStatus()).then(() => notify(tr('模拟成本已保存', 'Paper costs saved'))).catch((cause) => setError(String(cause.message))).finally(() => setBusy(false))
   }
 
-  const field = (key: keyof Draft, label: string, props: React.InputHTMLAttributes<HTMLInputElement>, wide = false) =>
+  const field = (key: Exclude<keyof Draft, 'coinsMode'>, label: string, props: React.InputHTMLAttributes<HTMLInputElement>, wide = false) =>
     <label className={wide ? 'dhl-risk-wide' : undefined}><span>{label}</span>
       <Input className="dhl-risk-input" value={draft[key]} onChange={(event) => change(key, event.target.value)} required {...props} /></label>
   // The footer acts on the visible tab only, so “保存” always means what is on screen.
@@ -105,7 +116,17 @@ export function TradingLimits({ open, onClose }: { open: boolean; onClose: () =>
         <p className="dhl-limits-ledger-row"><span className="dhl-limits-ledger">{paper ? tr('模拟盘账本', 'Paper ledger') : tr('实盘账本', 'Live ledger')}</span>
           {limits ? <span>{tr('今日已用（UTC）', 'Used today (UTC)')} {fmt(limits.usedTodayUsd ?? 0)} / {fmt(limits.maxDailyUsd)} USD</span> : null}</p>
         {limits ? <form id="dhl-risk-form" className="dhl-risk-form" onSubmit={(event) => void save(event)}>
-          {field('allowedCoins', tr('允许开仓币对（逗号分隔，如 BTC, xyz:XYZ100）', 'Coins allowed to open (comma separated)'), { placeholder: 'BTC, ETH, xyz:XYZ100', maxLength: 1000 }, true)}
+          <div className="dhl-risk-wide dhl-coins-mode"><span id="dhl-coins-mode-label">{tr('允许开仓币对', 'Coins allowed to open')}</span>
+            <span className="dhl-coins-seg" role="radiogroup" aria-labelledby="dhl-coins-mode-label">
+              {([['all', '全部', 'All markets'], ['manual', '手动设置', 'Choose coins']] as const).map(([mode, zh, en]) =>
+                <button key={mode} type="button" role="radio" aria-checked={draft.coinsMode === mode} className={draft.coinsMode === mode ? 'on' : ''}
+                  onClick={() => setDraft((current) => { if (mode === 'all' && current.allowedCoins.trim()) rememberManualCoins(current.allowedCoins); return { ...current, coinsMode: mode } })}>{tr(zh, en)}</button>)}
+            </span>
+            <small>{draft.coinsMode === 'all'
+              ? tr('可以在所有可交易市场开仓（核心永续与以 USDC 为保证金的 HIP-3）；单笔、每日、仓位和杠杆上限照常生效。', 'Opening is allowed on every tradable market; the order, daily, position and leverage limits still apply.')
+              : tr('只能在下面列出的币对开仓；减仓和平仓不受限。', 'Only the listed coins can be opened; reducing and closing are never blocked.')}</small>
+          </div>
+          {draft.coinsMode === 'manual' ? field('allowedCoins', tr('币对（逗号分隔，如 BTC, xyz:XYZ100）', 'Coins (comma separated, e.g. BTC, xyz:XYZ100)'), { placeholder: 'BTC, ETH, xyz:XYZ100', maxLength: 1000 }, true) : null}
           {field('maxOrderUsd', tr('单笔上限 · USD', 'Per order · USD'), { type: 'number', min: '0.01', step: 'any' })}
           {field('maxDailyUsd', tr('每日开仓额度 · USD', 'Daily budget · USD'), { type: 'number', min: '0.01', step: 'any' })}
           {field('maxPositionUsd', tr('单币仓位上限 · USD', 'Per coin position · USD'), { type: 'number', min: '0.01', step: 'any' })}
