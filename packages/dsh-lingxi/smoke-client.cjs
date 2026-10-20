@@ -39,9 +39,21 @@ const React = {
     }
     return [cell.v, setter]
   },
-  useMemo(fn) { return fn() },
-  useCallback(fn) { return fn },
-  useEffect(fn) { fn(); return () => {} },
+  useMemo(fn, deps) {
+    const r = renderCtx, index = r.i++, old = r.cells[index]
+    if (!old || !deps || !old.deps || deps.some((value, i) => value !== old.deps[i])) {
+      r.cells[index] = { value: fn(), deps }
+    }
+    return r.cells[index].value
+  },
+  useCallback(fn, deps) { return React.useMemo(() => fn, deps) },
+  useEffect(fn, deps) {
+    const r = renderCtx, index = r.i++, old = r.cells[index]
+    if (!old || !deps || !old.deps || deps.some((value, i) => value !== old.deps[i])) {
+      old?.cleanup?.()
+      r.cells[index] = { deps, cleanup: fn() }
+    }
+  },
 }
 const invoke = (el) => {
   if (el === null || el === undefined || typeof el !== 'object') return el
@@ -136,25 +148,39 @@ assert(renderedSlots[0].reg.opts.id === 'lingxi', 'section id is lingxi')
 ;(async () => {
 const element = renderedSlots[0].reg.render({ close: () => {} })
 const first = toText(invoke(element))
-assert(first.includes('正在读取桥接状态'), 'loading state renders first')
+assert(first.includes(mod.locales.zh.loading), 'loading state renders first')
 
 // Let the status RPC resolve, then re-render: hook cells persist per component.
 const tick = () => new Promise((r) => setImmediate(r))
 for (let i = 0; i < 5; i++) { await tick() }
-const loaded = toText(invoke(element))
+const loadedTree = invoke(element)
+const loaded = toText(loadedTree)
+const elements = (node) => node && typeof node === 'object' ? [node, ...node.kids.flatMap(elements)] : []
 assert(loaded.includes('桥接在线'), 'status hero shows the bridge answer')
-assert(loaded.includes('lingxi_task'), 'settings item lists the tools')
+assert(['toolTask', 'toolSay', 'toolReact', 'toolState', 'toolRemember'].every((key) => loaded.includes(mod.locales.zh[key])), 'settings item lists all five localized tools')
 assert(loaded.includes('保存'), 'the save control exists')
-assert(loaded.includes('dsh 正在运行的任务'), 'tasks section renders')
-assert(loaded.includes('跑测试'), 'a running task renders with its state')
-assert(loaded.includes('定时提醒'), 'reminders section renders')
+assert(loaded.includes(mod.locales.zh.groupNotify), 'notification settings section renders')
+assert(loaded.includes(mod.locales.zh.stateNeedsApproval) && loaded.includes(mod.locales.zh.stateNeedsInput), 'approval and question notification controls render')
+assert(loaded.includes(mod.locales.zh.groupReminders), 'reminders section renders')
 assert(loaded.includes('检查部署'), 'a declared reminder renders with its cadence')
-assert(loaded.includes('已注册的 agent') || loaded.includes('DSH Agent'), 'identity section renders from /agents data')
+assert(loaded.includes(mod.locales.zh.groupIdentity) && loaded.includes('dsh'), 'configured identity renders')
+const connectivityButton = elements(loadedTree).find((node) => node.type === 'button' && toText(node) === mod.locales.zh.connTest)
+assert(connectivityButton, 'connectivity test control exists')
+await connectivityButton.props.onClick()
+for (let i = 0; i < 5; i++) { await tick() }
+assert(toText(invoke(element)).includes(mod.locales.zh.identityRegistered), 'connectivity result displays registry identity')
 assert(rpcCalls.some((e) => e.endpoint === 'lingxi/status' && e.channel === '/api'), 'status rides the /api channel')
 
-// The page's save contract: setSettings returns {settings, ignored}.
-const envelope = await connection.rpc.call('/api', 'lingxi/setSettings', { args: { request: { autoAnnounce: false } } })
-assert(envelope.ok === true && envelope.value.settings.autoAnnounce === false, 'setSettings shape matches the host remote')
+// Exercise the actual change and save handlers, rather than calling the RPC stub directly.
+const toggle = elements(invoke(element)).find((node) => node.type === 'input' && node.props.type === 'checkbox' && node.props.checked === true)
+assert(toggle, 'mount announcement control exists')
+toggle.props.onChange({ target: { checked: false } })
+const saveButton = elements(invoke(element)).find((node) => node.type === 'button' && toText(node) === mod.locales.zh.save)
+assert(saveButton && !saveButton.props.disabled, 'editing enables save')
+saveButton.props.onClick()
+for (let i = 0; i < 5; i++) { await tick() }
+const savedCall = rpcCalls.find((call) => call.endpoint === 'lingxi/setSettings')
+assert(savedCall && savedCall.payload.args.request.autoAnnounce === false, 'save sends the changed settings through the host RPC')
 
 console.log('all dsh-lingxi client smoke checks passed')
 process.exit(0)

@@ -104,6 +104,7 @@ export class AuthorizationWatch {
         source: 'authorization',
         state: 'needs_input',
         title: titleOf(entry),
+        composed: true,
       })
     }
     for (const key of this.reported) {

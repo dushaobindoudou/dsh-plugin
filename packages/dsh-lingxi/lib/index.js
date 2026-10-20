@@ -37,6 +37,7 @@ import { ContextWatch } from './sense/context.js'
 import { EnvironmentWatch } from './sense/environment.js'
 import { BudgetWatch } from './sense/budget.js'
 import { dshLogo } from './dsh-logo.js'
+import { registerLingxiSkill } from './skill.js'
 
 /** Cordis plugin name — the id the bundle patch inserts this row under. */
 export const name = 'plugin-lingxi'
@@ -64,6 +65,7 @@ export const name = 'plugin-lingxi'
 export const inject = ['timer', 'typert']
 
 export function apply(ctx) {
+  ctx.effect(() => registerLingxiSkill(ctx.get('skills')) ?? (() => {}))
   const tools = ctx.get('tools')
   if (tools === undefined) {
     console.error('dsh-lingxi: the host tool registry is not mounted; tools unavailable, settings page still served.')

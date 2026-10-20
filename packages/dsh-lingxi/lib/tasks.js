@@ -631,6 +631,7 @@ export class TaskWatch {
         // (2026-09-30 smoke regression).
         titleGeneric: entry.summary === undefined && entry.titleGeneric === true,
         source: entry.source,
+        composed: entry.composed === true || entry.summary !== undefined,
         ...(entry.discovered === true ? { discovered: true } : {}),
         ...(entry.progress === undefined ? {} : { progress: entry.progress }),
       })

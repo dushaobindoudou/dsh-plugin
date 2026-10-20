@@ -18,7 +18,8 @@
     "README.md"
   ],
   "scripts": {
-    "smoke": "node smoke.mjs"
+    "smoke": "node smoke.mjs",
+    "test": "node --test test/*.test.mjs"
   },
   "engines": {
     "node": ">=20"
@@ -38,5 +39,9 @@
     "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
     "directory": "packages/dsh-pets"
   },
-  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-pets#readme"
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-pets#readme",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
 }

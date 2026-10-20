@@ -85,6 +85,7 @@ export function apply(ctx) {
     createBridge(overrides = {}) {
       return new PetBridge({
         port: service.settings.port,
+        agentId: service.settings.agentId,
         ...overrides,
       })
     },
