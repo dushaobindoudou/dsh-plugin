@@ -38,12 +38,18 @@ export class PetBridge {
   /**
    * @param {object} [options]
    * @param {number} [options.port]
+   * @param {string} [options.agentId] - sent as `X-Lingxi-Agent` on every
+   *   call. The app attributes calls — and gates PERSISTENT writes (memory,
+   *   reminders, settings fields) on the caller's permission tier — by this
+   *   header, not by the Authorization token: a missing header makes every
+   *   write land as "anonymous", which the default `performer` tier refuses.
    * @param {string} [options.tokenPath] - overrides the default token file.
    * @param {string} [options.token] - explicit token (tests); skips the file.
    * @param {typeof fetch} [options.fetchImpl] - injectable for tests.
    */
   constructor(options = {}) {
     this.port = Number.isInteger(options.port) ? options.port : DEFAULT_BRIDGE_PORT
+    this.agentId = typeof options.agentId === 'string' && options.agentId.trim() ? options.agentId.trim() : null
     this.tokenPath = typeof options.tokenPath === 'string' && options.tokenPath ? options.tokenPath : DEFAULT_TOKEN_PATH
     this.token = typeof options.token === 'string' ? options.token : null
     this.fetchImpl = options.fetchImpl || fetch
@@ -74,6 +80,7 @@ export class PetBridge {
     const headers = { 'Content-Type': 'application/json' }
     const token = this.readToken()
     if (token) headers.Authorization = `Bearer ${token}`
+    if (this.agentId) headers['X-Lingxi-Agent'] = this.agentId
     let response
     try {
       response = await this.fetchImpl(this.baseUrl + path, {
@@ -83,7 +90,8 @@ export class PetBridge {
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       })
     } catch (error) {
-      return { ok: false, unreachable: true, error: error instanceof Error ? error.message : String(error) }
+      return { ok: false, unreachable: true, error: error instanceof Error ? error.message : String(error),
+        installationHint: '灵犀可能尚未安装或未启动。先检查已安装应用及 /health；缺失时从 https://github.com/dushaobindoudou/lingxi/releases/latest 下载 DMG 与 SHA256SUMS.txt，校验后安装并启动。桥接失败不代表应用一定缺失。' }
     }
     let data = null
     try {
@@ -92,7 +100,8 @@ export class PetBridge {
       data = null
     }
     if (!response.ok) {
-      const message = data && typeof data === 'object' && typeof data.error === 'string' ? data.error : `HTTP ${response.status}`
+      const rejected = Array.isArray(data?.rejected) ? data.rejected.filter((reason) => typeof reason === 'string') : []
+      const message = typeof data?.error === 'string' ? data.error : rejected.length ? rejected.join('; ') : `HTTP ${response.status}`
       return { ok: false, status: response.status, data, error: message }
     }
     return { ok: true, status: response.status, data }
@@ -106,6 +115,11 @@ export class PetBridge {
   /** GET /integration — the live contract the app serves about itself. */
   async integration() {
     return this.request('GET', '/integration')
+  }
+
+  /** GET /capabilities — live actions, expressions and automatic-effects policy. */
+  async capabilities() {
+    return this.request('GET', '/capabilities')
   }
 
   /** GET /perception — what the pet is doing right now. */
@@ -132,7 +146,10 @@ export class PetBridge {
 
   /** POST /control — one stage action ({say}, {expression}, {action}, …). */
   async control(action) {
-    return this.request('POST', '/control', action)
+    // taskId correlates notification decisions and deliveries in the host log.
+    // It is not a /control field; the app rejects unknown fields with HTTP 400.
+    const { taskId: _taskId, ...command } = action
+    return this.request('POST', '/control', command)
   }
 
   /** POST /memory — persist one fact about the user on the pet's side. */

@@ -1,6 +1,6 @@
 {
   "name": "dsh-lingxi",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Lingxi (灵犀) for the DeepSeek Harness (dsh) - the desktop cat that reacts to how the work FEELS: five model tools (task/say/react/state/remember) over the pet bridge, a settings page with live bridge status, and an agent identity of its own.",
   "icon": "./icon.svg",
   "license": "MIT",
@@ -28,7 +28,8 @@
     "locale",
     "icon.svg",
     "cordis.patch.yml",
-    "README.md"
+    "README.md",
+    "skills"
   ],
   "scripts": {
     "smoke": "node smoke.mjs",
@@ -58,5 +59,9 @@
   "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-lingxi#readme",
   "devDependencies": {
     "@deepseek-ai/dsh-typert-protocol": "0.1.0-rc.6"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

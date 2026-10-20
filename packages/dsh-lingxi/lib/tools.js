@@ -120,20 +120,36 @@ export function buildLingxiTools({ bridge, settings, getSettings, notifier }) {
       description:
         '让灵犀做一个表情/动作（可选保持毫秒数）。名字必须真实存在——先 lingxi_state 看 ' +
         'capabilities，或者确认 /integration 里的库；用户可以自定义动作名，猜名字会被拒绝。' +
-        '适合庆祝、打招呼这类直接反应。',
+        '普通表情直接播放；全屏特效用 perform，自动播放必须先开启自动特效且不在冷却中。' +
+        '只有用户明确点播特效才传 automatic:false，不得用它绕过关闭或冷却。',
       parameters: {
         type: 'object',
         properties: {
           expression: { type: 'string', description: '表情名，必须来自现有表情库' },
           action: { type: 'string', description: '可选动作名，必须来自现有动作库' },
           holdMs: { type: 'integer', description: '表情保持毫秒数' },
+          perform: { type: 'string', description: '当前 capabilities 中的全屏特效 ID' },
+          automatic: { type: 'boolean', default: true, description: '默认自动播放；用户明确点播才设为 false' },
         },
-        required: ['expression'],
+        anyOf: [{ required: ['expression'] }, { required: ['action'] }, { required: ['perform'] }],
       },
       output: { schema: OUTPUT_SCHEMA, render: renderJson },
       timeoutMs: 8000,
       async execute(args) {
-        return bridge.control({ agent: agent(), ...args })
+        const { automatic, ...command } = args
+        if (typeof command.perform === 'string') {
+          const caps = await bridge.capabilities()
+          if (!caps.ok) return caps
+          const policy = caps.data?.autoEffects
+          const auto = automatic !== false
+          if (auto && (policy?.enabled !== true || policy.remainingCooldownMs !== 0)) {
+            return { ok: true, skipped: true, reason: '自动特效未开启、不受支持或仍在冷却；本次跳过，不重试。' }
+          }
+          // Old apps accept explicit manual playback but do not know the policy marker.
+          if (policy) command.performAutomatic = auto
+          command.priority = auto ? 'flavour' : 'report'
+        }
+        return bridge.control({ agent: agent(), ...command })
       },
     })
   }
@@ -148,7 +164,11 @@ export function buildLingxiTools({ bridge, settings, getSettings, notifier }) {
       output: { schema: OUTPUT_SCHEMA, render: renderJson },
       timeoutMs: 8000,
       async execute() {
-        return bridge.perception()
+        const state = await bridge.perception()
+        if (!state.ok) return state
+        const capabilities = await bridge.capabilities()
+        return { ...state, data: { ...state.data, capabilities: capabilities.ok ? capabilities.data : null },
+          ...(capabilities.ok ? {} : { capabilitiesError: capabilities.error }) }
       },
     })
   }

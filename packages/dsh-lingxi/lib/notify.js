@@ -104,6 +104,7 @@ export class AttentionNotifier {
     const { taskId, state, source } = transition
     if (source === 'tool') this.remember(taskId, transition)
     const known = this.reported.get(taskId)
+    const freshAsk = transition.composed === true && ['needs_input', 'needs_approval', 'queued', 'blocked', 'failed'].includes(state)
     const effective = {
       taskId,
       state,
@@ -112,7 +113,7 @@ export class AttentionNotifier {
       // chat turn), and a report's kind belongs to the report's own event —
       // inheriting it re-labelled the settle and slipped it past the gate.
       kind: transition.kind,
-      summary: known?.summary ?? transition.summary,
+      summary: freshAsk ? transition.summary : known?.summary ?? transition.summary,
       mood: known?.mood ?? transition.mood,
       // progress rides when the source knows it (goal rounds, todo counts);
       // cleanTaskEvent drops a non-finite claim at the boundary.
@@ -134,7 +135,7 @@ export class AttentionNotifier {
     // already left behind. The subject-less line is the honest fallback
     // ("开工了，有进展我再吱声～"). The feed's summary is untouched: the
     // taskEvent above still carries the full title.
-    const saySummary = known?.summary
+    const saySummary = freshAsk ? readableSubject(transition.summary, { bounded: true }) : known?.summary
       ?? (transition.composed === true
         // A watch-composed subject is bounded by its composer — it skips
         // the unbounded-title length rule, and titleGeneric (which marks

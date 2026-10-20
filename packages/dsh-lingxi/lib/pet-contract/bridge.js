@@ -90,7 +90,8 @@ export class PetBridge {
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       })
     } catch (error) {
-      return { ok: false, unreachable: true, error: error instanceof Error ? error.message : String(error) }
+      return { ok: false, unreachable: true, error: error instanceof Error ? error.message : String(error),
+        installationHint: '灵犀可能尚未安装或未启动。先检查已安装应用及 /health；缺失时从 https://github.com/dushaobindoudou/lingxi/releases/latest 下载 DMG 与 SHA256SUMS.txt，校验后安装并启动。桥接失败不代表应用一定缺失。' }
     }
     let data = null
     try {
@@ -114,6 +115,11 @@ export class PetBridge {
   /** GET /integration — the live contract the app serves about itself. */
   async integration() {
     return this.request('GET', '/integration')
+  }
+
+  /** GET /capabilities — live actions, expressions and automatic-effects policy. */
+  async capabilities() {
+    return this.request('GET', '/capabilities')
   }
 
   /** GET /perception — what the pet is doing right now. */

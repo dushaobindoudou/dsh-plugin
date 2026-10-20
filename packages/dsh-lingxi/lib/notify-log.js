@@ -114,10 +114,11 @@ export function loggingBridge(ref, log) {
     })
   }
   return new Proxy(ref.current, {
-    get(target, prop) {
+    get(_initialTarget, prop) {
+      const target = ref.current
       if (prop === 'control') {
         return async (action) => {
-          const result = await target.control(action)
+          const result = await ref.current.control(action)
           recordDelivery(typeof action?.say === 'string' ? 'say' : 'react', {
             taskId: typeof action?.taskId === 'string' ? action.taskId : undefined,
             sayText: typeof action?.say === 'string' ? action.say : undefined,
@@ -130,7 +131,7 @@ export function loggingBridge(ref, log) {
       }
       if (prop === 'taskEvent') {
         return async (event, provider) => {
-          const result = await target.taskEvent(event, provider)
+          const result = await ref.current.taskEvent(event, provider)
           recordDelivery('task-event', {
             taskId: event?.taskId,
             source: event?.source,

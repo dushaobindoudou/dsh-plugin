@@ -18,7 +18,15 @@ dsh plugin --profile <name> add dsh-lingxi
 The pet app (灵犀, macOS) must be running; the plugin talks to its localhost
 bridge. The bridge port and identity are configurable in the settings page.
 
-**App 2026-09 contract notes** (checked against the running build):
+## 0.3.0: current desktop integration
+
+Targets Lingxi v1.0.1 or newer. The package now registers its bundled `lingxi-dsh` Skill in hosts that expose the skills service. It guides installation when the macOS app is missing; the npm plugin itself does not download a DMG. Download and verify the stable installer from [Lingxi Releases](https://github.com/dushaobindoudou/lingxi/releases/latest), start the app, then confirm `lingxi_state` succeeds.
+
+`lingxi_state` includes live `data.capabilities`, including available actions, expressions, performances and the automatic-effects policy. `lingxi_react` accepts `{perform, automatic}`: automatic playback requires the user to opt in in the app and observes the shared ten-minute cooldown; explicit user requests use `automatic: false`. Missing policy means skip automatic playback. Manual effects remain in Play; the tray effects submenu is removed.
+
+Bridge port or identity changes now reach all logged calls immediately. Existing task, goal, job, authorization and reminder watches are preserved. Do not install the old dynamic Cordis adapter alongside this npm plugin.
+
+**Desktop contract notes:**
 
 - **Persistent writes need the `trusted` tier.** The app now gates `POST
   /memory` and `POST /reminders` on the caller's permission tier, identified

@@ -67,3 +67,7 @@ node smoke.mjs
 ## License
 
 MIT
+
+## 0.1.0 integration contract
+
+The bridge sends `X-Lingxi-Agent`, exposes live `/capabilities`, strips host-only `taskId` from `/control`, and reports native permission refusals. Task labels and hook provenance survive normalization. Mount announcements default to off. An unreachable bridge returns installation guidance without downloading an application.

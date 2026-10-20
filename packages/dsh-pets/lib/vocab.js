@@ -53,6 +53,8 @@ export const TASK_MOODS = [
 const SUMMARY_CAP = 240
 const TASK_ID_CAP = 128
 const AGENT_CAP = 64
+/** The pet app's own label column cap (SESSION_LABEL_MAX_CHARS) — stay under it. */
+const LABEL_CAP = 40
 
 function firstString(value) {
   return typeof value === 'string' ? value.trim() : ''
@@ -67,7 +69,7 @@ function clamp(value, low, high) {
  * smallest-owned plain object, or null when the event has no meaning for a
  * pet (no state, or a state outside the list). Never throws.
  *
- * @param {unknown} event - {state, kind?, mood?, summary?, taskId?, progress?, agent?}
+ * @param {unknown} event - {state, kind?, mood?, summary?, label?, origin?, taskId?, progress?, agent?}
  * @param {string} provider - the stable identity this plugin reports as.
  * @returns {object | null}
  */
@@ -85,6 +87,14 @@ export function cleanTaskEvent(event, provider) {
   }
   const summary = firstString(event.summary)
   if (summary) out.summary = Array.from(summary).slice(0, SUMMARY_CAP).join('')
+  const label = firstString(event.label)
+  if (label) out.label = Array.from(label).slice(0, LABEL_CAP).join('')
+  // origin is a one-word provenance mark, not free text: the pet app reads it
+  // to tell the HOST's wording (a watch settle — speak the lifecycle line,
+  // let the model's own report own the result) from the AGENT's own report
+  // (speak the summary in full). Only 'hook' means anything; anything else
+  // is dropped rather than trusted.
+  if (firstString(event.origin) === 'hook') out.origin = 'hook'
   const taskId = firstString(event.taskId)
   if (taskId) out.taskId = Array.from(taskId).slice(0, TASK_ID_CAP).join('')
   const agent = firstString(event.agent)

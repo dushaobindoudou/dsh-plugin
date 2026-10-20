@@ -19,7 +19,12 @@ export const DEFAULT_PET_SETTINGS = {
   agentId: 'dsh',
   agentName: 'DSH Agent',
   agentBadge: 'DS',
-  autoAnnounce: true,
+  // Default OFF (2026-09-23 app-contract check): a mount-time "bridge ready"
+  // event would sit in the pet home as a task that is never running and never
+  // settles — the app's own integration guide names exactly this as noise
+  // ("不制造一个永远处于 running 的假任务"). Identity registration happens
+  // either way; users who want the hello can still tick it on.
+  autoAnnounce: false,
   tools: {
     task: true,
     say: true,
@@ -40,6 +45,10 @@ export const DEFAULT_PET_SETTINGS = {
     blocked: 'report',
     failed: 'report',
     running: 'status',
+    // A user input landing on an idle session announces WHAT the user asked
+    // ("收到新任务：…") — the prompt-before-work hint. Steering input during
+    // active work never reaches this state (the watch suppresses it).
+    queued: 'status',
   },
   // Declared standing reminders: "every N minutes, have the cat bring X up".
   // Managed by the host adapter (it diff-syncs them into the pet app); the
