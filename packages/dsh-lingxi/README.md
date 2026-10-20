@@ -18,6 +18,10 @@ dsh plugin --profile <name> add dsh-lingxi
 The pet app (灵犀, macOS) must be running; the plugin talks to its localhost
 bridge. The bridge port and identity are configurable in the settings page.
 
+## 0.3.1: interaction guidance
+
+Petting remains in the desktop app’s Play page; its tray entry is hidden. The bundled skill only suggests it on explicit request and explains how to exit if stroking does not respond.
+
 ## 0.3.0: current desktop integration
 
 Targets Lingxi v1.0.1 or newer. The package now registers its bundled `lingxi-dsh` Skill in hosts that expose the skills service. It guides installation when the macOS app is missing; the npm plugin itself does not download a DMG. Download and verify the stable installer from [Lingxi Releases](https://github.com/dushaobindoudou/lingxi/releases/latest), start the app, then confirm `lingxi_state` succeeds.

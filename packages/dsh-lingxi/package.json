@@ -1,6 +1,6 @@
 {
   "name": "dsh-lingxi",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Lingxi (灵犀) for the DeepSeek Harness (dsh) - the desktop cat that reacts to how the work FEELS: five model tools (task/say/react/state/remember) over the pet bridge, a settings page with live bridge status, and an agent identity of its own.",
   "icon": "./icon.svg",
   "license": "MIT",
