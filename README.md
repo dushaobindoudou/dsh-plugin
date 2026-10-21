@@ -484,7 +484,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-pay`](packages/dsh-pay) | The generic payment seat for dsh agents |
 | [`dsh-dex`](packages/dsh-dex) | DEX toolkit for dsh agents |
 
-### Daily life (66)
+### Daily life (71)
 
 | Name | Planned first release |
 | --- | --- |
@@ -504,6 +504,11 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-keep`](packages/dsh-keep) | Keep bridge for dsh agents |
 | [`dsh-xianyu`](packages/dsh-xianyu) | Xianyu bridge for dsh agents |
 | [`dsh-cainiao`](packages/dsh-cainiao) | Cainiao bridge for dsh agents |
+| [`dsh-shunfeng`](packages/dsh-shunfeng) | SF Express (顺丰) bridge for dsh agents |
+| [`dsh-zto`](packages/dsh-zto) | ZTO (中通) bridge for dsh agents |
+| [`dsh-yto`](packages/dsh-yto) | YTO (圆通) bridge for dsh agents |
+| [`dsh-yunda`](packages/dsh-yunda) | Yunda (韵达) bridge for dsh agents |
+| [`dsh-jdl`](packages/dsh-jdl) | JDL (京东物流) bridge for dsh agents |
 | [`dsh-beike`](packages/dsh-beike) | Beike bridge for dsh agents |
 | [`dsh-liepin`](packages/dsh-liepin) | Liepin bridge for dsh agents |
 | [`dsh-bole`](packages/dsh-bole) | Bole lane for dsh agents |
@@ -803,7 +808,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-gaze`](packages/dsh-gaze) | Gaze lane for dsh |
 | [`dsh-peek`](packages/dsh-peek) | Peek lane for dsh |
 
-### China ecosystem (48)
+### China ecosystem (64)
 
 | Name | Planned first release |
 | --- | --- |
@@ -843,6 +848,22 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-zhuli`](packages/dsh-zhuli) | Zhuli (助力) lane for dsh agents |
 | [`dsh-baoyou`](packages/dsh-baoyou) | Baoyou (包邮) lane for dsh agents |
 | [`dsh-tuikuan`](packages/dsh-tuikuan) | Tuikuan (退款) lane for dsh agents |
+| [`dsh-1111`](packages/dsh-1111) | The 11.11 shopping festival lane for dsh agents |
+| [`dsh-double11`](packages/dsh-double11) | Double 11 - the Singles Day festival lane |
+| [`dsh-shuangshiyi`](packages/dsh-shuangshiyi) | Shuangshiyi (双十一) - the Singles Day lane |
+| [`dsh-singlesday`](packages/dsh-singlesday) | Singles Day - the anti-Valentine's festival lane |
+| [`dsh-cuxiao`](packages/dsh-cuxiao) | Cuxiao (促销) lane for dsh agents |
+| [`dsh-youhuiquan`](packages/dsh-youhuiquan) | Youhuiquan (优惠券) lane for dsh agents |
+| [`dsh-coupon`](packages/dsh-coupon) | Coupon lane for dsh agents |
+| [`dsh-manjian`](packages/dsh-manjian) | Manjian (满减) lane for dsh agents |
+| [`dsh-mansong`](packages/dsh-mansong) | Mansong (满送) lane for dsh agents |
+| [`dsh-zhekou`](packages/dsh-zhekou) | Zhekou (折扣) lane for dsh agents |
+| [`dsh-baitiao`](packages/dsh-baitiao) | Baitiao (白条) lane for dsh agents |
+| [`dsh-fenqi`](packages/dsh-fenqi) | Fenqi (分期) lane for dsh agents |
+| [`dsh-zhibo`](packages/dsh-zhibo) | Zhibo (直播) lane for dsh agents |
+| [`dsh-livecommerce`](packages/dsh-livecommerce) | Live-commerce lane for dsh agents |
+| [`dsh-daigou`](packages/dsh-daigou) | Daigou (代购) lane for dsh agents |
+| [`dsh-haitao`](packages/dsh-haitao) | Haitao (海淘) lane for dsh agents |
 | [`dsh-shici`](packages/dsh-shici) | Shici (诗词) lane for dsh agents |
 | [`dsh-duilian`](packages/dsh-duilian) | Duilian (对联) lane for dsh agents |
 | [`dsh-shengxiao`](packages/dsh-shengxiao) | Shengxiao (生肖) lane for dsh agents |

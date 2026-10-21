@@ -1,0 +1,22 @@
+{
+  "name": "dsh-zto",
+  "version": "0.0.2",
+  "description": "ZTO (中通) bridge for dsh agents",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "zto",
+    "zhongtong",
+    "logistics"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-zto"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-zto#readme"
+}

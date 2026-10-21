@@ -1,0 +1,22 @@
+{
+  "name": "dsh-jdl",
+  "version": "0.0.1",
+  "description": "JDL (京东物流) bridge for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "jdl",
+    "jd-logistics",
+    "logistics"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-jdl"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-jdl#readme"
+}

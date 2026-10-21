@@ -1,0 +1,21 @@
+{
+  "name": "dsh-singlesday",
+  "version": "0.0.1",
+  "description": "Singles Day - the anti-Valentine's festival lane - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "singles-day",
+    "11-11"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-singlesday"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-singlesday#readme"
+}
