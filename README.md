@@ -934,6 +934,35 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-erp`](packages/dsh-erp) | The ERP bridge for dsh agents |
 | [`dsh-crm`](packages/dsh-crm) | The CRM bridge for dsh agents |
 
+### Company back office (24)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-baoxiao`](packages/dsh-baoxiao) | Baoxiao (报销) lane for dsh agents |
+| [`dsh-reimbursement`](packages/dsh-reimbursement) | Reimbursement workflow for dsh agents |
+| [`dsh-caiwu`](packages/dsh-caiwu) | Caiwu (财务) lane for dsh agents |
+| [`dsh-jiesuan`](packages/dsh-jiesuan) | Jiesuan (结算) lane for dsh agents |
+| [`dsh-cfo`](packages/dsh-cfo) | CFO briefing room for dsh agents |
+| [`dsh-recruiting`](packages/dsh-recruiting) | Recruiting pipeline for dsh agents |
+| [`dsh-talentpool`](packages/dsh-talentpool) | Talent pool for dsh agents |
+| [`dsh-shuiwu`](packages/dsh-shuiwu) | Shuiwu (税务) lane for dsh agents |
+| [`dsh-vat`](packages/dsh-vat) | VAT workbook for dsh agents |
+| [`dsh-geshui`](packages/dsh-geshui) | Geshui (个税) lane for dsh agents |
+| [`dsh-ruanzhu`](packages/dsh-ruanzhu) | Ruanzhu (软著) lane for dsh agents |
+| [`dsh-banhao`](packages/dsh-banhao) | Banhao (版号) lane for dsh agents |
+| [`dsh-copyright`](packages/dsh-copyright) | Copyright filing desk for dsh agents |
+| [`dsh-zhuce`](packages/dsh-zhuce) | Zhuce (注册) lane for dsh agents |
+| [`dsh-incorporation`](packages/dsh-incorporation) | Incorporation desk for dsh agents |
+| [`dsh-heming`](packages/dsh-heming) | Heming (核名) lane for dsh agents |
+| [`dsh-yinzhang`](packages/dsh-yinzhang) | Yinzhang (印章) lane for dsh agents |
+| [`dsh-kaihu`](packages/dsh-kaihu) | Kaihu (开户) lane for dsh agents |
+| [`dsh-fawu`](packages/dsh-fawu) | Fawu (法务) lane for dsh agents |
+| [`dsh-arbitration`](packages/dsh-arbitration) | Arbitration tracker for dsh agents |
+| [`dsh-shangbiao`](packages/dsh-shangbiao) | Shangbiao (商标) lane for dsh agents |
+| [`dsh-nda`](packages/dsh-nda) | NDA workflow for dsh agents |
+| [`dsh-personnel`](packages/dsh-personnel) | Personnel desk for dsh agents |
+| [`dsh-ehr`](packages/dsh-ehr) | EHR seat for dsh agents |
+
 ### Healthcare (9)
 
 | Name | Planned first release |
