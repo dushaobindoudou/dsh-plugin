@@ -1,0 +1,22 @@
+{
+  "name": "dsh-plugin-geo",
+  "version": "0.0.1",
+  "description": "Generative engine optimization for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "geo",
+    "aeo",
+    "discovery"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-plugin-geo"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-plugin-geo#readme"
+}

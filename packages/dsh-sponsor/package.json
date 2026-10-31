@@ -1,0 +1,22 @@
+{
+  "name": "dsh-sponsor",
+  "version": "0.0.1",
+  "description": "Sponsorship for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "sponsor",
+    "sponsorship",
+    "creators"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-sponsor"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-sponsor#readme"
+}

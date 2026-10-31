@@ -107,7 +107,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-mlx`](packages/dsh-mlx) | Mlx - the apple silicon runtime |
 | [`dsh-vibecoding`](packages/dsh-vibecoding) | Vibecoding - the style that became a method |
 
-### Agent capabilities (14)
+### Agent capabilities (16)
 
 | Name | Planned first release |
 | --- | --- |
@@ -125,6 +125,8 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-systemone`](packages/dsh-systemone) | Systemone - the fast path |
 | [`dsh-alwayson`](packages/dsh-alwayson) | Alwayson - agents that never clock out |
 | [`dsh-webagent`](packages/dsh-webagent) | Webagent - the browser as an API |
+| [`dsh-aeo`](packages/dsh-aeo) | Agent engine optimization for dsh agents |
+| [`dsh-plugin-geo`](packages/dsh-plugin-geo) | Generative engine optimization for dsh agents |
 
 ### Self-iteration (17)
 
@@ -483,6 +485,52 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-solidity`](packages/dsh-solidity) | Solidity toolkit for dsh agents |
 | [`dsh-pay`](packages/dsh-pay) | The generic payment seat for dsh agents |
 | [`dsh-dex`](packages/dsh-dex) | DEX toolkit for dsh agents |
+
+### China payments (41)
+
+| Name | Planned first release |
+| --- | --- |
+| [`dsh-pay-core`](packages/dsh-pay-core) | Payment core for dsh agents |
+| [`dsh-pay-cn`](packages/dsh-pay-cn) | China payment lane for dsh agents |
+| [`dsh-pay-alipay`](packages/dsh-pay-alipay) | Alipay rail for dsh agents |
+| [`dsh-pay-wechat`](packages/dsh-pay-wechat) | WeChat Pay rail for dsh agents |
+| [`dsh-checkout`](packages/dsh-checkout) | Checkout for dsh agents |
+| [`dsh-cashier`](packages/dsh-cashier) | Cashier for dsh agents |
+| [`dsh-aipay`](packages/dsh-aipay) | AI pay for dsh agents |
+| [`dsh-pay-sdk`](packages/dsh-pay-sdk) | Payment SDK for dsh plugins |
+| [`dsh-pay-qr`](packages/dsh-pay-qr) | QR payments for dsh agents |
+| [`dsh-wechat-pay`](packages/dsh-wechat-pay) | WeChat Pay for dsh agents |
+| [`dsh-douyin-pay`](packages/dsh-douyin-pay) | Douyin Pay for dsh agents |
+| [`dsh-unionpay`](packages/dsh-unionpay) | UnionPay for dsh agents |
+| [`dsh-jdpay`](packages/dsh-jdpay) | JD Pay for dsh agents |
+| [`dsh-plugin-pay`](packages/dsh-plugin-pay) | Payment plugin for dsh agents |
+| [`dsh-plugin-alipay`](packages/dsh-plugin-alipay) | Alipay plugin for dsh agents |
+| [`dsh-plugin-wechatpay`](packages/dsh-plugin-wechatpay) | WeChat Pay plugin for dsh agents |
+| [`dsh-plugin-checkout`](packages/dsh-plugin-checkout) | Checkout plugin for dsh agents |
+| [`dsh-tip`](packages/dsh-tip) | Tips for dsh agents |
+| [`dsh-paywall`](packages/dsh-paywall) | Paywall for dsh plugins |
+| [`dsh-entitlement`](packages/dsh-entitlement) | Entitlements for dsh agents |
+| [`dsh-license`](packages/dsh-license) | License keys for dsh plugins |
+| [`dsh-donate`](packages/dsh-donate) | Donations for dsh agents |
+| [`dsh-sponsor`](packages/dsh-sponsor) | Sponsorship for dsh agents |
+| [`dsh-subscription`](packages/dsh-subscription) | Subscriptions for dsh agents |
+| [`dsh-split`](packages/dsh-split) | Revenue split for dsh agents |
+| [`dsh-payout`](packages/dsh-payout) | Author payouts for dsh agents |
+| [`dsh-refund`](packages/dsh-refund) | Refunds for dsh agents |
+| [`dsh-tips`](packages/dsh-tips) | Tip jar for dsh agents |
+| [`dsh-plugin-tip`](packages/dsh-plugin-tip) | Tip plugin for dsh agents |
+| [`dsh-plugin-tips`](packages/dsh-plugin-tips) | Tip jar plugin for dsh agents |
+| [`dsh-plugin-paywall`](packages/dsh-plugin-paywall) | Paywall plugin for dsh agents |
+| [`dsh-payouts`](packages/dsh-payouts) | Payout ledger for dsh agents |
+| [`dsh-refunds`](packages/dsh-refunds) | Refund ledger for dsh agents |
+| [`dsh-metering`](packages/dsh-metering) | Usage metering for dsh agents |
+| [`dsh-spendcontrol`](packages/dsh-spendcontrol) | Spend control for dsh agents |
+| [`dsh-quotas`](packages/dsh-quotas) | Quotas for dsh agents |
+| [`dsh-spending`](packages/dsh-spending) | Spending tracker for dsh agents |
+| [`dsh-budgets`](packages/dsh-budgets) | Budgets for dsh agents |
+| [`dsh-invoices`](packages/dsh-invoices) | Invoices for dsh agents |
+| [`dsh-wxpay`](packages/dsh-wxpay) | WxPay for dsh agents |
+| [`dsh-weixin-pay`](packages/dsh-weixin-pay) | Weixin Pay for dsh agents |
 
 ### Daily life (66)
 
@@ -1141,7 +1189,7 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-serve`](packages/dsh-serve) | Serve-mode extras for the dsh web GUI |
 | [`dsh-jobs`](packages/dsh-jobs) | Background jobs for dsh bots |
 
-### Security (49)
+### Security (53)
 
 | Name | Planned first release |
 | --- | --- |
@@ -1194,6 +1242,10 @@ release. A name graduates out of this table the moment real code lands.
 | [`dsh-plugin-warden`](packages/dsh-plugin-warden) | Warden - the plugin-prefixed custody seat |
 | [`dsh-plugin-harden`](packages/dsh-plugin-harden) | Harden - the plugin-prefixed tightening seat |
 | [`dsh-governance`](packages/dsh-governance) | Governance - who let the agent do that |
+| [`dsh-pay-guard`](packages/dsh-pay-guard) | Payment guard for dsh agents |
+| [`dsh-pay-redteam`](packages/dsh-pay-redteam) | Payment red team for dsh agents |
+| [`dsh-kya`](packages/dsh-kya) | Know Your Agent for dsh agents |
+| [`dsh-paysafe`](packages/dsh-paysafe) | Payment safety for dsh agents |
 
 ### Work & hiring (74)
 

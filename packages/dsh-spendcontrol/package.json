@@ -1,0 +1,22 @@
+{
+  "name": "dsh-spendcontrol",
+  "version": "0.0.1",
+  "description": "Spend control for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "spend-control",
+    "budget",
+    "approval"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-spendcontrol"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-spendcontrol#readme"
+}

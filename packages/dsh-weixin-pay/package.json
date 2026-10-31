@@ -1,0 +1,22 @@
+{
+  "name": "dsh-weixin-pay",
+  "version": "0.0.1",
+  "description": "Weixin Pay for dsh agents - name reserved; first release in development.",
+  "license": "MIT",
+  "author": "dushaobindoudou",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis-plugin",
+    "weixin",
+    "wechat-pay",
+    "payments"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dushaobindoudou/dsh-plugin.git",
+    "directory": "packages/dsh-weixin-pay"
+  },
+  "homepage": "https://github.com/dushaobindoudou/dsh-plugin/tree/main/packages/dsh-weixin-pay#readme"
+}
