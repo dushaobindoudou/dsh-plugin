@@ -1,7 +1,7 @@
 {
   "name": "dsh-plugin-watch",
   "version": "0.0.1",
-  "description": "Watch plugin twin - name reserved; first release in development.",
+  "description": "Watch plugin twin - the watch seat, plugin-scoped - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [

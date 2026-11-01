@@ -1,7 +1,7 @@
 {
   "name": "dsh-plugin-pattern",
   "version": "0.0.1",
-  "description": "Pattern plugin twin - name reserved; first release in development.",
+  "description": "Pattern plugin twin - the pattern seat, plugin-scoped - name reserved; first release in development.",
   "license": "MIT",
   "author": "dushaobindoudou",
   "keywords": [
